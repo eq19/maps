@@ -1,0 +1,239 @@
+# General Settings
+# https://jekyllrb.com/docs/configuration/
+# https://jekyllrb.com/docs/configuration/options/
+# https://learn.cloudcannon.com/jekyll-cheat-sheet/
+
+input_types:
+- text
+- date
+- email
+- radio
+- submit
+- number
+- checkbox
+- textarea
+
+form_engines:
+- formspree
+- formbucket
+- cloudcannon
+
+debug:
+  dist: false
+  compress: true
+  shortcodes: true
+
+# Repository Settings
+# https://blog.webjeda.com/jekyll-redirect/
+# https://github.com/ethanresnick/json-api-1/blob/gh-pages/_config.yml
+# https://github.com/daattali/beautiful-jekyll/blob/master/_config.yml
+
+include:
+  - app.js
+  - feed.xml
+  - feed.json
+  - .htaccess
+
+exclude:
+  - src/
+  - docs/
+  - dist/
+  - assets/
+  - .babelrc
+  - Gemfile
+  - Makefile
+  - yarn.lock
+  - Dockerfile
+  - update.sh
+  - Gemfile.lock
+  - Gemfile.lock
+  - vendor/ruby/
+  - vendor/gems/
+  - vendor/cache/
+  - vendor/bundle/
+  - package-lock.json
+  - webpack.config.js
+  - docker_compose.yml
+  - requirements.txt
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - webpack.config.js
+  - jekyll-rtd-theme.gemspec
+
+encoding: utf-8
+livereload: true
+limit_posts: 1000
+collections_dir: maps
+timezone: Asia/Jakarta
+remote_theme: eQ19/parser
+excerpt_separator: <!--end_excerpt-->
+
+# Plugins Setting
+# https://pages.github.com/versions/
+# https://github.com/jekyll/jekyll-feed
+# https://en.wikipedia.org/wiki/CoffeeScript
+# https://github.com/jekyll/jekyll-redirect-from
+
+plugins:
+  - jemoji
+  - jekyll-gist
+  - jekyll-feed
+  - jekyll-avatar
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jekyll-mentions
+  - jekyll-remote-theme
+  - jekyll-coffeescript
+  - jekyll-readme-index
+  - jekyll-redirect-from
+  - jekyll-relative-links
+  - jekyll-default-layout
+  - jekyll-github-metadata
+  - jekyll-titles-from-headings
+  - jekyll-optional-front-matter
+  
+# Jekyll Tag Pages Generator
+# https://jekyllrb.com/docs/liquid/tags/
+# https://github.com/pattex/jekyll-tagging
+# https://jekyllrb.com/docs/plugins/generators/
+
+# tag_page_dir: tagz
+# tag_feed_layout: tag_feed
+# tag_page_layout: tag_page
+  
+# Default Setting
+# https://stackoverflow.com/a/49428493
+# https://jekyllrb.com/docs/collections/
+# https://jekyllrb.com/docs/configuration/front-matter-defaults
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: feeds
+    values:
+      layout: feeds
+  -
+    scope:
+      path: ""
+      type: maps
+    values:
+      layout: redirect
+  - 
+    scope:
+      path: ""
+      type: categories
+    values:
+      layout: base
+      permalink: /sitemap/:category.xml
+
+# Permalinks
+# https://jekyllrb.com/docs/permalinks/
+# https://stackoverflow.com/a/28754526/4058484
+# https://github.com/NiklasEi/jekyll_custom_permalink
+# https://github.com/avillafiorita/jekyll-datapage_gen
+
+collections:
+  maps:
+    output: true
+    permalink: /sitemap/index_:categories:output_ext
+  feeds:
+    output: true
+    permalink: /sitemap/index_:categories:output_ext
+  posts:
+    output: true
+    permalink: /sitemap/:year/:y_day/:month/:title:output_ext
+
+# Feed and Submodul Setting
+# https://stackoverflow.com/a/55885186/4058484
+# https://github.com/jekyll/jekyll-feed/issues/2
+# https://www.w3schools.com/xml/xsl_elementref.asp
+# https://github.com/jekyll/jekyll-feed/issues/207#issuecomment-787490785
+
+feed:
+  tags: true
+  posts_limit: 1000
+  excerpt_only: true
+  collections:
+    maps:
+      path: /leads.xml # https://eq19.github.io/grammar/leads.xml
+    feeds:
+      categories:
+        - main # https://eq19.github.io/grammar/feed/feeds/main.xml
+        - user # https://eq19.github.io/grammar/feed/feeds/user.xml
+        - diagram # https://eq19.github.io/grammar/feed/feeds/diagram.xml
+        - section # https://eq19.github.io/grammar/feed/feeds/section.xml
+      path: /feeds.xml # https://eq19.github.io/grammar/feeds.xml
+    posts:
+      path: /posts.xml # https://eq19.github.io/grammar/posts.xml
+
+# Kramdown Options
+# https://kramdown.gettalong.org/options.html
+# https://jekyllrb.com/docs/configuration/markdown/
+
+highlighter: rouge
+markdown: kramdown
+
+kramdown:
+  html_to_native: true
+  syntax_highlighter: pygments
+  math_engine_opts configuration: mathjax
+ 
+excerpt_separator: <!--end_excerpt-->
+
+# Custom Headers
+# https://shopify.github.io/liquid/
+# https://jekyllrb.com/docs/configuration/webrick/
+# https://en.wikipedia.org/wiki/Content_Security_Policy
+
+google:
+  gtag: GTM-PGWT4RS
+  #adsense: ca-pub-3677197599836940
+webrick:
+  headers:
+    Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';
+    #My-Other-Header: My-Other-Value
+#sumo: 2b0c75104f236f75954a2d200c80651a1ebf311e7f2c868ac12d7284ecd4fbd4
+
+# Tags Setting
+# http://codinfox.github.io/blog/tags/
+# https://longqian.me/2017/02/09/github-jekyll-tag/
+# https://github.com/chetabahana/chetabahana.github.io/tags
+
+case_labels:
+- Buka Toko
+- Stok Barang
+- Merchant Center
+- Peluang Terbaik
+- Portfolio
+- Network
+
+flow_labels:
+- Optimasi
+- Cloud-Task-API
+- Cloud-Site-API
+- Google-Ads-API
+- Google-Trend-API
+- eShop SEO
+
+# Site Setting
+# https://jekyllrb.com/docs/variables/
+# https://stackoverflow.com/a/55094996/4058484
+# https://stackoverflow.com/a/17260660/4058484
+# https://stackoverflow.com/a/30828197/4058484
+
+basedir: _feeds
+organization: marketleader
+repository: eq19/eq19.github.io
+
+# Site Metadata
+# https://docs.github.com/en/pages
+# https://help.github.com/articles/repository-metadata-on-github-pages/
+# https://www.google.com/search?q=tortoisegit+keep+asking+password+site%3Astackoverflow.com
+# https://stackoverflow.com/questions/3490505/is-there-a-notepad-with-github-plugin/41884020
+# https://stackoverflow.com/questions/14000173/tortoisegit-save-user-authentication-credentials
+
+slogan: ₠Quantum Project | A Unique Mapping System
+disclaimer: The definite key to identify whether you use our concept is when there a kind of development item lies a unified assignment in hexagonal form by six (6) corresponding sets while each sets pick a combination of six (6) routes with a pairing of six (6) to six (6) of all channels.
+license: Apache License, Version 2.0
