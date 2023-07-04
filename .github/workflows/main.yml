@@ -15,7 +15,7 @@ concurrency:
 # Sets global environtment variables
 env:
   OWNER: ${{ github.repository_owner }}
-  JEKYLL_CFG: ${{ github.workspace }}/_config.yml
+  JEKYLL_CFG: /maps/_config.yml
 
 jobs:
   # Build job
