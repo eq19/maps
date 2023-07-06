@@ -1,0 +1,44 @@
+# Deploy Jekyll to GitHub Pages
+name: Build and deploy Jekyll site
+
+# 💎 Runs on workflow_run.conclusion
+on: # push
+  workflow_run:
+    types: [completed] #requested
+    workflows: ["pages-build-deployment"]
+
+# 🪂 Allow only one concurrent deployment across the branches
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+  
+# Sets global environtment variables
+env:
+  OWNER: ${{ github.repository_owner }}
+  JEKYLL_CFG: /maps/_config.yml
+
+jobs:
+  # Build job
+  github-pages:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ${{ github.ref_name != 'main' && 'ubuntu-latest' || 'windows-latest' }}
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+ 
+      - name: 💎 Build on Linux
+        if: runner.os == 'Linux'
+        uses: eq19/feed@v3
+        with:
+          pre_build_commands: 'make build'
+          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+
+      - name: 💎 Build on Windows
+        if: runner.os == 'Windows'
+        uses: eq19/maps@v1
+        with:
+          dotnet-version: '3.1.x'
+          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
