@@ -15,7 +15,6 @@ concurrency:
 # Sets global environtment variables
 env:
   OWNER: ${{ github.repository_owner }}
-  JEKYLL_CFG: /maps/_config.yml
 
 jobs:
   # Build job
@@ -31,7 +30,7 @@ jobs:
  
       - name: 💎 Build on Linux
         if: runner.os == 'Linux'
-        uses: eq19/feed@v3
+        uses: eq19/feed@v2
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
