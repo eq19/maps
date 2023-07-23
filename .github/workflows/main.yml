@@ -1,5 +1,5 @@
-# Deploy Jekyll to GitHub Pages
-name: Build and deploy Jekyll site
+# Deploy GitHub Pages
+name: Build and deploy ₠Quantum site
 
 # 💎 Runs on workflow_run.conclusion
 on: # push
@@ -22,8 +22,8 @@ jobs:
   # Build job
   github-pages:
     if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ${{ github.actor != github.repository_owner && 'self-hosted' || (
-                 github.ref_name != 'main' && 'ubuntu-latest' || 'windows-latest') }}
+    runs-on: ${{github.actor != github.repository_owner && 'self-hosted' || (
+             github.ref_name != 'main' && 'ubuntu-latest' || 'windows-latest')}}
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v3
