@@ -1,5 +1,5 @@
 # Deploy GitHub Pages
-name: Build and deploy eq19 site
+name: Build and deploy ₠Quantum site
 
 # 💎 Runs on workflow_run.conclusion
 on: # push
