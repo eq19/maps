@@ -7,7 +7,7 @@ on: # push
     types: [completed] #requested
     workflows: ["pages-build-deployment"]
 
-# 🪂 Allow only one concurrent deployment across the branches
+# 🪂 Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
