@@ -17,6 +17,7 @@ env:
   USER: ${{ github.actor }}
   REPO: ${{ github.repository }}
   OWNER: ${{ github.repository_owner }}
+  VENDOR: ${{ github.workspace }}/vendor/bundle
 
 jobs:
   # Build job
