@@ -21,6 +21,7 @@ env:
   REPO: ${{ github.repository }}
   OWNER: ${{ github.repository_owner }}
   ACTOR: ${{ github.triggering_actor }}
+  ADMIN: ${{ secrets.JEKYLL_GITHUB_ADMIN }}
   
 jobs:
   # Build job
