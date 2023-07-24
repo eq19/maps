@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 # Set GITHUB_TOKEN scopes
-permissions: read-all|write-all
+permissions: write-all
 
 # Sets global environtment variables
 env:
