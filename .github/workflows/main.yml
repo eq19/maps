@@ -2,7 +2,7 @@
 name: Build and deploy ₠Quantum site
 
 # 💎 Runs on workflow_run.conclusion
-on: # push
+on:
   workflow_run:
     types: [completed] #requested
     workflows: ["pages-build-deployment"]
