@@ -17,7 +17,8 @@ env:
   USER: ${{ github.actor }}
   REPO: ${{ github.repository }}
   OWNER: ${{ github.repository_owner }}
-
+  ACTOR: ${{ github.triggering_actor }}
+  
 jobs:
   # Build job
   github-pages:
