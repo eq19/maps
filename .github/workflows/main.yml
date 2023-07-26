@@ -1,13 +1,13 @@
 # Deploy GitHub Pages
 name: Build and deploy ₠Quantum site
 
-# Runs on workflow_run.conclusion
+# 💎 Runs on workflow_run.conclusion
 on:
   workflow_run:
     types: [completed] #requested
     workflows: ["pages-build-deployment"]
 
-# Allow only one concurrent deployment
+# 🪂 Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -29,90 +29,23 @@ jobs:
     runs-on: ${{github.actor != github.repository_owner && 'ubuntu-latest' || (
              github.ref_name != 'main' && 'windows-latest' || 'self-hosted') }}
     steps:
-      - name: Checkout
+      - name: 📂 Checkout
         uses: actions/checkout@v3
         with:
           submodules: recursive
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-# Deploy GitHub Pages
-name: Build and deploy ₠Quantum site
-
-# Runs on workflow_run.conclusion
-on:
-  workflow_run:
-    types: [completed] #requested
-    workflows: ["pages-build-deployment"]
-
-# Allow only one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-# Set GITHUB_TOKEN scopes
-permissions: write-all
-
-# Sets global environtment variables
-env:
-  USER: ${{ github.actor }}
-  REPO: ${{ github.repository }}
-  OWNER: ${{ github.repository_owner }}
-  ACTOR: ${{ github.triggering_actor }}
-  
-jobs:
-  # Build job
-  github-pages:
-    if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ${{github.actor != github.repository_owner && 'ubuntu-latest' || (
-             github.ref_name != 'main' && 'windows-latest' || 'self-hosted') }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-
-      - name: 📂 Build on Windows
-        if: runner.os == 'Windows'
-        uses: eq19/maps@v1
-        with:
-          dotnet-version: '3.1.x'
-          owner: ${{ secrets.JEKYLL_GITHUB_OWNER }}
  
-      - name: 🪂 Build on Linux
-        if: github.ref_name != 'main'
+      - name: 💎 Build on Linux
+        if: runner.os == 'Linux'
         uses: eq19/feed@v2
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
           owner: ${{ secrets.JEKYLL_GITHUB_OWNER }}
- 
-      - name: 💎 Build on COS
-        if: github.ref_name == 'main'
-        uses: eq19/lexer@v3
-        with:
-          pre_build_commands: 'make build'
-          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-          owner: ${{ secrets.JEKYLL_GITHUB_OWNER }}
 
-      - name: 📂 Build on Windows
+      - name: 💎 Build on Windows
         if: runner.os == 'Windows'
         uses: eq19/maps@v1
         with:
           dotnet-version: '3.1.x'
-          owner: ${{ secrets.JEKYLL_GITHUB_OWNER }}
- 
-      - name: 🪂 Build on Linux
-        if: github.ref_name != 'main'
-        uses: eq19/feed@v2
-        with:
-          pre_build_commands: 'make build'
-          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-          owner: ${{ secrets.JEKYLL_GITHUB_OWNER }}
- 
-      - name: 💎 Build on COS
-        if: github.ref_name == 'main'
-        uses: eq19/lexer@v3
-        with:
-          pre_build_commands: 'make build'
-          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
           owner: ${{ secrets.JEKYLL_GITHUB_OWNER }}
