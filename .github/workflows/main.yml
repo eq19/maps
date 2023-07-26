@@ -52,7 +52,7 @@ jobs:
  
       - name: 💎 Build on COS
         if: github.ref_name == 'main'
-        uses: eq19/lexerd@v3
+        uses: eq19/lexer@v3
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
