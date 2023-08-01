@@ -37,7 +37,7 @@ jobs:
  
       - name: 💎 Build on Linux
         if: runner.os == 'Linux'
-        uses: eq19/lexer@v2
+        uses: eq19/feed@v2
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
