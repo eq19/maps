@@ -26,11 +26,11 @@ jobs:
   # Build job
   github-pages:
     if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ${{github.actor != github.repository_owner && 'ubuntu-latest' || (
+    runs-on: ${{github.actor == github.repository_owner && 'ubuntu-latest' || (
              github.ref_name != 'main' && 'windows-latest' || 'self-hosted') }}
     steps:
       - name: 📂 Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
