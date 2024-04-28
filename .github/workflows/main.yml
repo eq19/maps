@@ -32,7 +32,6 @@ jobs:
       - name: 📂 Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
  
       - name: 💎 Build on Linux
