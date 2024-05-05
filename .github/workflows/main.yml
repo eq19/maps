@@ -17,6 +17,7 @@ permissions: write-all
 
 # Sets global environtment variables
 env:
+  RUN: ${{ github.run_id }}
   USER: ${{ github.actor }}
   REPO: ${{ github.repository }}
   OWNER: ${{ github.repository_owner }}
