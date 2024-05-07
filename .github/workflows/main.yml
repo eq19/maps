@@ -7,10 +7,10 @@ on:
     types: [completed] #requested
     workflows: ["pages-build-deployment"]
 
-# 🪂 Allow only one concurrent deployment
+# 🪂 Allow concurrent deployment
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 # Set GITHUB_TOKEN scopes
 permissions: write-all
@@ -27,7 +27,7 @@ jobs:
   # Build job
   github-pages:
     if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ${{github.actor == github.repository_owner && 'ubuntu-latest' || (
+    runs-on: ${{github.actor != github.repository_owner && 'ubuntu-latest' || (
              github.ref_name != 'main' && 'windows-latest' || 'self-hosted') }}
     steps:
       - name: 📂 Checkout
