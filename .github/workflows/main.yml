@@ -27,7 +27,7 @@ jobs:
   # Build job
   github-pages:
     if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ${{github.actor == github.repository_owner && 'ubuntu-latest' || (
+    runs-on: ${{github.actor != github.repository_owner && 'ubuntu-latest' || (
              github.ref_name != 'main' && 'windows-latest' || 'self-hosted') }}
     steps:
       - name: 📂 Checkout
