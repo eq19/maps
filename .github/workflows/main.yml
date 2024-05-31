@@ -53,7 +53,7 @@ jobs:
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
 
       - name: 📂Maps on Linux
-        if: ${{runner.os == 'Linux' && github.repository == 'eq19/eq19.github.io'}}
+        if: ${{runner.os == 'Linux' && github.ref_protected}}
         uses: eq19/maps@v1
         with:
           pre_build_commands: 'make build'
