@@ -37,6 +37,7 @@ jobs:
       - name: 💎Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
  
       - name: 📂Build on Self-Hosted  
@@ -56,7 +57,7 @@ jobs:
         if: ${{runner.os == 'Linux' && github.ref_protected}}
         uses: eq19/maps@v1
         with:
-          fetch-depth: 0
+          include-pdf: false
 
       - name: 📂Feed on Linux
         if: runner.os == 'Linux'
@@ -64,4 +65,3 @@ jobs:
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-
