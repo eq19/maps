@@ -3,7 +3,7 @@ name: Build and deploy eQuantum site
 
 # 💎 Runs on workflow_run.conclusion
 on:
-  push:
+  # push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -56,7 +56,7 @@ jobs:
         if: ${{runner.os == 'Linux' && github.ref_protected}}
         uses: eq19/maps@v1
         with:
-          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: 📂Feed on Linux
         if: runner.os == 'Linux'
