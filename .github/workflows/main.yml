@@ -56,12 +56,12 @@ jobs:
         if: ${{runner.os == 'Linux' && github.ref_protected}}
         uses: eq19/maps@v1
         with:
-          pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
 
       - name: 📂Feed on Linux
         if: runner.os == 'Linux'
         uses: eq19/feed@v3
         with:
+          pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
 
