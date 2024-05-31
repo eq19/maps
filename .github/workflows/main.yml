@@ -29,31 +29,39 @@ jobs:
   github-pages:
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
+
     runs-on: ${{github.ref_name != 'main' && 'ubuntu-latest' || (
              github.ref_protected && 'windows-latest' || 'self-hosted') }}
+
     steps:
       - name: 💎Checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
  
-      - name: 📂Build on Linux
-        if: runner.os == 'Linux'
-        uses: eq19/feed@v3
-        with:
-          pre_build_commands: 'make build'
-          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-
-      - name: 📂Build on Windows
-        if: runner.os == 'Windows'
-        uses: eq19/maps@v1
-        with:
-          dotnet-version: '3.1.x'
-          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-
       - name: 📂Build on Self-Hosted  
         if: ${{runner.os != 'Linux' && runner.os != 'Windows'}}
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
- 
+
+      - name: 📂Build on Windows
+        if: runner.os == 'Windows'
+        uses: eq19/parser@v1
+        with:
+          dotnet-version: '3.1.x'
+          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+
+      - name: 📂Maps on Linux
+        if: ${{runner.os == 'Linux' && github.repository == 'eq19/eq19.github.io'}}
+        uses: eq19/maps@v1
+        with:
+          pre_build_commands: 'make build'
+          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+
+      - name: 📂Feed on Linux
+        if: runner.os == 'Linux'
+        uses: eq19/feed@v3
+        with:
+          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+
