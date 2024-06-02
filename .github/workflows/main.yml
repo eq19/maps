@@ -53,15 +53,16 @@ jobs:
           dotnet-version: '3.1.x'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
 
-      - name: 📂Maps on Linux
-        if: ${{runner.os == 'Linux' && github.ref_protected}}
-        uses: eq19/maps@v1
-        with:
-          include-pdf: false
-
       - name: 📂Feed on Linux
         if: runner.os == 'Linux'
         uses: eq19/feed@v3
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+
+      - name: 📂Maps on Linux
+        if: runner.os == 'Linux'
+        uses: eq19/maps@v1
+        with:
+          path-to-root: /tmp/workdir/_site
+          include-pdf: false
