@@ -7,7 +7,7 @@ on:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
-
+  
 # 🪂 Allow concurrent deployment
 concurrency:
   group: "pages"
@@ -64,5 +64,5 @@ jobs:
         if: runner.os == 'Linux'
         uses: eq19/maps@v1
         with:
-          path-to-root: /tmp/workdir/_site
+          path-to-root: /github/workspace/_site
           include-pdf: false
