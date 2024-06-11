@@ -31,13 +31,13 @@ env:
 jobs:
   github-pages:
     strategy:
-      matrix:
-        os:
-          #- 'self-hosted'
-          - 'ubuntu-latest'
-          - 'windows-latest'
       max-parallel: 1
       fail-fast: false
+      matrix:
+        os:
+          - 'windows-latest'
+          - 'ubuntu-latest'
+          #- 'self-hosted'
 
     runs-on: '${{ matrix.os }}'
     #runs-on: ${{github.ref_name != 'main' && 'ubuntu-latest' || (
@@ -53,6 +53,17 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
  
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+      
       - name: 📂Build on Self-Hosted
         if: ${{runner.os != 'Linux' && runner.os != 'Windows'}}
         uses: eq19/maps@v1
@@ -72,17 +83,3 @@ jobs:
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
-
-      - id: 'auth'
-        if: runner.os == 'Linux'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-
-      - name: 'Set up Cloud SDK'
-        if: runner.os == 'Linux'
-        uses: 'google-github-actions/setup-gcloud@v2'
-
-      - name: 'Use gcloud CLI'
-        if: runner.os == 'Linux'
-        run: 'gcloud info'
