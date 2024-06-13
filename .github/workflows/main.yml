@@ -16,30 +16,46 @@ concurrency:
 # Set GITHUB_TOKEN scopes
 permissions: write-all
 
-# Sets global environtment variables
+# Global environtment variables
 env:
   RUN: ${{ github.run_id }}
   USER: ${{ github.actor }}
   REPO: ${{ github.repository }}
   OWNER: ${{ github.repository_owner }}
   ACTOR: ${{ github.triggering_actor }}
+  GITHUB_ACCESS_TOKEN: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+  RUNNER_REPOSITORY_URL: https://github.com/${{ github.repository }}
   
 #defaults:
   #run:
     #working-directory: /github/workspace/_site
     
 jobs:
+  determine-runner:
+    runs-on: ubuntu-latest
+    outputs:
+      runner: ${{ steps.set-runner.outputs.use-runner }}
+    steps:
+      - name: Determine which runner to use
+        id: set-runner
+        uses: eq19/maps@v2
+        with:
+          primary-runner: "self-hosted,linux"
+          fallback-runner: "ubuntu-latest"
+          github-token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
+
   github-pages:
+    needs: determine-runner
+  
     strategy:
       max-parallel: 1
       fail-fast: false
       matrix:
-        os:
-          - 'windows-latest'
-          - 'ubuntu-latest'
-          #- 'self-hosted'
+        #node_version: [8, 10, 12]
+        os: [windows-latest, ubuntu-latest] #self-hosted
 
-    runs-on: '${{ matrix.os }}'
+    runs-on: ${{ matrix.os }}
+    #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
     #runs-on: ${{github.ref_name != 'main' && 'ubuntu-latest' || (
              #github.ref_protected && matrix.os || 'windows-latest') }}
 
@@ -47,37 +63,41 @@ jobs:
         github.event.workflow_run.conclusion == 'success'}}
 
     steps:
-      - name: 💎Checkout
+      - name: 📂 Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
  
-      - id: 'auth'
+      - name: 📂 Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
+
+      - name: 💎 Set Credential
+        id: 'auth'
         uses: 'google-github-actions/auth@v2'
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: 'Set up Cloud SDK'
+      - name: 💎 Authentication
         uses: 'google-github-actions/setup-gcloud@v2'
 
-      - name: 'Use gcloud CLI'
-        run: 'gcloud info'
+      - name: 🚀 Self-Hosted Runner
+        if: runner.os == 'Linux'
+        uses: eq19/lexer@v3
+        with:
+          pre_build_commands: 'gcloud info'
+          token: ${{ secrets.JEKYLL_GITHUB_TOKEN }}
       
-      - name: 📂Build on Self-Hosted
+      - name: 🚀 Build on Self-Hosted
         if: ${{runner.os != 'Linux' && runner.os != 'Windows'}}
         uses: eq19/maps@v1
         with:
           path-to-root: /github/workspace/_site
           include-pdf: false
 
-      - name: 📂Build on Windows
-        if: runner.os == 'Windows'
-        uses: eq19/parser@v2
-        with:
-          dotnet-version: '3.1.x'
-
-      - name: 📂Feed on Linux
+      - name: 🚀 Build Feed on Linux
         if: runner.os == 'Linux'
         uses: eq19/feed@v3
         with:
