@@ -1,0 +1,180 @@
+name: Build devcontainer
+description: Build a devcontainer that is compliant with the spec
+
+branding:
+  icon: "activity"
+  color: "green"
+
+inputs:
+  docker_hub_username:
+    description: Username for Docker Hub
+    required: true
+  docker_hub_token:
+    description: Docker Hub authentication token
+    required: true
+  image_name:
+    description: "Name for the container to be created. Example: nginx"
+    required: true
+  image_tag:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  build_args:
+    description: Build args
+    required: false
+    default: ""
+  devcontainer_subfolder:
+    description: |
+      The path where the action will look for the `.devcontainer` folder.
+    required: false
+  devcontainer_run_cmd_path:
+    description: |
+      Path to a script file to run inside the devcontainer once the build is 
+      complete. You can run some checks using this feature
+    required: false
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+
+runs:
+  using: composite
+  steps:
+    - name: Variables
+      shell: bash
+      id: variables
+      run: |
+        # Repo names include the username. Example: apache/kafka
+        # Image names only contain `inputs.container_name`. Example: kafka
+        #
+        # dev and normal images may differ in tags but they currently don't.
+        # Example: 
+        #   docker build:       apache/kafka:1.0.0
+        #   devcontainer build: apache/kafka:1.0.0-dev
+        # This feature is currently hidden from the consumer.
+
+        repo_name=${{ inputs.docker_hub_username }}/${{ inputs.image_name }}
+        image_tag=${{ inputs.image_tag }}
+        dev_image_tag="$image_tag"
+        repo_ref="$repo_name:$image_tag"
+        image_ref="${{ inputs.image_name }}:$image_tag"
+        dev_repo_ref="$repo_name:$dev_image_tag"
+        dev_image_ref="${{ inputs.image_name }}:$dev_image_tag"
+
+        echo "repo_name=$repo_name" >> $GITHUB_OUTPUT
+        echo "image_tag=$image_tag" >> $GITHUB_OUTPUT
+        echo "dev_image_tag=$dev_image_tag" >> $GITHUB_OUTPUT
+        echo "repo_ref=$repo_ref" >> $GITHUB_OUTPUT
+        echo "image_ref=$image_ref" >> $GITHUB_OUTPUT
+        echo "dev_repo_ref=$dev_repo_ref" >> $GITHUB_OUTPUT
+        echo "dev_image_ref=$dev_image_ref" >> $GITHUB_OUTPUT
+
+    - name: Install devcontainer cli
+      shell: bash
+      run: |
+        npm install -g @devcontainers/cli
+    
+    - name: Prune images
+      shell: bash
+      run: |
+        docker image prune -af
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.docker_hub_username }}
+        password: ${{ inputs.docker_hub_token }}
+
+    - name: Start local registry
+      shell: bash
+      run: |
+        docker run -d -p 5000:5000 --restart=always --name registry registry:2
+
+    - name: Build and push ${{ steps.variables.outputs.image_ref }}
+      uses: docker/build-push-action@v5
+      id: docker-build
+      with:
+        context: .
+        tags: ${{ steps.variables.outputs.repo_ref }}
+        # tags: localhost:5000/${{ steps.variables.outputs.image_ref }}
+        file: ${{ inputs.dockerfile_path }}
+        push: true
+        pull: false
+        cache-from: type=local,src=${{ inputs.cache_src }}
+        cache-to: type=local,mode=max,dest=${{ inputs.cache_dest }}
+        # outputs: type=docker,dest=/tmp/temp-image.tar
+        build-args: ${{ inputs.build_args }}
+
+    # - name: Build devcontainer ${{ steps.variables.outputs.dev_image_ref }}
+    #   id: devcontainer_build
+    #   uses: devcontainers/ci@v0.3.1900000329
+    #   env:
+    #     IMAGE_NAME: ${{ steps.variables.outputs.repo_name }}
+    #     IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
+    #   with:
+    #     imageName: ${{ steps.variables.outputs.repo_name }}
+    #     imageTag: ${{ steps.variables.outputs.image_tag }}
+    #     subFolder: ${{ inputs.devcontainer_subfolder }}
+    #     runCmd: ${{ inputs.devcontainer_run_cmd_path }}
+
+    # - name: Docker load
+    #   shell: bash
+    #   run: |
+    #     echo "Loading image…"
+    #     docker load --input /tmp/temp-image.tar
+    #     echo "Images in docker before devcontainer build starts:"
+    #     docker image ls -a
+        
+    - name: Build devcontainer - new
+      id: devcontainer_build
+      shell: bash
+      env:
+        IMAGE_NAME: ${{ steps.variables.outputs.repo_name }}
+        # IMAGE_NAME: localhost:5000/${{ inputs.image_name }}
+        IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
+      run: |
+        echo "starting devcontainer build..."
+        devcontainer build \
+          --workspace-folder "${{ inputs.devcontainer_subfolder }}"  \
+          --image-name "${{ steps.variables.outputs.repo_ref }}" \
+          --no-cache true
+
+    - name: Push devcontainer ${{ steps.variables.outputs.dev_image_ref }}
+      shell: bash
+      run: docker push ${{ steps.variables.outputs.repo_ref }}
+
+    - name: Set Docker Hub description
+      uses: peter-evans/dockerhub-description@v3
+      with:
+        username: ${{ inputs.docker_hub_username }}
+        password: ${{ inputs.docker_hub_token }}
+        repository: ${{ steps.variables.outputs.repo_name }}
+        short-description: ${{ inputs.docker_hub_repo_short_description }}
+        readme-filepath: ${{ inputs.docker_hub_repo_readme_file_path }}
+
+    - name: Move cache
+      shell: bash
+      run: |
+        rm -rf ${{ inputs.cache_src }}
+        if [ -d ${{ inputs.cache_src }} ];
+        then
+          mv ${{ inputs.cache_dest }} ${{ inputs.cache_src }}
+        fi
+ 
