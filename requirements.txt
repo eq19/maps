@@ -1,5 +1,7 @@
+algorithms
 beautifulsoup4
 fake_useragent
+flavio
 imageio
 keras ; python_version < '3.12'
 lxml
