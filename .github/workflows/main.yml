@@ -30,7 +30,6 @@ jobs:
     outputs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
     steps:
-      - uses: actions/checkout@v4
       - uses: eq19/eq19.github.io@v1
         if: ${{ contains(github.repository, 'github.io') }}
         with:
