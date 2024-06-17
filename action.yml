@@ -163,7 +163,7 @@ runs:
       run: docker push ${{ steps.variables.outputs.repo_ref }}
 
     - name: Set Docker Hub description
-      uses: peter-evans/dockerhub-description@v3
+      uses: peter-evans/dockerhub-description@v4
       with:
         username: ${{ inputs.docker_hub_username }}
         password: ${{ inputs.docker_hub_token }}
