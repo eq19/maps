@@ -84,10 +84,10 @@ runs:
         echo "dev_repo_ref=$dev_repo_ref" >> $GITHUB_OUTPUT
         echo "dev_image_ref=$dev_image_ref" >> $GITHUB_OUTPUT
 
-    - name: Install devcontainer cli
-      shell: bash
-      run: |
-        npm install -g @devcontainers/cli
+    # - name: Install devcontainer cli
+    #   shell: bash
+    #   run: |
+    #     npm install -g @devcontainers/cli
     
     - name: Prune images
       shell: bash
@@ -109,41 +109,6 @@ runs:
       run: |
         docker run -d -p 5000:5000 --restart=always --name registry registry:2
 
-    # - name: Build and push ${{ steps.variables.outputs.image_ref }}
-    #   uses: docker/build-push-action@v5
-    #   id: docker-build
-    #   with:
-    #    context: ./.devcontainer
-    #    tags: ${{ steps.variables.outputs.repo_ref }}
-    #    # tags: localhost:5000/${{ steps.variables.outputs.image_ref }}
-    #    file: ${{ inputs.dockerfile_path }}
-    #    push: true
-    #    pull: false
-    #    cache-from: type=local,src=${{ inputs.cache_src }}
-    #    cache-to: type=local,mode=max,dest=${{ inputs.cache_dest }}
-    #    # outputs: type=docker,dest=/tmp/temp-image.tar
-    #    build-args: ${{ inputs.build_args }}
-
-    # - name: Build devcontainer ${{ steps.variables.outputs.dev_image_ref }}
-    #   id: devcontainer_build
-    #   uses: devcontainers/ci@v0.3.1900000329
-    #   env:
-    #     IMAGE_NAME: ${{ steps.variables.outputs.repo_name }}
-    #     IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
-    #   with:
-    #     imageName: ${{ steps.variables.outputs.repo_name }}
-    #     imageTag: ${{ steps.variables.outputs.image_tag }}
-    #     subFolder: ${{ inputs.devcontainer_subfolder }}
-    #     runCmd: ${{ inputs.devcontainer_run_cmd_path }}
-
-    # - name: Docker load
-    #   shell: bash
-    #   run: |
-    #     echo "Loading image…"
-    #     docker load --input /tmp/temp-image.tar
-    #     echo "Images in docker before devcontainer build starts:"
-    #     docker image ls -a
-        
     - name: Pre-build image and run make ci-build in dev container
       uses: devcontainers/ci@v0.3
       with:
@@ -159,7 +124,6 @@ runs:
     #   shell: bash
     #   env:
     #     IMAGE_NAME: ${{ steps.variables.outputs.repo_name }}
-    #     # IMAGE_NAME: localhost:5000/${{ inputs.image_name }}
     #     IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
     #   run: |
     #     echo "starting devcontainer build..."
@@ -180,13 +144,3 @@ runs:
         repository: ${{ steps.variables.outputs.repo_name }}
         short-description: ${{ inputs.docker_hub_repo_short_description }}
         readme-filepath: ${{ inputs.docker_hub_repo_readme_file_path }}
-
-    # - name: Move cache
-    #   shell: bash
-    #   run: |
-    #     rm -rf ${{ inputs.cache_src }}
-    #     if [ -d ${{ inputs.cache_src }} ];
-    #     then
-    #       mv ${{ inputs.cache_dest }} ${{ inputs.cache_src }}
-    #     fi
- 
