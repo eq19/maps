@@ -3,7 +3,7 @@ beautifulsoup4
 fake_useragent
 flavio
 imageio
-keras ; python_version < '3.12'
+keras
 lxml
 matplotlib
 numpy
@@ -11,8 +11,8 @@ opencv-python
 pandas
 pillow
 # projectq  # uncomment once quantum/quantum_random.py is fixed
-qiskit ; python_version < '3.12'
-qiskit-aer ; python_version < '3.12'
+qiskit
+qiskit-aer
 requests
 rich
 # scikit-fuzzy  # uncomment once fuzzy_logic/fuzzy_operations.py is fixed
