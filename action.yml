@@ -96,10 +96,16 @@ runs:
         refFilterForPush: push
         noCache: true
     
-    - name: Push devcontainer ${{ steps.variables.outputs.dev_image_ref }}
-      shell: bash
-      run: docker push ${{ steps.variables.outputs.repo_ref }}
+    # - name: Push devcontainer ${{ steps.variables.outputs.dev_image_ref }}
+    #   shell: bash
+    #   run: docker push ${{ steps.variables.outputs.repo_ref }}
 
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        push: true
+        tags: ${{ steps.variables.outputs.repo_ref }}
+          
     - name: Set Docker Hub description
       uses: peter-evans/dockerhub-description@v4
       with:
