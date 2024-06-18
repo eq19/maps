@@ -149,6 +149,7 @@ runs:
       with:
         imageName: ${{ steps.variables.outputs.repo_name }}
         imageTag: ${{ steps.variables.outputs.image_tag }}
+        subFolder: ${{ inputs.devcontainer_subfolder }}
         #cacheFrom: ghcr.io/example/example-devcontainer
         runCmd: make ci-build
         push: always
