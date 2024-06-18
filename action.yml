@@ -84,15 +84,10 @@ runs:
         echo "dev_repo_ref=$dev_repo_ref" >> $GITHUB_OUTPUT
         echo "dev_image_ref=$dev_image_ref" >> $GITHUB_OUTPUT
 
-    # - name: Install devcontainer cli
+    # - name: Prune images
     #   shell: bash
     #   run: |
-    #     npm install -g @devcontainers/cli
-    
-    - name: Prune images
-      shell: bash
-      run: |
-        docker image prune -af
+    #     docker image prune -af
 
     - name: Set up Docker Buildx
       id: buildx
@@ -119,19 +114,6 @@ runs:
         noCache: true
         push: always
     
-    # - name: Build devcontainer - new
-    #   id: devcontainer_build
-    #   shell: bash
-    #   env:
-    #     IMAGE_NAME: ${{ steps.variables.outputs.repo_name }}
-    #     IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
-    #   run: |
-    #     echo "starting devcontainer build..."
-    #     devcontainer build \
-    #       --workspace-folder "${{ inputs.devcontainer_subfolder }}"  \
-    #       --image-name "${{ steps.variables.outputs.repo_ref }}" \
-    #       --no-cache true
-
     - name: Push devcontainer ${{ steps.variables.outputs.dev_image_ref }}
       shell: bash
       run: docker push ${{ steps.variables.outputs.repo_ref }}
