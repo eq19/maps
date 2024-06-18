@@ -84,11 +84,6 @@ runs:
         echo "dev_repo_ref=$dev_repo_ref" >> $GITHUB_OUTPUT
         echo "dev_image_ref=$dev_image_ref" >> $GITHUB_OUTPUT
 
-    # - name: Prune images
-    #   shell: bash
-    #   run: |
-    #     docker image prune -af
-
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@v3
@@ -99,10 +94,10 @@ runs:
         username: ${{ inputs.docker_hub_username }}
         password: ${{ inputs.docker_hub_token }}
 
-    - name: Start local registry
-      shell: bash
-      run: |
-        docker run -d -p 5000:5000 --restart=always --name registry registry:2
+    # - name: Start local registry
+    #   shell: bash
+    #   run: |
+    #     docker run -d -p 5000:5000 --restart=always --name registry registry:2
 
     - name: Pre-build image and run make ci-build in dev container
       uses: devcontainers/ci@v0.3
