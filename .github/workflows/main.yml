@@ -31,10 +31,10 @@ jobs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
     steps:
       - name: Build Dev Container
-        uses: eq19/eq19.github.io@v1
         if: ${{ contains(github.repository, 'github.io') }}
+        uses: eq19/eq19.github.io@v1
         with:
-          docker_hub_username: "eq19"
+          docker_hub_username: ${{ github.actor }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           dockerfile_path: ./.devcontainer/Dockerfile
           image_name: "prime"
