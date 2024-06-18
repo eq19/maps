@@ -4,5 +4,5 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 COPY requirements.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip setuptools six wheel \
   && python3 -m pip install --no-cache-dir install pytest-cov -r /tmp/pip-tmp/requirements.txt
-  #&& pipx install pre-commit ruff \
-  #&& pre-commit install
+  && pipx install pre-commit ruff \
+  && pre-commit install
