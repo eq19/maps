@@ -154,19 +154,19 @@ runs:
         noCache: true
         push: always
     
-    - name: Build devcontainer - new
-      id: devcontainer_build
-      shell: bash
-      env:
-        IMAGE_NAME: ${{ steps.variables.outputs.repo_name }}
-        # IMAGE_NAME: localhost:5000/${{ inputs.image_name }}
-        IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
-      run: |
-        echo "starting devcontainer build..."
-        devcontainer build \
-          --workspace-folder "${{ inputs.devcontainer_subfolder }}"  \
-          --image-name "${{ steps.variables.outputs.repo_ref }}" \
-          --no-cache true
+    # - name: Build devcontainer - new
+    #   id: devcontainer_build
+    #   shell: bash
+    #   env:
+    #     IMAGE_NAME: ${{ steps.variables.outputs.repo_name }}
+    #     # IMAGE_NAME: localhost:5000/${{ inputs.image_name }}
+    #     IMAGE_TAG: ${{ steps.variables.outputs.image_tag }}
+    #   run: |
+    #     echo "starting devcontainer build..."
+    #     devcontainer build \
+    #       --workspace-folder "${{ inputs.devcontainer_subfolder }}"  \
+    #       --image-name "${{ steps.variables.outputs.repo_ref }}" \
+    #       --no-cache true
 
     - name: Push devcontainer ${{ steps.variables.outputs.dev_image_ref }}
       shell: bash
