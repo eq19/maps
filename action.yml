@@ -148,7 +148,8 @@ runs:
       uses: devcontainers/ci@v0.3
       with:
         imageName: ${{ steps.variables.outputs.repo_name }}
-        cacheFrom: ghcr.io/example/example-devcontainer
+        imageTag: ${{ steps.variables.outputs.image_tag }}
+        #cacheFrom: ghcr.io/example/example-devcontainer
         runCmd: make ci-build
         push: always
     
