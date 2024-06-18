@@ -109,20 +109,20 @@ runs:
       run: |
         docker run -d -p 5000:5000 --restart=always --name registry registry:2
 
-    - name: Build and push ${{ steps.variables.outputs.image_ref }}
-      uses: docker/build-push-action@v5
-      id: docker-build
-      with:
-        context: ./.devcontainer
-        tags: ${{ steps.variables.outputs.repo_ref }}
-        # tags: localhost:5000/${{ steps.variables.outputs.image_ref }}
-        file: ${{ inputs.dockerfile_path }}
-        push: true
-        pull: false
-        cache-from: type=local,src=${{ inputs.cache_src }}
-        cache-to: type=local,mode=max,dest=${{ inputs.cache_dest }}
-        # outputs: type=docker,dest=/tmp/temp-image.tar
-        build-args: ${{ inputs.build_args }}
+    # - name: Build and push ${{ steps.variables.outputs.image_ref }}
+    #   uses: docker/build-push-action@v5
+    #   id: docker-build
+    #   with:
+    #    context: ./.devcontainer
+    #    tags: ${{ steps.variables.outputs.repo_ref }}
+    #    # tags: localhost:5000/${{ steps.variables.outputs.image_ref }}
+    #    file: ${{ inputs.dockerfile_path }}
+    #    push: true
+    #    pull: false
+    #    cache-from: type=local,src=${{ inputs.cache_src }}
+    #    cache-to: type=local,mode=max,dest=${{ inputs.cache_dest }}
+    #    # outputs: type=docker,dest=/tmp/temp-image.tar
+    #    build-args: ${{ inputs.build_args }}
 
     # - name: Build devcontainer ${{ steps.variables.outputs.dev_image_ref }}
     #   id: devcontainer_build
