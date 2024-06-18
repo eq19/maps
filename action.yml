@@ -144,6 +144,14 @@ runs:
     #     echo "Images in docker before devcontainer build starts:"
     #     docker image ls -a
         
+    - name: Pre-build image and run make ci-build in dev container
+      uses: devcontainers/ci@v0.3
+      with:
+        imageName: ${{ steps.variables.outputs.repo_name }}
+        cacheFrom: ghcr.io/example/example-devcontainer
+        runCmd: make ci-build
+        push: always
+    
     - name: Build devcontainer - new
       id: devcontainer_build
       shell: bash
