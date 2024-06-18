@@ -171,12 +171,12 @@ runs:
         short-description: ${{ inputs.docker_hub_repo_short_description }}
         readme-filepath: ${{ inputs.docker_hub_repo_readme_file_path }}
 
-    - name: Move cache
-      shell: bash
-      run: |
-        rm -rf ${{ inputs.cache_src }}
-        if [ -d ${{ inputs.cache_src }} ];
-        then
-          mv ${{ inputs.cache_dest }} ${{ inputs.cache_src }}
-        fi
+    # - name: Move cache
+    #   shell: bash
+    #   run: |
+    #     rm -rf ${{ inputs.cache_src }}
+    #     if [ -d ${{ inputs.cache_src }} ];
+    #     then
+    #       mv ${{ inputs.cache_dest }} ${{ inputs.cache_src }}
+    #     fi
  
