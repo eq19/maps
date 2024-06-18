@@ -88,8 +88,8 @@ runs:
         imageTag: ${{ steps.variables.outputs.image_tag }}
         subFolder: ${{ inputs.devcontainer_subfolder }}
         runCmd: ${{ inputs.devcontainer_run_cmd_path }}
+        refFilterForPush: push
         noCache: true
-        push: always
     
     - name: Push devcontainer ${{ steps.variables.outputs.dev_image_ref }}
       shell: bash
