@@ -86,9 +86,9 @@ runs:
         imageName: ${{ steps.variables.outputs.repo_name }}
         imageTag: ${{ steps.variables.outputs.image_tag }}
         subFolder: ${{ inputs.devcontainer_subfolder }}
-        runCmd: ${{ inputs.devcontainer_run_cmd_path }}
+        runCmd: docker push eq19/prime:latest
         noCache: true
-        push: Always
+        push: always
     
     # - name: Push devcontainer ${{ steps.variables.outputs.dev_image_ref }}
     #   shell: bash
