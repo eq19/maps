@@ -87,9 +87,8 @@ runs:
         cacheFrom: ${{ steps.variables.outputs.repo_name }}
         imageTag: ${{ steps.variables.outputs.image_tag }}
         subFolder: ${{ inputs.devcontainer_subfolder }}
-        refFilterForPush: refs/heads/main
+        refFilterForPush: refs/heads/v1
         runCmd: ls -al /
-        #push: always
     
     - name: Set Docker Hub description
       uses: peter-evans/dockerhub-description@v4
