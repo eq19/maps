@@ -4,7 +4,9 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 
 ADD . /syntax
 
-# ENV GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+ENV GIT_DISCOVERY_ACROSS_FILESYSTEM=1
+ENV PIP_ROOT_USER_ACTION=ignore
+
 # RUN apk update && apk upgrade
 # RUN apk add -U bash curl github-cli jq yq
 
