@@ -1,5 +1,6 @@
-ARG FROM=debian:buster-slim
-FROM ${FROM}
+ARG VARIANT=3.12-bookworm
+FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT
+# https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/README.md
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
