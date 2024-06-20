@@ -5,8 +5,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 ADD . /syntax
 RUN ls -al /syntax
 
-COPY /syntax/*.conf /etc/supervisor/conf.d/
-RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+#COPY /syntax/*.conf /etc/supervisor/conf.d/
+#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 ENV PATH=${PATH}:/syntax/.devcontainer/scripts
 RUN chmod -R +x /syntax/.devcontainer/scripts
