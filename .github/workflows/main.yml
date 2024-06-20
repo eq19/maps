@@ -114,13 +114,6 @@ jobs:
           pre_build_commands: 'gcloud info'
           token: ${{ secrets.ACCESS_TOKEN }}
       
-      - name: 🚀 Build on Self-Hosted
-        if: ${{runner.os != 'Linux' && runner.os != 'Windows'}}
-        uses: eq19/maps@v1
-        with:
-          path-to-root: /github/workspace/_site
-          include-pdf: false
-
       - name: 🚀 Build Feed on Linux
         if: runner.os == 'Linux'
         uses: eq19/feed@v3
