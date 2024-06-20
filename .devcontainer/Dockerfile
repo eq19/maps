@@ -4,11 +4,11 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 
 ADD . /syntax
 
-ENV PATH=${PATH}:/syntax/.devcontainer/scripts
-RUN chmod -R +x /syntax/.devcontainer/scripts
-
 COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+
+ENV PATH=${PATH}:/syntax/.devcontainer/scripts
+RUN chmod -R +x /syntax/.devcontainer/scripts
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
