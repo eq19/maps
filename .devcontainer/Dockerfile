@@ -2,6 +2,10 @@ ARG VARIANT=3.12-bookworm
 FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 # https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/README.md
 
+ADD . /syntax
+COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
 ARG GH_RUNNER_VERSION
@@ -46,9 +50,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
-
-#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
 RUN curl -fsSL https://get.docker.com -o- | sh && \
