@@ -1,3 +1,4 @@
+
 # Deploy GitHub Pages
 name: Build and deploy eQuantum site
 
@@ -61,7 +62,7 @@ jobs:
       
       - name: Determine which runner to use
         id: set-runner
-        uses: eq19/maps@v2
+        uses: eq19/lexer@v2
         with:
           primary-runner: "self-hosted,linux"
           fallback-runner: "ubuntu-latest"
@@ -108,7 +109,7 @@ jobs:
 
       - name: 🚀 Self-Hosted Runner
         if: runner.os == 'Linux'
-        uses: eq19/lexer@v3
+        uses: eq19/maps@v3
         with:
           pre_build_commands: 'gcloud info'
           token: ${{ secrets.ACCESS_TOKEN }}
