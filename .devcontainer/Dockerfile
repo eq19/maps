@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 
 ADD . /syntax
 
-COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY /syntax/*.conf /etc/supervisor/conf.d/
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 ENV PATH=${PATH}:/syntax/.devcontainer/scripts
