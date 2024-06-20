@@ -25,9 +25,7 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.url="https://github.com/tcardonne/docker-github-runner" \
     org.label-schema.vcs-url="https://github.com/tcardonne/docker-github-runner" \
     org.label-schema.vendor="Thomas Cardonne" \
-    org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
-
-ADD . /syntax
+    org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
@@ -49,7 +47,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
