@@ -25,7 +25,7 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.url="https://github.com/tcardonne/docker-github-runner" \
     org.label-schema.vcs-url="https://github.com/tcardonne/docker-github-runner" \
     org.label-schema.vendor="Thomas Cardonne" \
-    org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest
+    org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
