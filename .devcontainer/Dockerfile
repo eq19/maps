@@ -27,6 +27,8 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
+ADD . /syntax
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
@@ -47,7 +49,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-ADD . /syntax
 COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
@@ -84,3 +85,6 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
+ENV PATH=${PATH}:/syntax/.devcontainer/scripts
+RUN chmod -R +x /syntax/.devcontainer/scripts
+ENTRYPOINT ["entrypoint.sh"]
