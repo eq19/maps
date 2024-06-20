@@ -46,6 +46,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         build-essential \
         zlib1g-dev \
         gettext \
+        libssl3 \
         #liblttng-ust0 \
         libcurl4-openssl-dev \
         openssh-client && \
