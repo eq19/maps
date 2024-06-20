@@ -3,6 +3,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 # https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/README.md
 
 ADD . /syntax
+RUN ls -al /syntax
 
 COPY /syntax/*.conf /etc/supervisor/conf.d/
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
