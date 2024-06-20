@@ -47,8 +47,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
 RUN curl -fsSL https://get.docker.com -o- | sh && \
