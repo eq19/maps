@@ -3,10 +3,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 # https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/README.md
 
 ADD . /syntax
-RUN ls -al /etc/supervisor/conf.d
-
-#COPY /syntax/*.conf /etc/supervisor/conf.d/
-#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 ENV PATH=${PATH}:/syntax/.devcontainer/scripts
 RUN chmod -R +x /syntax/.devcontainer/scripts
@@ -55,6 +51,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
+
+RUN ls -alR /etc/supervisor
+
+#COPY /syntax/*.conf /etc/supervisor/conf.d/
+#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
 RUN curl -fsSL https://get.docker.com -o- | sh && \
