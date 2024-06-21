@@ -66,15 +66,15 @@ RUN curl -L -o /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
     chmod +x /usr/local/bin/docker-compose
 
-RUN cd /tmp && \
-    curl -sL -o git.tgz \
-    https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
-    tar zxf git.tgz  && \
-    cd git-${GIT_VERSION}  && \
-    ./configure --prefix=/usr  && \
-    make && \
-    make install && \
-    rm -rf /tmp/*
+#RUN cd /tmp && \
+    #curl -sL -o git.tgz \
+    #https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
+    #tar zxf git.tgz  && \
+    #cd git-${GIT_VERSION}  && \
+    #./configure --prefix=/usr  && \
+    #make && \
+    #make install && \
+    #rm -rf /tmp/*
 
 RUN mkdir -p /home/runner ${AGENT_TOOLSDIRECTORY}
 
@@ -90,3 +90,4 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && apt-get clean
 
 ENTRYPOINT ["entrypoint.sh"]
+#CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
