@@ -35,7 +35,6 @@ LABEL maintainer="me@tcardonne.fr" \
 RUN apt-get update && \
     apt-get install -y \
         #sudo \
-        supervisor \
         #curl \
         #unzip \
         #apt-transport-https \
@@ -48,7 +47,8 @@ RUN apt-get update && \
         #gettext \
         #libcurl4-openssl-dev \
         #openssh-client \
-        liblttng-ust1 && \
+        #liblttng-ust1 \
+        supervisor && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
