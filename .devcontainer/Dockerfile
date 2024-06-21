@@ -54,8 +54,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 
 RUN ls -alR /etc/supervisor
 
-cat /syntax/supervisord.conf
-cat etc/supervisor/supervisord.conf
+RUN cat /syntax/supervisord.conf
+RUN cat etc/supervisor/supervisord.conf
 #COPY /syntax/*.conf /etc/supervisor/conf.d/
 RUN chmod -R 644 /etc/supervisor/conf.d
 
