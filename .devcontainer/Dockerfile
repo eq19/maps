@@ -53,7 +53,7 @@ RUN apt-get update && \
     apt-get clean
 
 RUN ls -alR /etc/supervisor
-COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
