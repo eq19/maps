@@ -62,9 +62,9 @@ RUN curl -fsSL https://get.docker.com -o- | sh && \
     apt-get clean
 
 # Install Docker-Compose
-RUN curl -L -o /usr/local/bin/docker-compose \
-    "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
-    chmod +x /usr/local/bin/docker-compose
+#RUN curl -L -o /usr/local/bin/docker-compose \
+    #"https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
+    #chmod +x /usr/local/bin/docker-compose
 
 #RUN cd /tmp && \
     #curl -sL -o git.tgz \
