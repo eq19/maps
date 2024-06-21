@@ -33,21 +33,22 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
 RUN apt-get update && \
-    apt-get install -y sudo \
-        curl \
-        unzip \
-        apt-transport-https \
-        ca-certificates \
-        software-properties-common \
-        supervisor \
-        jq \
-        iputils-ping \
-        build-essential \
-        zlib1g-dev \
-        gettext \
+    apt-get install -y \
+        #sudo \
+        #curl \
+        #unzip \
+        #apt-transport-https \
+        #ca-certificates \
+        #software-properties-common \
+        #supervisor \
+        #jq \
+        #iputils-ping \
+        #build-essential \
+        #zlib1g-dev \
+        #gettext \
         liblttng-ust1 \
-        libcurl4-openssl-dev \
-        openssh-client && \
+        #libcurl4-openssl-dev \
+        #openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
