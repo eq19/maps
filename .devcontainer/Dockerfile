@@ -53,10 +53,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean
 
 RUN ls -alR /etc/supervisor
-
 RUN cat /syntax/supervisord.conf
-RUN cat etc/supervisor/supervisord.conf
-#COPY /syntax/*.conf /etc/supervisor/conf.d/
+COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod -R 644 /etc/supervisor/conf.d
 
 # Install Docker CLI
