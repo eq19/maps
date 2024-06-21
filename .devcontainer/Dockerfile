@@ -57,9 +57,9 @@ RUN ls -alR /etc/supervisor/conf.d
 #RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
-RUN curl -fsSL https://get.docker.com -o- | sh && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+#RUN curl -fsSL https://get.docker.com -o- | sh && \
+    #rm -rf /var/lib/apt/lists/* && \
+    #apt-get clean
 
 # Install Docker-Compose
 #RUN curl -L -o /usr/local/bin/docker-compose \
