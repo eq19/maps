@@ -33,13 +33,12 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y \
+    apt-get install -y sudo \
         curl \
         unzip \
         apt-transport-https \
         ca-certificates \
         software-properties-common \
-        sudo \
         supervisor \
         jq \
         iputils-ping \
