@@ -35,7 +35,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "ls -al /",
+	"postCreateCommand": "mv -f /syntax/*.conf /etc/supervisor/conf.d/ && chmod -R 644 /etc/supervisor/conf.d",
 
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
