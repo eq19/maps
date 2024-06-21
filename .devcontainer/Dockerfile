@@ -46,9 +46,9 @@ RUN apt-get update && \
         #build-essential \
         #zlib1g-dev \
         #gettext \
-        liblttng-ust1 \
         #libcurl4-openssl-dev \
-        #openssh-client && \
+        #openssh-client \
+        liblttng-ust1 && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
