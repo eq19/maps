@@ -35,12 +35,12 @@ LABEL maintainer="me@tcardonne.fr" \
 RUN apt-get update && \
     apt-get install -y \
         #sudo \
+        supervisor \
         #curl \
         #unzip \
         #apt-transport-https \
         #ca-certificates \
         #software-properties-common \
-        #supervisor \
         #jq \
         #iputils-ping \
         #build-essential \
