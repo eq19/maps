@@ -52,12 +52,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
+RUN sudo -i && ls -alR /etc/supervisor
+#COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+
 RUN python3 -m pip install --upgrade pip setuptools six wheel && \
     python3 -m pip install -r /syntax/requirements-dev.txt
 
-RUN ls -alR /etc/supervisor/conf.d
-#COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
+    sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install Docker CLI
 #RUN curl -fsSL https://get.docker.com -o- | sh && \
