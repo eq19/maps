@@ -87,6 +87,7 @@ runs:
         imageTag: ${{ steps.variables.outputs.image_tag }}
         subFolder: ${{ inputs.devcontainer_subfolder }}
         refFilterForPush: refs/heads/v1
+        skipContainerUserIdUpdate: true
         runCmd: ls -al /
     
     - name: Set Docker Hub description
