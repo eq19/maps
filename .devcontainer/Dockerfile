@@ -32,7 +32,8 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
-RUN apt-get update && \
+RUN sudo -i && \
+    apt-get update && \
     apt-get install -y \
         #sudo \
         #curl \
@@ -52,7 +53,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-RUN sudo -i && ls -alR /etc/supervisor
+RUN ls -alR /etc/supervisor
 #COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 #RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
