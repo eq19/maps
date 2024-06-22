@@ -48,7 +48,9 @@ RUN apt-get update && \
         #libcurl4-openssl-dev \
         #openssh-client \
         #liblttng-ust1 \
-        supervisor && \
+        supervisor \
+        python3 -m pip install --upgrade pip setuptools six wheel && \
+        python3 -m pip install -r /syntax/requirements-dev.txt && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
