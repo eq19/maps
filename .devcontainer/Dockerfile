@@ -60,7 +60,8 @@ RUN ls -alR /etc/supervisor
 RUN python3 -m pip install --upgrade pip setuptools six wheel && \
     python3 -m pip install -r /syntax/requirements-dev.txt
 
-RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
+RUN cd /tmp && \
+    wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
     sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install Docker CLI
