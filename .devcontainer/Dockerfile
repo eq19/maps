@@ -4,9 +4,6 @@ FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
 
 ADD . /syntax
 
-ENV PATH=${PATH}:/syntax/.devcontainer/scripts
-RUN chmod -R +x /syntax/.devcontainer/scripts
-
 ARG GH_RUNNER_VERSION
 ARG GIT_VERSION="2.26.2"
 ARG DOCKER_COMPOSE_VERSION="1.27.4"
@@ -21,6 +18,8 @@ ENV RUNNER_ALLOW_RUNASROOT=true
 ENV RUNNER_WORK_DIRECTORY="_work"
 ENV PIP_ROOT_USER_ACTION=ignore
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
+ENV PATH=${PATH}:/syntax/.devcontainer/scripts
+RUN chmod -R +x /syntax/.devcontainer/scripts
 
 LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.schema-version="1.0" \
