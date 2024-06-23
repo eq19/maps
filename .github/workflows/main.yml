@@ -63,7 +63,8 @@ jobs:
       #     script: |
       #       const script = require('/github/workspace/script.js')
       #       console.log(script({github, context}))      
-      
+
+      - run: gcloud info
       - name: 💎 Determine which runner to use
         id: set-runner
         uses: eq19/lexer@v2
@@ -92,13 +93,13 @@ jobs:
 
     steps:
       - name: 📂 Checkout
+        if: runner.os == 'Linux'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.ACCESS_TOKEN }}
  
       - name: 💎 Setup Dotnet
-        if: runner.os == 'Linux'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '3.1.x'
