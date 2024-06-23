@@ -52,14 +52,12 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
       
-      - uses: actions/github-script@v7
-        id: set-result
+      - name: 🚀 Build Feed on Linux
+        uses: eq19/feed@v3
         with:
-          script: return "Hello!"
-          result-encoding: string
-      - name: Get result
-        run: echo "${{steps.set-result.outputs.result}}"
-  
+          pre_build_commands: 'make build'
+          token: ${{ secrets.ACCESS_TOKEN }}
+   
       # - uses: actions/github-script@v7
       #   with:
       #     script: |
@@ -100,14 +98,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
  
       - name: 💎 Setup Dotnet
+        if: runner.os == 'Linux'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '3.1.x'
-
-      - name: 🚀 Build Feed on Linux
-        if: runner.os == 'Linux'
-        uses: eq19/feed@v3
-        with:
-          pre_build_commands: 'make build'
-          token: ${{ secrets.ACCESS_TOKEN }}
- 
