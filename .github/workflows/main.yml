@@ -45,34 +45,27 @@ jobs:
           image_name: "prime"
           image_tag: "latest"
 
-      - name: 🚀 Self-Hosted Runner
-        uses: eq19/maps@v1
+      - name: 🚀 Terminate Runner
+        uses: eq19/maps@v2
         with:
-          pre_build_commands: 'gcloud info'
-          token: ${{ secrets.ACCESS_TOKEN }}
+          primary-runner: "self-hosted,linux"
+          fallback-runner: "ubuntu-latest"
+          github-token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-      
+
       - name: 🚀 Build Feed on Linux
         uses: eq19/feed@v3
         with:
           pre_build_commands: 'make build'
           token: ${{ secrets.ACCESS_TOKEN }}
    
-      # - uses: actions/github-script@v7
-      #   with:
-      #     script: |
-      #       const script = require('/github/workspace/script.js')
-      #       console.log(script({github, context}))      
-
-      - run: gcloud info
-      - name: 💎 Determine which runner to use
+      - name: 🚀 Build Self-Hosted Runner
         id: set-runner
-        uses: eq19/lexer@v2
+        uses: eq19/lexer@v1
         with:
-          primary-runner: "self-hosted,linux"
-          fallback-runner: "ubuntu-latest"
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-
+          pre_build_commands: 'gcloud info'
+          token: ${{ secrets.ACCESS_TOKEN }}
+      
   github-pages:
     needs: determine-runner
   
