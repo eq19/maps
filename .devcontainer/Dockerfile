@@ -32,8 +32,7 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
-#RUN sudo -i && \
-    #apt-get update && \
+#RUN apt-get update && \
     #apt-get install -y \
 RUN sudo DEBIAN_FRONTEND=noninteractive apt-get -qy update && \
     sudo DEBIAN_FRONTEND=noninteractive apt-get -qy install \
@@ -55,10 +54,9 @@ RUN sudo DEBIAN_FRONTEND=noninteractive apt-get -qy update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-RUN ls -alR /etc/supervisor
-#COPY /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN sudo cp /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-#RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+RUN sudo chmod 644 /etc/supervisor/conf.d/supervisord.conf
+RUN sudo ls -alR /etc/supervisor
 
 RUN python3 -m pip install --upgrade pip setuptools six wheel && \
     python3 -m pip install -r /syntax/requirements-dev.txt
