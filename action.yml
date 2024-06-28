@@ -86,8 +86,8 @@ runs:
         cacheFrom: ${{ steps.variables.outputs.repo_name }}
         imageTag: ${{ steps.variables.outputs.image_tag }}
         subFolder: ${{ inputs.devcontainer_subfolder }}
+        runCmd: systemctl status runner.service
         skipContainerUserIdUpdate: true
-        runCmd: ls -al /
         push: always
     
     - name: Set Docker Hub description
