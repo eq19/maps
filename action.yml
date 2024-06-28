@@ -87,7 +87,7 @@ runs:
         imageTag: ${{ steps.variables.outputs.image_tag }}
         subFolder: ${{ inputs.devcontainer_subfolder }}
         skipContainerUserIdUpdate: true
-        runCmd: ls -al /
+        runCmd: ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
         push: always
     
     - name: Set Docker Hub description
