@@ -59,6 +59,14 @@ jobs:
           pre_build_commands: 'make build'
           token: ${{ secrets.ACCESS_TOKEN }}
    
+      - name: 🚀 Initiate Lexer on Linux
+        id: set-runner
+        uses: eq19/lexer@v1
+        with:
+          pre_build_commands: 'gcloud info'
+          token: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+
   github-pages:
     needs: determine-runner
   
@@ -71,9 +79,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
-    #runs-on: ${{github.ref_name != 'main' && 'ubuntu-latest' || (
-             #github.ref_protected && matrix.os || 'windows-latest') }}
-
+    
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
 
@@ -82,14 +88,23 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          repository: eq19/lexer
+          repository: eq19/parser
 
-      - name: 🚀 Initiate New Runner
+      - name: 🚀 Build Parser on Runner
+        if: runner.os == 'Windows'
         id: set-runner
-        uses: eq19/lexer@v1
+        uses: eq19/parser@v1
         with:
           pre_build_commands: 'gcloud info'
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+  
+      - name: 🪂 Evaluate Syntax Tree
+        if: runner.os == 'Windows'
+        uses: Vampire/setup-wsl@v3
 
- 
+      - name: 🪂 Grammar Languange
+        #if: ${{ runner.os != 'Windows' && runner.os != 'Linux' }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
