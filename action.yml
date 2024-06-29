@@ -53,11 +53,24 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
+    - name: 💎 Set Credential
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
       with:
-        username: ${{ inputs.docker_hub_username }}
-        password: ${{ inputs.docker_hub_token }}
+        credentials_json: ${{ inputs.credentials }}
+
+    - name: 💎 Authentication
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        install_components: 'alpha,cloud-datastore-emulator'
+
+    - name: 💎 Variables
+      shell: bash
+      id: variables
+      run: |
+        gcloud info
+        array=`gcloud compute instances list --format=json`
+        if [ "$array" != "[]" ]; then gcloud compute instances delete instance-template --zone=us-central1-a --quiet; fi
 
     - name: Variables
       shell: bash
