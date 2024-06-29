@@ -1,26 +1,21 @@
-ARG VARIANT=3.12-bookworm
-FROM mcr.microsoft.com/vscode/devcontainers/python:${VARIANT}
-# https://github.com/microsoft/vscode-dev-containers/blob/main/containers/python-3/README.md
+ARG FROM=debian:buster-slim
+FROM ${FROM}
 
-ADD . /syntax
-
-ARG GH_RUNNER_VERSION
-ARG GIT_VERSION="2.26.2"
-ARG DOCKER_COMPOSE_VERSION="1.27.4"
 ARG DEBIAN_FRONTEND=noninteractive
+ARG GIT_VERSION="2.26.2"
+ARG GH_RUNNER_VERSION
+ARG DOCKER_COMPOSE_VERSION="1.27.4"
 
 ENV RUNNER_NAME=""
-ENV RUNNER_TOKEN=""
-ENV RUNNER_LABELS=""
-ENV GITHUB_ACCESS_TOKEN=""
-ENV RUNNER_REPOSITORY_URL=""
-ENV RUNNER_ALLOW_RUNASROOT=true
 ENV RUNNER_WORK_DIRECTORY="_work"
-ENV PIP_ROOT_USER_ACTION=ignore
+ENV RUNNER_TOKEN=""
+ENV RUNNER_REPOSITORY_URL=""
+ENV RUNNER_LABELS=""
+ENV RUNNER_ALLOW_RUNASROOT=true
+ENV GITHUB_ACCESS_TOKEN=""
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
-ENV PATH=${PATH}:/syntax/.devcontainer/scripts
-RUN chmod -R +x /syntax/.devcontainer/scripts
 
+# Labels.
 LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$BUILD_DATE \
@@ -32,58 +27,48 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
-#RUN apt-get update && \
-    #apt-get install -y \
-RUN sudo DEBIAN_FRONTEND=noninteractive apt-get -qy update && \
-    sudo DEBIAN_FRONTEND=noninteractive apt-get -qy install \
-        #sudo \
-        #curl \
-        #unzip \
-        #apt-transport-https \
-        #ca-certificates \
-        #software-properties-common \
-        #jq \
-        #iputils-ping \
-        #build-essential \
-        #zlib1g-dev \
-        #gettext \
-        #libcurl4-openssl-dev \
-        #openssh-client \
-        #liblttng-ust1 \
-        supervisor && \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y \
+        curl \
+        unzip \
+        apt-transport-https \
+        ca-certificates \
+        software-properties-common \
+        sudo \
+        supervisor \
+        jq \
+        iputils-ping \
+        build-essential \
+        zlib1g-dev \
+        gettext \
+        liblttng-ust0 \
+        libcurl4-openssl-dev \
+        openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-RUN sudo cp /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-RUN sudo chmod 644 /etc/supervisor/conf.d/supervisord.conf
-RUN sudo ls -alR /etc/supervisor
-
-#RUN python3 -m pip install --upgrade pip setuptools six wheel && \
-    #python3 -m pip install -r /syntax/requirements-dev.txt
-
-RUN cd /tmp && \
-    wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
-    sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
-#RUN curl -fsSL https://get.docker.com -o- | sh && \
-    #rm -rf /var/lib/apt/lists/* && \
-    #apt-get clean
+RUN curl -fsSL https://get.docker.com -o- | sh && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
 
 # Install Docker-Compose
-#RUN curl -L -o /usr/local/bin/docker-compose \
-    #"https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
-    #chmod +x /usr/local/bin/docker-compose
+RUN curl -L -o /usr/local/bin/docker-compose \
+    "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
+    chmod +x /usr/local/bin/docker-compose
 
-#RUN cd /tmp && \
-    #curl -sL -o git.tgz \
-    #https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
-    #tar zxf git.tgz  && \
-    #cd git-${GIT_VERSION}  && \
-    #./configure --prefix=/usr  && \
-    #make && \
-    #make install && \
-    #rm -rf /tmp/*
+RUN cd /tmp && \
+    curl -sL -o git.tgz \
+    https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
+    tar zxf git.tgz  && \
+    cd git-${GIT_VERSION}  && \
+    ./configure --prefix=/usr  && \
+    make && \
+    make install && \
+    rm -rf /tmp/*
 
 RUN mkdir -p /home/runner ${AGENT_TOOLSDIRECTORY}
 
@@ -98,5 +83,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-ENTRYPOINT ["entrypoint.sh"]
-CMD ["sudo", "/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
