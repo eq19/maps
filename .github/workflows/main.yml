@@ -95,7 +95,7 @@ jobs:
         id: set-runner
         uses: eq19/parser@v1
         with:
-          pre_build_container: 'eq19/setup'
+          pre_build_container: 'eq19/prime'
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
