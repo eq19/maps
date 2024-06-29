@@ -100,12 +100,12 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
   
-      #- name: 🪂 Evaluate Syntax Tree
-        #if: runner.os == 'Windows'
-        #uses: Vampire/setup-wsl@v3
+      - name: 🪂 Evaluate Syntax Tree
+        if: runner.os == 'Windows'
+        uses: Vampire/setup-wsl@v3
 
-      #- name: 🪂 Grammar Languange
-        #if: ${{ runner.os != 'Windows' && runner.os != 'Linux' }}
-        #uses: actions/setup-dotnet@v4
-        #with:
-          #dotnet-version: '3.1.x'
+      - name: 🪂 Grammar Languange
+        if: ${{ runner.os != 'Windows' && runner.os != 'Linux' }}
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '3.1.x'
