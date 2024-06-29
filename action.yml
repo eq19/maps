@@ -69,13 +69,6 @@ runs:
       id: variables
       run: |
         gcloud info
-        array=`gcloud compute instances list --format=json`
-        if [ "$array" != "[]" ]; then gcloud compute instances delete instance-template --zone=us-central1-a --quiet; fi
-
-    - name: Variables
-      shell: bash
-      id: variables
-      run: |
         repo_name=${{ inputs.docker_hub_username }}/${{ inputs.image_name }}
         image_tag=${{ inputs.image_tag }}
         dev_image_tag="$image_tag"
@@ -92,17 +85,9 @@ runs:
         echo "dev_repo_ref=$dev_repo_ref" >> $GITHUB_OUTPUT
         echo "dev_image_ref=$dev_image_ref" >> $GITHUB_OUTPUT
 
-    - name: Pre-build image and run make ci-build in dev container
-      uses: devcontainers/ci@v0.3
-      with:
-        imageName: ${{ steps.variables.outputs.repo_name }}
-        cacheFrom: ${{ steps.variables.outputs.repo_name }}
-        imageTag: ${{ steps.variables.outputs.image_tag }}
-        subFolder: ${{ inputs.devcontainer_subfolder }}
-        skipContainerUserIdUpdate: true
-        runCmd: ls -al /
-        push: always
-    
+        array=`gcloud compute instances list --format=json`
+        if [ "$array" != "[]" ]; then gcloud compute instances delete instance-template --zone=us-central1-a --quiet; fi
+
     - name: Set Docker Hub description
       uses: peter-evans/dockerhub-description@v4
       with:
