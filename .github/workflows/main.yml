@@ -35,7 +35,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
  
-      - name: 🪂 Dev Container
+      - name: 🪂 Set Container
         if: ${{ contains(github.repository, 'github.io') }}
         uses: eq19/eq19.github.io@v1
         with:
@@ -45,14 +45,17 @@ jobs:
           image_name: "prime"
           image_tag: "latest"
 
-      - name: 🚀 Terminate Runner
+      - name: 🚀 Pre-build Maps
         uses: eq19/maps@v2
         with:
-          primary-runner: "self-hosted,linux"
-          fallback-runner: "ubuntu-latest"
-          github-token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
-
+          imageName: ${{ steps.variables.outputs.repo_name }}
+          cacheFrom: ${{ steps.variables.outputs.repo_name }}
+          imageTag: ${{ steps.variables.outputs.image_tag }}
+          subFolder: ${{ inputs.devcontainer_subfolder }}
+          skipContainerUserIdUpdate: true
+          runCmd: ls -al /
+          push: always
+     
       - name: 🚀 Build Feed on Linux
         uses: eq19/feed@v3
         with:
