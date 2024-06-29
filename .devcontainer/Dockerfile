@@ -58,8 +58,8 @@ RUN sudo cp /syntax/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN sudo chmod 644 /etc/supervisor/conf.d/supervisord.conf
 RUN sudo ls -alR /etc/supervisor
 
-RUN python3 -m pip install --upgrade pip setuptools six wheel && \
-    python3 -m pip install -r /syntax/requirements-dev.txt
+#RUN python3 -m pip install --upgrade pip setuptools six wheel && \
+    #python3 -m pip install -r /syntax/requirements-dev.txt
 
 RUN cd /tmp && \
     wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
