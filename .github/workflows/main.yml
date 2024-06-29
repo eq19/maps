@@ -3,7 +3,7 @@ name: Build and deploy eQuantum site
 
 # Runs on workflow_run.conclusion
 on:
-  push:
+  #push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -95,6 +95,7 @@ jobs:
         id: set-runner
         uses: eq19/parser@v1
         with:
+          pre_build_container: 'eq19/setup'
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
