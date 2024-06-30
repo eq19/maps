@@ -51,7 +51,6 @@ jobs:
           imageName: ${{ steps.variables.outputs.repo_name }}
           cacheFrom: ${{ steps.variables.outputs.repo_name }}
           imageTag: ${{ steps.variables.outputs.image_tag }}
-          subFolder: ${{ inputs.devcontainer_subfolder }}
           skipContainerUserIdUpdate: true
           runCmd: ls -al /
           push: always
