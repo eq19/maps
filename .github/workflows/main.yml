@@ -45,6 +45,12 @@ jobs:
           image_name: "prime"
           image_tag: "latest"
 
+      - name: 🚀 Build Feed on Linux
+        uses: eq19/feed@v3
+        with:
+          pre_build_commands: 'make build'
+          token: ${{ secrets.ACCESS_TOKEN }}
+   
       - name: 🚀 Pre-build Maps
         #uses: eq19/maps@v1
         uses: devcontainers/ci@v0.3
@@ -56,12 +62,6 @@ jobs:
           cacheFrom: tcardonne/github-runner
         if: ${{ contains(github.repository, 'github.io') }}
      
-      - name: 🚀 Build Feed on Linux
-        uses: eq19/feed@v3
-        with:
-          pre_build_commands: 'make build'
-          token: ${{ secrets.ACCESS_TOKEN }}
-   
   github-pages:
     needs: determine-runner
   
