@@ -1,6 +1,8 @@
 ARG FROM=debian:buster-slim
 FROM ${FROM}
 
+ADD . /maps
+
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
 ARG GH_RUNNER_VERSION
@@ -47,7 +49,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY /maps/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 
 # Install Docker CLI
@@ -83,7 +85,6 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+RUN chmod +x /maps/entrypoint.sh
+ENTRYPOINT ["/maps/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
