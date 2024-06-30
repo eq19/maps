@@ -79,7 +79,6 @@ jobs:
       matrix:
         #node_version: [8, 10, 12]
         os: [windows-latest, self-hosted]
-
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
     
