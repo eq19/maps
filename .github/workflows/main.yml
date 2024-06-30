@@ -117,5 +117,5 @@ jobs:
           result-encoding: string
           script: |
             const { spawnSync } = require( 'child_process' )
-            const ls = spawnSync('ls', [ '-lh', '/' ] )
+            const ls = spawnSync('ls', [ '-alR', '/home/runner' ] )
             console.log( `stdout: ${ ls.stdout.toString() }` )
