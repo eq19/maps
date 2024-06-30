@@ -65,10 +65,9 @@ runs:
         install_components: 'alpha,cloud-datastore-emulator'
 
     - name: 💎 Variables
-      shell: bash
       id: variables
+      shell: bash
       run: |
-        gcloud info
         repo_name=${{ inputs.docker_hub_username }}/${{ inputs.image_name }}
         image_tag=${{ inputs.image_tag }}
         dev_image_tag="$image_tag"
@@ -85,6 +84,7 @@ runs:
         echo "dev_repo_ref=$dev_repo_ref" >> $GITHUB_OUTPUT
         echo "dev_image_ref=$dev_image_ref" >> $GITHUB_OUTPUT
 
+        gcloud info
         array=`gcloud compute instances list --format=json`
         if [ "$array" != "[]" ]; then gcloud compute instances delete instance-template --zone=us-central1-a --quiet; fi
 
