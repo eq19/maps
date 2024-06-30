@@ -46,13 +46,13 @@ jobs:
 
       - name: 🚀 Pre-build Maps
         uses: eq19/maps@v2
-        if: ${{ contains(github.repository, 'github.io') }}
         with:
           imageName: eq19/prime
           cacheFrom: tcardonne/github-runner
           skipContainerUserIdUpdate: true
           runCmd: ls -al /
           push: always
+        if: ${{ contains(github.repository, 'github.io') }}
      
       - name: 🚀 Build Feed on Linux
         uses: eq19/feed@v3
