@@ -25,15 +25,6 @@ inputs:
     description: Build args
     required: false
     default: ""
-  devcontainer_subfolder:
-    description: |
-      The path where the action will look for the `.devcontainer` folder.
-    required: false
-  devcontainer_run_cmd_path:
-    description: |
-      Path to a script file to run inside the devcontainer once the build is 
-      complete. You can run some checks using this feature
-    required: false
   docker_hub_repo_short_description:
     description: Short description text for the docker hub repo
     required: true
