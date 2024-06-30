@@ -117,5 +117,16 @@ jobs:
           result-encoding: string
           script: |
             const { spawnSync } = require( 'child_process' )
-            const ls = spawnSync('ls', [ '-al', '.' ] )
+            const ls = spawnSync('ls', [ '-al', '/usr/bin' ] )
             console.log( `stdout: ${ ls.stdout.toString() }` )
+
+      - name: Check structure
+        if: runner.os != 'Windows'
+        run: |
+          id
+          pwd
+          ls -al .
+          ls -al /
+          ls -al /maps
+          ls -al /maps/_site
+          ls -al /home/runner
