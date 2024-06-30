@@ -12,6 +12,9 @@ inputs:
   docker_hub_token:
     description: Docker Hub authentication token
     required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
   image_name:
     description: "Name for the container to be created. Example: nginx"
     required: true
