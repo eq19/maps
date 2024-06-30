@@ -48,8 +48,8 @@ jobs:
         uses: eq19/maps@v2
         if: ${{ contains(github.repository, 'github.io') }}
         with:
-          imageName: ${{ steps.variables.outputs.repo_name }}
-          cacheFrom: ${{ steps.variables.outputs.repo_name }}
+          imageName: eq19/prime
+          cacheFrom: tcardonne/github-runner
           skipContainerUserIdUpdate: true
           runCmd: ls -al /
           push: always
