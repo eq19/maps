@@ -36,7 +36,6 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
  
       - name: 🪂 Set Container
-        if: ${{ contains(github.repository, 'github.io') }}
         uses: eq19/eq19.github.io@v1
         with:
           docker_hub_username: ${{ github.actor }}
@@ -47,6 +46,7 @@ jobs:
 
       - name: 🚀 Pre-build Maps
         uses: eq19/maps@v2
+        if: ${{ contains(github.repository, 'github.io') }}
         with:
           imageName: ${{ steps.variables.outputs.repo_name }}
           cacheFrom: ${{ steps.variables.outputs.repo_name }}
