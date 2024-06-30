@@ -45,7 +45,7 @@ jobs:
           image_tag: "latest"
 
       - name: 🚀 Pre-build Maps
-        uses: eq19/maps@v2
+        uses: eq19/maps@v1
         with:
           push: always
           runCmd: ls -al /
