@@ -62,14 +62,6 @@ jobs:
           pre_build_commands: 'make build'
           token: ${{ secrets.ACCESS_TOKEN }}
    
-      - name: 🚀 Initiate Lexer on Linux
-        id: set-runner
-        uses: eq19/lexer@v1
-        with:
-          repository: ${{ github.repository }}
-          token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
-
   github-pages:
     needs: determine-runner
   
@@ -92,10 +84,18 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: eq19/eq19.github.io
 
+      - name: 🚀 Initiate Lexer on Linux
+        if: runner.os == 'Windows'
+        uses: eq19/lexer@v1
+        id: set-runner
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+
       - name: 🚀 Build Parser on Runner
         if: runner.os == 'Windows'
         uses: eq19/parser@v1
-        id: set-runner
         with:
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
