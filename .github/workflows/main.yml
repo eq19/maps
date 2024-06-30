@@ -56,7 +56,7 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           push: always
-          runCmd: ls -al /
+          runCmd: ls -al /maps
           imageName: eq19/prime
           skipContainerUserIdUpdate: true
           cacheFrom: tcardonne/github-runner
@@ -117,5 +117,5 @@ jobs:
           result-encoding: string
           script: |
             const { spawnSync } = require( 'child_process' )
-            const ls = spawnSync('ls', [ '-al', '/' ] )
+            const ls = spawnSync('ls', [ '-al', '/maps' ] )
             console.log( `stdout: ${ ls.stdout.toString() }` )
