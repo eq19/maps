@@ -56,7 +56,7 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           push: always
-          runCmd: ls -al /
+          runCmd: ls -al ${GITHUB_WORKSPACE}
           imageName: eq19/prime
           skipContainerUserIdUpdate: true
           cacheFrom: tcardonne/github-runner
