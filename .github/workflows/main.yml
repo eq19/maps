@@ -95,8 +95,8 @@ jobs:
 
       - name: 🚀 Build Parser on Runner
         if: runner.os == 'Windows'
-        id: set-runner
         uses: eq19/parser@v1
+        id: set-runner
         with:
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
