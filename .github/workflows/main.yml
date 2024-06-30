@@ -41,6 +41,7 @@ jobs:
           docker_hub_username: ${{ github.actor }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           dockerfile_path: ./.devcontainer/Dockerfile
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
           image_name: "prime"
           image_tag: "latest"
 
