@@ -36,6 +36,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
  
       - name: 🪂 Set Container
+        #uses: eq19/maps@v1
         uses: eq19/eq19.github.io@v2
         with:
           docker_hub_username: ${{ github.actor }}
@@ -52,7 +53,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
    
       - name: 🚀 Pre-build Maps
-        #uses: eq19/maps@v1
+        #uses: eq19/lexer@v1
         uses: devcontainers/ci@v0.3
         with:
           push: always
@@ -60,7 +61,7 @@ jobs:
           imageName: eq19/prime
           skipContainerUserIdUpdate: true
           cacheFrom: tcardonne/github-runner
-        if: ${{ contains(github.repository, 'github.io') }}
+        #if: ${{ contains(github.repository, 'github.io') }}
      
   github-pages:
     needs: determine-runner
@@ -87,7 +88,6 @@ jobs:
       - name: 🚀 Initiate Lexer on Linux
         if: runner.os == 'Windows'
         uses: eq19/lexer@v1
-        id: set-runner
         with:
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -96,6 +96,7 @@ jobs:
       - name: 🚀 Build Parser on Runner
         if: runner.os == 'Windows'
         uses: eq19/parser@v1
+        id: set-runner
         with:
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
