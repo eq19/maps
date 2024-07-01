@@ -3,7 +3,7 @@ name: Build and deploy eQuantum site
 
 # Runs on workflow_run.conclusion
 on:
-  #push:
+  push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -85,7 +85,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: eq19/eq19.github.io
 
-      - name: 🚀 Build Parser on Runner
+      - name: 🚀 Build Parser
         if: runner.os == 'Windows'
         uses: eq19/parser@v1
         id: set-runner
@@ -94,7 +94,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
   
-      - name: 🪂 Evaluate Syntax Tree
+      - name: 🪂 Evaluate Syntax
         if: runner.os == 'Windows'
         #uses: eq19/syntax@v1
         uses: Vampire/setup-wsl@v3
