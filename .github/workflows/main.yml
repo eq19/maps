@@ -3,7 +3,7 @@ name: Build and deploy eQuantum site
 
 # Runs on workflow_run.conclusion
 on:
-  push:
+  #push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -124,4 +124,4 @@ jobs:
           ls -al /maps
           ls -al /home
           ls -al /maps/_site
-          ls -al /home/vscode
+          ls -al /home/runner
