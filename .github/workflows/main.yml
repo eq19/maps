@@ -35,7 +35,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
  
-      - name: 🪂 Set Container
+      - name: 🪂 Pre-build Maps
         #uses: eq19/maps@v1
         uses: eq19/eq19.github.io@v2
         with:
@@ -52,7 +52,7 @@ jobs:
           pre_build_commands: 'make build'
           token: ${{ secrets.ACCESS_TOKEN }}
    
-      - name: 🚀 Pre-build Maps
+      - name: 🚀 Initiate Lexer on Linux
         #uses: eq19/lexer@v1
         uses: devcontainers/ci@v0.3
         with:
@@ -84,14 +84,6 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: eq19/eq19.github.io
-
-      - name: 🚀 Initiate Lexer on Linux
-        if: runner.os == 'Windows'
-        uses: eq19/lexer@v1
-        with:
-          repository: ${{ github.repository }}
-          token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🚀 Build Parser on Runner
         if: runner.os == 'Windows'
