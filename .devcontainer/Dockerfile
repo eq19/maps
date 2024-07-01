@@ -69,7 +69,7 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-ADD ../_site /www
+ADD ${GITHUB_WORKSPACE}/_site /www
 WORKDIR /home/runner
 
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
