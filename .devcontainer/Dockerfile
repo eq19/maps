@@ -69,11 +69,11 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-ADD ./_site /www
+ADD ../_site /www
 WORKDIR /home/runner
 
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
-COPY .github/scripts/*.sh /opt/runner/
+COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
 
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
@@ -85,7 +85,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-COPY entrypoint.sh /home/runner/entrypoint.sh
+COPY scripts/entrypoint.sh /home/runner/entrypoint.sh
 RUN chmod +x /home/runner/entrypoint.sh
 ENTRYPOINT ["/home/runner/entrypoint.sh"]
 
