@@ -96,9 +96,11 @@ jobs:
   
       - name: 🪂 Evaluate Syntax Tree
         if: runner.os == 'Windows'
+        #uses: eq19/syntax@v1
         uses: Vampire/setup-wsl@v3
 
       - name: 🪂 Grammar Languange
+        #uses: eq19/grammar@v1
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '3.1.x'
