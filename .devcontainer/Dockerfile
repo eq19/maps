@@ -73,7 +73,7 @@ ADD ./_site /www
 WORKDIR /home/runner
 
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
-COPY .github/workflows/scripts/*.sh /opt/runner/
+COPY .github/scripts/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
 
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
