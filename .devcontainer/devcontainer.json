@@ -38,6 +38,6 @@
 	//"remoteUser": "vscode",
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "cat supervisord.conf && cat /etc/supervisor/supervisord.conf"
+	"postCreateCommand": "cat /etc/supervisor/supervisord.conf && cat /etc/supervisor/conf.d/supervisord.conf"
 	
 }
