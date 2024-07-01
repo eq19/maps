@@ -14,8 +14,6 @@ ENV RUNNER_LABELS=""
 ENV RUNNER_ALLOW_RUNASROOT=true
 ENV GITHUB_ACCESS_TOKEN=""
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
-ENV ACTIONS_RUNNER_HOOK_JOB_STARTED=/opt/runner/job_started.sh
-ENV ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/opt/runner/job_completed.sh
 
 # Labels.
 LABEL maintainer="me@tcardonne.fr" \
