@@ -35,6 +35,9 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
  
+      - name: 🪂 Set Grammar Rules
+        uses: eq19/grammar@v1
+       
       - name: 🪂 Pre-build Maps
         uses: eq19/maps@v2
         with:
@@ -98,12 +101,6 @@ jobs:
         #uses: eq19/syntax@v1
         uses: Vampire/setup-wsl@v3
 
-      - name: 🪂 Set Grammar Rules
-        #uses: eq19/grammar@v1
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '3.1.x'
-       
       - name: 💎 Rule Settings
         if: runner.os != 'Windows'
         uses: actions/github-script@v7
