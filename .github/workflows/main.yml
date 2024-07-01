@@ -85,7 +85,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: eq19/eq19.github.io
 
-      - name: 🚀 Build Parser
+      - name: 🚀 Setup Parser
         if: runner.os == 'Windows'
         uses: eq19/parser@v1
         id: set-runner
