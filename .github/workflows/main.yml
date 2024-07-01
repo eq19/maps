@@ -37,7 +37,6 @@ jobs:
  
       - name: 🪂 Pre-build Maps
         uses: eq19/maps@v2
-        #uses: eq19/eq19.github.io@v2
         with:
           docker_hub_username: ${{ github.actor }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
