@@ -98,7 +98,7 @@ jobs:
         #uses: eq19/syntax@v1
         uses: Vampire/setup-wsl@v3
 
-      - name: 🪂 Grammar Languange
+      - name: 🪂 Set Rule & Grammar
         #uses: eq19/grammar@v1
         uses: actions/setup-dotnet@v4
         with:
