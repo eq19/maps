@@ -14,6 +14,8 @@ ENV RUNNER_LABELS=""
 ENV RUNNER_ALLOW_RUNASROOT=true
 ENV GITHUB_ACCESS_TOKEN=""
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
+ENV ACTIONS_RUNNER_HOOK_JOB_STARTED=/opt/runner/job_started.sh
+ENV ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/opt/runner/job_completed.sh
 
 # Labels.
 LABEL maintainer="me@tcardonne.fr" \
@@ -69,6 +71,8 @@ RUN cd /tmp && \
 
 ADD ./_site /www
 WORKDIR /home/runner
+
+ADD ./.github/scripts /opt/runner
 RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
