@@ -1,6 +1,6 @@
-# [Choice] Debian version (use bullseye on local arm64/Apple Silicon): bookworm, bullseye, buster
-ARG VARIANT="buster"
-FROM buildpack-deps:${VARIANT}-curl
+# [Choice] Debian version: bookworm, bullseye, buster
+ARG VARIANT=debian:buster-slim
+FROM ${VARIANT}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
