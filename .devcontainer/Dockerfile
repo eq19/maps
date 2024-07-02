@@ -1,6 +1,5 @@
-# [Choice] Debian version: bookworm, bullseye, buster
-ARG VARIANT=debian:buster-slim
-FROM ${VARIANT}
+ARG FROM=debian:buster-slim
+FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
@@ -28,9 +27,8 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
-# [Optional] Uncomment this section to install additional OS packages.
-RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y \
         curl \
         unzip \
         apt-transport-https \
