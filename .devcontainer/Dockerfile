@@ -1,4 +1,4 @@
-ARG FROM=debian:buster-slim
+ARG FROM=debian:stable-slim
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -34,7 +34,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         #ca-certificates \
         #software-properties-common \
         #sudo \
-        #supervisor \
+        supervisor \
         #jq \
         #iputils-ping \
         #build-essential \
