@@ -35,6 +35,16 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
  
+      - name: 🪂 Pre-build Maps
+        uses: eq19/maps@v2
+        with:
+          docker_hub_username: ${{ github.actor }}
+          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          dockerfile_path: ./.devcontainer/Dockerfile
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          image_name: "prime"
+          image_tag: "latest"
+
       - name: 🚀 Initiate Lexer on Linux
         #uses: eq19/lexer@v1
         uses: devcontainers/ci@v0.3
@@ -46,16 +56,6 @@ jobs:
           cacheFrom: tcardonne/github-runner
         if: ${{ contains(github.repository, 'github.io') }}
      
-      - name: 🪂 Pre-build Maps
-        uses: eq19/maps@v2
-        with:
-          docker_hub_username: ${{ github.actor }}
-          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
-          dockerfile_path: ./.devcontainer/Dockerfile
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
-          image_name: "prime"
-          image_tag: "latest"
-
   github-pages:
     needs: determine-runner
   
