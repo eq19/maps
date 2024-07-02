@@ -46,7 +46,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-ADD _site /www
+#ADD _site /www
 WORKDIR /home/runner
 
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
