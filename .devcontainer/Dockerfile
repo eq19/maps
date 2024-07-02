@@ -30,6 +30,7 @@ LABEL maintainer="me@tcardonne.fr" \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
+        git \
         unzip \
         apt-transport-https \
         ca-certificates \
@@ -56,16 +57,6 @@ RUN curl -fsSL https://get.docker.com -o- | sh && \
 RUN curl -L -o /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
     chmod +x /usr/local/bin/docker-compose
-
-RUN cd /tmp && \
-    curl -sL -o git.tgz \
-    https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
-    tar zxf git.tgz  && \
-    cd git-${GIT_VERSION}  && \
-    ./configure --prefix=/usr  && \
-    make && \
-    make install && \
-    rm -rf /tmp/*
 
 ADD _site /www
 WORKDIR /home/runner
