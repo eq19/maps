@@ -35,6 +35,17 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
  
+      - name: 🚀 Initiate Lexer on Linux
+        #uses: eq19/lexer@v1
+        uses: devcontainers/ci@v0.3
+        with:
+          push: always
+          runCmd: ls -al /www
+          imageName: eq19/prime
+          skipContainerUserIdUpdate: true
+          cacheFrom: tcardonne/github-runner
+        if: ${{ contains(github.repository, 'github.io') }}
+     
       - name: 🪂 Pre-build Maps
         uses: eq19/maps@v2
         with:
@@ -51,17 +62,6 @@ jobs:
           pre_build_commands: 'make build'
           token: ${{ secrets.ACCESS_TOKEN }}
    
-      - name: 🚀 Initiate Lexer on Linux
-        #uses: eq19/lexer@v1
-        uses: devcontainers/ci@v0.3
-        with:
-          push: always
-          runCmd: ls -al /www
-          imageName: eq19/prime
-          skipContainerUserIdUpdate: true
-          cacheFrom: tcardonne/github-runner
-        if: ${{ contains(github.repository, 'github.io') }}
-     
   github-pages:
     needs: determine-runner
   
