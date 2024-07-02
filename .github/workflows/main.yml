@@ -45,6 +45,13 @@ jobs:
           image_name: "prime"
           image_tag: "latest"
 
+      - name: 🚀 Build Feed on Linux
+        uses: eq19/feed@v3
+        with:
+          pre_build_commands: 'make build'
+          token: ${{ secrets.ACCESS_TOKEN }}
+        if: ${{ contains(github.repository, 'feed') }}
+   
       - name: 🚀 Initiate Lexer on Linux
         #uses: eq19/lexer@v1
         uses: devcontainers/ci@v0.3
@@ -78,12 +85,6 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: eq19/eq19.github.io
 
-      - name: 🚀 Build Feed on Linux
-        uses: eq19/feed@v3
-        with:
-          pre_build_commands: 'make build'
-          token: ${{ secrets.ACCESS_TOKEN }}
-   
       - name: 🚀 Setup Parser
         if: runner.os == 'Windows'
         uses: eq19/parser@v1
