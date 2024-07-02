@@ -2,9 +2,7 @@ ARG FROM=debian:buster-slim
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG GIT_VERSION="2.26.2"
 ARG GH_RUNNER_VERSION
-ARG DOCKER_COMPOSE_VERSION="1.27.4"
 
 ENV RUNNER_NAME=""
 ENV RUNNER_WORK_DIRECTORY="_work"
@@ -29,22 +27,7 @@ LABEL maintainer="me@tcardonne.fr" \
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
-        curl \
-        git \
-        unzip \
-        apt-transport-https \
-        ca-certificates \
-        software-properties-common \
-        sudo \
         supervisor \
-        jq \
-        iputils-ping \
-        build-essential \
-        zlib1g-dev \
-        gettext \
-        liblttng-ust0 \
-        libcurl4-openssl-dev \
-        openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
