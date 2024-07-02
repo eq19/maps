@@ -1,4 +1,4 @@
-ARG FROM=debian:buster-slim
+ARG FROM=jekyll/jekyll:latest #debian:buster-slim
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
