@@ -46,6 +46,21 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
+# Find the most recent 1.1 libssl package in the ubuntu archives
+ARG BASE_URL='http://archive.ubuntu.com/ubuntu/pool/main/o/openssl'
+ARG FILE="$( # The get parameters in the URL sort the results by descending chronological order
+    curl -s "${BASE_URL}/?C=M;O=D" $(\
+        # Make sure all tags are on separate lines - makes grep-work later easier \
+        ) | tr '>' '>\n' $(\
+        # extract all the unique links on the page \
+        ) | grep 'href' | sed 's/^.*href="\([^"]*\)".*$/\1/p' | awk '!a[$0]++' $(\
+        # pick the most relevant items on the list (libssl 1.1 for amd64 arch) \
+        ) | grep "libssl" | grep "1.1_" | grep "amd64.deb" $(\
+        # choose only the last one \
+        ) | tail -1 )"
+# Grab the file and if download was successful, install it with sudo
+RUN wget "${URL_BASE}/${FILE}" && dpkg -i "./${FILE}"
+
 #ADD _site /www
 WORKDIR /home/runner
 
