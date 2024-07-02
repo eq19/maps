@@ -28,6 +28,7 @@ LABEL maintainer="me@tcardonne.fr" \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
         curl \
+        wget \
         #git \
         #unzip \
         #apt-transport-https \
