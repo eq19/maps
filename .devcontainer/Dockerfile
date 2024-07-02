@@ -29,34 +29,34 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
         curl \
         wget \
-        #git \
-        #unzip \
-        #apt-transport-https \
-        #ca-certificates \
-        #software-properties-common \
-        #sudo \
+        git \
+        unzip \
+        apt-transport-https \
+        ca-certificates \
+        software-properties-common \
+        sudo \
         supervisor \
-        #jq \
-        #iputils-ping \
-        #build-essential \
-        #zlib1g-dev \
-        #gettext \
-        #liblttng-ust0 \
-        #libcurl4-openssl-dev \
-        #openssh-client \
+        jq \
+        iputils-ping \
+        build-essential \
+        zlib1g-dev \
+        gettext \
+        liblttng-ust0 \
+        libcurl4-openssl-dev \
+        openssh-client \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
-RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
+RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
     && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-
-#ADD _site /www
-WORKDIR /home/runner
 
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
 COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
+
+#ADD _site /www
+WORKDIR /home/runner
 
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
     && curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
