@@ -34,7 +34,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         #ca-certificates \
         #software-properties-common \
         #sudo \
-        supervisor \
+        #supervisor \
         #jq \
         #iputils-ping \
         #build-essential \
