@@ -1,5 +1,5 @@
 # [Choice] Debian version (use bullseye on local arm64/Apple Silicon): bookworm, bullseye, buster
-ARG VARIANT="bookworm"
+ARG VARIANT="buster"
 FROM buildpack-deps:${VARIANT}-curl
 
 ARG DEBIAN_FRONTEND=noninteractive
