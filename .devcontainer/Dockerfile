@@ -25,6 +25,27 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y \
+        curl \
+        #git \
+        #unzip \
+        #apt-transport-https \
+        #ca-certificates \
+        #software-properties-common \
+        #sudo \
+        #supervisor \
+        #jq \
+        #iputils-ping \
+        #build-essential \
+        #zlib1g-dev \
+        #gettext \
+        #liblttng-ust0 \
+        #libcurl4-openssl-dev \
+        #openssh-client \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
 ADD _site /www
 WORKDIR /home/runner
 
