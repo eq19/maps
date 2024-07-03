@@ -54,7 +54,7 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
 COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
-#ADD _site /www
+#ADD _site /opt/runner/www
 
 WORKDIR /home/runner
 
