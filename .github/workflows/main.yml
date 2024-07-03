@@ -36,7 +36,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
  
       - name: 🪂 Pre-build Maps
-        uses: eq19/maps@v1
+        uses: eq19/maps@v2
         with:
           docker_hub_username: ${{ github.actor }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
