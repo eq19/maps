@@ -51,6 +51,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
     && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
+# Install Docker CLI
+RUN curl -fsSL https://get.docker.com -o- | sh && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
+
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
 COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
