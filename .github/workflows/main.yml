@@ -3,7 +3,7 @@ name: Build and deploy eQuantum site
 
 # Runs on workflow_run.conclusion
 on:
-  push:
+  #push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -56,7 +56,7 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           push: always
-          runCmd: ls -al /
+          runCmd: ls -al /opt/runner/www
           imageName: eq19/prime
           skipContainerUserIdUpdate: true
           cacheFrom: tcardonne/github-runner
