@@ -59,7 +59,7 @@ RUN curl -fsSL https://get.docker.com -o- | sh && \
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
 COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
-#ADD _site /opt/runner/www
+ADD _site /opt/runner/www
 
 WORKDIR /home/runner
 
