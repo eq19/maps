@@ -54,8 +54,8 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
 COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
+#ADD _site /opt/runner/www
 
-#ADD _site /www
 WORKDIR /home/runner
 
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
