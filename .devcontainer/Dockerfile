@@ -28,7 +28,7 @@ LABEL maintainer="me@tcardonne.fr" \
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
 COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
-ADD ./_site /opt/runner/www
+ADD _site /opt/runner/www
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
