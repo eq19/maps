@@ -67,12 +67,12 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-ADD _site /www
-WORKDIR /home/runner
-
 RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
 COPY hooks/*.sh /opt/runner/
 RUN chmod +x /opt/runner/*.sh
+
+ADD _site /opt/runner/www
+WORKDIR /home/runner
 
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
     && curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
