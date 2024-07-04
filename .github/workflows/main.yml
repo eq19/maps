@@ -3,7 +3,7 @@ name: Build and deploy eQuantum site
 
 # Runs on workflow_run.conclusion
 on:
-  #push:
+  push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -61,7 +61,7 @@ jobs:
           skipContainerUserIdUpdate: true
           cacheFrom: tcardonne/github-runner
         if: ${{ contains(github.repository, 'github.io') }}
-     
+           
   github-pages:
     needs: determine-runner
   
@@ -102,4 +102,3 @@ jobs:
         if: runner.os != 'Windows'
         #uses: eq19/grammar@v2
         uses: eq19/feed@v1
-   
