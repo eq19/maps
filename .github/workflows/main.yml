@@ -36,24 +36,6 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
  
       - name: 🪂 Pre-build Maps
-        #uses: eq19/maps@v2
-        uses: devcontainers/ci@v0.3
-        with:
-          push: always
-          imageName: eq19/prime
-          runCmd: ls -al /opt/runner
-          skipContainerUserIdUpdate: true
-          cacheFrom: tcardonne/github-runner
-        if: ${{ contains(github.repository, 'github.io') }}
-           
-      - name: 🚀 Build Feed on Linux
-        uses: eq19/grammar@v2
-        #uses: eq19/feed@v1
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-   
-      - name: 🚀 Initiate Lexer on Linux
-        #uses: eq19/lexer@v1
         uses: eq19/maps@v2
         with:
           docker_hub_username: ${{ github.actor }}
@@ -63,6 +45,23 @@ jobs:
           image_name: "prime"
           image_tag: "latest"
 
+      - name: 🚀 Build Feed on Linux
+        uses: eq19/grammar@v2
+        #uses: eq19/feed@v1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+   
+      - name: 🚀 Initiate Lexer on Linux
+        #uses: eq19/lexer@v1
+        uses: devcontainers/ci@v0.3
+        with:
+          push: always
+          runCmd: ls -al /opt/runner/www
+          imageName: eq19/prime
+          skipContainerUserIdUpdate: true
+          cacheFrom: tcardonne/github-runner
+        if: ${{ contains(github.repository, 'github.io') }}
+           
   github-pages:
     needs: determine-runner
   
