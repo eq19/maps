@@ -3,7 +3,7 @@ name: Build and deploy eQuantum site
 
 # Runs on workflow_run.conclusion
 on:
-  #push:
+  push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -46,9 +46,9 @@ jobs:
           image_tag: "latest"
 
       - name: 🚀 Build Feed on Linux
-        uses: eq19/feed@v3
+        uses: eq19/grammar@v2
+        #uses: eq19/feed@v1
         with:
-          pre_build_commands: 'make build'
           token: ${{ secrets.ACCESS_TOKEN }}
    
       - name: 🚀 Initiate Lexer on Linux
@@ -56,12 +56,12 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           push: always
-          runCmd: ls -al /www
+          runCmd: ls -al /opt/runner/www
           imageName: eq19/prime
           skipContainerUserIdUpdate: true
           cacheFrom: tcardonne/github-runner
         if: ${{ contains(github.repository, 'github.io') }}
-     
+           
   github-pages:
     needs: determine-runner
   
@@ -99,4 +99,6 @@ jobs:
         uses: Vampire/setup-wsl@v3
 
       - name: 🪂 Set Grammar Rules
-        uses: eq19/grammar@v1
+        if: runner.os != 'Windows'
+        #uses: eq19/grammar@v2
+        uses: eq19/feed@v1
