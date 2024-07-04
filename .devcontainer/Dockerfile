@@ -25,6 +25,11 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
+RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
+COPY hooks/*.sh /opt/runner/
+RUN chmod +x /opt/runner/*.sh
+ADD ./_site /opt/runner/www
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
         curl \
@@ -55,11 +60,6 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
 RUN curl -fsSL https://get.docker.com -o- | sh && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
-
-RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
-COPY hooks/*.sh /opt/runner/
-RUN chmod +x /opt/runner/*.sh
-ADD _site /opt/runner/www
 
 WORKDIR /home/runner
 
