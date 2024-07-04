@@ -25,10 +25,9 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
-RUN mkdir -p /opt/runner ${AGENT_TOOLSDIRECTORY}
-COPY hooks/*.sh /opt/runner/
+ADD hooks /opt/runner
 RUN chmod +x /opt/runner/*.sh
-ADD _site /opt/runner/www
+RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
