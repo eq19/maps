@@ -60,14 +60,6 @@ jobs:
           imageName: eq19/prime
           skipContainerUserIdUpdate: true
           cacheFrom: tcardonne/github-runner
-          env: |
-            RUNNER_WORK_DIRECTORY=_work
-            RUNNER_REPLACE_EXISTING=true
-            RUNNER_NAME=Google-optimized-instance
-            GITHUB_ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
-            ACTIONS_RUNNER_HOOK_JOB_STARTED=/opt/runner/job_started.sh
-            ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/opt/runner/job_completed.sh
-            RUNNER_REPOSITORY_URL=https://github.com/${{ github.repository }}
         if: ${{ contains(github.repository, 'github.io') }}
            
   github-pages:
