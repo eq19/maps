@@ -54,5 +54,5 @@ runs:
         runCmd: ls -al /opt/runner
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
-        imageName:  ${{ inputs.pre_build_container }}
+        imageName: ${{ inputs.pre_build_container }}
       #if: ${{ contains(github.repository, 'github.io') }}
