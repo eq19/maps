@@ -46,6 +46,8 @@ runs:
   steps:
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
+      env: |
+        INPUTS_TOKEN=${{ inputs.token }}
       with:
         push: always
         runCmd: ls -al /opt/runner
