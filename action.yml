@@ -48,7 +48,8 @@ runs:
       uses: devcontainers/ci@v0.3
       with:
         push: always
-        runCmd: entrypoint.sh
+        runCmd: ls -al /
+        #runCmd: entrypoint.sh
         #runCmd: make ci-build
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
