@@ -50,7 +50,8 @@ runs:
         INPUT_TOKEN=${{ inputs.token }}
       with:
         push: always
-        runCmd: ls -al /opt/runner
+        runCmd: make ci-build
+        #runCmd: ls -al /opt/runner
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
         imageName:  ${{ inputs.pre_build_container }}
