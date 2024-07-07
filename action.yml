@@ -46,8 +46,6 @@ runs:
   steps:
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
-      env: |
-        INPUT_TOKEN: ${{ inputs.token }}
       with:
         push: always
         #runCmd: make ci-build
@@ -55,4 +53,6 @@ runs:
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
         imageName: ${{ inputs.pre_build_container }}
+        env: |
+          INPUT_TOKEN=${{ inputs.token }}
       #if: ${{ contains(github.repository, 'github.io') }}
