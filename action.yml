@@ -1,0 +1,55 @@
+name: Build devcontainer
+description: Build a devcontainer that is compliant with the spec
+
+inputs:
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  repository:
+    description: 'The deploy repository'
+    required: false
+  branch:
+    description: 'The deploy branch'
+    required: false
+  actor:
+    description: 'The github username creating the commit'
+    required: false
+  cname:
+    description: 'The cname to use for the site'
+    required: false
+  bundler_ver:
+    description: 'The Bundler version'
+    required: false
+  jekyll_baseurl:
+    description: 'The Jekyll website baseurl'
+    required: false
+  pre_build_container:
+    description: 'The pre-build docker container'
+    default: 'eq19/prime'
+    required: false
+
+branding:
+  icon: 'command'
+  color: 'red'
+
+runs:
+  using: composite
+  steps:
+    - name: 🚀 Initiate Lexer
+      uses: devcontainers/ci@v0.3
+      with:
+        push: always
+        runCmd: ls -al /opt/runner
+        skipContainerUserIdUpdate: true
+        cacheFrom: tcardonne/github-runner
+        imageName:  ${{ inputs.pre_build_container }}
+      if: ${{ contains(github.repository, 'github.io') }}
