@@ -46,11 +46,12 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         zlib1g-dev \
         gettext \
         libpq-dev \
-        postgresql \
         python3-dev \
         liblttng-ust1 \
         libcurl4-openssl-dev \
         openssh-client \
+        pg-auto-failover-cli \
+        postgresql-14-auto-failover \ 
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
