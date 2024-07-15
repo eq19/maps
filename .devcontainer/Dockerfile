@@ -54,11 +54,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-RUN echo "host    all             all             127.0.0.1/32            md5" > tee -a /etc/postgresql/10/main/pg_hba.conf
-    && service postgresql restart && sleep 3
-    && postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
-    && service postgresql restart && sleep 3
-    && echo "PG_DATABASE_URL=postgres://postgres:postgres@localhost/" >> $GITHUB_ENV
+RUN echo "host    all             all             127.0.0.1/32            md5" > tee -a /etc/postgresql/10/main/pg_hba.conf \
+    && service postgresql restart && sleep 3 \
+    && postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" \
+    && service postgresql restart && sleep 3 \
+    && echo "PG_DATABASE_URL=postgres://postgres:postgres@localhost/" >> $GITHUB_ENV \
     && echo "PG_EXAMPLE_DATABASE_URL=postgres://postgres:postgres@localhost/diesel_example" >> $GITHUB_ENV
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
