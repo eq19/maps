@@ -94,7 +94,7 @@ jobs:
           # "src/test/cli.exec.nonBuildKit.2.test.ts",
           # "src/test/cli.test.ts",
           # "src/test/cli.up.test.ts",
-          #"src/test/container-features/containerFeaturesOCI.test.ts",
+          "src/test/container-features/containerFeaturesOCI.test.ts",
           # "src/test/container-features/containerFeaturesOCIPush.test.ts",
           # "src/test/container-features/containerFeaturesOrder.test.ts",
           # "src/test/container-features/e2e.test.ts",
