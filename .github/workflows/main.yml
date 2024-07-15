@@ -68,7 +68,7 @@ jobs:
   
       - name: 🔧 Setup Lexer on Cloud
         uses: eq19/lexer@v1
-        id: set-runne
+        id: set-runner
         with:
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -86,33 +86,7 @@ jobs:
       matrix:
         #node_version: [8, 10, 12]
         os: [windows-latest, self-hosted]
-        mocha-args-windows: [
-          # "src/test/cli.build.test.ts",
-          # "src/test/cli.exec.buildKit.1.test.ts",
-          # "src/test/cli.exec.buildKit.2.test.ts",
-          # "src/test/cli.exec.nonBuildKit.1.test.ts",
-          # "src/test/cli.exec.nonBuildKit.2.test.ts",
-          # "src/test/cli.test.ts",
-          # "src/test/cli.up.test.ts",
-          "src/test/container-features/containerFeaturesOCI.test.ts",
-          # "src/test/container-features/containerFeaturesOCIPush.test.ts",
-          # "src/test/container-features/containerFeaturesOrder.test.ts",
-          # "src/test/container-features/e2e.test.ts",
-          # "src/test/container-features/featureHelpers.test.ts",
-          # "src/test/container-features/featuresCLICommands.test.ts",
-          #"src/test/container-features/generateFeaturesConfig.test.ts",
-          # "src/test/container-templates/containerTemplatesOCI.test.ts",
-          # "src/test/container-templates/templatesCLICommands.test.ts",
-          # "src/test/dockerComposeUtils.test.ts",
-          # "src/test/dockerfileUtils.test.ts",
-          # "src/test/dockerUtils.test.ts",
-          # "src/test/imageMetadata.test.ts",
-          # "src/test/variableSubstitution.test.ts",
-          # "src/test/container-features/registryCompatibilityOCI.test.ts",
-          # # Run all except the above:
-          # "--exclude .....",
-        ]
-   
+
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
     
