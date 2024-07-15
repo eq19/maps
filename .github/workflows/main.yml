@@ -1,8 +1,6 @@
-# Main Workflow of eQuantum Project
-# Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+# ⚠️ Main Workflow of eQuantum Project
 name: Build and deploy eQuantum site
 
-# Runs on workflow_run.conclusion
 on:
   push:
     paths:
@@ -75,9 +73,6 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
     
   github-pages:
-    defaults:
-      run:
-        shell: bash
     needs: determine-runner
 
     strategy:
@@ -90,6 +85,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
     
+    # Runs on workflow_run.conclusion
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
 
@@ -104,7 +100,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: ⚠️ Evaluate Syntax
+      - name: ♻️ Evaluate Syntax
         if: runner.os == 'Ubuntu'
         uses: eq19/syntax@v2
 
