@@ -61,7 +61,7 @@ jobs:
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: 🚀 Build Feed on Linux
-        if: runner.os == 'Windows'
+        #if: runner.os == 'Windows'
         uses: eq19/feed@v3
         with:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
