@@ -48,7 +48,7 @@ runs:
       uses: devcontainers/ci@v0.3
       with:
         push: always
-        runCmd: ls -al /workspaces/feed
+        runCmd: ls -al /
         #runCmd: entrypoint.sh
         #runCmd: make ci-build
         skipContainerUserIdUpdate: true
