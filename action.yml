@@ -1,4 +1,4 @@
-name: Build devcontainer
+oname: Build devcontainer
 description: Build a devcontainer that is compliant with the spec
 
 inputs:
@@ -63,6 +63,7 @@ runs:
       #if: ${{ contains(github.repository, 'github.io') }}
 
     - name: Connect to PostgreSQL
+      if: runner.os == 'Windows'
       # Runs a script that creates a PostgreSQL table, populates
       # the table with data, and then retrieves the data.
       env:
