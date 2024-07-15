@@ -135,4 +135,5 @@ jobs:
         uses: eq19/syntax@v2
 
       - name: 🏃‍♂️ Set Grammar Rules
+        if: runner.os == 'Ubuntu'
         uses: eq19/grammar@v1
