@@ -51,7 +51,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         libcurl4-openssl-dev \
         openssh-client \
         pg-auto-failover-cli \
-        postgresql-14-auto-failover \ 
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
