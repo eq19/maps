@@ -46,6 +46,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         zlib1g-dev \
         gettext \
         libpq-dev \
+        python3-dev \
         liblttng-ust1 \
         libcurl4-openssl-dev \
         openssh-client \
