@@ -40,6 +40,7 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	//"postCreateCommand": "cat /etc/supervisor/supervisord.conf && cat /etc/supervisor/conf.d/supervisord.conf"
 	//"postCreateCommand": "service postgresql start"
-	"postCreateCommand": "service --status-all && python3 /maps/app.py"
+	//"postCreateCommand": "service --status-all && python3 /maps/app.py"
+	"postCreateCommand": "psql -t -P format=unaligned -c 'show hba_file';"
 	
 }
