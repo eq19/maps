@@ -69,13 +69,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-#USER postgres
-
-#RUN /etc/init.d/postgresql start && createuser root && createdb root\
-    #&& psql --command "ALTER USER root createdb" && createdb -O root music_recombiner\
-    #&& /etc/init.d/postgresql stop
-
-#USER root
+# Copy PostgreSQL binaries from the first stage
+COPY --from=postgres-base /usr/local/bin /usr/local/bin
+COPY --from=postgres-base /usr/lib/postgresql /usr/lib/postgresql
+COPY --from=postgres-base /usr/share/postgresql /usr/share/postgresql
+COPY --from=postgres-base /var/lib/postgresql /var/lib/postgresql
 
 WORKDIR /home/runner
 
