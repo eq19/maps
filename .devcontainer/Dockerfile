@@ -45,30 +45,37 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
         build-essential \
         zlib1g-dev \
         gettext \
-        libpq-dev \
         python3-dev \
-        liblttng-ust1 \
-        libcurl4-openssl-dev \
         openssh-client \
-        pg-auto-failover-cli \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-#RUN echo "host    all             all             127.0.0.1/32            md5" > tee -a /etc/postgresql/10/main/pg_hba.conf \
-    #&& service postgresql restart && sleep 3 \
-    #&& postgres psql -c "ALTER USER postgres PASSWORD 'postgres';" \
-    #&& service postgresql restart && sleep 3 \
-    #&& echo "PG_DATABASE_URL=postgres://postgres:postgres@localhost/" >> $GITHUB_ENV \
-    #&& echo "PG_EXAMPLE_DATABASE_URL=postgres://postgres:postgres@localhost/diesel_example" >> $GITHUB_ENV
+# Install Docker CLI & PostgresSQL
+RUN curl -fsSL https://get.docker.com -o- | sh \
+    && sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+    && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
     && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
-# Install Docker CLI
-RUN curl -fsSL https://get.docker.com -o- | sh && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y \
+        postgres \
+        libpq-dev \
+        libsndfile1 \
+        liblttng-ust1 \
+        libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+USER postgres
+
+RUN /etc/init.d/postgresql start && createuser root && createdb root\
+    && psql --command "ALTER USER root createdb" && createdb -O root music_recombiner\
+    && /etc/init.d/postgresql stop
+
+USER root
 
 WORKDIR /home/runner
 
