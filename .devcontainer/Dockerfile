@@ -12,12 +12,12 @@ FROM python:3.11-bookworm
 RUN apt-get update && \
     apt-get install -y supervisor
 
-WORKDIR /workspace
+#WORKDIR /workspace
 
-COPY . .
+COPY . /maps
 
 RUN python3 -m pip install --upgrade pip && \
-    python3 -m pip install -r requirements.txt
+    python3 -m pip install -r /maps/requirements.txt
 
 # Copy PostgreSQL binaries from the first stage
 COPY --from=postgres-base /usr/local/bin /usr/local/bin
