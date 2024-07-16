@@ -6,7 +6,7 @@ ENV POSTGRES_PASSWORD=password
 ENV POSTGRES_DB=postgresDB
 
 # ---- Build the Python App ----
-FROM python:3.11-bookworm
+FROM python:3.12-bookworm
 
 # Install supervisor
 RUN apt-get update && \
