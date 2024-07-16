@@ -80,6 +80,17 @@ jobs:
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
 
+    services:
+      postgres:
+        image: kibaes/postgres-logical-replication-dev:14-dev-20221002
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgrespw
+          POSTGRES_DB: playground
+        ports:
+          - "5432:5432"
+      if: runner.os != 'Windows'
+
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v4
