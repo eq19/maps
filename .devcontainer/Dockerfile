@@ -15,7 +15,7 @@ WORKDIR /workspace
 
 COPY . .
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+#RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 
 # Copy PostgreSQL binaries from the first stage
