@@ -52,9 +52,9 @@ runs:
       uses: devcontainers/ci@v0.3
       with:
         push: always
-        #runCmd: ls -al /
+        runCmd: ls -al /
         #runCmd: make ci-build
-        runCmd: service postgresql start
+        #runCmd: service postgresql start
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
         imageName: ${{ inputs.pre_build_container }}
