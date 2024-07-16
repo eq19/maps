@@ -103,5 +103,5 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           service --status-all
-          apt-cache show postgresql
+          apt-cache show supervisor
         shell: bash
