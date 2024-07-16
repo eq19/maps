@@ -9,7 +9,7 @@
 
 
 # extend the most recent long term support Ubuntu version
-FROM ubuntu:15.10
+FROM ubuntu:latest
 
 MAINTAINER Adrien PESSU
 
