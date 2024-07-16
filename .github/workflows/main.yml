@@ -101,5 +101,7 @@ jobs:
 
       - name: 🏃‍♂️ Set Grammar Rules
         if: runner.os != 'Windows'
-        run: service --status-all
+        run: |
+          service --status-all
+          apt-cache show postgresql
         shell: bash
