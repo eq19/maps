@@ -52,7 +52,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
 
 # Install Docker CLI & PostgresSQL
 RUN curl -fsSL https://get.docker.com -o- | sh \
-    && sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+    && sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' \
     && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
