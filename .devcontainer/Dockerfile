@@ -1,5 +1,4 @@
-ARG FROM=postgres:latest AS postgres-base
-FROM ${FROM}
+FROM postgres:latest AS postgres-base
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GH_RUNNER_VERSION
