@@ -1,4 +1,4 @@
-ARG FROM=postgres:latest
+ARG FROM=postgres:latest AS postgres-base
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
