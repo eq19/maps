@@ -101,5 +101,5 @@ jobs:
 
       - name: 🏃‍♂️ Set Grammar Rules
         if: runner.os != 'Windows'
-        run: service postgresql start
+        run: service --status-all
         shell: bash
