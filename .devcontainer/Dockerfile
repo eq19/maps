@@ -58,7 +58,7 @@ ENV JAVA_HOME /opt/java-oracle/jdk$java_version
 ENV PATH $JAVA_HOME/bin:$PATH
 
 # configure symbolic links for the java and javac executables
-RUN update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 20000 && update-alternatives --install /usr/bin/javac javac $JAVA_HOME/bin/javac 20000
+$RUN update-alternatives --install /usr/bin/java java $JAVA_HOME/bin/java 20000 && update-alternatives --install /usr/bin/javac javac $JAVA_HOME/bin/javac 20000
 
 # explicitly set user/group IDs
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres --uid=999 postgres
