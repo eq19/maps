@@ -9,13 +9,15 @@ ENV POSTGRES_DB=postgresDB
 FROM python:3.11-bookworm
 
 # Install supervisor
-RUN apt-get update && apt-get install -y supervisor
+RUN apt-get update && \
+    apt-get install -y supervisor
 
 WORKDIR /workspace
 
 COPY . .
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN python3 -m pip install --upgrade pip && \
+    python3 -m pip install -r requirements.txt
 
 # Copy PostgreSQL binaries from the first stage
 COPY --from=postgres-base /usr/local/bin /usr/local/bin
