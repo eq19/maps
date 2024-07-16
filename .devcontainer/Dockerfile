@@ -61,8 +61,8 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
-        postgres \
         libpq-dev \
+        postgresql \
         libsndfile1 \
         liblttng-ust1 \
         libcurl4-openssl-dev \
