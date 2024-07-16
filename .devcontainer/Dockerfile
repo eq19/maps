@@ -30,22 +30,22 @@ RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && apt-get install -y \
-        curl \
-        wget \
-        git \
-        unzip \
-        apt-transport-https \
-        ca-certificates \
-        software-properties-common \
-        sudo \
+        #curl \
+        #wget \
+        #git \
+        #unzip \
+        #apt-transport-https \
+        #ca-certificates \
+        #software-properties-common \
+        #sudo \
         supervisor \
-        jq \
-        iputils-ping \
-        build-essential \
-        zlib1g-dev \
-        gettext \
-        python3-dev \
-        openssh-client \
+        #jq \
+        #iputils-ping \
+        #build-essential \
+        #zlib1g-dev \
+        #gettext \
+        #python3-dev \
+        #openssh-client \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -55,18 +55,18 @@ RUN curl -fsSL https://get.docker.com -o- | sh \
     && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
-RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
-    && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+#RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
+    #&& dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-    && apt-get install -y \
-        libpq-dev \
+#RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    #&& apt-get install -y \
+        #libpq-dev \
         #postgresql \
-        libsndfile1 \
-        liblttng-ust1 \
-        libcurl4-openssl-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+        #libsndfile1 \
+        #liblttng-ust1 \
+        #libcurl4-openssl-dev \
+    #&& rm -rf /var/lib/apt/lists/* \
+    #&& apt-get clean
 
 # Copy PostgreSQL binaries from the first stage
 COPY --from=postgres-base /usr/local/bin /usr/local/bin
