@@ -41,7 +41,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         build-essential \
         zlib1g-dev \
         gettext \
-        liblttng-ust0 \
+        liblttng-ust1 \
         libcurl4-openssl-dev \
         openssh-client && \
     rm -rf /var/lib/apt/lists/* && \
