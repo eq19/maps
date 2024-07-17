@@ -19,7 +19,6 @@ ADD hooks /opt/runner
 RUN chmod +x /opt/runner/*.sh
 RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
-# Labels.
 LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$BUILD_DATE \
