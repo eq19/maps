@@ -37,7 +37,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          #repository: ${{ env.OWNER }}/${{ env.OWNER }}.github.io
           
       - name: 🪂 Pre-build Maps
         #if: runner.os == 'Windows'
