@@ -102,4 +102,5 @@ jobs:
         run: |
           service --status-all
           apt-cache show supervisor
+          ls -al /
         shell: bash
