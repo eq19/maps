@@ -31,6 +31,23 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
+# ---- Build the PostgreSQL Base ----
+FROM postgres:latest AS postgres-base
+
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=password
+ENV POSTGRES_DB=postgresDB
+
+# Copy initialization script to create database and table
+COPY conf/init-db.sql /docker-entrypoint-initdb.d/
+COPY conf/query-db.sql /docker-entrypoint-initdb.d/
+
+# Copy PostgreSQL binaries from the first stage
+COPY --from=postgres-base /usr/local/bin /usr/local/bin
+COPY --from=postgres-base /usr/lib/postgresql /usr/lib/postgresql
+COPY --from=postgres-base /usr/share/postgresql /usr/share/postgresql
+COPY --from=postgres-base /var/lib/postgresql /var/lib/postgresql
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
@@ -77,23 +94,6 @@ RUN cd /tmp && \
     make && \
     make install && \
     rm -rf /tmp/*
-
-# ---- Build the PostgreSQL Base ----
-FROM postgres:latest AS postgres-base
-
-ENV POSTGRES_USER=postgres
-ENV POSTGRES_PASSWORD=password
-ENV POSTGRES_DB=postgresDB
-
-# Copy initialization script to create database and table
-COPY conf/init-db.sql /docker-entrypoint-initdb.d/
-COPY conf/query-db.sql /docker-entrypoint-initdb.d/
-
-# Copy PostgreSQL binaries from the first stage
-COPY --from=postgres-base /usr/local/bin /usr/local/bin
-COPY --from=postgres-base /usr/lib/postgresql /usr/lib/postgresql
-COPY --from=postgres-base /usr/share/postgresql /usr/share/postgresql
-COPY --from=postgres-base /var/lib/postgresql /var/lib/postgresql
 
 # Expose PostgreSQL port (optional, but useful for external access)
 EXPOSE 5432 5455 8080
