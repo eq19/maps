@@ -1,4 +1,4 @@
-ARG FROM=debian:buster-slim
+ARG FROM=debian:stable-slim
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
