@@ -30,6 +30,7 @@ LABEL maintainer="me@tcardonne.fr" \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
+        wget \
         unzip \
         apt-transport-https \
         ca-certificates \
@@ -48,8 +49,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
-RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb \
-    && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
+    dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
@@ -78,14 +79,14 @@ RUN mkdir -p /home/runner ${AGENT_TOOLSDIRECTORY}
 
 WORKDIR /home/runner
 
-RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
-    && curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
-    && tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
-    && rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
-    && ./bin/installdependencies.sh \
-    && chown -R root: /home/runner \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
+    curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
+    tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
+    rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
+    ./bin/installdependencies.sh && \
+    chown -R root: /home/runner && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
 
 COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
