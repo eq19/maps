@@ -1,15 +1,19 @@
 [supervisord]
+user=root
 nodaemon=true
-logfile=/var/log/supervisor/supervisord.log
-pidfile=/tmp/supervisord.pid
+logfile=/dev/fd/1
+logfile_maxbytes=0
+loglevel=error
 
-[program:userconf]
-command=sudo sh /usr/local/bin/userconf.sh
-startsecs=0
-exitcodes=0
+[program:runner]
+directory=/home/runner
+command=/home/runner/bin/runsvc.sh
+stdout_logfile=/dev/fd/1
+stdout_logfile_maxbytes=0
+redirect_stderr=true
 
 [program:postgres]
-command=sudo -u postgres /usr/lib/postgresql/%(ENV_POSTGRES_VERSION)s/bin/postgres -c config_file=/etc/postgresql/%(ENV_POSTGRES_VERSION)s/main/postgresql.conf
-stdout_logfile=/var/log/supervisor/%(program_name)s.log
-stderr_logfile=/var/log/supervisor/%(program_name)s.log
+command=postgres -c 'config_file=/etc/postgresql/postgresql.conf'
+autostart=true
 autorestart=true
+redirect_stderr=true
