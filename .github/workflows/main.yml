@@ -37,7 +37,6 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           
       - name: 🪂 Pre-build Maps
-        #if: runner.os == 'Windows'
         uses: eq19/maps@v2
         with:
           image_name: "prime"
@@ -47,7 +46,6 @@ jobs:
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: 🚀 Build Feed on Linux
-        #if: runner.os == 'Windows'
         uses: eq19/feed@v3
         with:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
