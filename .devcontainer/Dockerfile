@@ -15,6 +15,10 @@ ENV RUNNER_ALLOW_RUNASROOT=true
 ENV GITHUB_ACCESS_TOKEN=""
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 
+ADD hooks /opt/runner
+RUN chmod +x /opt/runner/*.sh
+RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
+
 # Labels.
 LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.schema-version="1.0" \
@@ -53,9 +57,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
     dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
-COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
-
 # Install Docker CLI
 RUN curl -fsSL https://get.docker.com -o- | sh && \
     rm -rf /var/lib/apt/lists/* && \
@@ -76,10 +77,7 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-RUN mkdir -p /home/runner ${AGENT_TOOLSDIRECTORY}
-
 WORKDIR /home/runner
-
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
     curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
@@ -92,4 +90,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
 COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+
+COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
