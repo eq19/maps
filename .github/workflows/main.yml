@@ -29,8 +29,6 @@ env:
 jobs:
   determine-runner:
     runs-on: ubuntu-latest
-    outputs:
-      runner: ${{ steps.set-runner.outputs.use-runner }}
 
     steps:
       - name: 📂 Checkout
@@ -61,7 +59,10 @@ jobs:
           repository: ${{ github.repository }}
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-    
+
+    outputs:
+      runner: ${{ steps.set-runner.outputs.use-runner }}
+
   github-pages:
     needs: determine-runner
 
