@@ -12,8 +12,6 @@ FROM python:3.12-bookworm
 RUN apt-get update && \
     apt-get install -y supervisor
 
-#WORKDIR /workspace
-
 COPY . /maps
 
 # Copy initialization script to create database and table
@@ -39,9 +37,24 @@ ENV PGLOG log_statement=all
 COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
 COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
 
-# Add supervisord config
-COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-CMD ["/usr/bin/supervisord"]
-
 # Run command to start PostgreSQL with custom configuration
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+WORKDIR /home/runner
+
+RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} \
+    && curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
+    && tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
+    && rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
+    && ./bin/installdependencies.sh \
+    && chown -R root: /home/runner \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+COPY scripts/entrypoint.sh /home/runner/entrypoint.sh
+RUN chmod +x /home/runner/entrypoint.sh
+ENTRYPOINT ["/home/runner/entrypoint.sh"]
+
+COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
