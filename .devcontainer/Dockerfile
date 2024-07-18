@@ -32,6 +32,11 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
+# Start PostgreSQL with custom configuration
+COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
+COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
+COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
+
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         curl \
@@ -47,6 +52,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         build-essential \
         zlib1g-dev \
         gettext \
+        gcc \
+        libc-dev \
         libpq-dev \              
         liblttng-ust1 \
         libcurl4-openssl-dev \
@@ -78,6 +85,10 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
+# Install pgvector
+RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
+RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
+
 WORKDIR /home/runner
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
     curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
@@ -92,10 +103,8 @@ COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Run command to start PostgreSQL with custom configuration
-COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
-COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
-COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
+# Make sure the extension can be loaded by PostgreSQL
+RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
