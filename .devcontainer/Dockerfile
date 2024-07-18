@@ -39,25 +39,26 @@ COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
-        curl \
-        wget \
-        unzip \
         apt-transport-https \
-        ca-certificates \
-        software-properties-common \
-        sudo \
-        supervisor \
-        jq \
-        iputils-ping \
         build-essential \
-        zlib1g-dev \
-        gettext \
+        ca-certificates \
+        curl \
         gcc \
+        gettext \
+        iputils-ping \
+        jq \
         libc-dev \
         libpq-dev \              
         liblttng-ust1 \
         libcurl4-openssl-dev \
-        openssh-client && \
+        openssh-client \
+        postgresql-server-dev-all \
+        software-properties-common \
+        sudo \
+        supervisor \
+        unzip \
+        wget \
+        zlib1g-dev && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
