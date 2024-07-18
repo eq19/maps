@@ -52,6 +52,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         liblttng-ust1 \
         libcurl4-openssl-dev \
         openssh-client \
+        plocate \
         postgresql-server-dev-all \
         software-properties-common \
         sudo \
