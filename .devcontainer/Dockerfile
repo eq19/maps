@@ -51,9 +51,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         iputils-ping \
         jq \
         libc-dev \
-        libpq-dev \              
-        liblttng-ust1 \
         libcurl4-openssl-dev \
+        liblttng-ust1 \
+        libpq-dev \              
         openssh-client \
         plocate \
         postgresql-server-dev-all \
