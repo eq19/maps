@@ -91,6 +91,9 @@ COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+COPY ["conf/postgresql.conf", "/etc/postgresql/postgresql.conf"]
+COPY ["conf/docker-entrypoint-initdb.d/*", "/docker-entrypoint-initdb.d/"]
+
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
