@@ -15,3 +15,6 @@ service --status-all
 
 echo -e "\n$hr\nLocate Initdb\n$hr"
 locate initdb
+
+echo -e "\n$hr\DB Cluster\n$hr"
+/etc/init.d/postgresql restart
