@@ -42,6 +42,6 @@
 	//"postCreateCommand": "service --status-all && python3 /maps/app.py"
 	//"postCreateCommand": "psql -t -P format=unaligned -c 'show hba_file';"
 	//"postCreateCommand": "service postgresql start"
-	"postCreateCommand": "service --status-all"
+	"postCreateCommand": "bash /opt/runner/job_started.sh"
 	
 }
