@@ -93,6 +93,7 @@ RUN cd /tmp && \
 # Install pgvector
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
 #RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
+#RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
 
 WORKDIR /home/runner
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
@@ -109,7 +110,6 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 # Make sure the extension can be loaded by PostgreSQL
-#RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
