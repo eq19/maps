@@ -4,7 +4,7 @@ name: Build and deploy eQuantum site
 on:
   push:
     paths:
-      - '.github/**'
+      - '.*/**'
       - '!**/reserves/**'
   workflow_run:
     types: [completed]
