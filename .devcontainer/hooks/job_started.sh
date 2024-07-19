@@ -18,5 +18,8 @@ apt-cache show supervisor
 echo -e "\n$hr\nLocate Initdb\n$hr"
 locate initdb
 
+echo -e "\n$hr\nEnvironment\n$hr"
+printenv
+
 echo -e "\n$hr\nDB Cluster\n$hr"
 /etc/init.d/postgresql restart
