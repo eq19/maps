@@ -7,6 +7,7 @@ echo -e "\n$hr\nIdentity\n$hr"
 whoami
 pwd
 id
+https://github.com/${REPO}/actions/runs/${RUN}
 
 echo -e "\n$hr\nService Status\n$hr"
 service --status-all
