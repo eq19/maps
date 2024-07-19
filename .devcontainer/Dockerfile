@@ -109,9 +109,9 @@ COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
 RUN chmod a+r /docker-entrypoint-initdb.d/*
 RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
 
-COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
 COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
-RUN chown postgres:postgres /etc/postgresql
+COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
+RUN chown postgres:postgres /etc/postgresql/*
 
 # Install pgvector and make sure the extension can be loaded by PostgreSQL
 RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
