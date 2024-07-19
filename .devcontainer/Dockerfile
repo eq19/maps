@@ -1,6 +1,5 @@
 ARG FROM=postgres:latest
 FROM ${FROM}
-USER postgres
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
@@ -35,11 +34,6 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.vcs-url="https://github.com/tcardonne/docker-github-runner" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
-
-# Start PostgreSQL with custom configuration
-COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
-COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
-COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
@@ -92,11 +86,6 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-# Install pgvector and make sure the extension can be loaded by PostgreSQL
-#RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
-#RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
-#RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
-
 WORKDIR /home/runner
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
     curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
@@ -111,10 +100,23 @@ COPY scripts/entrypoint.sh /home/runner/entrypoint.sh
 RUN chmod +x /home/runner/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 
-RUN chmod a+r /docker-entrypoint-initdb.d/*
-RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
-CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
-
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+# PostgreSQL with custom configuration
+COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
+RUN chmod a+r /docker-entrypoint-initdb.d/*
+RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
+
+COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
+COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
+RUN chown postgres:postgres /etc/postgresql
+
+USER postgres
+
+# Install pgvector and make sure the extension can be loaded by PostgreSQL
+RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
+RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
+RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
