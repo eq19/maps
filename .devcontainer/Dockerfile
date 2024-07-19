@@ -1,6 +1,6 @@
 ARG FROM=postgres:latest
-USER postgres
 FROM ${FROM}
+USER postgres
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG GIT_VERSION="2.26.2"
