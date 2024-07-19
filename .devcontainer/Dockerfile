@@ -37,9 +37,6 @@ COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
 COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
 COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
 
-RUN chmod a+r /docker-entrypoint-initdb.d/*
-RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
-
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         apt-transport-https \
@@ -80,6 +77,7 @@ RUN curl -L -o /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
     chmod +x /usr/local/bin/docker-compose
 
+RUN updatedb
 RUN cd /tmp && \
     curl -sL -o git.tgz \
     https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
@@ -90,7 +88,7 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-# Install pgvector
+# Install pgvector and make sure the extension can be loaded by PostgreSQL
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
 #RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
 #RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
@@ -109,7 +107,8 @@ COPY scripts/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
-# Make sure the extension can be loaded by PostgreSQL
+RUN chmod a+r /docker-entrypoint-initdb.d/*
+RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
