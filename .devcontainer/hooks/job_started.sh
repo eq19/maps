@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Structure: Cell Types – Modulo 6
 
-hr=--------------------------------------------------------------------------------
+export hr='%.s─' $(seq 1 $(tput cols))
+
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
 pwd
