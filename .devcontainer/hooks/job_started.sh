@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Structure: Cell Types – Modulo 6
 
-hr='-----------------------------------------'
+hr='------------------------------------------'
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
