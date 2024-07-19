@@ -116,8 +116,5 @@ RUN chown postgres:postgres /etc/postgresql/*
 # Install pgvector and make sure the extension can be loaded by PostgreSQL
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
 #RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
-
-USER postgres
-
-RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
+#RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
