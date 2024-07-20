@@ -104,6 +104,8 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
+RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz
+
 COPY requirements.txt requirements-dev.txt /tmp/pip-tmp/
 #RUN python3 -m pip install --upgrade pip \
    #&& python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
