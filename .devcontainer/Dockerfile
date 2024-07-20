@@ -91,9 +91,8 @@ RUN cd /tmp && \
 
 COPY requirements.txt requirements-dev.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip \
-  && python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt \
-  && pipx install pre-commit ruff \
-  && pre-commit install
+  && python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
+#RUN pipx install pre-commit ruff && pre-commit install
   
 # Install pgvector and make sure the extension can be loaded
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
