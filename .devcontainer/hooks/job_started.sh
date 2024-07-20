@@ -5,7 +5,7 @@ hr='------------------------------------------'
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-build 10001
+echo "build 10001"
 pwd
 id
 #https://github.com/${REPO}/actions/runs/${RUN}
