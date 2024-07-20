@@ -4,9 +4,15 @@
 
 hr='------------------------------------------'
 
+echo -e "\n$hr\nGroups\n$hr"
+getent group
+
+echo -e "\n$hr\nAll users\n$hr"
+getent passwd
+
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-echo "build 10002"
+echo "build 10003"
 pwd
 id
 
