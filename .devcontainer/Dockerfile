@@ -59,6 +59,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         libsqlite3-dev \
         libncurses5-dev \
         libncursesw5-dev \
+        libgdbm-dev \
+        libdb5.3-dev \
+        libexpat1-dev \
         llvm \
         musl-dev \            
         openssh-client \
@@ -102,8 +105,8 @@ RUN cd /tmp && \
     rm -rf /tmp/*
 
 COPY requirements.txt requirements-dev.txt /tmp/pip-tmp/
-RUN python3 -m pip install --upgrade pip \
-  && python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
+#RUN python3 -m pip install --upgrade pip \
+   #&& python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
 #RUN pipx install pre-commit ruff && pre-commit install
   
 # Install pgvector and make sure the extension can be loaded
