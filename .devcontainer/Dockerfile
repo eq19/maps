@@ -89,7 +89,7 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-COPY requirements.txt requriements-dev.txt /tmp/pip-tmp/
+COPY requirements.txt requirements-dev.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip \
   && python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt \
   && pipx install pre-commit ruff \
