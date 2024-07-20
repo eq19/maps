@@ -54,7 +54,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         openssh-client \
         plocate \
         postgresql-server-dev-all \
-        python3 python3-pip python3-dev \
+        python3 python3-pip python3-dev python3.10-dev \
         software-properties-common \
         sudo \
         supervisor \
