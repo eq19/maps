@@ -89,6 +89,12 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
+COPY requirements.txt requriements-dev.txt /tmp/pip-tmp/
+RUN python3 -m pip install --upgrade pip \
+  && python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt \
+  && pipx install pre-commit ruff \
+  && pre-commit install
+  
 # Install pgvector and make sure the extension can be loaded
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
 #RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
