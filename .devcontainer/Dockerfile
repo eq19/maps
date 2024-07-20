@@ -115,6 +115,7 @@ RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
 
 COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
+RUN rm /usr/lib/python3.*/EXTERNALLY-MANAGED
 RUN pip install -r /tmp/pip-tmp/requirements-dev.txt
 RUN pipx install pre-commit ruff && pre-commit install
   
