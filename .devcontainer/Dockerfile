@@ -1,4 +1,4 @@
-ARG FROM=postgres:latest
+iARG FROM=postgres:latest
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -15,7 +15,6 @@ ENV RUNNER_ALLOW_RUNASROOT=true
 
 ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
-ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
@@ -117,7 +116,7 @@ COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
 RUN rm /usr/lib/python3.*/EXTERNALLY-MANAGED
 RUN pip install -r /tmp/pip-tmp/requirements-dev.txt
-RUN pipx install pre-commit ruff && pre-commit install
+#RUN pipx install pre-commit ruff && pre-commit install
   
 # Install pgvector and make sure the extension can be loaded
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
