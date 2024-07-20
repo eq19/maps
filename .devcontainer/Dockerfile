@@ -35,8 +35,8 @@ LABEL maintainer="me@tcardonne.fr" \
 # Start PostgreSQL with custom configuration
 COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
 COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
-COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
-
+COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/        
+    
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
         apt-transport-https \
@@ -49,18 +49,29 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         jq \
         libc-dev \
         libcurl4-openssl-dev \
+        libffi-dev \
         liblttng-ust1 \
+        liblzma-dev \
         libpq-dev \
+        libssl-dev \
+        libbz2-dev \
+        libreadline-dev \
+        libsqlite3-dev \
+        libncurses5-dev \
+        libncursesw5-dev \
+        llvm \
         musl-dev \            
         openssh-client \
         plocate \
         postgresql-server-dev-all \
-        python3 python3-pip python3-dev \
+        python3 python3-pip python3-dev python3-openssl \
         software-properties-common \
         sudo \
         supervisor \
+        tk-dev \
         unzip \
         wget \
+        xz-utils \
         zlib1g-dev && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
