@@ -6,7 +6,7 @@ hr='------------------------------------------'
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-echo "build 10001"
+echo "build 10002"
 pwd
 id
 
