@@ -110,10 +110,11 @@ RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
     ./configure --enable-optimizations && \
     make -j 8 && make altinstall
 
-COPY requirements.txt requirements-dev.txt /tmp/pip-tmp/
-RUN python3 -m pip install --upgrade pip \
-   && python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
-RUN pipx install pre-commit ruff && pre-commit install
+COPY *.txt /tmp/pip-tmp/
+RUN pip install -r /tmp/pip-tmp/requirements-dev.txt
+#RUN python3 -m pip install --upgrade pip \
+    #&& python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
+#RUN pipx install pre-commit ruff && pre-commit install
   
 # Install pgvector and make sure the extension can be loaded
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
