@@ -12,15 +12,14 @@ ENV RUNNER_TOKEN=""
 ENV RUNNER_REPOSITORY_URL=""
 ENV RUNNER_LABELS=""
 ENV RUNNER_ALLOW_RUNASROOT=true
-
 ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
-
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
-RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
 ADD hooks /opt/runner
 RUN chmod +x /opt/runner/*.sh
+RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
 LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.schema-version="1.0" \
