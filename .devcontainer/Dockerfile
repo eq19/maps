@@ -12,8 +12,10 @@ ENV RUNNER_TOKEN=""
 ENV RUNNER_REPOSITORY_URL=""
 ENV RUNNER_LABELS=""
 ENV RUNNER_ALLOW_RUNASROOT=true
+
 ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
 ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
@@ -65,6 +67,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         llvm \
         musl-dev \            
         openssh-client \
+        pipx \
         plocate \
         postgresql-server-dev-all \
         python3 python3-pip python3-dev python3-openssl \
@@ -111,10 +114,9 @@ RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
     make -j 8 && make altinstall
 
 COPY *.txt /tmp/pip-tmp/
+RUN python3 -m pip install --upgrade pip
 RUN pip install -r /tmp/pip-tmp/requirements-dev.txt
-#RUN python3 -m pip install --upgrade pip \
-    #&& python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
-#RUN pipx install pre-commit ruff && pre-commit install
+RUN pipx install pre-commit ruff && pre-commit install
   
 # Install pgvector and make sure the extension can be loaded
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
