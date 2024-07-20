@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Structure: Cell Types – Modulo 6
+# Action https://github.com/${REPO}/actions/runs/${RUN}
 
 hr='------------------------------------------'
 
@@ -8,7 +9,6 @@ whoami
 echo "build 10001"
 pwd
 id
-#https://github.com/${REPO}/actions/runs/${RUN}
 
 echo -e "\n$hr\nService Status\n$hr"
 service --status-all
