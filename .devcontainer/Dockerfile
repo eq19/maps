@@ -104,12 +104,16 @@ RUN cd /tmp && \
     make install && \
     rm -rf /tmp/*
 
-RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz
+# Replace 8 with the number of CPU cores you want to allocate for the build process.
+RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
+    tar -xf Python-3.12.0.tgz && cd Python-3.12.0 && \
+    ./configure --enable-optimizations && \
+    make -j 8 && make altinstall
 
 COPY requirements.txt requirements-dev.txt /tmp/pip-tmp/
-#RUN python3 -m pip install --upgrade pip \
-   #&& python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
-#RUN pipx install pre-commit ruff && pre-commit install
+RUN python3 -m pip install --upgrade pip \
+   && python3 -m pip install --no-cache-dir install -r /tmp/pip-tmp/requirements-dev.txt
+RUN pipx install pre-commit ruff && pre-commit install
   
 # Install pgvector and make sure the extension can be loaded
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
@@ -137,5 +141,3 @@ CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
-#USER postgres
