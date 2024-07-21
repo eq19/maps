@@ -1,7 +1,8 @@
--r requirements.txt
-pre-commit
 ruff
 black
 pytest
+psycopg
 coverage
+pre-commit
 pytest-cov
+-r requirements.txt
