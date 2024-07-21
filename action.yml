@@ -30,7 +30,7 @@ inputs:
     description: 'The Bundler version'
     required: false
   image_tag:
-    description: 'The Jekyll website baseurl'
+    description: 'The image_tag website baseurl'
     default: 'latest'
     required: false
   pre_build_container:
@@ -58,6 +58,7 @@ runs:
         #runCmd: service postgresql start
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
+        imageTag: ${{ inputs.image_tag }}
         imageName: ${{ inputs.pre_build_container }}
         env: |
           INPUT_TOKEN=${{ inputs.token }}
