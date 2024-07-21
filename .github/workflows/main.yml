@@ -2,10 +2,10 @@
 name: Build and deploy eQuantum site
 
 on:
-  #push:
-    #paths:
-      #- '**/workflows/**'
-      #- '!**/reserves/**'
+  push:
+    paths:
+      - '**/workflows/**'
+      - '!**/reserves/**'
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -54,7 +54,7 @@ jobs:
         uses: eq19/lexer@v1
         id: set-runner
         with:
-          runnername: 'postgres'
+          runnername: 'pip-furl'
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
