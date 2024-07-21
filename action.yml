@@ -51,6 +51,8 @@ runs:
     
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
+      env: |
+        IMAGE_TAG=$image_tag
       with:
         push: always
         runCmd: ls -al /
@@ -58,10 +60,8 @@ runs:
         #runCmd: service postgresql start
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
-        imageTag: ${{ image_tag }}
+        imageTag: ${{ env.IMAGE_TAG }}
         imageName: ${{ inputs.pre_build_container }}
-        env: |
-          INPUT_TOKEN=${{ inputs.token }}
       #if: ${{ contains(github.repository, 'github.io') }}
 
     - name: Connect to PostgreSQL
