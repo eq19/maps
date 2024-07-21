@@ -12,7 +12,7 @@ getent passwd
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-echo "build 10007"
+echo "build 10008"
 pwd
 id
 
