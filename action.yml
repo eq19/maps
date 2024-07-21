@@ -29,8 +29,9 @@ inputs:
   bundler_ver:
     description: 'The Bundler version'
     required: false
-  jekyll_baseurl:
+  image_tag:
     description: 'The Jekyll website baseurl'
+    default: 'latest'
     required: false
   pre_build_container:
     description: 'The pre-build docker container'
