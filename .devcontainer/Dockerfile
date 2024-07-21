@@ -94,7 +94,6 @@ RUN curl -L -o /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
     chmod +x /usr/local/bin/docker-compose
 
-RUN updatedb
 RUN cd /tmp && \
     curl -sL -o git.tgz \
     https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
@@ -106,7 +105,8 @@ RUN cd /tmp && \
     rm -rf /tmp/*
 
 # Replace 8 with the number of CPU cores you want to allocate for the build process.
-RUN wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
+RUN cd /tmp && \
+    wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
     tar -xf Python-3.12.0.tgz && cd Python-3.12.0 && \
     ./configure --enable-optimizations && \
     make -j 8 && make altinstall
@@ -115,13 +115,13 @@ COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
 RUN rm /usr/lib/python3.*/EXTERNALLY-MANAGED
 RUN pip install -r /tmp/pip-tmp/requirements-dev.txt
-#RUN pipx install pre-commit ruff && pre-commit install
   
 # Install pgvector and make sure the extension can be loaded
 #RUN wget https://github.com/pgvector/pgvector/archive/refs/tags/v0.2.1.tar.gz
 #RUN tar -xzf v0.2.1.tar.gz && cd pgvector-0.2.1 && make && make install
 #RUN echo "shared_preload_libraries = 'vector'" >> /etc/postgresql/postgresql.conf
 
+RUN updatedb
 WORKDIR /home/runner
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
     curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
