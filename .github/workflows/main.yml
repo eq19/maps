@@ -56,7 +56,6 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-          runnername: '${{ steps.build-image.outputs.image_tag }}'
 
     outputs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
