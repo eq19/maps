@@ -54,7 +54,7 @@ jobs:
         uses: eq19/lexer@v1
         id: set-runner
         with:
-          runnername: 'psycopg'
+          runnername: 'postgres'
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
