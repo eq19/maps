@@ -41,6 +41,6 @@ echo -e "\n$hr\nExecutables\n$hr"
 find ${PATH//:/ } -maxdepth 1 -executable | sort
 
 echo -e "\n$hr\nDockerfile\n$hr"
-
+find / -type f -name "Dockerfile"
 
 echo -e "\n$hr\nTensorflow\n$hr"
