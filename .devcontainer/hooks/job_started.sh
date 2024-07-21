@@ -12,7 +12,7 @@ getent passwd
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-echo "build 10005"
+echo "build 10006"
 pwd
 id
 
@@ -30,3 +30,14 @@ printenv
 
 echo -e "\n$hr\nDB Cluster\n$hr"
 /etc/init.d/postgresql restart
+
+echo -e "\n$hr\nDisk Structure\n$hr"
+df -h
+
+echo -e "\n$hr\nExecutables\n$hr"
+
+
+echo -e "\n$hr\nDockerfile\n$hr"
+
+
+echo -e "\n$hr\nTensorflow\n$hr"
