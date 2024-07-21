@@ -58,7 +58,7 @@ runs:
         #runCmd: service postgresql start
         skipContainerUserIdUpdate: true
         cacheFrom: tcardonne/github-runner
-        imageTag: $image_tag
+        imageTag: ${{ image_tag }}
         imageName: ${{ inputs.pre_build_container }}
         env: |
           INPUT_TOKEN=${{ inputs.token }}
