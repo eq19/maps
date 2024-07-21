@@ -106,11 +106,11 @@ RUN cd /tmp && \
     rm -rf /tmp/*
 
 # Replace 8 with the number of CPU cores you want to allocate for the build process.
-RUN cd /tmp && \
-    wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
-    tar -xf Python-3.12.0.tgz && cd Python-3.12.0 && \
-    ./configure --enable-optimizations && \
-    make -j 8 && make altinstall
+#RUN cd /tmp && \
+    #wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
+    #tar -xf Python-3.12.0.tgz && cd Python-3.12.0 && \
+    #./configure --enable-optimizations && \
+    #make -j 8 && make altinstall
 
 COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
