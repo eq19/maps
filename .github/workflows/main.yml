@@ -47,7 +47,7 @@ jobs:
         uses: eq19/feed@v3
         id: build-image
         with:
-          image_tag: "cloud"
+          image_tag: "build"
           credentials: ${{ secrets.GCP_CREDENTIALS }}
   
       - name: 🔧 Setup Lexer on Cloud
