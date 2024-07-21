@@ -133,9 +133,9 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-COPY scripts/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+COPY scripts/entrypoint.sh /home/runner/entrypoint.sh
+RUN chmod +x /home/runner/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 
 RUN chmod a+r /docker-entrypoint-initdb.d/*
 RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
