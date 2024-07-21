@@ -2,10 +2,10 @@
 name: Build and deploy eQuantum site
 
 on:
-  push:
-    paths:
-      - '.*/**'
-      - '!**/reserves/**'
+  #push:
+    #paths:
+      #- '**/workflows/**'
+      #- '!**/reserves/**'
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
