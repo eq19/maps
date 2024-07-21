@@ -39,8 +39,6 @@ jobs:
       - name: 🪂 Pre-build Maps
         uses: eq19/maps@v2
         with:
-          image_name: "prime"
-          image_tag: "latest"
           token: ${{ secrets.ACCESS_TOKEN }}
           docker_hub_username: ${{ github.actor }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -49,6 +47,7 @@ jobs:
         uses: eq19/feed@v3
         id: build-image
         with:
+          image_tag: "entrypoint"
           credentials: ${{ secrets.GCP_CREDENTIALS }}
   
       - name: 🔧 Setup Lexer on Cloud
@@ -57,7 +56,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-          runnername: '${{ steps.build-image.outputs.image_tag }}'
+          runnername: '${{ steps.build-image.inputs.image_tag }}'
 
     outputs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
