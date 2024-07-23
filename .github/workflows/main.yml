@@ -28,23 +28,11 @@ env:
   
 jobs:
   determine-runner:
-    runs-on: self-hosted
+    runs-on: windows-latest
     services:
-      postgres:
-        image: postgres:latest
+      nanoserver:
+        image: mcr.microsoft.com/windows/nanoserver:ltsc2022
 
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_DB: postgres
-
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v4
@@ -83,7 +71,7 @@ jobs:
       fail-fast: false
       matrix:
         #node_version: [8, 10, 12]
-        os: [windows-latest, ubuntu-latest]
+        os: [self-hosted, ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
@@ -91,6 +79,23 @@ jobs:
     # Runs on workflow_run.conclusion
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
+
+    services:
+      postgres:
+        image: postgres:latest
+
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: 📂 Checkout
