@@ -70,7 +70,7 @@ jobs:
     needs: determine-runner
 
     strategy:
-      max-parallel: 2
+      max-parallel: 1
       fail-fast: false
       matrix:
         #node_version: [8, 10, 12]
