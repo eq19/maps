@@ -53,27 +53,15 @@ jobs:
       - name: 🪂 Pre-build Maps
         #uses: eq19/maps@v2
         uses: eq19/grammar@v1
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          docker_hub_username: ${{ github.actor }}
-          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: 🚀 Build Feed on Linux
         if: runner.os == 'Ubuntu'
         #uses: eq19/feed@v3
         uses: eq19/syntax@v2
-        id: build-image
-        with:
-          image_tag: "build"
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
   
       - name: 🔧 Setup Lexer on Cloud
         uses: eq19/parser@v1
         #uses: eq19/lexer@v1
-        id: set-runner
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
 
     outputs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
@@ -106,11 +94,21 @@ jobs:
         #uses: eq19/parser@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
+          docker_hub_username: ${{ github.actor }}
+          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
 
       - name: ♻️ Evaluate Syntax
         uses: eq19/feed@v3
         #uses: eq19/syntax@v2
+        id: build-image
+        with:
+          image_tag: "build"
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🏃‍♂️ Set Grammar Rules
         uses: eq19/lexer@v1
         #uses: eq19/grammar@v1
+        id: set-runner
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
