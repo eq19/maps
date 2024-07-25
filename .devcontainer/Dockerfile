@@ -47,6 +47,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         iputils-ping \
         liblttng-ust0 \
         libcurl4-openssl-dev \
+        libpq-dev \
         iputils-ping \
         jq \
         openssh-client \
