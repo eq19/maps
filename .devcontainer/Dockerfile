@@ -40,7 +40,6 @@ COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/
     
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
-        apt-transport-https \
         unzip \
         apt-transport-https \
         ca-certificates \
