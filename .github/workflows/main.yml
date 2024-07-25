@@ -34,6 +34,7 @@ jobs:
         image: postgres:latest
         env:
           POSTGRES_DB: postgres
+          POSTGRES_HOST: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         options: >-
