@@ -28,7 +28,7 @@ env:
   
 jobs:
   determine-runner:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres
