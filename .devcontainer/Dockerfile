@@ -92,7 +92,7 @@ RUN cd /tmp && \
 
 COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
-RUN rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+RUN rm -rf /usr/lib/python3.*/EXTERNALLY-MANAGED
 RUN pip install -r /tmp/pip-tmp/requirements-dev.txt
   
 # Install pgvector and make sure the extension can be loaded
