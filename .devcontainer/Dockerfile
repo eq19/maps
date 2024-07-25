@@ -50,6 +50,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         libpq-dev \
         iputils-ping \
         jq \
+        npm \
         openssh-client \
         plocate \
         software-properties-common \
