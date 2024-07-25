@@ -1,4 +1,4 @@
-ARG FROM=postgres:latest
+ARG FROM=google/cloud-sdk:latest
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
