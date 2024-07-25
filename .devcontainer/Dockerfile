@@ -117,9 +117,9 @@ COPY scripts/entrypoint.sh /home/runner/entrypoint.sh
 RUN chmod +x /home/runner/entrypoint.sh
 ENTRYPOINT ["/home/runner/entrypoint.sh"]
 
-RUN chmod a+r /docker-entrypoint-initdb.d/*
-RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
-CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+#RUN chmod a+r /docker-entrypoint-initdb.d/*
+#RUN chown postgres:postgres /docker-entrypoint-initdb.d/*
+#CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
 
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod 644 /etc/supervisor/conf.d/supervisord.conf
