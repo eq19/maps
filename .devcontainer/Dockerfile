@@ -51,6 +51,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         iputils-ping \
         jq \
         openssh-client \
+        plocate \
         software-properties-common \
         sudo \
         supervisor \
