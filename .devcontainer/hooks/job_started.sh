@@ -32,7 +32,7 @@ echo -e "\n$hr\nEnvironment\n$hr"
 printenv
 
 echo -e "\n$hr\nDB Cluster\n$hr"
-/etc/init.d/postgresql restart
+#/etc/init.d/postgresql restart
 
 echo -e "\n$hr\nDisk Structure\n$hr"
 df -h
