@@ -34,9 +34,9 @@ LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
 # Start PostgreSQL with custom configuration
-COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
-COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
-COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/        
+#COPY conf/pg_hba.conf /etc/postgresql/pg_hba.conf
+#COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
+#COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/        
     
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y \
@@ -67,14 +67,14 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
     dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install Docker CLI
-RUN curl -fsSL https://get.docker.com -o- | sh && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+#RUN curl -fsSL https://get.docker.com -o- | sh && \
+    #rm -rf /var/lib/apt/lists/* && \
+    #apt-get clean
 
 # Install Docker-Compose
-RUN curl -L -o /usr/local/bin/docker-compose \
-    "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
-    chmod +x /usr/local/bin/docker-compose
+#RUN curl -L -o /usr/local/bin/docker-compose \
+    #"https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
+    #chmod +x /usr/local/bin/docker-compose
 
 RUN cd /tmp && \
     curl -sL -o git.tgz \
