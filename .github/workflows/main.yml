@@ -100,7 +100,7 @@ jobs:
         #uses: eq19/syntax@v2
         id: build-image
         with:
-          image_tag: "trigger"
+          image_tag: "nodejs"
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🏃‍♂️ Set Grammar Rules
