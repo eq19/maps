@@ -48,7 +48,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         liblttng-ust1 \
         libcurl4-openssl-dev \
         libpq-dev \
-        libssl1.1 \
         iputils-ping \
         jq \
         npm \
@@ -64,8 +63,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get clean
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
-#RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
-    #dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
+    dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install Docker CLI
 #RUN curl -fsSL https://get.docker.com -o- | sh && \
