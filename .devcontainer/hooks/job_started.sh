@@ -38,7 +38,13 @@ echo -e "\n$hr\nDisk Structure\n$hr"
 df -h
 
 echo -e "\n$hr\nExecutables\n$hr"
-find ${PATH//:/ } -maxdepth 0 -executable | sort
+find ${PATH//:/ } -maxdepth 1 -executable | sort
+find /mnt/disks/Linux/bin -maxdepth 1 -executable | sort
+find /mnt/disks/Linux/sbin -maxdepth 1 -executable | sort
+find /mnt/disks/Linux/usr/bin -maxdepth 1 -executable | sort
+find /mnt/disks/Linux/usr/local/bin -maxdepth 1 -executable | sort
+find /mnt/disks/Linux/usr/local/sbin -maxdepth 1 -executable | sort
+find /mnt/disks/Linux/usr/sbin -maxdepth 1 -executable | sort
 
 echo -e "\n$hr\nDockerfile\n$hr"
 #find / -type f -name "Dockerfile"
