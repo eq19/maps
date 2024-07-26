@@ -38,9 +38,9 @@ echo -e "\n$hr\nDisk Structure\n$hr"
 df -h
 
 echo -e "\n$hr\nExecutables\n$hr"
-find ${PATH//:/ } -maxdepth 1 -executable | sort
+find ${PATH//:/mnt } -maxdepth 0 -executable | sort
 
 echo -e "\n$hr\nDockerfile\n$hr"
-find / -type f -name "Dockerfile"
+#find / -type f -name "Dockerfile"
 
 echo -e "\n$hr\nTensorflow\n$hr"
