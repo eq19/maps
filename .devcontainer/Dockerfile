@@ -43,6 +43,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         apt-transport-https \
         build-essential \
         ca-certificates \
+        curl \
         gettext \
         iputils-ping \
         liblttng-ust1 \
