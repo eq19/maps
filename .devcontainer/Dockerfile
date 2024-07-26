@@ -1,4 +1,4 @@
-ARG FROM=google/cloud-sdk:latest
+ARG FROM=debian:stable-slim
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -45,7 +45,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         ca-certificates \
         gettext \
         iputils-ping \
-        liblttng-ust0 \
+        liblttng-ust1 \
         libcurl4-openssl-dev \
         libpq-dev \
         libssl1.1 \
