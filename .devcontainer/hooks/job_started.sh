@@ -45,7 +45,7 @@ echo -e "\n$hr\nDockerfile\n$hr"
 find / -type f -name "Dockerfile"
 
 echo -e "\n$hr\nTensorflow\n$hr"
-find / -type f -name "tensorflow"
+find / -type d -name "tensorflow*"
 
 echo -e "\n$hr\nLocate python\n$hr"
 locate python
