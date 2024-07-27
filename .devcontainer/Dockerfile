@@ -54,6 +54,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         npm \
         openssh-client \
         plocate \
+        python3-pip \
         software-properties-common \
         sudo \
         supervisor \
