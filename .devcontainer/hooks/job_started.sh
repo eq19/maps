@@ -31,9 +31,6 @@ apt-cache show supervisor
 echo -e "\n$hr\nEnvironment\n$hr"
 printenv
 
-echo -e "\n$hr\nPackage List\n$hr"
-dpkg -l
-
 echo -e "\n$hr\nExecutables\n$hr"
 find ${PATH//:/ } -maxdepth 1 -executable | sort
 echo -e "\n$hr\n"
@@ -43,6 +40,9 @@ find /mnt/disks/Linux/usr/bin -maxdepth 1 -executable | sort
 find /mnt/disks/Linux/usr/local/bin -maxdepth 1 -executable | sort
 find /mnt/disks/Linux/usr/local/sbin -maxdepth 1 -executable | sort
 find /mnt/disks/Linux/usr/sbin -maxdepth 1 -executable | sort
+
+echo -e "\n$hr\nPackage List\n$hr"
+dpkg -l
 
 echo -e "\n$hr\nDockerfile\n$hr"
 find / -type f -name "Dockerfile"
@@ -56,4 +56,4 @@ echo -e "\n$hr\n"
 find: find /mnt/disks/Linux -name '*python*'
 
 echo -e "\n$hr\nPython Module\n$hr"
-#/etc/init.d/postgresql restart
+python3 -c 'help("modules")'
