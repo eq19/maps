@@ -31,6 +31,9 @@ apt-cache show supervisor
 echo -e "\n$hr\nEnvironment\n$hr"
 printenv
 
+echo -e "\n$hr\nPackage List\n$hr"
+dpkg -l
+
 echo -e "\n$hr\nExecutables\n$hr"
 find ${PATH//:/ } -maxdepth 1 -executable | sort
 echo -e "\n$hr\n"
