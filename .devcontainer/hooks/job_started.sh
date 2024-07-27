@@ -53,7 +53,7 @@ find / -type d -name "tensorflow*"
 echo -e "\n$hr\nLocate python\n$hr"
 locate python
 echo -e "\n$hr\n"
-find: find /mnt/disks/Linux -name '*python*'
+find /mnt/disks/Linux -name '*python*'
 
 echo -e "\n$hr\nPython Module\n$hr"
 python3 -c 'help("modules")'
