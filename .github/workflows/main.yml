@@ -85,7 +85,7 @@ jobs:
         #uses: eq19/syntax@v2
         id: build-image
         with:
-          image_tag: "stable"
+          image_tag: "instance"
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🏃‍♂️ Set Grammar Rules
