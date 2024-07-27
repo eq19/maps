@@ -12,7 +12,7 @@ getent passwd
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-echo "build 10012"
+echo "build 10013"
 pwd
 id
 
@@ -50,10 +50,10 @@ find / -type f -name "Dockerfile"
 echo -e "\n$hr\nTensorflow\n$hr"
 find / -type d -name "tensorflow*"
 
-echo -e "\n$hr\nLocate python\n$hr"
+echo -e "\n$hr\nLocate Python\n$hr"
 locate python
 echo -e "\n$hr\n"
 find /mnt/disks/Linux -name '*python*'
 
-echo -e "\n$hr\nPython Module\n$hr"
-python3 -c 'help("modules")'
+echo -e "\n$hr\nPython Modules\n$hr"
+/mnt/disks/Linux/usr/bin/python3 -c 'help("modules")'
