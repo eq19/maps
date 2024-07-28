@@ -70,15 +70,15 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
     dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install Docker CLI
-#RUN curl -fsSL https://get.docker.com -o- | sh && \
-    #rm -rf /var/lib/apt/lists/* && \
-    #apt-get clean
+RUN curl -fsSL https://get.docker.com -o- | sh && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Docker Engine.
-RUN apt-get update \
-    && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update \
+    #&& apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
+    #&& apt-get clean \
+    #&& rm -rf /var/lib/apt/lists/*
 
 COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
