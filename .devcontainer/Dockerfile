@@ -75,19 +75,15 @@ RUN curl -fsSL https://get.docker.com -o- | sh && \
     apt-get clean
 
 # Install Docker-Compose
-RUN curl -L -o /usr/local/bin/docker-compose \
-    "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
-    chmod +x /usr/local/bin/docker-compose
+#RUN curl -L -o /usr/local/bin/docker-compose \
+    #"https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
+    #chmod +x /usr/local/bin/docker-compose
 
-#RUN cd /tmp && \
-    #curl -sL -o git.tgz \
-    #https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
-    #tar zxf git.tgz  && \
-    #cd git-${GIT_VERSION}  && \
-    #./configure --prefix=/usr  && \
-    #make && \
-    #make install && \
-    #rm -rf /tmp/*
+# Install Docker Engine.
+RUN apt-get update \
+    && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
