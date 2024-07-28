@@ -79,6 +79,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           docker_hub_username: ${{ github.actor }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: ♻️ Evaluate Syntax
         uses: eq19/feed@v3
