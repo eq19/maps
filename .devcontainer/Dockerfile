@@ -45,6 +45,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
         ca-certificates \
         curl \
         gettext \
+        git \
         iputils-ping \
         liblttng-ust1 \
         libcurl4-openssl-dev \
@@ -78,22 +79,15 @@ RUN curl -L -o /usr/local/bin/docker-compose \
     "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
     chmod +x /usr/local/bin/docker-compose
 
-RUN cd /tmp && \
-    curl -sL -o git.tgz \
-    https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
-    tar zxf git.tgz  && \
-    cd git-${GIT_VERSION}  && \
-    ./configure --prefix=/usr  && \
-    make && \
-    make install && \
-    rm -rf /tmp/*
-
-# Replace 8 with the number of CPU cores you want to allocate for the build process.
 #RUN cd /tmp && \
-    #wget https://www.python.org/ftp/python/3.12.0/Python-3.12.0.tgz && \
-    #tar -xf Python-3.12.0.tgz && cd Python-3.12.0 && \
-    #./configure --enable-optimizations && \
-    #make -j 8 && make altinstall
+    #curl -sL -o git.tgz \
+    #https://www.kernel.org/pub/software/scm/git/git-${GIT_VERSION}.tar.gz && \
+    #tar zxf git.tgz  && \
+    #cd git-${GIT_VERSION}  && \
+    #./configure --prefix=/usr  && \
+    #make && \
+    #make install && \
+    #rm -rf /tmp/*
 
 COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
