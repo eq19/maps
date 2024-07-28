@@ -12,7 +12,6 @@ getent passwd
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-echo "build 10013"
 pwd
 id
 
@@ -42,6 +41,7 @@ find /mnt/disks/Linux/usr/local/sbin -maxdepth 1 -executable | sort
 find /mnt/disks/Linux/usr/sbin -maxdepth 1 -executable | sort
 
 echo -e "\n$hr\nPackage List\n$hr"
+#locate python
 dpkg -l
 
 echo -e "\n$hr\nDockerfile\n$hr"
@@ -50,12 +50,9 @@ find / -type f -name "Dockerfile"
 echo -e "\n$hr\nTensorflow\n$hr"
 find / -type d -name "tensorflow*"
 
-echo -e "\n$hr\nLocate Python\n$hr"
-locate python
-
 if [ -d /mnt/disks/Linux ]; then
-  echo -e "\n$hr\n"
-  find /mnt/disks/Linux -name '*python*'
+  echo -e "\n$hr\nLocate Python\n$hr" 
+  find /mnt/disks/Linux -type d -name '*python*'
 
   echo -e "\n$hr\nPython Modules\n$hr"
   /mnt/disks/Linux/usr/bin/python3 -c 'help("modules")'
