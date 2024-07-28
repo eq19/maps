@@ -6,7 +6,6 @@ ARG GIT_VERSION="2.26.2"
 ARG GH_RUNNER_VERSION
 ARG DOCKER_COMPOSE_VERSION="1.27.4"
 
-ENV LANG en_US.UTF-8
 ENV RUNNER_NAME=""
 ENV RUNNER_TOKEN=""
 ENV RUNNER_REPOSITORY_URL=""
@@ -39,16 +38,8 @@ LABEL maintainer="me@tcardonne.fr" \
 #COPY conf/postgresql.conf /etc/postgresql/postgresql.conf
 #COPY conf/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/        
 
-RUN apt-get update
-RUN apt-get install -y locales apt-utils
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    dpkg-reconfigure locales && \
-    update-locale LANG=en_US.UTF-8
-
-#RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    #apt-get install -y \
-
-RUN apt-get -qq install --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get update && apt-get install -y \
         apt-transport-https \
         build-essential \
         ca-certificates \
