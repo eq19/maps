@@ -62,22 +62,17 @@ RUN DEBIAN_FRONTEND=noninteractive \
         unzip \
         wget \
         zlib1g-dev && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Find the most recent 1.1 libssl package in the ubuntu archives
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && \
     dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install Docker CLI
-RUN curl -fsSL https://get.docker.com -o- | sh && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
-
-# Install Docker-Compose
-#RUN curl -L -o /usr/local/bin/docker-compose \
-    #"https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" && \
-    #chmod +x /usr/local/bin/docker-compose
+#RUN curl -fsSL https://get.docker.com -o- | sh && \
+    #rm -rf /var/lib/apt/lists/* && \
+    #apt-get clean
 
 # Install Docker Engine.
 RUN apt-get update \
@@ -103,8 +98,8 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     ./bin/installdependencies.sh && \
     chown -R root: /home/runner && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY scripts/entrypoint.sh /home/runner/entrypoint.sh
 RUN chmod +x /home/runner/entrypoint.sh
