@@ -60,7 +60,7 @@ jobs:
         with:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: 🏃‍♂️ Lexering on Cloud
+      - name: 🏃‍♂️ Lexering Cloud
         uses: eq19/lexer@v1
         id: set-runner
         with:
