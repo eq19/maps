@@ -70,9 +70,12 @@ jobs:
     outputs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
 
-  determine-parser:
+  setup-parser:
     needs: lexering
-    runs-on: self-hosted
+    strategy:
+      matrix:
+        os: [self-hosted]
+    runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
     steps:
