@@ -27,30 +27,6 @@ env:
   ACTOR: ${{ github.triggering_actor }}
   
 jobs:
-  determine-runner:
-    runs-on: self-hosted
-    steps:
-      - name: 📂 Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          
-      - name: 🪂 Pre-build Maps
-        #uses: eq19/maps@v2
-        uses: eq19/grammar@v1
-
-      - name: 🚀 Build Feed on Linux
-        if: runner.os == 'Ubuntu'
-        #uses: eq19/feed@v3
-        uses: eq19/syntax@v2
-  
-      - name: 🔧 Setup Lexer on Cloud
-        uses: eq19/parser@v1
-        #uses: eq19/lexer@v1
-
-    outputs:
-      runner: ${{ steps.set-runner.outputs.use-runner }}
-
   github-pages:
     strategy:
       max-parallel: 1
@@ -59,8 +35,6 @@ jobs:
         #node_version: [8, 10, 12]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
-    needs: determine-runner
     # Runs on workflow_run.conclusion
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
@@ -95,3 +69,30 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+          
+    outputs:
+      runner: ${{ steps.set-runner.outputs.use-runner }}
+
+  determine-runner:
+    needs: github-pages
+    runs-on: self-hosted
+    #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          
+      - name: 🪂 Pre-build Maps
+        #uses: eq19/maps@v2
+        uses: eq19/grammar@v1
+
+      - name: 🚀 Build Feed on Linux
+        if: runner.os == 'Ubuntu'
+        #uses: eq19/feed@v3
+        uses: eq19/syntax@v2
+  
+      - name: 🔧 Setup Lexer on Cloud
+        uses: eq19/parser@v1
+        #uses: eq19/lexer@v1
