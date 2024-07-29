@@ -30,30 +30,36 @@ apt-cache show supervisor
 echo -e "\n$hr\nEnvironment\n$hr"
 printenv
 
-echo -e "\n$hr\nExecutables\n$hr"
-find ${PATH//:/ } -maxdepth 1 -executable | sort
-echo -e "\n$hr\n"
-find /mnt/disks/Linux/bin -maxdepth 1 -executable | sort
-find /mnt/disks/Linux/sbin -maxdepth 1 -executable | sort
-find /mnt/disks/Linux/usr/bin -maxdepth 1 -executable | sort
-find /mnt/disks/Linux/usr/local/bin -maxdepth 1 -executable | sort
-find /mnt/disks/Linux/usr/local/sbin -maxdepth 1 -executable | sort
-find /mnt/disks/Linux/usr/sbin -maxdepth 1 -executable | sort
-
 echo -e "\n$hr\nPackage List\n$hr"
-#locate python
 dpkg -l
 
-echo -e "\n$hr\nDockerfile\n$hr"
-find / -type f -name "Dockerfile"
+echo -e "\n$hr\nExecutables\n$hr"
+find ${PATH//:/ } -maxdepth 1 -executable | sort
 
-echo -e "\n$hr\nTensorflow\n$hr"
-find / -type d -name "tensorflow*"
+if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
+  
+  echo -e "\n$hr\n"
 
-if [ -d /mnt/disks/Linux ]; then
-  echo -e "\n$hr\nLocate Python\n$hr" 
-  find /mnt/disks/Linux -type d -name '*python*'
+  find /mnt/disks/Linux/bin -maxdepth 1 -executable | sort
+  find /mnt/disks/Linux/sbin -maxdepth 1 -executable | sort
+  find /mnt/disks/Linux/usr/bin -maxdepth 1 -executable | sort
+  find /mnt/disks/Linux/usr/local/bin -maxdepth 1 -executable | sort
+  find /mnt/disks/Linux/usr/local/sbin -maxdepth 1 -executable | sort
+  find /mnt/disks/Linux/usr/sbin -maxdepth 1 -executable | sort
+
+  cd /mnt/disks/Linux 
+  
+  echo -e "\n$hr\nDockerfile\n$hr"
+  find . -type f -name "Dockerfile"
+
+  echo -e "\n$hr\nTensorflow\n$hr"
+  find . -type d -name "tensorflow*"
 
   echo -e "\n$hr\nPython Modules\n$hr"
   /mnt/disks/Linux/usr/bin/python3 -c 'help("modules")'
+
+  echo -e "\n$hr\nLocate Python\n$hr" 
+  find . -type d -name '*python*'
+  #locate python
+
 fi
