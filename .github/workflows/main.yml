@@ -54,7 +54,7 @@ jobs:
   github-pages:
     strategy:
       max-parallel: 1
-      fail-fast: false
+      fail-fast: true
       matrix:
         #node_version: [8, 10, 12]
         os: [ubuntu-latest, windows-latest]
