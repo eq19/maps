@@ -58,7 +58,7 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
   echo -e "\n$hr\n"
   find /mnt/disks/Linux -type f -name "requirements*.txt" | sort
 
-  echo -e "\n$hr\nLocate Initdb\n$hr" 
-  find /mnt/disks/Linux -type f -name "initdb*" | sort
+  echo -e "\n$hr\nLocate SQL\n$hr" 
+  find /mnt/disks/Linux -type f -name "*.sql" | sort
 
 fi
