@@ -42,7 +42,7 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
   find /mnt/disks/Linux -maxdepth 3 -executable | sort 
   
   echo -e "\n$hr\nPackage List\n$hr"
-  dpkg -l | sort
+  /mnt/disks/Linux/usr/bin/dpkg -l | sort
 
   echo -e "\n$hr\nPython Modules\n$hr"
   /mnt/disks/Linux/usr/bin/python3 -c 'help("modules")'
