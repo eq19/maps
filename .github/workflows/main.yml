@@ -78,6 +78,21 @@ jobs:
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+          
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v4
@@ -85,11 +100,11 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           
       - name: 🪂 Setup Parser
-        uses: eq19/grammar@v1
+        uses: eq19/parser@v1
 
       - name: 🚀 Evaluate Syntax
         if: runner.os == 'Ubuntu'
         uses: eq19/syntax@v2
   
       - name: 🔧 Set Grammar Rules 
-        uses: eq19/parser@v1
+        uses: eq19/grammar@v1
