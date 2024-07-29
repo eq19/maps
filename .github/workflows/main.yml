@@ -45,7 +45,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: ⚙️ Pre-build Maps
+      - name: ⚙️ Build Maps
         uses: eq19/maps@v2
         with:
           image_name: prime
