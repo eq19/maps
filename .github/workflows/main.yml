@@ -27,7 +27,7 @@ env:
   ACTOR: ${{ github.triggering_actor }}
   
 jobs:
-  github-pages:
+  lexering:
     strategy:
       max-parallel: 1
       fail-fast: true
@@ -45,9 +45,8 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: ⚙️ Setup Parser
+      - name: ⚙️ Pre-build Maps
         uses: eq19/maps@v2
-        #uses: eq19/parser@v1
         with:
           image_name: prime
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -55,16 +54,14 @@ jobs:
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: ♻️ Evaluate Syntax
+      - name: ♻️ Feed Mapping
         uses: eq19/feed@v3
-        #uses: eq19/syntax@v2
         id: build-image
         with:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: 🏃‍♂️ Set Grammar Rules
+      - name: 🏃‍♂️ Lexering on Cloud
         uses: eq19/lexer@v1
-        #uses: eq19/grammar@v1
         id: set-runner
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -73,8 +70,8 @@ jobs:
     outputs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
 
-  determine-runner:
-    needs: github-pages
+  determine-parser:
+    needs: lexering
     runs-on: self-hosted
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
@@ -84,15 +81,12 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           
-      - name: 🪂 Pre-build Maps
-        #uses: eq19/maps@v2
+      - name: 🪂 Setup Parser
         uses: eq19/grammar@v1
 
-      - name: 🚀 Build Feed on Linux
+      - name: 🚀 Evaluate Syntax
         if: runner.os == 'Ubuntu'
-        #uses: eq19/feed@v3
         uses: eq19/syntax@v2
   
-      - name: 🔧 Setup Lexer on Cloud
+      - name: 🔧 Set Grammar Rules 
         uses: eq19/parser@v1
-        #uses: eq19/lexer@v1
