@@ -60,7 +60,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
-    #needs: determine-runner
+    needs: determine-runner
     # Runs on workflow_run.conclusion
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
