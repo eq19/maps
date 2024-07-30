@@ -80,11 +80,12 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:latest
         env:
-          POSTGRES_HOST_AUTH_METHOD: trust
+          POSTGRES_DB: postgres
           POSTGRES_USER: postgres
-          #POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres          
+          #POSTGRES_HOST_AUTH_METHOD: trust
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
