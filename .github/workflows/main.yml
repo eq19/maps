@@ -86,6 +86,7 @@ jobs:
           POSTGRES_USER: postgres
           #POSTGRES_DB: postgres
         options: >-
+          --add-host host.docker.internal:host-gateway
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
