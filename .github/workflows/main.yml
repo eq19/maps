@@ -101,10 +101,19 @@ jobs:
           
       - name: 🪂 Setup Parser
         uses: eq19/parser@v1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🚀 Evaluate Syntax
         if: runner.os == 'Ubuntu'
         uses: eq19/syntax@v2
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
   
       - name: 🔧 Set Grammar Rules 
         uses: eq19/grammar@v1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
