@@ -46,7 +46,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: ⚙️ Build Maps
-        uses: eq19/maps@v2
+        uses: eq19/maps@v1
         with:
           image_name: prime
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -61,7 +61,7 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🏃‍♂️ Lexering Cloud
-        uses: eq19/lexer@v1
+        uses: eq19/lexer@v2
         id: set-runner
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
