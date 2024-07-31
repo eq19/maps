@@ -76,6 +76,7 @@ jobs:
       matrix:
         os: [self-hosted]
     runs-on: ${{ matrix.os }}
+    #runs-on: ubuntu-latest (build#995)
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
     services:
