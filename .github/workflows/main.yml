@@ -80,13 +80,13 @@ jobs:
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
     # Docker Hub image that `container-job` executes in
-    container: node:stable
+    container: node:latest
     # Service containers to run with `container-job`
     services:
       # Label used to access the service container
       redis:
         # Docker Hub image
-        image: redis:stable
+        image: redis:latest
         # Set health checks to wait until redis has started
         options: >-
           --health-cmd "redis-cli ping"
