@@ -2,8 +2,9 @@
 The Prime Hexagon
 ![alt text](https://github.com/kaustubhcs/prime-hexagon/blob/master/poster/RISE%20Poster%20Prime%20Hexagon%202078%20(1)-1.jpg)
 
-## Abstract
+[![Build and deploy eQuantum site](https://github.com/eq19/eq19.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/eq19/eq19.github.io/actions/workflows/main.yml)
 
+## Abstract
 
 The distribution of integer prime numbers remains a mystery today. There has been no mathematical equation derived that explains which numbers will be prime. Ulam's Spiral and Primal Chaos Theory are just a few of the many attempts made in the past to unravel this mystery.
 
