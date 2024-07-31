@@ -79,24 +79,19 @@ jobs:
     #runs-on: ubuntu-latest (build#995)
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
+    # Service containers to run with `container-job`
     services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres          
-          #POSTGRES_HOST_AUTH_METHOD: trust
+      # Label used to access the service container
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
         options: >-
-          --add-host=host.docker.internal:host-gateway
-          --health-cmd pg_isready
+          --health-cmd "redis-cli ping"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          --name mydb
-        ports:
-          - 5432:5432
-          
+
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v4
