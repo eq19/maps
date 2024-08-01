@@ -3,8 +3,12 @@
 
 hr='------------------------------------------'
 
-echo -e "\n$hr\nFinal Agent\n$hr"
-ls -alR /opt/hostedtoolcache
+if [ -d /opt/hostedtoolcache ]; then
+  
+  echo -e "\n$hr\nFinal Agent\n$hr"
+  ls -al /opt/hostedtoolcache
+
+fi
 
 echo "\njob completed"
 echo -e "\n$hr\nFinal Space\n$hr"
