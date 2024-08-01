@@ -62,3 +62,10 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
   #find /mnt/disks/Linux -type f -name "*.sql" | sort
 
 fi
+
+echo -e "\n$hr\nTools Agent\n$hr"
+ls -alR /opt/hostedtoolcache
+
+echo -e "\n$hr\nWorkdir\n$hr"
+ls -alR /home/runner/_w
+        
