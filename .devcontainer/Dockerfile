@@ -49,6 +49,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
         build-essential \
         ca-certificates \
         curl \
+        docker.io \
         gettext \
         git \
         iputils-ping \
@@ -76,9 +77,9 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
     dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install Docker Engine
-RUN curl -fsSL https://get.docker.com -o- | sh && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+#RUN curl -fsSL https://get.docker.com -o- | sh && \
+    #apt-get clean && \
+    #rm -rf /var/lib/apt/lists/*
 
 COPY *.txt /tmp/pip-tmp/
 RUN python3 -m pip install --upgrade pip
@@ -97,7 +98,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     chown -R root: /home/runner ${AGENT_TOOLSDIRECTORY} && \
-    mount -o remount,rw ${AGENT_TOOLSDIRECTORY} && \
+    #mount -o remount,rw ${AGENT_TOOLSDIRECTORY} && \
     ./bin/installdependencies.sh && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
