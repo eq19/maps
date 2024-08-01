@@ -96,9 +96,9 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
+    chown -R root: /home/runner ${AGENT_TOOLSDIRECTORY} && \
     mount -o remount,rw ${AGENT_TOOLSDIRECTORY} && \
     ./bin/installdependencies.sh && \
-    chown -R root: /home/runner && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
