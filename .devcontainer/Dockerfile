@@ -25,7 +25,7 @@ ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 
 ADD hooks /opt/runner
 RUN chmod +x /opt/runner/*.sh
-RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
+#RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
 LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.schema-version="1.0" \
@@ -97,8 +97,8 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
-    chown -R root: /home/runner ${AGENT_TOOLSDIRECTORY} && \
     ./bin/installdependencies.sh && \
+    chown -R root: /home/runner && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
