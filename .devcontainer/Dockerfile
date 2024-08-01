@@ -98,7 +98,6 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     chown -R root: /home/runner ${AGENT_TOOLSDIRECTORY} && \
-    mount -o remount,rw ${AGENT_TOOLSDIRECTORY} && \
     ./bin/installdependencies.sh && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
