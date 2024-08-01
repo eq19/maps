@@ -21,7 +21,7 @@ ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV PIP_ROOT_USER_ACTION=ignore
-ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
+#ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 
 ADD hooks /opt/runner
 RUN chmod +x /opt/runner/*.sh
