@@ -3,7 +3,9 @@
 
 hr='------------------------------------------'
 
+echo -e "\n$hr\nFinal Agent\n$hr"
+ls -alR /opt/hostedtoolcache
+
+echo "\njob completed"
 echo -e "\n$hr\nFinal Space\n$hr"
 df -h
-
-echo 'job completed'
