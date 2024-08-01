@@ -63,6 +63,9 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
   echo -e "\n$hr\nCurrent dir\n$hr"
   pwd && ls -al .
 
+  echo -e "\n$hr\nHomedir\n$hr"
+  ls -al /home/runner
+  
   echo -e "\n$hr\nWorkdir\n$hr"
   ls -alR /home/runner/_w
 
