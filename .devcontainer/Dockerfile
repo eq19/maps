@@ -20,7 +20,7 @@ ENV AGENT_TOOLSDIRECTORY=/opt/hostedtoolcache
 
 ADD hooks /opt/runner
 RUN chmod +x /opt/runner/*.sh
-RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
+#RUN mkdir -p ${AGENT_TOOLSDIRECTORY}
 
 LABEL maintainer="me@tcardonne.fr" \
     org.label-schema.schema-version="1.0" \
