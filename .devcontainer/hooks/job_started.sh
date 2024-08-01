@@ -12,7 +12,6 @@ getent passwd
 
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
-pwd
 id
 
 echo -e "\n$hr\nOperation System\n$hr"
@@ -60,6 +59,9 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
 
   #echo -e "\n$hr\nLocate SQL\n$hr" 
   #find /mnt/disks/Linux -type f -name "*.sql" | sort
+
+  echo -e "\n$hr\nCurrent dir\n$hr"
+  pwd && ls -al .
 
   echo -e "\n$hr\nWorkdir\n$hr"
   ls -alR /home/runner/_w
