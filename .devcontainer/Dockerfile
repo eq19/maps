@@ -12,7 +12,7 @@ ENV RUNNER_REPOSITORY_URL=""
 ENV RUNNER_LABELS=""
 ENV RUNNER_ALLOW_RUNASROOT=true
 ENV RUNNER_WORK_DIRECTORY="_work"
-ENV ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER=true
+ENV ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER=false
 ENV ACTIONS_RUNNER_CONTAINER_HOOKS=/opt/runner/index.js
 ENV ACTIONS_RUNNER_HOOK_JOB_STARTED=/opt/runner/job_started.sh
 ENV ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/opt/runner/job_completed.sh
@@ -57,7 +57,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
         libpq-dev \
         iputils-ping \
         jq \
-        npm \
+        #npm \
         openssh-client \
         plocate \
         postgresql \
@@ -98,7 +98,7 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz && \
     ./bin/installdependencies.sh && \
     chown -R root: /home/runner && \
-    chown -R root: ${AGENT_TOOLSDIRECTORY} && \
+    mount -o remount,rw ${AGENT_TOOLSDIRECTORY} && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
