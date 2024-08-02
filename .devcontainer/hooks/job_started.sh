@@ -32,7 +32,7 @@ apt-cache show supervisor
 echo -e "\n$hr\nEnvironment\n$hr"
 printenv | sort
 
-echo -e "\n$hr\Homedir\n$hr"
+echo -e "\n$hr\nHomedir\n$hr"
 ls -alR $HOME
 
 echo -e "\n$hr\nExecutables\n$hr"
