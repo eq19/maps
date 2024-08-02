@@ -32,6 +32,9 @@ apt-cache show supervisor
 echo -e "\n$hr\nEnvironment\n$hr"
 printenv | sort
 
+echo -e "\n$hr\Homedir\n$hr"
+ls -alR $HOME
+
 echo -e "\n$hr\nExecutables\n$hr"
 find ${PATH//:/ } -maxdepth 1 -executable | sort
 
@@ -62,8 +65,5 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
 
   #echo -e "\n$hr\nLocate SQL\n$hr" 
   #find /mnt/disks/Linux -type f -name "*.sql" | sort
-
-  echo -e "\n$hr\Homedir\n$hr"
-  ls -alR $HOME
 
 fi        
