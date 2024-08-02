@@ -49,7 +49,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
         build-essential \
         ca-certificates \
         curl \
-        docker.io \
+        #docker.io \
         gettext \
         git \
         iputils-ping \
