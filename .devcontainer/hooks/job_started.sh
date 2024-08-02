@@ -20,6 +20,9 @@ cat /etc/os-release
 echo -e "\n$hr\nDisk Structure\n$hr"
 df -h
 
+echo -e "\n$hr\nCurrent dir\n$hr"
+pwd && ls -al .
+  
 echo -e "\n$hr\nService Status\n$hr"
 service --status-all
 
@@ -34,11 +37,11 @@ find ${PATH//:/ } -maxdepth 1 -executable | sort
 
 if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
   
-  echo -e "\n$hr\n"
-  find /mnt/disks/Linux -maxdepth 3 -executable | sort 
+  #echo -e "\n$hr\n"
+  #find /mnt/disks/Linux -maxdepth 3 -executable | sort 
   
-  #echo -e "\n$hr\nPackage List\n$hr"
-  #/mnt/disks/Linux/usr/bin/dpkg -l | sort
+  echo -e "\n$hr\nPackage List\n$hr"
+  /mnt/disks/Linux/usr/bin/dpkg -l | sort
 
   #echo -e "\n$hr\nPython Modules\n$hr"
   #/mnt/disks/Linux/usr/bin/python3 -c 'help("modules")'
@@ -60,13 +63,7 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
   #echo -e "\n$hr\nLocate SQL\n$hr" 
   #find /mnt/disks/Linux -type f -name "*.sql" | sort
 
-  echo -e "\n$hr\nCurrent dir\n$hr"
-  pwd && ls -al .
-
-  echo -e "\n$hr\nHomedir\n$hr"
-  ls -al /home/runner
-  
-  echo -e "\n$hr\nWorkdir\n$hr"
-  ls -alR /home/runner/_w
+  echo -e "\n$hr\Homedir\n$hr"
+  ls -alR $HOME
 
 fi        
