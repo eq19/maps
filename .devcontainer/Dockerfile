@@ -1,4 +1,5 @@
-ARG FROM=debian:stable-slim
+#ARG FROM=debian:stable-slim
+ARG FROM=node:lts-bookworm-slim
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
