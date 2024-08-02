@@ -13,6 +13,7 @@ getent passwd
 echo -e "\n$hr\nIdentity\n$hr"
 whoami
 id
+ls -al $HOME
 
 echo -e "\n$hr\nOperation System\n$hr"
 cat /etc/os-release
@@ -31,9 +32,6 @@ apt-cache show supervisor
 
 echo -e "\n$hr\nEnvironment\n$hr"
 printenv | sort
-
-echo -e "\n$hr\nHomedir\n$hr"
-ls -alR $HOME
 
 echo -e "\n$hr\nExecutables\n$hr"
 find ${PATH//:/ } -maxdepth 1 -executable | sort
