@@ -44,6 +44,15 @@ if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
   echo -e "\n$hr\n"
   find /mnt/disks/Linux -maxdepth 3 -executable | sort 
   
+  echo -e "\n$hr\nDocker info\n$hr"
+  /mnt/disks/Linux/usr/bin/docker info
+  
+  echo -e "\n$hr\nDocker images\n$hr"
+  /mnt/disks/Linux/usr/bin/docker image ls
+  
+  echo -e "\n$hr\nDocker containers\n$hr"
+  /mnt/disks/Linux/usr/bin/docker container ls -a
+
   #echo -e "\n$hr\nPython Modules\n$hr"
   #/mnt/disks/Linux/usr/bin/python3 -c 'help("modules")'
 
