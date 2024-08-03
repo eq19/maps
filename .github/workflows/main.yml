@@ -79,24 +79,6 @@ jobs:
     #runs-on: ubuntu-latest (build#995)
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
-    # Docker Hub image that `container-job` executes in
-    #container: node:lts-bookworm-slim
-    # Service containers to run with `container-job`
-    services:
-      # Label used to access the service container
-      redis:
-        # Docker Hub image
-        image: redis:latest
-        ports:
-          # Opens tcp port 6379 on the host and service container
-          - 6379:6379       
-        # Set health checks to wait until redis has started
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: 🪂 Parsering
         uses: eq19/parser@v1
