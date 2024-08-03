@@ -80,6 +80,11 @@ jobs:
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
     steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+
       - name: 🪂 Parsering
         uses: eq19/parser@v1
         with:
