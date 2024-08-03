@@ -92,7 +92,7 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🚀 Evaluate Syntax
-        if: runner.os == 'debian'
+        if: runner.os == 'ubuntu'
         uses: eq19/syntax@v2
   
       - name: 🔧 Set Grammar Rules 
