@@ -62,6 +62,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
         #npm \
         openssh-client \
         plocate \
+        postgresql \
         python3-pip \
         software-properties-common \
         sudo \
