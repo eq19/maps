@@ -52,6 +52,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
         curl \
         #docker.io \
         gettext \
+        gh \
         git \
         iputils-ping \
         liblttng-ust1 \
