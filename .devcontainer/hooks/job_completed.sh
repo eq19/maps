@@ -3,13 +3,13 @@
 
 hr='------------------------------------------'
 
-if [ -d /opt/hostedtoolcache ]; then
+if [ -d /mnt/disks/Linux/usr/bin ]; then
   
-  echo -e "\n$hr\nFinal Agent\n$hr"
-  ls -al /opt/hostedtoolcache
+  echo -e "\n$hr\nFinal Network\n$hr"
+  /mnt/disks/Linux/usr/bin/docker network inspect bridge
 
 fi
 
-echo "\njob completed"
+echo -e "\njob completed"
 echo -e "\n$hr\nFinal Space\n$hr"
 df -h
