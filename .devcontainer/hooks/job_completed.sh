@@ -3,6 +3,9 @@
 
 hr='------------------------------------------'
 
+echo -e "\n$hr\nFinal Space\n$hr"
+df -h
+
 if [ -d /mnt/disks/Linux/usr/bin ]; then
   
   echo -e "\n$hr\nFinal Network\n$hr"
@@ -11,5 +14,3 @@ if [ -d /mnt/disks/Linux/usr/bin ]; then
 fi
 
 echo -e "\njob completed"
-echo -e "\n$hr\nFinal Space\n$hr"
-df -h
