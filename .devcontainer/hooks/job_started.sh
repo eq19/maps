@@ -2,7 +2,7 @@
 # Structure: Cell Types – Modulo 6
 # Action https://github.com/${REPO}/actions/runs/${RUN}
 
-hr='------------------------------------------'
+hr='------------------------------------------------------------------------------------'
 
 echo -e "\n$hr\nGroups\n$hr"
 getent group
