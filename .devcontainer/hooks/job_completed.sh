@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Structure: Cell Types – Modulo 6
 
-hr='------------------------------------------'
+hr='------------------------------------------------------------------------------------'
 
 echo -e "\n$hr\nFinal Space\n$hr"
 df -h
@@ -18,4 +18,4 @@ HEADER="Accept: application/vnd.github+json"
 echo ${GITHUB_ACCESS_TOKEN} | gh auth login --with-token
 TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${GITHUB_REPOSITORY}/actions/runners --jq '.total_count')
 RUNNER_ID=$(gh api -H "${HEADER}" /repos/${GITHUB_REPOSITORY}/actions/runners --jq '.runners.[].id')
-if (( $TOTAL_COUNT != 0 )); then gh api --method DELETE -H "${HEADER}" /repos/${GITHUB_REPOSITORY}/actions/runners/${RUNNER_ID}; fi 
+#if (( $TOTAL_COUNT != 0 )); then gh api --method DELETE -H "${HEADER}" /repos/${GITHUB_REPOSITORY}/actions/runners/${RUNNER_ID}; fi 
