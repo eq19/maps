@@ -1,4 +1,3 @@
-#ARG FROM=debian:stable-slim
 ARG FROM=node:lts-bookworm-slim
 FROM ${FROM}
 
@@ -63,7 +62,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
         #npm \
         openssh-client \
         plocate \
-        #postgresql \
         python3-pip \
         software-properties-common \
         sudo \
