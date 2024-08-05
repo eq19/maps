@@ -15,10 +15,10 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-# Set GITHUB_TOKEN scopes
+# Set GITHUB_TOKEN
 permissions: write-all
         
-# Global environtment variables
+# Global environtment
 env:
   RUN: ${{ github.run_id }}
   USER: ${{ github.actor }}
