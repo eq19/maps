@@ -56,14 +56,14 @@ RUN DEBIAN_FRONTEND=noninteractive \
         gh \
         git \
         iputils-ping \
-        liblttng-ust1 \
+        #liblttng-ust1 \
         libcurl4-openssl-dev \
         libpq-dev \
         iputils-ping \
         jq \
         #npm \
         openssh-client \
-        plocate \
+        #plocate \
         #postgresql \
         python3-pip \
         software-properties-common \
