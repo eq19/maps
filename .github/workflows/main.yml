@@ -10,7 +10,7 @@ on:
     types: [completed]
     workflows: ["pages-build-deployment"]
 
-# Allow concurrent deployment
+# Allow concurrent
 concurrency:
   group: "pages"
   cancel-in-progress: true
