@@ -1,4 +1,5 @@
-ARG FROM=node:lts-bookworm-slim
+ARG FROM=mcr.microsoft.com/devcontainers/universal:latest
+#ARG FROM=node:lts-bookworm-slim
 FROM ${FROM}
 
 ARG DEBIAN_FRONTEND=noninteractive
