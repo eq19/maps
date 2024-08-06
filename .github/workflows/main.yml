@@ -1,4 +1,4 @@
-# ⚠️ Main Workflow of eQuantum Project
+# ⚠️ Main Workflow
 name: Build and deploy eQuantum site
 
 on:
