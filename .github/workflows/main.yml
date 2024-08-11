@@ -92,7 +92,7 @@ jobs:
         uses: eq19/syntax@v2
   
       - name: 🔧 Set Grammar Rules 
-        uses: eq19/grammar@v2
+        uses: eq19/grammar@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
