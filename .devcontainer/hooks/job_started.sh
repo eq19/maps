@@ -39,38 +39,38 @@ dpkg -l | sort
 echo -e "\n$hr\nExecutables\n$hr"
 find ${PATH//:/ } -maxdepth 1 -executable | sort
 
-if [ -d /mnt/disks/Linux/usr/local/sbin ]; then
+if [ -d /mnt/disks/platform/usr/local/sbin ]; then
   
   echo -e "\n$hr\n"
-  find /mnt/disks/Linux -maxdepth 3 -executable | sort 
+  find /mnt/disks/platform -maxdepth 3 -executable | sort 
   
   echo -e "\n$hr\nDocker info\n$hr"
-  /mnt/disks/Linux/usr/bin/docker info
+  /mnt/disks/platform/usr/bin/docker info
   
   echo -e "\n$hr\nDocker images\n$hr"
-  /mnt/disks/Linux/usr/bin/docker image ls
+  /mnt/disks/platform/usr/bin/docker image ls
   
   echo -e "\n$hr\nDocker containers\n$hr"
-  /mnt/disks/Linux/usr/bin/docker container ls -a
+  /mnt/disks/platform/usr/bin/docker container ls -a
 
   #echo -e "\n$hr\nPython Modules\n$hr"
-  #/mnt/disks/Linux/usr/bin/python3 -c 'help("modules")'
+  #/mnt/disks/platform/usr/bin/python3 -c 'help("modules")'
 
   #echo -e "\n$hr\nLocate Python\n$hr" 
-  #find /mnt/disks/Linux -type d -name '*python*' | sort
+  #find /mnt/disks/platform -type d -name '*python*' | sort
 
   #echo -e "\n$hr\nTensorflow\n$hr"
-  #find /mnt/disks/Linux -type d -name "tensorflow*" | sort
+  #find /mnt/disks/platform -type d -name "tensorflow*" | sort
 
   #echo -e "\n$hr\nLocate Requirements\n$hr" 
   #locate requirements.txt
   #echo -e "\n$hr\n"
-  #find /mnt/disks/Linux -type f -name "requirements*.txt" | sort
+  #find /mnt/disks/platform -type f -name "requirements*.txt" | sort
 
   #echo -e "\n$hr\nDockerfile\n$hr"
   #find / -type f -name "Dockerfile" | sort
 
   #echo -e "\n$hr\nLocate SQL\n$hr" 
-  #find /mnt/disks/Linux -type f -name "*.sql" | sort
+  #find /mnt/disks/platform -type f -name "*.sql" | sort
 
 fi        
