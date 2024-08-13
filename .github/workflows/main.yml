@@ -1,4 +1,4 @@
-# ⚠️ Main Workflow - eQuantum MEC Structure
+# 💎 Main Workflow - eQuantum MEC Structure
 name: Build and Deploy Cell Types – Modulo 6
 
 on:
@@ -10,7 +10,7 @@ on:
     types: [completed]
     workflows: ["pages-build-deployment"]
 
-# Allow concurrent
+# ⚠️ Allow concurrent
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -32,6 +32,7 @@ jobs:
       max-parallel: 1
       fail-fast: true
       matrix:
+        #Simulate Gell-Mann
         #node_version: [8, 10, 12]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
