@@ -48,6 +48,7 @@ jobs:
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v1
+        if: runner.os == 'Ubuntu'
         with:
           image_name: prime
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -56,8 +57,7 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: 🏃‍♂️ Feed Mapping
-        uses: eq19/feed@v3
-        
+        uses: eq19/feed@v3        
         id: build-image
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
