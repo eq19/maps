@@ -59,6 +59,7 @@ jobs:
         uses: eq19/feed@v3
         id: build-image
         with:
+          token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: 🏃‍♂️ Lexering Cloud
