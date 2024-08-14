@@ -48,7 +48,6 @@ jobs:
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v1
-        if: runner.os == 'Ubuntu'
         with:
           image_name: eq19/prime
           token: ${{ secrets.ACCESS_TOKEN }}
