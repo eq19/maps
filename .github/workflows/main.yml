@@ -55,14 +55,14 @@ jobs:
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: ♻️ Feed Mapping
+      - name: 🏃‍♂️ Feed Mapping
         uses: eq19/feed@v3
         id: build-image
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
-      - name: 🏃‍♂️ Lexering Cloud
+      - name: ♻️ Lexering Cloud
         uses: eq19/lexer@v1
         id: set-runner
         with:
