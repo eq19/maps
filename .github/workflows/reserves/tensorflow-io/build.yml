@@ -1,0 +1,873 @@
+name: GitHub CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+env:
+  REPO_NAME: ${{ github.repository }}
+  EVENT_NAME: ${{ github.event_name }}
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Run Lint Script for Bazel/Pyupgrade/Black/Clang
+        run: |
+          set -x -e
+          git log --pretty -1
+          sudo apt update -y -qq && sudo apt install -y -qq libtinfo5
+          TF_PYTHON_VERSION=3.10 bazel run -s --verbose_failures --experimental_repo_remote_exec //tools/lint:check -- bazel clang
+
+  lint-docs:
+    name: Lint for Docs
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: Run Lint Script for Docs
+        run: |
+          set -x -e
+          git log --pretty -1
+          sudo python3 --version
+          sudo python3 -m pip install dataclasses
+          sudo python3 -m pip install setuptools
+          sudo python3 -m pip install -U git+https://github.com/tensorflow/docs
+          find docs -name '*.ipynb' | xargs python3 -m tensorflow_docs.tools.nbfmt
+          echo "Check for failed fmt: "
+          git status --untracked-files=no --porcelain
+          [ -z "$(git status --untracked-files=no --porcelain)" ] || exit 1
+          find docs -name '*.ipynb' | xargs python3 -m tensorflow_docs.tools.nblint --arg=repo:tensorflow/io
+          echo "Check for failed lint: "
+          git status --untracked-files=no --porcelain
+          [ -z "$(git status --untracked-files=no --porcelain)" ] || exit 1
+
+  macos:
+    name: macOS
+    runs-on: macOS-12
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: GCP
+        run: |
+          cat > service_account_creds.json << EOF
+          ${{ secrets.GCP_CREDS }}
+          EOF
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: "3.9"
+      - name: macOS
+        run: |
+          set -x -e
+          export BAZEL_OPTIMIZATION="--config=cache"
+          if [[ "${EVENT_NAME}" == "push" && "${REPO_NAME}" == "tensorflow/io" ]]; then
+            export BAZEL_OPTIMIZATION="$BAZEL_OPTIMIZATION --remote_upload_local_results=true --google_credentials=service_account_creds.json"
+          fi
+          echo $PATH
+          which python3
+          python3 --version
+          python3 -c 'import site; print(site.getsitepackages())'
+          python3 .github/workflows/build.instruction.py --sudo=true docs/development.md "#### macOS" > source.sh
+          bash -x -e source.sh
+          python3 -c 'import tensorflow as tf; print(tf.version.VERSION)'
+
+  linux:
+    name: Linux
+    runs-on: ubuntu-22.04
+    container:
+      image: ubuntu:22.04
+      env:
+        REPO_NAME: ${{ env.REPO_NAME }}
+        EVENT_NAME: ${{ env.EVENT_NAME }}
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: GCP
+        run: |
+          cat > service_account_creds.json << EOF
+          ${{ secrets.GCP_CREDS }}
+          EOF
+      - name: Ubuntu 22.04
+        shell: bash
+        run: |
+          set -x -e
+          export BAZEL_OPTIMIZATION="--config=cache"
+          if [[ "${EVENT_NAME}" == "push" && "${REPO_NAME}" == "tensorflow/io" ]]; then
+            export BAZEL_OPTIMIZATION="$BAZEL_OPTIMIZATION --remote_upload_local_results=true --google_credentials=service_account_creds.json"
+          fi
+          apt update
+          apt-get install -y python3
+          python3 .github/workflows/build.instruction.py docs/development.md "##### Ubuntu 22.04" > source.sh
+          cat source.sh
+          bash -x -e source.sh
+
+  macos-bazel:
+    name: Bazel macOS
+    runs-on: macOS-12
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: GCP
+        run: |
+          cat > service_account_creds.json << EOF
+          ${{ secrets.GCP_CREDS }}
+          EOF
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: "3.10"
+      - name: Bazel on macOS
+        run: |
+          set -x -e
+          export BAZEL_OPTIMIZATION="--config=optimization --config=cache"
+          if [[ "${EVENT_NAME}" == "push" && "${REPO_NAME}" == "tensorflow/io" ]]; then
+            export BAZEL_OPTIMIZATION="$BAZEL_OPTIMIZATION --remote_upload_local_results=true --google_credentials=service_account_creds.json"
+          fi
+          sudo -E -H bash -e .github/workflows/build.bazel.sh python3
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: |
+            build/tensorflow_io
+            build/tensorflow_io_gcs_filesystem
+      - name: Package pip on macOS
+        run: |
+          set -x -e
+          which python3
+
+  macos-wheel:
+    name: Wheel ${{ matrix.python }} macOS
+    needs: macos-bazel
+    runs-on: macOS-12
+    strategy:
+      matrix:
+        python: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: bazel-bin
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Wheel ${{ matrix.python }} macOS
+        run: |
+          set -x -e
+          python -m pip install -U wheel setuptools
+          python --version
+          python setup.py --data bazel-bin -q bdist_wheel --plat-name macosx_10_14_x86_64
+          rm -rf build
+          python setup.py --project tensorflow-io-gcs-filesystem --data bazel-bin -q bdist_wheel --plat-name macosx_10_14_x86_64
+      - name: Auditwheel ${{ matrix.python }} macOS
+        run: |
+          set -x -e
+          python -m pip install twine delocate==0.10.3
+          delocate-wheel --version
+          ls dist/*
+          mkdir -p wheelhouse
+          for f in dist/*.whl; do
+            echo "disable delocate due to build breaks: delocate-wheel -w wheelhouse  $f"
+            cp $f wheelhouse
+          done
+          ls wheelhouse/*
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-wheel
+          path: wheelhouse
+
+  macos-test:
+    name: Test ${{ matrix.python }} macOS
+    needs: macos-wheel
+    runs-on: macOS-12
+    strategy:
+      matrix:
+        python: ['3.9']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-wheel
+          path: wheelhouse
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - run: |
+          set -x -e
+          python -m pip install pip==21.3.1
+          python -m pip install -U wheel setuptools
+          python --version
+      - name: Setup ${{ matrix.python }} macOS
+        run: |
+          set -x -e
+          bash -x -e tests/test_kafka/kafka_test.sh
+          bash -x -e tests/test_azure/start_azure.sh
+          bash -x -e tests/test_gcloud/test_pubsub_bigtable.sh
+          bash -x -e tests/test_pulsar/pulsar_test.sh
+      - name: Install ${{ matrix.python }} macOS
+        run: |
+          set -x -e
+          python --version
+          df -h
+          (cd wheelhouse && python -m pip install tensorflow_io_gcs_filesystem-*.whl)
+          (cd wheelhouse && python -m pip install tensorflow_io-*.whl)
+      - name: Test ${{ matrix.python }} macOS
+        run: |
+          set -x -e
+          python --version
+          bash -x -e .github/workflows/build.wheel.sh python
+
+  linux-bazel:
+    name: Bazel Linux
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - name: GCP
+        run: |
+          cat > service_account_creds.json << EOF
+          ${{ secrets.GCP_CREDS }}
+          EOF
+      - name: Bazel on Linux
+        shell: bash
+        run: |
+          set -x
+          docker system prune --all --force
+          docker images
+          docker ps -a
+          df -h
+          # See https://github.com/actions/runner-images/issues/2840
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+          df -h
+          # See https://github.com/actions/runner-images/issues/2606
+          sudo rm -rf /usr/local/lib/android
+          df -h
+          sudo apt-get autoremove -y
+          sudo apt-get autoclean -y
+          df -h
+          #export BAZEL_OPTIMIZATION="--config=optimization --config=linux_ci --config=cache"
+          #if [[ "${{ env.EVENT_NAME }}" == "push" && "${{ env.REPO_NAME }}" == "tensorflow/io" ]]; then
+          #  export BAZEL_OPTIMIZATION="${BAZEL_OPTIMIZATION} --remote_upload_local_results=true --google_credentials=service_account_creds.json"
+          #fi
+          TENSORFLOW_VERSION=$(grep tensorflow tensorflow_io/python/ops/version_ops.py | sed -e "s/require = //g" | awk -F, '{print $1}' | awk -F= '{print $2}' | awk -F. '{print $1"."$2}')
+          DOCKER_BUILDKIT=0 docker build -t io -f tools/docker/build.Dockerfile --build-arg PYTHON_VERSION=3.10 --build-arg TENSORFLOW_VERSION="${TENSORFLOW_VERSION}" --build-arg BAZEL_OPTIMIZATION="${BAZEL_OPTIMIZATION}" .
+          docker create -it --name io io bash
+          sleep 5
+          docker cp -L io:/opt/io/bazel-bin build
+          docker cp -L io:/opt/io/.bazelrc build/tensorflow_io/
+          sudo chown -R $(id -nu):$(id -ng) .
+          find build/tensorflow_io -type f
+          find build/tensorflow_io_gcs_filesystem -type f
+          find build/tensorflow_io -type l
+          find build/tensorflow_io_gcs_filesystem -type l
+          find build/tensorflow_io -name '*runfiles*'
+          find build/tensorflow_io_gcs_filesystem -name '*runfiles*'
+          find build/tensorflow_io -name '*runfiles*' | xargs rm -rf
+          find build/tensorflow_io_gcs_filesystem -name '*runfiles*' | xargs rm -rf
+          sudo rm -rf build/tensorflow_io/core/golang_ops.h
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: |
+            build/tensorflow_io
+            build/tensorflow_io_gcs_filesystem
+
+  linux-wheel:
+    name: Wheel ${{ matrix.python }} Linux
+    needs: linux-bazel
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: bazel-bin
+      - name: Wheel ${{ matrix.python }} Linux
+        run: |
+          set -x -e
+          mv bazel-bin/tensorflow_io/.bazelrc .
+          docker run -i --rm --user $(id -u):$(id -g) -v /etc/password:/etc/password -v $PWD:/v -w /v --net=host python:${{ matrix.python }}-slim python setup.py --data bazel-bin -q bdist_wheel
+          rm -rf build
+          docker run -i --rm --user $(id -u):$(id -g) -v /etc/password:/etc/password -v $PWD:/v -w /v --net=host python:${{ matrix.python }}-slim python setup.py --project tensorflow-io-gcs-filesystem --data bazel-bin -q bdist_wheel
+      - name: Auditwheel ${{ matrix.python }} Linux
+        run: |
+          set -x -e
+          ls dist/*
+          for f in dist/*.whl; do
+            docker run -i --rm -v $PWD:/v -w /v --net=host quay.io/pypa/manylinux2014_x86_64 bash -x -e /v/tools/build/auditwheel repair --plat manylinux2014_x86_64 $f
+          done
+          sudo chown -R $(id -nu):$(id -ng) .
+          ls wheelhouse/*
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-wheel
+          path: wheelhouse
+
+  linux-test:
+    name: Test ${{ matrix.python }} Linux
+    needs: linux-wheel
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python: ['3.9']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-wheel
+          path: wheelhouse
+      - name: Setup Linux
+        run: |
+          set -x -e
+          bash -x -e .github/workflows/build.space.sh
+          bash -x -e tests/test_pulsar/pulsar_test.sh
+          bash -x -e tests/test_kafka/kafka_test.sh
+          bash -x -e tests/test_aws/aws_test.sh
+          echo bash -x -e tests/test_gcloud/test_pubsub_bigtable.sh
+          echo bash -x -e tests/test_prometheus/prometheus_test.sh start
+          bash -x -e tests/test_elasticsearch/elasticsearch_test.sh start
+          bash -x -e tests/test_mongodb/mongodb_test.sh start
+          bash -x -e tests/test_azure/start_azure.sh
+          bash -x -e tests/test_sql/sql_test.sh postgresql
+          bash -x -e tests/test_gcloud/test_gcs.sh gcs-emulator
+          bash -x -e tests/test_hdfs/hdfs_test.sh
+      - name: Test Linux
+        run: |
+          set -x -e
+          df -h
+          docker run -i --rm -v $PWD:/v -w /v --net=host \
+            buildpack-deps:22.04 \
+            bash -x -e .github/workflows/build.wheel.sh python${{ matrix.python }}
+
+  windows-bazel:
+    name: Bazel Windows
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: egor-tensin/vs-shell@9a932a62d05192eae18ca370155cf877eecc2202 # v2
+        with:
+          arch: x64
+      - name: GCP
+        shell: bash
+        run: |
+          cat > service_account_creds.json << EOF
+          ${{ secrets.GCP_CREDS }}
+          EOF
+      - name: Bazel on Windows
+        env:
+          BAZEL_VC: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/"
+        shell: bash
+        run: |
+          set -x -e
+          export BAZEL_OPTIMIZATION="--config=cache"
+          if [[ "${EVENT_NAME}" == "push" && "${REPO_NAME}" == "tensorflow/io" ]]; then
+            export BAZEL_OPTIMIZATION="$BAZEL_OPTIMIZATION --remote_upload_local_results=true --google_credentials=service_account_creds.json"
+          fi
+          bazel version
+          python3 --version
+          python3 -m pip install wheel setuptools
+          python3 -m pip --version
+          python3 setup.py --install-require | xargs python3 -m pip install
+          python3 tools/build/configure.py
+          cat .bazelrc
+          bazel build -s ${BAZEL_OPTIMIZATION} //tensorflow_io:python/ops/libtensorflow_io.so //tensorflow_io:python/ops/libtensorflow_io_plugins.so  //tensorflow_io_gcs_filesystem/...
+          mkdir -p build
+          cp -r bazel-bin/tensorflow_io build
+          cp -r bazel-bin/tensorflow_io_gcs_filesystem build
+          bash -c "find build -not -name '*.so' -type f | xargs rm -rf"
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: |
+            build/tensorflow_io
+            build/tensorflow_io_gcs_filesystem
+
+  windows-wheel:
+    name: Wheel ${{ matrix.python }} Windows
+    needs: windows-bazel
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: bazel-bin
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Wheel ${{ matrix.python }} Windows
+        shell: cmd
+        run: |
+          @echo on
+          python --version
+          python -m pip install -U wheel setuptools
+          python setup.py --data bazel-bin -q bdist_wheel
+          rm -rf build
+          python setup.py --project tensorflow-io-gcs-filesystem --data bazel-bin -q bdist_wheel
+          ls -la dist
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-wheel
+          path: dist
+
+  windows-test:
+    name: Test ${{ matrix.python }} Windows
+    needs: windows-wheel
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python: ['3.9']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-wheel
+          path: wheel
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '8.x'
+      - name: Setup ${{ matrix.python }} Windows
+        shell: cmd
+        run: |
+          @echo on
+          bash -x -e tests/test_azure/start_azure.sh
+      - name: Install ${{ matrix.python }} Windows
+        shell: cmd
+        run: |
+          @echo on
+          python --version
+          (cd wheel && ls tensorflow_io_gcs_filesystem-*.whl | xargs python -m pip install && cd ..)
+          (cd wheel && ls tensorflow_io-*.whl | xargs python -m pip install && cd ..)
+          (grep tensorflow tensorflow_io/python/ops/version_ops.py | sed -e "s/require = //g" | xargs python -m pip install)
+      - name: Test ${{ matrix.python }} Windows
+        shell: cmd
+        run: |
+          @echo on
+          python --version
+          python -m pip install -U pytest-benchmark
+          python -m pip install google-cloud-bigquery-storage==0.7.0 google-cloud-bigquery==1.22.0 fastavro
+          rm -rf tensorflow_io tensorflow_io_gcs_filesystem
+          cd tests
+          python -m pytest -s -v test_lmdb.py
+          if %errorlevel% neq 0 exit /b %errorlevel%
+          python -m pytest -s -v test_image.py -k "webp or ppm or bmp or bounding or exif or hdr or openexr or tiff or avif"
+          if %errorlevel% neq 0 exit /b %errorlevel%
+          python -m pytest -s -v test_serialization.py
+          if %errorlevel% neq 0 exit /b %errorlevel%
+          python -m pytest -s -v test_io_dataset.py -k "numpy or hdf5 or audio or to_file"
+          if %errorlevel% neq 0 exit /b %errorlevel%
+          python -m pytest -s -v test_http.py
+          if %errorlevel% neq 0 exit /b %errorlevel%
+          python -m pytest -s -v test_bigquery.py
+          if %errorlevel% neq 0 exit /b %errorlevel%
+          python -m pytest -s -v test_dicom.py
+          if %errorlevel% neq 0 exit /b %errorlevel%
+
+  release:
+    name: Release
+    if: github.event_name == 'push'
+    needs: [linux-wheel, macos-wheel] #, windows-wheel]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.9-wheel
+          path: macOS-3.9-wheel
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.10-wheel
+          path: macOS-3.10-wheel
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.11-wheel
+          path: macOS-3.11-wheel
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.12-wheel
+          path: macOS-3.12-wheel
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.9-wheel
+          path: Linux-3.9-wheel
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.10-wheel
+          path: Linux-3.10-wheel
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.11-wheel
+          path: Linux-3.11-wheel
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.12-wheel
+          path: Linux-3.12-wheel
+      #- uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+      #  with:
+      #    name: Windows-3.9-wheel
+      #    path: Windows-3.9-wheel
+      #- uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+      #  with:
+      #    name: Windows-3.10-wheel
+      #    path: Windows-3.10-wheel
+      #- uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+      #  with:
+      #    name: Windows-3.11-wheel
+      #    path: Windows-3.11-wheel
+      #- uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+      #  with:
+      #    name: Windows-3.12-wheel
+      #    path: Windows-3.12-wheel
+      - run: |
+          set -e -x
+          mkdir -p wheelhouse
+          cp macOS-3.9-wheel/*.whl wheelhouse/
+          cp macOS-3.10-wheel/*.whl wheelhouse/
+          cp macOS-3.11-wheel/*.whl wheelhouse/
+          cp macOS-3.12-wheel/*.whl wheelhouse/
+          cp Linux-3.9-wheel/*.whl wheelhouse/
+          cp Linux-3.10-wheel/*.whl wheelhouse/
+          cp Linux-3.11-wheel/*.whl wheelhouse/
+          cp Linux-3.12-wheel/*.whl wheelhouse/
+          # cp Windows-3.9-wheel/*.whl wheelhouse/
+          # cp Windows-3.10-wheel/*.whl wheelhouse/
+          # cp Windows-3.11-wheel/*.whl wheelhouse/
+          # cp Windows-3.12-wheel/*.whl wheelhouse/
+          ls -la wheelhouse/
+          sha256sum wheelhouse/*.whl
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: tensorflow-io-release
+          path: wheelhouse
+
+  release-candidate:
+    name: Release Candidate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [release]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: tensorflow-io-release
+          path: wheelhouse
+      - run: |
+          set -x -e
+          sha256sum wheelhouse/*.whl | sort -u > wheelhouse.sha256
+          git rev-parse --verify HEAD > wheelhouse.commit
+          grep 'version = ' tensorflow_io/python/ops/version_ops.py  | sed -E 's@^.*version = "@@g' | sed -E 's@".*$@@g' > wheelhouse.version
+          cat wheelhouse.sha256
+          cat wheelhouse.commit
+          cat wheelhouse.version
+          echo "::set-output name=version::$(cat wheelhouse.version)"
+        id: info
+      - run: |-
+          cat <<EOF > Dockerfile
+          FROM gcr.io/distroless/base-debian11
+          COPY wheelhouse /wheelhouse
+          COPY wheelhouse.sha256 /wheelhouse.sha256
+          COPY wheelhouse.commit /wheelhouse.commit
+          COPY wheelhouse.version /wheelhouse.version
+          EOF
+      - uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb # v3.3.0
+      - uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 # v3.2.0
+        with:
+          username: tfsigio
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: docker/build-push-action@15560696de535e4014efeff63c48f16952e52dd1 # v6.2.0
+        with:
+          context: .
+          push: true
+          tags: tfsigio/candidate:${{ steps.info.outputs.version }}
+
+  docker-release:
+    name: Docker Release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [lint, linux-test, macos-test, windows-test]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: 3.8
+      - run: |
+          set -e -x
+          docker login --username tfsigio --password ${{ secrets.DOCKER_PASSWORD }}
+          bash -x -e tools/docker/tests/dockerfile_cpu_test.sh
+          docker push tfsigio/tfio:latest
+          python --version
+          TFIO_VERSION=$(python setup.py --version | tail -1)
+          docker tag tfsigio/tfio:latest tfsigio/tfio:${TFIO_VERSION}
+          docker push tfsigio/tfio:${TFIO_VERSION}
+          bash -x -e tools/docker/tests/dockerfile_devel_test.sh
+          docker push tfsigio/tfio:latest-devel
+
+  build-number:
+    name: Build Number
+    if: github.event_name == 'push'
+    runs-on: ubuntu-20.04
+    steps:
+      - run: |
+          set -e -x
+          BUILD_NUMBER=$(date "+%Y%m%d%H%M%S")
+          echo ${BUILD_NUMBER} > BUILD_NUMBER
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: BUILD_NUMBER
+          path: BUILD_NUMBER
+
+  macos-nightly:
+    name: Nightly ${{ matrix.python }} macOS
+    if: github.event_name == 'push'
+    needs: [build-number, macos-wheel]
+    runs-on: macOS-12
+    strategy:
+      matrix:
+        python: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: BUILD_NUMBER
+      - uses: einaregilsson/build-number@46decf22c413b48c8923e98b2b5836f8aaf7781e # v3
+      - run: echo "Build number is $BUILD_NUMBER"
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: bazel-bin
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Wheel ${{ matrix.python }} macOS
+        run: |
+          set -x -e
+          python -m pip install -U wheel setuptools
+          python --version
+          python setup.py --data bazel-bin -q bdist_wheel --plat-name macosx_10_14_x86_64 --nightly $BUILD_NUMBER
+          rm -rf build
+          python setup.py --project tensorflow-io-gcs-filesystem --data bazel-bin -q bdist_wheel --plat-name macosx_10_14_x86_64 --nightly $BUILD_NUMBER
+      - name: Auditwheel ${{ matrix.python }} macOS
+        run: |
+          set -x -e
+          python -m pip install twine delocate==0.10.3
+          delocate-wheel --version
+          ls dist/*
+          mkdir -p wheelhouse
+          for f in dist/*.whl; do
+            echo "disable delocate due to build breaks: delocate-wheel -w wheelhouse  $f"
+            cp $f wheelhouse
+          done
+          ls wheelhouse/*
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-nightly
+          path: wheelhouse
+
+  linux-nightly:
+    name: Nightly ${{ matrix.python }} Linux
+    if: github.event_name == 'push'
+    needs: [build-number, linux-wheel]
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        python: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: BUILD_NUMBER
+      - uses: einaregilsson/build-number@46decf22c413b48c8923e98b2b5836f8aaf7781e # v3
+      - run: echo "Build number is $BUILD_NUMBER"
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: bazel-bin
+      - name: Wheel ${{ matrix.python }} Linux
+        run: |
+          set -x -e
+          mv bazel-bin/tensorflow_io/.bazelrc .
+          docker run -i --rm --user $(id -u):$(id -g) -v /etc/password:/etc/password -v $PWD:/v -w /v --net=host python:${{ matrix.python }}-slim python setup.py --data bazel-bin -q bdist_wheel --nightly $BUILD_NUMBER
+          rm -rf build
+          docker run -i --rm --user $(id -u):$(id -g) -v /etc/password:/etc/password -v $PWD:/v -w /v --net=host python:${{ matrix.python }}-slim python setup.py --project tensorflow-io-gcs-filesystem --data bazel-bin -q bdist_wheel --nightly $BUILD_NUMBER
+      - name: Auditwheel ${{ matrix.python }} Linux
+        run: |
+          set -x -e
+          ls dist/*
+          for f in dist/*.whl; do
+            docker run -i --rm -v $PWD:/v -w /v --net=host quay.io/pypa/manylinux2014_x86_64 bash -x -e /v/tools/build/auditwheel repair --plat manylinux2014_x86_64 $f
+          done
+          sudo chown -R $(id -nu):$(id -ng) .
+          ls wheelhouse/*
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-nightly
+          path: wheelhouse
+
+  windows-nightly:
+    name: Nightly ${{ matrix.python }} Windows
+    if: github.event_name == 'push'
+    needs: [build-number, windows-wheel]
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: BUILD_NUMBER
+      - uses: einaregilsson/build-number@46decf22c413b48c8923e98b2b5836f8aaf7781e # v3
+      - run: echo "Build number is $BUILD_NUMBER"
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: ${{ runner.os }}-bazel-bin
+          path: bazel-bin
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Wheel ${{ matrix.python }} Windows
+        shell: cmd
+        run: |
+          @echo on
+          python --version
+          python -m pip install -U wheel setuptools
+          python setup.py --data bazel-bin -q bdist_wheel --nightly %BUILD_NUMBER%
+          rm -rf build
+          python setup.py --project tensorflow-io-gcs-filesystem --data bazel-bin -q bdist_wheel --nightly %BUILD_NUMBER%
+          ls -la dist
+      - uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: ${{ runner.os }}-${{ matrix.python }}-nightly
+          path: dist
+
+  nightly:
+    name: Nightly
+    if: github.event_name == 'push'
+    needs: [linux-nightly, macos-nightly, windows-nightly]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.9-nightly
+          path: macOS-3.9-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.10-nightly
+          path: macOS-3.10-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.11-nightly
+          path: macOS-3.11-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: macOS-3.12-nightly
+          path: macOS-3.12-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.9-nightly
+          path: Linux-3.9-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.10-nightly
+          path: Linux-3.10-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.11-nightly
+          path: Linux-3.11-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Linux-3.12-nightly
+          path: Linux-3.12-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Windows-3.9-nightly
+          path: Windows-3.9-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Windows-3.10-nightly
+          path: Windows-3.10-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Windows-3.11-nightly
+          path: Windows-3.11-nightly
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        with:
+          name: Windows-3.12-nightly
+          path: Windows-3.12-nightly
+      - run: |
+          set -e -x
+          mkdir -p dist
+          cp macOS-3.9-nightly/tensorflow_io_nightly*.whl dist/
+          cp macOS-3.10-nightly/tensorflow_io_nightly*.whl dist/
+          cp macOS-3.11-nightly/tensorflow_io_nightly*.whl dist/
+          cp macOS-3.12-nightly/tensorflow_io_nightly*.whl dist/
+          cp Linux-3.9-nightly/tensorflow_io_nightly*.whl dist/
+          cp Linux-3.10-nightly/tensorflow_io_nightly*.whl dist/
+          cp Linux-3.11-nightly/tensorflow_io_nightly*.whl dist/
+          cp Linux-3.12-nightly/tensorflow_io_nightly*.whl dist/
+          cp Windows-3.9-nightly/tensorflow_io_nightly*.whl dist/
+          cp Windows-3.10-nightly/tensorflow_io_nightly*.whl dist/
+          cp Windows-3.11-nightly/tensorflow_io_nightly*.whl dist/
+          cp Windows-3.12-nightly/tensorflow_io_nightly*.whl dist/
+          ls -la dist/
+          sha256sum dist/*.whl
+      - uses: pypa/gh-action-pypi-publish@ec4db0b4ddc65acdf4bff5fa45ac92d78b56bdf0 # v1.9.0
+        with:
+          user: __token__
+          password: ${{ secrets.github_tensorflow_io_nightly }}
+      - run: |
+          set -e -x
+          rm -rf dist
+          mkdir -p dist
+          cp macOS-3.9-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp macOS-3.10-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp macOS-3.11-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp macOS-3.12-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Linux-3.9-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Linux-3.10-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Linux-3.11-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Linux-3.12-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Windows-3.9-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Windows-3.10-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Windows-3.11-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          cp Windows-3.12-nightly/tensorflow_io_gcs_filesystem_nightly*.whl dist/
+          ls -la dist/
+          sha256sum dist/*.whl
+      - uses: pypa/gh-action-pypi-publish@ec4db0b4ddc65acdf4bff5fa45ac92d78b56bdf0 # v1.9.0
+        with:
+          user: __token__
+          password: ${{ secrets.tensorflow_io_gcs_filesystem_nightly }}
+
+  docker-nightly:
+    name: Docker Nightly
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [linux-nightly, macos-nightly, windows-nightly]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: 3.8
+      - run: |
+          set -e -x
+          docker login --username tfsigio --password ${{ secrets.DOCKER_PASSWORD }}
+          python --version
+          bash -x -e tools/docker/tests/dockerfile_nightly_test.sh
+          docker push tfsigio/tfio:nightly

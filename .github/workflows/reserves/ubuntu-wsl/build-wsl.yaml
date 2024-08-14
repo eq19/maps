@@ -1,0 +1,359 @@
+name: Build WSL
+on:
+  workflow_dispatch:
+    inputs:
+      appID:
+        description: 'Release name to use for the bundle'
+        required: true
+        default: 'UbuntuPreview'
+      rootfses:
+        description: 'Ubuntu WSL rootfs urls, separated by a colon. Direct set of "tar.gz::arch" if arch is not in the filename'
+        required: true
+        default: ''
+      rootfseschecksum:
+        description: 'Should download a SHA256SUMS file to check the rootfs'
+        required: true
+        default: 'yes'
+      upload:
+        description: 'Should we upload the appxbundle to the store'
+        required: true
+        default: 'yes'
+  schedule:
+    - cron: '0 10 * * *'
+
+env:
+  goversion: '1.21.4'
+
+jobs:
+  build-matrix:
+    name: Build Matrix for AppIDs to run on with rootfses, which can be manually supplied or automatically.
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.build-matrix-release.outputs.matrix }}
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt update
+          sudo DEBIAN_FRONTEND=noninteractive apt install -y jq
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.goversion }}
+      - name: Build Matrix for AppIDs to run on with rootfses, which can be manually supplied or automatically
+        id: build-matrix-release
+        run: |
+          set -eux
+          # Manual build
+          if [ ${{ github.event_name }} = 'workflow_dispatch' ]; then
+            appID="${{ github.event.inputs.appID }}"
+            if [ -z "${appID}" ]; then
+              appID="UbuntuPreview"
+            fi
+
+            builds="$(cat <<-EOF|jq -c
+              {"include":
+                [
+                  {
+                    "AppID": "${appID}",
+                    "Rootfses": "${{ github.event.inputs.rootfses }}",
+                    "RootfsesChecksum": "${{ github.event.inputs.rootfseschecksum }}",
+                    "Upload": "${{ github.event.inputs.upload }}"
+                  }
+                ]
+              }
+          EOF
+            )"
+          else
+            wsl-builder/lp-distro-info > /tmp/all-releases.csv
+            go build ./wsl-builder/prepare-build
+            builds_config="$(./prepare-build build-github-matrix /tmp/all-releases.csv)"
+            if [ "${builds_config}" == "null" ]; then
+              echo "No active application to build"
+              exit 0
+            fi
+            builds="{\"include\":${builds_config}}"
+          fi
+
+          echo "${builds}"
+          echo "::set-output name=matrix::${builds}"
+          echo "::notice::Building for: $(echo "${builds}" | jq '.include[] | "\(.AppID): \(.Rootfses). RootfsesChecksum: \(.RootfsesChecksum). Upload to store: \(.Upload)"')"
+
+  build-wsl:
+    name: Build ${{ matrix.AppID }}
+    runs-on: windows-latest
+    needs: build-matrix
+    strategy:
+      matrix: ${{fromJson(needs.build-matrix.outputs.matrix)}}
+      fail-fast: false
+    env:
+      buildInfoPath: 'wiki/build-info'
+      workDir: 'C:/Temp/builddir'
+    outputs:
+      has-changes: ${{ steps.detect-changes.outputs.has-changes }}
+    steps:
+      - name: Checkout WSL
+        shell: bash
+        run: |
+          mkdir -p ${{ env.workDir }}
+          git clone https://github.com/ubuntu/wsl.git ${{ env.workDir }}
+          cd ${{ env.workDir }}
+          git checkout "${GITHUB_SHA}"
+          git submodule update --init --recursive
+      - name: Checkout build-info
+        shell: bash
+        run: |
+          mkdir -p ${{ env.workDir }}/wiki/
+          git clone https://github.com/ubuntu/wsl.wiki ${{ env.workDir }}/wiki --depth 1
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ${{ env.goversion }}
+      - name: Prepare project metadata, assets and download rootfses
+        working-directory: ${{ env.workDir }}
+        shell: bash
+        run: |
+          set -eu
+          # Download rootfses, checksum and place them at the correct place
+          go build ./wsl-builder/prepare-build
+          extraArgs=""
+          if [ ${{ matrix.RootfsesChecksum }} != "yes" ]; then
+            extraArgs="--no-checksum"
+          fi
+          archsBundle="$(./prepare-build prepare ${{ env.buildInfoPath }}/${{ matrix.AppID }}-buildid.md ${{ matrix.AppID }} ${{ matrix.Rootfses }} ${extraArgs})"
+          echo "AppxBundlePlatforms=${archsBundle}" >> $GITHUB_ENV
+
+          # Always StoreUpload mode to get appxupload file
+          buildMode="StoreUpload"
+          echo "UapAppxPackageBuildMode=${buildMode}" >> $GITHUB_ENV
+      - name: Setup MSBuild (PATH)
+        uses: microsoft/setup-msbuild@v1.0.2
+      - name: Install certificate
+        shell: powershell
+        working-directory: ${{ env.workDir }}
+        run: |
+          New-Item -ItemType directory -Path certificate
+          Set-Content -Path certificate\certificate.txt -Value '${{ secrets.CERTIFICATE }}'
+          certutil -decode certificate\certificate.txt certificate\certificate.pfx
+
+          $pwd = ConvertTo-SecureString  '${{ secrets.CERTIFICATE_PASSWORD }}' -AsPlainText -Force
+          Import-PfxCertificate -Password $pwd -CertStoreLocation Cert:LocalMachine\Trust -FilePath certificate\certificate.pfx
+          Import-PfxCertificate -Password $pwd -CertStoreLocation Cert:CurrentUser\My -FilePath certificate\certificate.pfx
+      - name: Build Bundle
+        working-directory: ${{ env.workDir }}
+        run: msbuild .\DistroLauncher.sln /t:Build /m /nr:false /p:Configuration=Release /p:AppxBundle=Always /p:AppxBundlePlatforms="${{ env.AppxBundlePlatforms }}" /p:UapAppxPackageBuildMode=${{ env.UapAppxPackageBuildMode }} -verbosity:normal
+      - name: Collect the PDB files
+        working-directory: ${{ env.workDir }}
+        shell: bash
+        run: |
+          set -eu
+
+          # Launcher PDBs
+
+          for arch in "x64" "ARM64"; do
+            collectTo="debug-database-${{ matrix.AppID }}/launcher/$arch/"
+            mkdir -p "$collectTo"
+
+            findDir="ARM64/Release/"
+            if [ $arch == "x64" ]; then
+              findDir="ARM64/Release/DistroLauncher-Appx/x64/"
+            fi
+
+            find "$findDir" -maxdepth 1 -name "*.pdb" -exec cp '{}' "$collectTo" \;
+
+          done
+
+      - name: Allow downloading sideload appxbundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: sideload-${{ matrix.AppID }}
+          path: |
+            ${{ env.workDir }}/AppPackages/Ubuntu/Ubuntu_*/*
+          retention-days: 7
+      - name: Allow downloading store appxupload
+        uses: actions/upload-artifact@v2
+        with:
+          name: store-${{ matrix.AppID }}
+          path: |
+            ${{ env.workDir }}/AppPackages/Ubuntu/Ubuntu_*.appxupload
+          retention-days: 7
+      - name: Allow downloading the program debug artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: debug-database-${{ matrix.AppID }}
+          path: |
+            ${{ env.workDir }}/debug-database-${{ matrix.AppID }}/
+          retention-days: 7
+      - name: Detect any potential changes and if we should upload automatically to the Store
+        id: detect-changes
+        working-directory: ${{ env.workDir }}
+        shell: bash
+        run: |
+          set -eux
+
+          build_id=$(cat "${{ env.buildInfoPath }}/${{ matrix.AppID }}-buildid.md")
+
+          echo "::set-output name=has-changes::false"
+          echo "::set-output name=should-upload::false"
+
+          # Store md5sum of rootfs, launcher and assets related code
+          fingerprint_file="${{ matrix.AppID }}-fingerprint.md"
+          fingerprint_filepath="${{ env.buildInfoPath }}/${fingerprint_file}"
+
+          first_upload="false"
+          if [ ! -f "${fingerprint_filepath}" ]; then
+            first_upload="true"
+          fi
+
+          # First. the rootfses
+          echo '```' > "${fingerprint_filepath}"
+          md5sum */install.tar.gz | sort -k2 >> "${fingerprint_filepath}"
+          # Launcher code
+          echo "$(find DistroLauncher -type f -not -path "*/ARM64/*" -not -path "*/x64/*" -exec md5sum {} \; | sort -k 2 | md5sum)DistroLauncher" >> "${fingerprint_filepath}"
+          # Build info and assets (without specific build number)
+          sed -i "s/\.${build_id}\./XXX/" DistroLauncher-Appx/MyDistro.appxmanifest
+          echo "$(find DistroLauncher-Appx -type f -not -path "*/ARM64/*" -not -path "*/x64/*" -not -path "*/BundleArtifacts/*" -not -name "Generated Files" -exec md5sum {} \; | sort -k 2 | md5sum)DistroLauncher-Appx" >> "${fingerprint_filepath}"
+          echo '```' >> "${fingerprint_filepath}"
+
+          cd "${{ env.buildInfoPath }}"
+          git add "${fingerprint_file}"
+
+          hasChanges="$(git diff --staged ${fingerprint_file})"
+          cd -
+          if [ -z "${hasChanges}" ]; then
+            exit 0
+          fi
+
+          echo "::set-output name=has-changes::true"
+
+          if [ ${{ matrix.Upload }} != "yes" ]; then
+            echo "::notice::${{ matrix.AppID }} build ${build_id} ready for sideload or manual submission to the Microsoft Store"
+            exit 0
+          fi
+
+          # If we are doing a first build for this distro, we don’t want to submit it to the store as first submission
+          # is manual. We let the other steps and jobs happening to save artifacts (build-id, fingerprints) of
+          # the first build.
+          if [ "${first_upload}" = "true" ]; then
+            echo "::notice::This is the first build for ${{ matrix.AppID }}. It needs to be submitted manually to the Microsoft Store"
+            exit 0
+          fi
+          echo "::notice::Uploading to the store ${{ matrix.AppID }} build ${build_id}"
+          echo "::set-output name=should-upload::true"
+
+          echo "Uploading new version as some files have changed:"
+          echo "${hasChanges}"
+
+      - name: Install Store Broker
+        if: ${{ steps.detect-changes.outputs.should-upload == 'true' }}
+        working-directory: ${{ env.workDir }}
+        shell: powershell
+        run: |
+          Install-Module -Name StoreBroker -AcceptLicense -Force -Scope CurrentUser -Verbose
+      - name: Submit to Microsoft Store
+        if: ${{ steps.detect-changes.outputs.should-upload == 'true' }}
+        working-directory: ${{ env.workDir }}
+        shell: powershell
+        run: |
+          New-Item -ItemType directory -Path store -Force
+
+          # Authenticate against the store
+          $pass = ConvertTo-SecureString -String '${{ secrets.AZUREAD_APPKEY }}' -AsPlainText -Force
+          $cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ${{ secrets.AZUREAD_APPID }},$pass
+          Set-StoreBrokerAuthentication -TenantId '${{ secrets.AZUREAD_TENANTID }}' -Credential $cred
+
+          # Get store app ID for AppID
+          $appid = (Get-Applications -GetAll | Where-Object PackageIdentityName -like '*${{ matrix.AppID }}').id
+          If($appid -eq '') {
+            echo "No app found for AppID: ${{ matrix.AppID }}"
+            exit 1
+          }
+
+          # We want to publish UbuntuPreview automatically
+          If('${{ matrix.AppID }}' -eq 'UbuntuPreview') {
+            ((Get-Content -path meta\SBConfig.json -Raw) -replace 'Manual','Immediate') | Set-Content -Path meta\SBConfig.json
+          }
+
+          # Prepare and submit to the Store
+          cd store\
+          New-SubmissionPackage -ConfigPath ..\meta\SBConfig.json
+          Update-ApplicationSubmission -AppId $appid -SubmissionDataPath "out\appstore-submission.json" -PackagePath "out\appstore-submission.zip" -Force -Autocommit -ReplacePackages -UpdateListings -UpdatePublishModeAndVisibility -UpdatePricingAndAvailability -UpdateAppProperties -UpdateGamingOptions -UpdateTrailers -UpdateNotesForCertification
+
+      - name: Upload build artifacts
+        if: ${{ steps.detect-changes.outputs.has-changes == 'true' }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts-${{ matrix.AppID }}
+          path: ${{ env.workDir }}/${{ env.buildInfoPath }}/${{ matrix.AppID }}-*
+
+  update-build-artifacts:
+    # TODO: download only artefacts for wiki (pattern not supported yet: https://github.com/actions/download-artifact/issues/103)
+    name: Store updated build artifacts in wiki for reuse in future workflow runs
+    runs-on: ubuntu-latest
+    if: always()
+    needs: build-wsl
+    env:
+      artifactsPath: '/tmp/artifacts'
+      codeDir: '/tmp/update-codedir'
+    steps:
+      - name: Checkout wiki
+        uses: actions/checkout@v3
+        with:
+          repository: ubuntu/wsl.wiki
+      - name: Download artifacts from all previous matrix runs
+        uses: actions/download-artifact@v2
+        with:
+          path: ${{ env.artifactsPath }}
+      - name: Copy modified artifacts to base wiki
+        id: modified-artifacts
+        run: |
+          set -eu
+
+          mkdir -p build-info/
+
+          cp -a ${{ env.artifactsPath }}/build-artifacts-*/*.md build-info/ || exit 0
+          echo "::set-output name=needs-wiki-update::true"
+
+      # Pushing PDB's to the wiki only makes sense if we uploaded new app versions to the store.
+      - name: Copy debug databases to base wiki
+        if: ${{ needs.build-wsl.outputs.has-changes == 'true' }}
+        id: pdb-artifacts
+        run: |
+          set -eu
+
+          mkdir -p debug-databases/
+
+          find  ${{ env.artifactsPath }} -name "debug-database-*" -maxdepth 1 -exec sh -c 'tar -cavf debug-databases/"$(basename $1)".tar.zst' sh '{}' \; || \
+            exit 0
+
+          echo "::set-output name=needs-wiki-update::true"
+
+      - name: Sync wiki to repository documentation
+        if: ${{ steps.modified-artifacts.outputs.needs-wiki-update == 'true' }}
+        run: |
+          set -eux
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto-update build info"
+          git push origin master
+
+      - name: Checkout repositories required by ISO Tracker notification
+        if: ${{ steps.modified-artifacts.outputs.needs-wiki-update == 'true' }}
+        run: |
+          mkdir -p ${{ env.codeDir }}
+          git clone https://github.com/ubuntu/wsl.git ${{ env.codeDir }} --depth 1
+          mkdir -p ${{ env.codeDir }}/uat
+          git clone https://git.launchpad.net/ubuntu-archive-tools ${{ env.codeDir }}/uat --depth 1
+
+      - name: Notify ISO Tracker
+        if: ${{ steps.modified-artifacts.outputs.needs-wiki-update == 'true' }}
+        env:
+          ISOTRACKER_USERNAME: ${{ secrets.ISOTRACKER_USERNAME }}
+          ISOTRACKER_PASSWORD: ${{ secrets.ISOTRACKER_PASSWORD }}
+        run: |
+          [ -f /tmp/all-releases.csv ] || ${{ env.codeDir }}/wsl-builder/lp-distro-info > /tmp/all-releases.csv
+          # There might have been more than one build in the latest commit 
+          for build in $(git diff-tree --no-commit-id --name-only -r HEAD | grep buildid); do
+            AppID=$(basename $build);
+            AppID=${AppID%-buildid.md};
+            PYTHONPATH=${{ env.codeDir }}/uat ${{ env.codeDir }}/wsl-builder/notify-isotracker --debug $AppID $GITHUB_RUN_ID
+          done

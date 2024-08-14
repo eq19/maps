@@ -1,24 +1,26 @@
-# 💎 Main Workflow - eQuantum MEC Structure
-name: Build and Deploy Cell Types – Modulo 6
+# Main Workflow of eQuantum Project
+# Ref: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+name: Build and deploy eQuantum site
 
+# Runs on workflow_run.conclusion
 on:
   push:
     paths:
-      - '.*/**'
+      - '.github/**'
       - '!**/reserves/**'
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
 
-# ⚠️ Allow concurrent
+# Allow concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
-# Set GITHUB_TOKEN
+# Set GITHUB_TOKEN scopes
 permissions: write-all
         
-# Global environtment
+# Global environtment variables
 env:
   RUN: ${{ github.run_id }}
   USER: ${{ github.actor }}
@@ -27,16 +29,92 @@ env:
   ACTOR: ${{ github.triggering_actor }}
   
 jobs:
-  lexering:
+  determine-runner:
+    runs-on: ubuntu-latest
+    #container: node:latest
+    services:
+      postgres:
+        image: postgres
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+    outputs:
+      runner: ${{ steps.set-runner.outputs.use-runner }}
+
+    steps:
+      - name: 📂 Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          #repository: ${{ env.OWNER }}/${{ env.OWNER }}.github.io
+          
+      - name: 🪂 Pre-build Maps
+        #if: runner.os == 'Windows'
+        uses: eq19/maps@v2
+        with:
+          image_name: "prime"
+          image_tag: "latest"
+          token: ${{ secrets.ACCESS_TOKEN }}
+          docker_hub_username: ${{ github.actor }}
+          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: 🚀 Build Feed on Linux
+        uses: eq19/feed@v3
+        with:
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+  
+      - name: 🔧 Setup Lexer on Cloud
+        uses: eq19/lexer@v1
+        id: set-runne
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.ACCESS_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+    
+  github-pages:
+    defaults:
+      run:
+        shell: bash
+    needs: determine-runner
+
     strategy:
       max-parallel: 1
-      fail-fast: true
+      fail-fast: false
       matrix:
-        #Simulate Gell-Mann
         #node_version: [8, 10, 12]
-        os: [ubuntu-latest, windows-latest]
+        os: [windows-latest, self-hosted]
+        mocha-args-windows: [
+          # "src/test/cli.build.test.ts",
+          # "src/test/cli.exec.buildKit.1.test.ts",
+          # "src/test/cli.exec.buildKit.2.test.ts",
+          # "src/test/cli.exec.nonBuildKit.1.test.ts",
+          # "src/test/cli.exec.nonBuildKit.2.test.ts",
+          # "src/test/cli.test.ts",
+          # "src/test/cli.up.test.ts",
+          "src/test/container-features/containerFeaturesOCI.test.ts",
+          # "src/test/container-features/containerFeaturesOCIPush.test.ts",
+          # "src/test/container-features/containerFeaturesOrder.test.ts",
+          # "src/test/container-features/e2e.test.ts",
+          # "src/test/container-features/featureHelpers.test.ts",
+          # "src/test/container-features/featuresCLICommands.test.ts",
+          #"src/test/container-features/generateFeaturesConfig.test.ts",
+          # "src/test/container-templates/containerTemplatesOCI.test.ts",
+          # "src/test/container-templates/templatesCLICommands.test.ts",
+          # "src/test/dockerComposeUtils.test.ts",
+          # "src/test/dockerfileUtils.test.ts",
+          # "src/test/dockerUtils.test.ts",
+          # "src/test/imageMetadata.test.ts",
+          # "src/test/variableSubstitution.test.ts",
+          # "src/test/container-features/registryCompatibilityOCI.test.ts",
+          # # Run all except the above:
+          # "--exclude .....",
+        ]
+   
     runs-on: ${{ matrix.os }}
-    # Runs on workflow_run.conclusion
+    #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
+    
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
 
@@ -46,56 +124,14 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: ⚙️ Build Maps
-        uses: eq19/maps@v1
-        if: runner.os == 'Ubuntu'
-        with:
-          image_name: prime
-          token: ${{ secrets.ACCESS_TOKEN }}
-          docker_hub_username: ${{ github.actor }}
-          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-
-      - name: 🏃‍♂️ Feed Mapping
-        uses: eq19/feed@v3        
-        id: build-image
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
-
-      - name: ♻️ Lexering Cloud
-        uses: eq19/lexer@v1
-        id: set-runner
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
-          
-    outputs:
-      runner: ${{ steps.set-runner.outputs.use-runner }}
-
-  setup-parser:
-    needs: lexering
-    strategy:
-      matrix:
-        os: [self-hosted]
-    runs-on: ${{ matrix.os }}
-    #runs-on: ubuntu-latest (build-995)
-    #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
-
-    steps:
-      - name: 📂 Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-
-      - name: 🪂 Parsering
+      - name: ⚙️ Setup Parser
         uses: eq19/parser@v1
-
-      - name: 🚀 Evaluate Syntax
-        uses: eq19/syntax@v2
-  
-      - name: 🔧 Set Grammar Rules 
-        uses: eq19/grammar@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: ⚠️ Evaluate Syntax
+        if: runner.os == 'Ubuntu'
+        uses: eq19/syntax@v2
+
+      - name: 🏃‍♂️ Set Grammar Rules
+        uses: eq19/grammar@v1

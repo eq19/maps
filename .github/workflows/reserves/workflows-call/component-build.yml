@@ -1,0 +1,88 @@
+name: "Eventide component workflow: build image and push"
+
+on:
+  workflow_call:
+    inputs:
+      component_name:
+        required: true
+        type: string
+      repository:
+        type: string
+      branch:
+        type: string
+        default: master
+      cache_image_tag:
+        type: boolean
+        default: true
+
+    secrets:
+      GOOGLE_CREDENTIALS:
+        required: true
+      BUNDLE_RUBYGEMS__PKG__GITHUB__COM:
+        required: true
+      BUNDLE_GITHUB__COM:
+        required: true
+      GCLOUD_PROJECT_ID:
+        required: true
+      CHECKOUT_TOKEN:
+        required: false
+      GOOGLE_CREDENTIALS_GITHUB_ACTIONS:
+        required: true
+
+jobs:
+  build:
+    env:
+      IMAGEBASE: europe-docker.pkg.dev/nimble-lead-281209/eu.gcr.io/${{ inputs.component_name }}
+
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.repository || github.repository }}
+          token: ${{ secrets.CHECKOUT_TOKEN || github.token }}
+          ref: ${{ inputs.branch }}
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_GITHUB_ACTIONS }}'
+
+      - name: Set branch
+        run: echo "branch=${GITHUB_REF_NAME:-$(git branch | grep "\*" | cut -d\  -f2)}" >> $GITHUB_ENV
+
+      - name: Set commit_sha
+        run: echo "commit_sha=${GITHUB_SHA:-$(git rev-parse HEAD)}" >> $GITHUB_ENV
+
+      - name: Set imagetag
+        run: echo "imagetag=${IMAGETAG:-${{ env.branch }}-$(date +%Y-%m-%d-%H-%M-%z |sed -e 's/+//')-$(echo "${{ env.commit_sha }}"|cut -c1-8)}" >> $GITHUB_ENV
+
+      - name: Build image and push to Docker (to GCP)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: false
+          push: true
+          cache-from: |
+            ${{ env.IMAGEBASE }}:latest
+          tags: |
+            ${{ env.IMAGEBASE }}:${{ env.imagetag }}
+            ${{ env.IMAGEBASE }}:latest
+          labels: |
+            ${{ inputs.component_name }}
+          build-args: |
+            POSTURE=operational
+          secrets: |
+            BUNDLE_RUBYGEMS__PKG__GITHUB__COM=${{ secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM }}
+            BUNDLE_GITHUB__COM=${{ secrets.BUNDLE_GITHUB__COM }}
+
+      - run: echo ${{ env.imagetag }} > imagetag
+
+      - name: Cache imagetag
+        uses: actions/cache@v4
+        if:  ${{ inputs.cache_image_tag }}
+        env:
+          cache-name: cache-imagetag
+        with:
+          path: imagetag
+          key: image-cache-${{ runner.os }}-${{ github.repository }}-${{ github.ref_name }}-${{ github.sha }}
