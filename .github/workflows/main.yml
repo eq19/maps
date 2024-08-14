@@ -56,7 +56,7 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: 🏃‍♂️ Feed Mapping
-        uses: eq19/feed@v3
+        uses: eq19/feed@v2
         id: build-image
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
