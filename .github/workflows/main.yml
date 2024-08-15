@@ -50,7 +50,7 @@ jobs:
         uses: eq19/maps@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          docker_hub_username: ${{ github.actor }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
@@ -59,7 +59,7 @@ jobs:
         id: build-image
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          docker_hub_username: ${{ github.actor }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
@@ -68,7 +68,7 @@ jobs:
         id: set-runner
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          docker_hub_username: ${{ github.actor }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           
@@ -101,3 +101,4 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+x
