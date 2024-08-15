@@ -48,20 +48,29 @@ jobs:
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          docker_hub_username: ${{ github.actor }}
+          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: 🏃‍♂️ Feed Mapping
         uses: eq19/feed@v3        
         id: build-image
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          docker_hub_username: ${{ github.actor }}
+          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: ♻️ Lexering Cloud
         uses: eq19/lexer@v1
         id: set-runner
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          docker_hub_username: ${{ github.actor }}
+          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           
     outputs:
       runner: ${{ steps.set-runner.outputs.use-runner }}
