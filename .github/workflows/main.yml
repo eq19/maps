@@ -32,7 +32,6 @@ jobs:
       max-parallel: 1
       fail-fast: true
       matrix:
-        # Simulate Gell-Mann
         #node_version: [8, 10, 12]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
