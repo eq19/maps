@@ -80,8 +80,9 @@ jobs:
     strategy:
       matrix:
         os: [self-hosted]
+            
+    # Simulate Gell-Mann           
     runs-on: ${{ matrix.os }}
-    #runs-on: ubuntu-latest (build-995)
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
     steps:
