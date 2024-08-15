@@ -48,11 +48,6 @@ jobs:
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v1
-        with:
-          token: ${{ secrets.ACCESS_TOKEN }}
-          docker_hub_username: ${{ github.actor }}
-          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
-          docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: 🏃‍♂️ Feed Mapping
         uses: eq19/feed@v3        
