@@ -49,7 +49,6 @@ jobs:
       - name: ⚙️ Build Maps
         uses: eq19/maps@v1
         with:
-          image_name: eq19/prime
           token: ${{ secrets.ACCESS_TOKEN }}
           docker_hub_username: ${{ github.actor }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -59,7 +58,6 @@ jobs:
         uses: eq19/feed@v3        
         id: build-image
         with:
-          image_name: eq19/setup
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
 
