@@ -31,10 +31,10 @@
 		}
 	},
 	
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// Use 'forwardPorts' to make a list of ports available locally
 	// "forwardPorts": [],
 
-	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	// Ref: https://aka.ms/vscode-remote/containers/non-root
 	//"remoteUser": "vscode",
 
 	// Ref: https://stackoverflow.com/a/78198727/4058484
