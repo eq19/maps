@@ -83,4 +83,4 @@ runs:
         git remote set-url origin ${REMOTE_REPO}
 
         git add . && git commit -m "Assign eQuantum to project workflow" > /dev/null && git push > /dev/null 2>&1
-        if [ $? -eq 0 ]; then echo COMMITTED; else echo UPTODATE; fi
+        #if [ $? -eq 0 ]; then echo COMMITTED; else echo UPTODATE; fi
