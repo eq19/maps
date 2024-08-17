@@ -83,7 +83,7 @@ runs:
         git remote set-url origin ${REMOTE_REPO}
 
         git add .
-        git commit -m "Assign eQuantum to project workflow"
+        git commit --allow-empty -m "Assign eQuantum to project workflow"
         #> /dev/null
         git push
         #> /dev/null 2>&1
