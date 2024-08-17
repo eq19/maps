@@ -29,7 +29,7 @@ runs:
         git config --global --add safe.directory ${{ github.workspace }}
         
         REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
-        git remote set-url origin ${REMOTE_REPO} > /dev/null
+        git remote set-url origin ${REMOTE_REPO}
         
-        git add . && git commit -m "Assign eQuantum" > /dev/null && git push > /dev/null 2>&1
+        git add . && git commit -m "Assign eQuantum" && git push
         if [ $? -eq 0 ]; then exit 1; fi
