@@ -82,10 +82,5 @@ runs:
         REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.credentials }}@github.com/${{ inputs.repository }}.git"
         git remote set-url origin ${REMOTE_REPO}
 
-        git add . && git commit -m "Assign eQuantum to project workflow"
-        git push
-        if [ $? -eq 0 ]; then
-          echo OK
-        else
-          echo FAIL
-        fi
+        git add . && git commit -m "Assign eQuantum to project workflow" > /dev/null && git push > /dev/null 2>&1
+        if [ $? -eq 0 ]; then echo OK; else echo FAIL; fi
