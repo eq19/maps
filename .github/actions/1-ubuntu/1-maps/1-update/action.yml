@@ -1,0 +1,88 @@
+name: 'Docker Deploy Action'
+description: >
+  🪂  A Github Action to deploy pages conveniently
+inputs:
+  docker_hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}       
+    required: true
+  docker_hub_password:
+    description: Docker Hub authentication token
+    required: true
+  docker_hub_token:
+    description: Docker Hub authentication token
+    required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: "Name for the container to be created. Example: nginx"
+    default: 'setup'
+    required: false
+  image_tag:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  build_args:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  actor:
+    description: 'The deploy actor'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  repository:
+    description: 'The deploy repository'
+    required: false
+
+branding:
+  icon: 'command'
+  color: 'red'
+
+runs:
+  using: composite
+  steps:
+    - name: 💎 Set update workflow
+      id: update
+      shell: bash
+      run: |
+        git config --global user.name "${{ inputs.actor }}"
+        git config --global --add safe.directory ${{ github.workspace }}
+        git config --global user.email "${{ inputs.actor }}@users.noreply.github.com"
+
+        rm -rf .github
+        cp -r /home/runner/work/_actions/eq19/eq19/main/.github .
+        chown -R "$(whoami)" .github
+
+        REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.credentials }}@github.com/${{ inputs.repository }}.git"
+        git remote set-url origin ${REMOTE_REPO}
+
+        git add .
+        git commit -m "Assign eQuantum to project workflow" > /dev/null
+        git push
+        #> /dev/null 2>&1

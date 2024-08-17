@@ -1,0 +1,27 @@
+name: Blog Posts
+
+on: workflow_dispatch
+
+jobs:
+  update-posts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update post list
+        run: |
+          sleep 1m
+          curl -LO https://github.com/ouuan/ouuan.moe/raw/dist/feed.json
+          node src/listPosts.js
+          rm feed.json
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          git diff-index --quiet HEAD || git commit -m "Update blog posts"
+      - name: Pull changes
+        run: git pull -r
+      - name: Push changes
+        uses: ad-m/github-push-action@d91a481090679876dfc4178fef17f286781251df
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
