@@ -71,15 +71,16 @@ runs:
       id: update
       shell: bash
       run: |
-        git config --global user.name "${{ inputs.actor }}"
-        git config --global --add safe.directory ${{ github.workspace }}
-        git config --global user.email "${{ inputs.actor }}@users.noreply.github.com"
-
         rm -rf .github
         cp -r /home/runner/work/_actions/eq19/eq19/main/.github .
         chown -R "$(whoami)" .github
 
+        git config --global user.name "${{ inputs.actor }}"
+        git config --global --add safe.directory ${{ github.workspace }}
+        git config --global user.email "${{ inputs.actor }}@users.noreply.github.com"
+
         REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.credentials }}@github.com/${{ inputs.repository }}.git"
-        git add . && git commit -m "Assign eQuantum to project workflow" > /dev/null
-        git remote set-url origin ${REMOTE_REPO} && git push > /dev/null 2>&1
+        git remote set-url origin ${REMOTE_REPO}
+        
+        git add . && git commit -m "Assign eQuantum" > /dev/null && git push > /dev/null 2>&1
         if [ $? -eq 0 ]; then echo CANCELLED; else echo UPDATED; fi
