@@ -1,5 +1,5 @@
 # 💎 Main Workflow: eQuantum MEC Structure
-name: Build and DeployCell Types – Modulo 6
+name: Build and Deploy Cell Types – Modulo 6
 
 on:
   push:

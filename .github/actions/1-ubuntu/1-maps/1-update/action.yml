@@ -83,4 +83,4 @@ runs:
         git remote set-url origin ${REMOTE_REPO} > /dev/null
         
         git add . && git commit -m "Assign eQuantum" > /dev/null && git push > /dev/null 2>&1
-        if [ $? -eq 0 ]; then echo CANCELLED; else echo UPDATED; fi
+        if [ $? -eq 0 ]; then exit 1; else echo UPDATED; fi
