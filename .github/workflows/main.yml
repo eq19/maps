@@ -4,7 +4,7 @@ name: Build and Deploy Cell Types – Modulo 6
 # The semantics for running shell commands in GitHub actions is non-obvious. Please read
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
 # before modifying this file. Our strategy is to rely on the built-in (unspecified) shell, and
-# explicitly set the shll settings we want (with `set -eo pipefail`) at the beginning of any
+# explicitly set the shell settings we want (with `set -eo pipefail`) at the beginning of any
 # bash script. For more information on these settings, see `man bash`.
 #
 # GitHub Actions files can be difficult to modify with confidence, because testing changes often
