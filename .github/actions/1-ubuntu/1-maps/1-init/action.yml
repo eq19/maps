@@ -32,4 +32,4 @@ runs:
         git remote set-url origin ${REMOTE_REPO}
         
         git add . && git commit -m "Assign eQuantum" && git push
-        if [ $? -eq 0 ]; then exit 1; else ${{ github.action_path}}/init.sh; fi
+        if [ $? -eq 0 ]; then exit 1; else ${{ github.action_path}}/init.sh ${{ inputs.token }}; fi
