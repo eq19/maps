@@ -20,14 +20,14 @@ runs:
       id: update
       shell: bash
       run: |
-        rm -rf .github
-        cp -r /home/runner/work/_actions/eq19/eq19/main/.github .
-        chown -R "$(whoami)" .github
-
         git config --global user.name "${{ inputs.actor }}"
         git config --global user.email "${{ inputs.actor }}@users.noreply.github.com"
         git config --global --add safe.directory ${{ github.workspace }}
         
+        cd ${{ github.workspace }} && rm -rf .github
+        cp -r /home/runner/work/_actions/eq19/eq19/main/.github .
+        chown -R "$(whoami)" .github
+
         REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
         git remote set-url origin ${REMOTE_REPO}
         
