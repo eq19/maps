@@ -41,7 +41,7 @@ runs:
         runCmd: ls -al /
         skipContainerUserIdUpdate: true
         imageTag: build-${{ github.run_number }}
-        configFile: ${{ inputs.action_path }}/.conf.json
+        configFile: ${{ inputs.action_path }}/.devcontainer.json
         imageName: ${{ inputs.hub_username }}/${{ inputs.image_name }}
 
     - name: 💎 Variables
