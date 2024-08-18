@@ -16,7 +16,7 @@ inputs:
     description: "Name for the container to be created. Example: nginx"
     default: 'prime'
     required: false
-  config_file:
+  action_path:
     description: Path to the dockerfile from which to build the image
     required: true
 
@@ -41,7 +41,7 @@ runs:
         runCmd: ls -al /
         skipContainerUserIdUpdate: true
         imageTag: build-${{ github.run_number }}
-        configFile: ${{ inputs.config_file }}/.devcontainer.json
+        configFile: ${{ inputs.action_path }}/.conf.json
         imageName: ${{ inputs.hub_username }}/${{ inputs.image_name }}
 
     - name: 💎 Variables
