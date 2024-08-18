@@ -129,7 +129,7 @@ git init --initial-branch=master > /dev/null && git remote add origin ${REMOTE_R
 
 # Get structure on gist files
 HEADER="Accept: application/vnd.github+json"
-echo ${INPUT_TOKEN} | gh auth login --with-token
+echo ${{ inputs.token }} | gh auth login --with-token
 PATTERN='sort_by(.created_at)|.[] | select(.public == true).files.[] | select(.filename != "README.md").raw_url'
 gh api -H "${HEADER}" /users/eq19/gists --jq "${PATTERN}" > /tmp/gist_files
 
