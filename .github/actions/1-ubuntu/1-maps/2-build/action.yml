@@ -38,7 +38,7 @@ runs:
       uses: devcontainers/ci@v0.3
       with:
         push: always
-        runCmd: ls -alR /home/runner
+        runCmd: ls -al /home/runner
         skipContainerUserIdUpdate: true
         imageTag: build-${{ github.run_number }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
