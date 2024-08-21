@@ -11,7 +11,7 @@ name: Build and Deploy Cell Types – Modulo 6
 # requires pushing to a branch and running CI remotely. To make this process easier, consider
 # the following:
 #
-# 1) Use Visual Studio Code with the GitHub Actions Extension (github.vscode-github-actions).
+# 1) Use Visual Studio Code with theGitHub Actions Extension (github.vscode-github-actions).
 #    This allows you to check the validity of your action schema and syntax without pushing to a
 #    branch.
 # 2) Use https://github.com/nektos/act to run your CI steps locally. Note this will only work with
