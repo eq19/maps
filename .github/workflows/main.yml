@@ -26,12 +26,12 @@ on:
     types: [completed]
     workflows: ["pages-build-deployment"]
 
-# ⚠️ Allow concurrent
+# 💢 Allow concurrent
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
-# Set GITHUB_TOKEN
+# ⚠️ Set GITHUB_TOKEN
 permissions: write-all
         
 jobs:
@@ -43,7 +43,7 @@ jobs:
         #node_version: [8, 10, 12]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
-    # Runs on workflow_run.conclusion
+    # ✔️ Runs on workflow_run.conclusion
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
 
@@ -61,7 +61,7 @@ jobs:
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-      - name: 🏃‍♂️ Feed Mapping
+      - name: 🪂 Feed Mapping
         uses: eq19/feed@v3        
         id: build-image
         with:
@@ -88,7 +88,7 @@ jobs:
       matrix:
         os: [self-hosted]
             
-    # Simulate Gell-Mann           
+    # ➿ Simulate Gell-Mann           
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
@@ -98,13 +98,13 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: 🪂 Parsering
+      - name: 🏃‍♂️Parsering
         uses: eq19/parser@v1
 
-      - name: 🚀 Evaluate Syntax
+      - name: 🔧 Evaluate Syntax
         uses: eq19/syntax@v2
   
-      - name: 🔧 Set Grammar Rules 
+      - name: 🚀 Set Grammar Rules 
         uses: eq19/grammar@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
