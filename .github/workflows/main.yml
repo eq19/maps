@@ -89,7 +89,7 @@ jobs:
       matrix:
         os: [self-hosted]
             
-    # ♻️ Simulate Gell-Mann           
+    # ➿ Simulate Gell-Mann           
     runs-on: ${{ matrix.os }}
     #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
@@ -99,7 +99,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: ➿ Parsering
+      - name: ♻️ Parsering
         uses: eq19/parser@v1
         id: set-parser
         with:
