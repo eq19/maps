@@ -21,7 +21,6 @@ on:
   push:
     paths:
       - '.*/**'
-      - '!**/reserves/**'
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
