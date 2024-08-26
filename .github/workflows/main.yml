@@ -19,8 +19,6 @@ name: Build and Deploy Cell Types – Modulo 6
 #
 on:
   push:
-    paths:
-      - '.*/**'
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
