@@ -13,7 +13,7 @@ name: Build and Deploy Cell Types – Modulo 6
 #
 # 1) Use Visual Studio Code with the GitHub Actions Extension (github.vscode-github-actions).
 #    This allows you to check the validity of your action schema and syntax without pushing to a
-#    branch
+#    branch.
 # 2) Use https://github.com/nektos/act to run your CI steps locally. Note this will only work with
 #    steps run on Linux platforms, as `act` is implemented with Docker containers.
 #
