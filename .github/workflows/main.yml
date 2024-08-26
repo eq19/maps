@@ -10,7 +10,7 @@ name: Build and Deploy Cell Types – Modulo 6
 # GitHub Actions files can be difficult to modify with confidence, because testing changes often
 # requires pushing to a branch and running CI remotely. To make this process easier, consider
 # the following:
-
+#
 # 1) Use Visual Studio Code with the GitHub Actions Extension (github.vscode-github-actions).
 #    This allows you to check the validity of your action schema and syntax without pushing to a
 #    branch.
