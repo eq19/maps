@@ -100,7 +100,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: ➿ Parsering
-        uses: eq19/parser@v1
+        uses: eq19/parser@v2
         id: set-parser
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
