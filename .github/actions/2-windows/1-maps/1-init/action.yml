@@ -102,8 +102,9 @@ runs:
 
     - run: |
         python3 -m pip install --upgrade pip pytest psycopg furl
+        mv -f ${{ inputs.action_path }}/test.py .
         #psql -U postgres -c 'SHOW config_file'
-        python3 -m pytest -vv ${{ inputs.action_path }}/test.py
+        python3 -m pytest -vv test.py
       env:
         CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
         SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
