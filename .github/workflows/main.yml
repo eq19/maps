@@ -6,7 +6,7 @@ name: Build and Deploy Cell Types – Modulo 6
 # before modifying this file. Our strategy is to rely on the built-in (unspecified) shell, and
 # explicitly set the shell settings we want (with `set -eo pipefail`) at the beginning of any
 # bash script. For more information on these settings, see `man bash`.
-#
+
 # GitHub Actions files can be difficult to modify with confidence, because testing changes often
 # requires pushing to a branch and running CI remotely. To make this process easier, consider
 # the following:
