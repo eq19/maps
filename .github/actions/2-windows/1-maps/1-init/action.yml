@@ -53,6 +53,9 @@ inputs:
   token:
     description: 'The deploy token'
     required: false
+  action_path:
+    description: 'The action path'
+    required: false
   repository:
     description: 'The deploy repository'
     default: ${{ github.repository }}
@@ -100,7 +103,7 @@ runs:
     - run: |
         python3 -m pip install --upgrade pip pytest psycopg furl
         #psql -U postgres -c 'SHOW config_file'
-        python3 -m pytest -vv test.py
+        python3 -m pytest -vv ${{ inputs.action_path }}/test.py
       env:
         CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
         SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
