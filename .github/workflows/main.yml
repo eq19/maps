@@ -22,13 +22,6 @@ on:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
-  workflow_dispatch:
-    inputs:
-      name:
-        description: "name"
-        required: true
-        default: "world"
-        #[test/show_inputs]   ✅  Success - echo "Hello ${{ github.event.inputs.name }}!"
 
 # 💢 Allow concurrent
 concurrency:
@@ -85,7 +78,7 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           
     outputs:
-      runner: ${{ steps.set-runner.outputs.use-runner }}
+      runner: ${{ steps.feed-mapping.outputs.current-id }}
 
   setup-parser:
     needs: lexering
