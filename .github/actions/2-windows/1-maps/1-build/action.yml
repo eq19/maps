@@ -82,16 +82,6 @@ runs:
         short-description: ${{ inputs.docker_hub_repo_short_description }}
         readme-filepath: ${{ inputs.docker_hub_repo_readme_file_path }}
 
-    - name: 💎 Rule Settings
-      if: runner.os != 'Windows'
-      uses: actions/github-script@v7
-      with:
-        result-encoding: string
-        script: |
-          const { spawnSync } = require( 'child_process' )
-          const ls = spawnSync('ls', [ '-al', '/' ] )
-          console.log( `stdout: ${ ls.stdout.toString() }` )
-
     - uses: ikalnytskyi/action-setup-postgres@v6 
       with:
         username: yoda
