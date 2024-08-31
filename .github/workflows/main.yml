@@ -40,7 +40,7 @@ jobs:
         #node_version: [8, 10, 12]
         config:
           - { os: ubuntu-latest, path: /tmp }
-          - { os: windows-latest, path: "D:\tmp" }
+          - { os: windows-latest, path: "D:\\tmp" }
 
     runs-on: ${{ matrix.config.os }}
     # ✔️ Runs on workflow_run.conclusion
