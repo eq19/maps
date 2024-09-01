@@ -8,7 +8,10 @@ inputs:
   token:
     description: 'The deploy token'
     required: true
-  temp:
+  base:
+    description: 'The path to .github folder'
+    required: true
+  tmp:
     description: 'The temporary path'
     required: true
 
@@ -23,7 +26,7 @@ runs:
       id: update
       shell: bash
       env:
-        TMP: ${{ inputs.temp }}
+        TMP: ${{ inputs.tmp }}
         RUN: ${{ github.run_id }}
         USER: ${{ github.actor }}
         TOKEN: ${{ inputs.token }}
@@ -33,14 +36,16 @@ runs:
       run: |
         git config --global user.name "${{ inputs.actor }}"
         git config --global user.email "${{ inputs.actor }}@users.noreply.github.com"
-        git config --global --add safe.directory ${{ github.workspace }}
+        git config --global --add safe.directory "${{ github.workspace }}"
         
-        cd ${{ github.workspace }} && rm -rf .github
-        cp -r /home/runner/work/_actions/eq19/eq19/main/.github .
-        chown -R "$(whoami)" .github && export PATH=${PATH}:${GITHUB_WORKSPACE}/.github/entrypoint
+        cd "${{ github.workspace }}" && rm -rf .github
+        BASE=/home/runner/work/_actions/eq19/eq19/main/.github
+        if [ "$RUNNER_OS" == "Windows" ]; then BASE="D:/a/_actions/eq19/eq19/main/.github"; fi
+        cp -r "$BASE" . && chown -R "$(whoami)" .github
+        export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && set
 
         REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
-        git remote set-url origin ${REMOTE_REPO}
+        git remote set-url origin $REMOTE_REPO
         
         git add . && git commit -m "Assign eQuantum" && git push
         if [ $? -eq 0 ]; then exit 1; else init.sh; fi
