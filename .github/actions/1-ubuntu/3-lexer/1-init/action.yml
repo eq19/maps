@@ -1,0 +1,129 @@
+name: 'Docker Deploy Action'
+description: >
+  🪂  A Github Action to deploy pages conveniently
+inputs:
+  docker_hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}    
+    required: true
+  docker_hub_password:
+    description: Docker Hub authentication token
+    required: true
+  docker_hub_token:
+    description: Docker Hub authentication token
+    required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: "Name for the container to be created. Example: nginx"
+    default: 'lexer'
+    required: false
+  image_tag:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  build_args:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destinationoh
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  repository:
+    description: 'The deploy repository'
+    default: ${{ github.repository }}
+    required: false
+
+branding:
+  icon: 'command'
+  color: 'green'
+
+runs:
+  using: composite
+  steps:
+    - name: 💎 Set Credential
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ inputs.credentials }}
+
+    - name: 🪂 Adapt feed mapping
+      shell: bash
+      run: |
+        sed -i 's|/target/repository|${{ env.TARGET_REPOSITORY }}|g' ${{ github.action_path }}/Dockerfile
+        cat ${{ github.action_path }}/Dockerfile
+        ls -al . && sudo mv -f _site ${{ github.action_path }}/
+        ls -al ${{ github.action_path }}
+
+    - name: 🚀 Initiate Lexer
+      uses: devcontainers/ci@v0.3
+      with:
+        push: always
+        skipContainerUserIdUpdate: true
+        runCmd: ls -al /home/runner
+        imageTag: build-${{ github.run_number }}
+        configFile: ${{ github.action_path }}/.devcontainer.json
+        imageName: ${{ inputs.docker_hub_username }}/${{ inputs.image_name }}
+        env: |
+          TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
+
+    - name: Remove Existing Docker Images
+      id: variables
+      shell: bash
+      run: |
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.docker_hub_username }}/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g"))
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [ "${array[$i]}" != "latest" ]; then
+            HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.docker_hub_username }}\", \"password\": \"${{ inputs.docker_hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
+            curl -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.docker_hub_username }}/repositories/${{ inputs.image_name }}/tags/${array[$i]}
+            echo "deleted: ${{ inputs.docker_hub_username }}/${{ inputs.image_name }}:${array[$i]}"
+          fi
+        done
+
+    #- id: 'deploy'
+      #uses: 'google-github-actions/deploy-appengine@v2'
+
+    - name: Remove Existing Self-Hosted Runner
+      shell: bash
+      run: |
+        gcloud info
+        HEADER="Accept: application/vnd.github+json"
+        echo ${{ inputs.token }} | gh auth login --with-token
+
+        for instance_uri in $(gcloud compute instances list --uri 2> /dev/null); do
+          instance_name=${instance_uri##*/}
+          instance_zone_uri=${instance_uri/\/instances\/${instance_name}/}
+          instance_zone=${instance_zone_uri##*/}
+          if [ -n "${instance_name}" ] && [ -n "${instance_zone}" ] && gcloud compute instances delete ${instance_name} --zone ${instance_zone} --quiet; then
+            echo "deleted: ${instance_zone}/${instance_name}"
+          fi
+        done
+
+        #See: https://docs.github.com/en/rest/actions/self-hosted-runners
+        TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
+        RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
+        if (( $TOTAL_COUNT != 0 )); then gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}; fi 

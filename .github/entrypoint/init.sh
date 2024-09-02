@@ -7,21 +7,21 @@ set_target() {
   # Get Structure
   if [[ $2 == *"github.io"* ]]; then
     [[ -n "$CELL" ]] && SPIN=$(( $CELL * 13 ))
-    pinned_repos.rb ${OWNER} publicly | yq eval -P | sed "s/ /, /g" > ${TMP}/pinned_repo
-    [[ "${OWNER}" != "eq19" ]] && sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${TMP}/pinned_repo
-    IFS=', '; array=($(cat ${TMP}/pinned_repo))
+    pinned_repos.rb ${OWNER} publicly | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/pinned_repo
+    [[ "${OWNER}" != "eq19" ]] && sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${RUNNER_TEMP}/pinned_repo
+    IFS=', '; array=($(cat ${RUNNER_TEMP}/pinned_repo))
   else
-    gh api -H "${HEADER}" /user/orgs  --jq '.[].login' | sort -uf | yq eval -P | sed "s/ /, /g" > ${TMP}/user_orgs
-    IFS=', '; array=($(cat ${TMP}/user_orgs))
-    echo "[" > ${TMP}/orgs.json
+    gh api -H "${HEADER}" /user/orgs  --jq '.[].login' | sort -uf | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/user_orgs
+    IFS=', '; array=($(cat ${RUNNER_TEMP}/user_orgs))
+    echo "[" > ${RUNNER_TEMP}/orgs.json
     for ((i=0; i < ${#array[@]}; i++)); do
       IFS=', '; pr=($(pinned_repos.rb ${array[$i]} public | yq eval -P | sed "s/ /, /g"))      
       gh api -H "${HEADER}" /orgs/${array[$i]} | jq '. +
         {"key1": ["maps","feed","lexer","parser","syntax","grammar"]} +
-        {"key2": ["'${pr[0]}'","'${pr[1]}'","'${pr[2]}'","'${pr[3]}'","'${pr[4]}'","'${pr[5]}'"]}' >> ${TMP}/orgs.json
-      if [[ "$i" -lt "${#array[@]}-1" ]]; then echo "," >> ${TMP}/orgs.json; fi
+        {"key2": ["'${pr[0]}'","'${pr[1]}'","'${pr[2]}'","'${pr[3]}'","'${pr[4]}'","'${pr[5]}'"]}' >> ${RUNNER_TEMP}/orgs.json
+      if [[ "$i" -lt "${#array[@]}-1" ]]; then echo "," >> ${RUNNER_TEMP}/orgs.json; fi
     done
-    echo "]" >> ${TMP}/orgs.json
+    echo "]" >> ${RUNNER_TEMP}/orgs.json
   fi
   
   # Iterate the Structure
@@ -31,8 +31,8 @@ set_target() {
   elif [[ "${array[-1]}" == "$1" ]]; then
     SPAN=${#array[@]}; echo $2 | sed "s|${OWNER}.github.io|${ENTRY}.github.io|g"
     if [[ -n "$CELL" ]]; then    
-      pinned_repos.rb ${ENTRY} public | yq eval -P | sed "s/ /, /g" > ${TMP}/pinned_repo
-      [[ "${ENTRY}" != "eq19" ]] && sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${TMP}/pinned_repo
+      pinned_repos.rb ${ENTRY} public | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/pinned_repo
+      [[ "${ENTRY}" != "eq19" ]] && sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${RUNNER_TEMP}/pinned_repo
     fi
   else
     for ((i=0; i < ${#array[@]}; i++)); do
@@ -55,9 +55,9 @@ set_target() {
       CELLPLUS=$(($CELL + 0))
     fi
     
-    echo "  spin: [${CELLPLUS}, ${SPANPLUS}]" >> ${TMP}/_config.yml
-    echo "  pinned: [$(cat ${TMP}/pinned_repo)]" >> ${TMP}/_config.yml
-    echo "  organization: [$(cat ${TMP}/user_orgs)]" >> ${TMP}/_config.yml
+    echo "  spin: [${CELLPLUS}, ${SPANPLUS}]" >> ${RUNNER_TEMP}/_config.yml
+    echo "  pinned: [$(cat ${RUNNER_TEMP}/pinned_repo)]" >> ${RUNNER_TEMP}/_config.yml
+    echo "  organization: [$(cat ${RUNNER_TEMP}/user_orgs)]" >> ${RUNNER_TEMP}/_config.yml
   fi
   return $(( $SPAN + $SPIN ))
 }
@@ -71,47 +71,47 @@ jekyll_build() {
   if [[ $1 != "eq19.github.io" ]]; then SITEID=$(( $3 + 2 )); else SITEID=1; fi
 
   if  [[ "${OWNER}" == "eq19" ]]; then
-    sed -i "1s|^|description: An attempt to discover the Final Theory\n\n|" ${TMP}/_config.yml
+    sed -i "1s|^|description: An attempt to discover the Final Theory\n\n|" ${RUNNER_TEMP}/_config.yml
   else
     DESCRIPTION=$(gh api -H "${HEADER}" /orgs/${OWNER} --jq '.description')
-    sed -i "1s|^|description: ${DESCRIPTION}\n\n|" ${TMP}/_config.yml
+    sed -i "1s|^|description: ${DESCRIPTION}\n\n|" ${RUNNER_TEMP}/_config.yml
   fi
   
   # Note: If you need to use a workflow run's URL from within a job, you can combine
   # these variables: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
-  sed -i "1s|^|action: ${REPO}/actions/runs/${RUN}\n|" ${TMP}/_config.yml
-  sed -i "1s|^|repository: ${OWNER}/$1\n|" ${TMP}/_config.yml
-  [[ $1 != *"github.io"* ]] && sed -i "1s|^|baseurl: /$1\n|" ${TMP}/_config.yml
+  sed -i "1s|^|action: ${REPO}/actions/runs/${RUN}\n|" ${RUNNER_TEMP}/_config.yml
+  sed -i "1s|^|repository: ${OWNER}/$1\n|" ${RUNNER_TEMP}/_config.yml
+  [[ $1 != *"github.io"* ]] && sed -i "1s|^|baseurl: /$1\n|" ${RUNNER_TEMP}/_config.yml
   
-  sed -i "1s|^|title: eQuantum\n|" ${TMP}/_config.yml
-  FOLDER="span$(( 17 - $3 ))" && sed -i "1s|^|span: ${FOLDER}\n|" ${TMP}/_config.yml
-  sed -i "1s|^|user: ${USER}\n|" ${TMP}/_config.yml
-  sed -i "1s|^|id: ${SITEID}\n|" ${TMP}/_config.yml
-  cat ${TMP}/_config.yml
+  sed -i "1s|^|title: eQuantum\n|" ${RUNNER_TEMP}/_config.yml
+  FOLDER="span$(( 17 - $3 ))" && sed -i "1s|^|span: ${FOLDER}\n|" ${RUNNER_TEMP}/_config.yml
+  sed -i "1s|^|user: ${USER}\n|" ${RUNNER_TEMP}/_config.yml
+  sed -i "1s|^|id: ${SITEID}\n|" ${RUNNER_TEMP}/_config.yml
+  cat ${RUNNER_TEMP}/_config.yml
    
   echo -e "\n$hr\nSPIN\n$hr"
   gist.sh $1 ${OWNER} ${FOLDER} #&>/dev/null
-  find ${TMP}/gistdir -type d -name .git -prune -exec rm -rf {} \;
+  find ${RUNNER_TEMP}/gistdir -type d -name .git -prune -exec rm -rf {} \;
   
-  cd ${TMP}/workdir && mv -f ${TMP}/_config.yml .
-  rm -rf ${TMP}/Sidebar.md && cp _Sidebar.md ${TMP}/Sidebar.md
-  sed -i 's/0. \[\[//g' ${TMP}/Sidebar.md && sed -i 's/\]\]//g' ${TMP}/Sidebar.md
+  cd ${RUNNER_TEMP}/workdir && mv -f ${RUNNER_TEMP}/_config.yml .
+  rm -rf ${RUNNER_TEMP}/Sidebar.md && cp _Sidebar.md ${RUNNER_TEMP}/Sidebar.md
+  sed -i 's/0. \[\[//g' ${RUNNER_TEMP}/Sidebar.md && sed -i 's/\]\]//g' ${RUNNER_TEMP}/Sidebar.md
 
   find . -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'
-  find . -type d -name "${FOLDER}" -prune -exec sh -c 'cat ${TMP}/README.md >> $1/README.md' sh {} \;
+  find . -type d -name "${FOLDER}" -prune -exec sh -c 'cat ${RUNNER_TEMP}/README.md >> $1/README.md' sh {} \;
   
   echo -e "\n$hr\nWORKSPACE\n$hr"
-  mkdir ${TMP}/workdir/_data && mv -f ${TMP}/orgs.json ${TMP}/workdir/_data/orgs.json
-  cp -R ${TMP}/gistdir/* . && cd ${GITHUB_WORKSPACE} && mv -f ${TMP}/workdir . && ls -al . && ls -al workdir
+  mkdir ${RUNNER_TEMP}/workdir/_data && mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
+  cp -R ${RUNNER_TEMP}/gistdir/* . && cd ${GITHUB_WORKSPACE} && mv -f ${RUNNER_TEMP}/workdir . && ls -al . && ls -al workdir
            
 }
 
 # Get structure on gist files
 PATTERN='sort_by(.created_at)|.[] | select(.public == true).files.[] | select(.filename != "README.md").raw_url'
 HEADER="Accept: application/vnd.github+json" && echo ${TOKEN} | gh auth login --with-token
-gh api -H "${HEADER}" /users/eq19/gists --jq "${PATTERN}" > ${TMP}/gist_files
+gh api -H "${HEADER}" "/users/eq19/gists" --jq "${PATTERN}" > ${RUNNER_TEMP}/gist_files
 
-mv ${GITHUB_WORKSPACE}/.github/templates/_config.yml ${TMP}/_config.yml
+mv ${GITHUB_WORKSPACE}/.github/templates/_config.yml ${RUNNER_TEMP}/_config.yml
 sudo gem install nokogiri --platform=ruby
 
 # Capture the string and return status

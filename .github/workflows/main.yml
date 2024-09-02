@@ -54,7 +54,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: ⚙️ Build Maps
-        uses: eq19/maps@v1
+        uses: eq19/maps@v2
         id: build-maps
         with:
           tmp: ${{ matrix.config.tmp }}
@@ -64,7 +64,7 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: 🪂 Feed Mapping
-        uses: eq19/feed@v3        
+        uses: eq19/feed@v3
         id: feed-mapping
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
