@@ -41,9 +41,9 @@ jobs:
         config:
           - { os: ubuntu-latest, tmp: /tmp }
           - { os: windows-latest, tmp: "D:/a/_temp" }
-
+    
+    # ✔️ Runs on workflow_run
     runs-on: ${{ matrix.config.os }}
-    # ✔️ Runs on workflow_run.conclusion
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
 
@@ -55,7 +55,7 @@ jobs:
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v2
-        id: build-maps
+        id: build-parser
         with:
           tmp: ${{ matrix.config.tmp }}
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -74,7 +74,7 @@ jobs:
 
       - name: 🏃‍♂️ Lexering Runner
         uses: eq19/lexer@v1
-        id: set-lexer
+        id: set-lexering
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
@@ -82,7 +82,9 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           
     outputs:
-      runner: ${{ steps.feed-mapping.outputs.current-id }}
+      output_1: ${{ steps.build-parser.outputs.output_1 }}
+      output_2: ${{ steps.feed-mapping.outputs.output_2 }}
+      output_3: ${{ steps.set-lexering.outputs.output_3 }}
 
   setup-parser:
     needs: lexering
@@ -92,7 +94,6 @@ jobs:
             
     # ♻️ Simulate Gell-Mann           
     runs-on: ${{ matrix.os }}
-    #runs-on: ${{ fromJson(needs.determine-runner.outputs.runner) }}
 
     steps:
       - name: 📂 Checkout
@@ -106,6 +107,7 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+          lexering_outputs: ${{ toJSON(needs.lexering.outputs) }}
   
       - name: 🔧 Evaluate Syntax
         uses: eq19/syntax@v2
