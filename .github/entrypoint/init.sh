@@ -86,7 +86,9 @@ jekyll_build() {
   sed -i "1s|^|title: eQuantum\n|" ${RUNNER_TEMP}/_config.yml
   FOLDER="span$(( 17 - $3 ))" && sed -i "1s|^|span: ${FOLDER}\n|" ${RUNNER_TEMP}/_config.yml
   sed -i "1s|^|user: ${USER}\n|" ${RUNNER_TEMP}/_config.yml
+
   sed -i "1s|^|id: ${SITEID}\n|" ${RUNNER_TEMP}/_config.yml
+  echo 'SITEID='${SITEID} >> ${GITHUB_ENV}
   cat ${RUNNER_TEMP}/_config.yml
    
   echo -e "\n$hr\nSPIN\n$hr"
@@ -112,7 +114,7 @@ HEADER="Accept: application/vnd.github+json" && echo ${TOKEN} | gh auth login --
 gh api -H "${HEADER}" "/users/eq19/gists" --jq "${PATTERN}" > ${RUNNER_TEMP}/gist_files
 
 mv ${GITHUB_WORKSPACE}/.github/templates/_config.yml ${RUNNER_TEMP}/_config.yml
-sudo gem install nokogiri --platform=ruby
+sudo gem install github-pages --platform=ruby
 
 # Capture the string and return status
 if [[ "${OWNER}" != "${USER}" ]]; then ENTRY=$(set_target ${OWNER} ${USER}); else ENTRY=$(set_target ${OWNER}); fi

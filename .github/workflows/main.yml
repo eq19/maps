@@ -16,6 +16,8 @@ name: Build and Deploy Cell Types – Modulo 6
 #    branch.
 # 2) Use https://github.com/nektos/act to run your CI steps locally. Note this will only work with
 #    steps run on Linux platforms, as `act` is implemented with Docker containers.
+# 3) Use https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#using-job-outputs-in-a-matrix-job
+#    to share environment variables across multiple runners
 #
 on:
   push:
@@ -39,8 +41,8 @@ jobs:
       matrix:
         #node_version: [8, 10, 12]
         config:
-          - { os: ubuntu-latest, tmp: /tmp }
-          - { os: windows-latest, tmp: "D:/a/_temp" }
+          - { os: ubuntu-latest, id: 1 }
+          - { os: windows-latest, id: 2 }
     
     # ✔️ Runs on workflow_run
     runs-on: ${{ matrix.config.os }}
@@ -57,7 +59,7 @@ jobs:
         uses: eq19/maps@v2
         id: build-parser
         with:
-          tmp: ${{ matrix.config.tmp }}
+          tmp: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
@@ -80,6 +82,7 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          build_id: ${{ steps.feed-mapping.outputs.output_2 }}
           
     outputs:
       output_1: ${{ steps.build-parser.outputs.output_1 }}
@@ -90,10 +93,11 @@ jobs:
     needs: lexering
     strategy:
       matrix:
-        os: [self-hosted]
+        config:
+          - { os: self-hosted, id: 3 }
             
     # ♻️ Simulate Gell-Mann           
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
 
     steps:
       - name: 📂 Checkout

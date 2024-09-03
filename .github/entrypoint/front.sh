@@ -12,9 +12,9 @@ edit_file () {
     I+=("${SPIN[5]}")
     N+=("${SPIN[6]}")
     G+=("${SPIN[7]}")
-  done < /tmp/spin.txt
+  done < ${RUNNER_TEMP}/spin.txt
 
-  IFS=$'\n' read -d '' -r -a LINE < /tmp/Sidebar.md; unset IFS;
+  IFS=$'\n' read -d '' -r -a LINE < ${RUNNER_TEMP}/Sidebar.md; unset IFS;
   for ((i=0; i < ${#LINE[@]}; i++)); do
     TEXT="${LINE[$i]}";
     IFS='|'; array=($TEXT); unset IFS;

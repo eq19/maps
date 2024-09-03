@@ -198,5 +198,5 @@ echo -e "$hr\nDEPLOYMENT\n$hr"
 git submodule foreach -q ${SCRIPT_DIR}/github_pages.sh
 
 
-apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+apt-get clean && rm -rf /var/lib/apt/lists/* ${RUNNER_TEMP}/* /var${RUNNER_TEMP}/*
 exit $?

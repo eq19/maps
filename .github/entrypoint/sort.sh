@@ -13,7 +13,7 @@ edit_file () {
     N+=("${SORT[6]}")
     G+=("${SORT[7]}")
 
-  done < /tmp/spin.txt
+  done < ${RUNNER_TEMP}/spin.txt
 
   while ((j++)); IFS=' ' read -ra SORT; do
 
@@ -23,7 +23,7 @@ edit_file () {
     SPIN+=" ${SORT[2]}"
     SPIN+=" ${SORT[3]}"
     
-    echo "${SPIN} ${SORT[0]}" >> /tmp/spin.txt
+    echo "${SPIN} ${SORT[0]}" >> ${RUNNER_TEMP}/spin.txt
 
   done < $1
 
