@@ -1,6 +1,12 @@
 name: 'Initial Deploy Action'
+
 description: >
   🪂  Initial action to deploy
+
+branding:
+  icon: 'command'
+  color: 'red'
+
 inputs:
   actor:
     description: 'The deploy actor'
@@ -15,9 +21,10 @@ inputs:
     description: 'The temporary path'
     required: true
 
-branding:
-  icon: 'command'
-  color: 'red'
+outputs:
+  site_id:
+    description: "A file path to a results file."
+    value: ${{ steps.update.outputs.SITEID}}
 
 runs:
   using: composite

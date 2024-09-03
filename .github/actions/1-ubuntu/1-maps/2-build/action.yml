@@ -14,7 +14,7 @@ inputs:
     required: true
   image_name:
     description: "Name for the container to be created. Example: nginx"
-    default: 'prime'
+    default: 'maps'
     required: false
   action_path:
     description: Path to the dockerfile from which to build the image
