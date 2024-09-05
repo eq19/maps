@@ -3,21 +3,22 @@ name: Build and Deploy Cell Types – Modulo 6
 #
 # The semantics for running shell commands in GitHub actions is non-obvious. Please read
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
-# before modifying this file. Our strategy is to rely on the built-in (unspecified) shell, and
-# explicitly set the shell settings we want (with `set -eo pipefail`) at the beginning of any
-# bash script. For more information on these settings, see `man bash`.
+# before modifying this file. 
 #
 # GitHub Actions files can be difficult to modify with confidence, because testing changes often
-# requires pushing to a branch and running CI remotely. To make this process easier, consider
-# the following:
+# requires pushing to a branch and running CI remotely.
+# To make this process easier, consider the following:
 #
 # 1) Use Visual Studio Code with the GitHub Actions Extension (github.vscode-github-actions).
-#    This allows you to check the validity of your action schema and syntax without pushing to a
-#    branch.
+#    This allows you to check the validity of your action schema and syntax without pushing to a branch.
 # 2) Use https://github.com/nektos/act to run your CI steps locally. Note this will only work with
 #    steps run on Linux platforms, as `act` is implemented with Docker containers.
 # 3) Use https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions#using-job-outputs-in-a-matrix-job
 #    to share environment variables across multiple runners
+#
+# Our strategy is to rely on the built-in (unspecified) shell, and explicitly set the
+# shell settings we want (with `set -eo pipefail`) at the beginning of anybash script.
+# For more information on these settings, see `man bash`.
 #
 on:
   push:
@@ -82,21 +83,23 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          build_id: ${{ steps.feed-mapping.outputs.output_2 }}
           
     outputs:
-      output_1: ${{ steps.build-parser.outputs.output_1 }}
-      output_2: ${{ steps.feed-mapping.outputs.output_2 }}
-      output_3: ${{ steps.set-lexering.outputs.output_3 }}
+      id: ${{ steps.build-parser.outputs.id }}
+      spin: ${{ steps.feed-mapping.outputs.spin }}
+      target: ${{ steps.set-lexering.outputs.target }}
 
   setup-parser:
     needs: lexering
     strategy:
       matrix:
         config:
-          - { os: self-hosted, id: 3 }
-            
-    # ♻️ Simulate Gell-Mann           
+          - { os: self-hosted, id: 3 }           
+
+    env:
+      # ♻️ Simulate Gell-Mann Matrices    
+      GELL_MANN: ${{ toJSON(needs.lexering.outputs) }}
+
     runs-on: ${{ matrix.config.os }}
 
     steps:
@@ -111,7 +114,6 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-          lexering_outputs: ${{ toJSON(needs.lexering.outputs) }}
   
       - name: 🔧 Evaluate Syntax
         uses: eq19/syntax@v2

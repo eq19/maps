@@ -21,11 +21,6 @@ inputs:
     description: 'The temporary path'
     required: true
 
-outputs:
-  site_id:
-    description: "A file path to a results file."
-    value: ${{ steps.update.outputs.SITEID}}
-
 runs:
   using: composite
   steps:

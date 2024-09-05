@@ -55,6 +55,7 @@ set_target() {
       CELLPLUS=$(($CELL + 0))
     fi
     
+    echo "SPIN=[${CELLPLUS}, ${SPANPLUS}]" >> ${GITHUB_ENV}
     echo "  spin: [${CELLPLUS}, ${SPANPLUS}]" >> ${RUNNER_TEMP}/_config.yml
     echo "  pinned: [$(cat ${RUNNER_TEMP}/pinned_repo)]" >> ${RUNNER_TEMP}/_config.yml
     echo "  organization: [$(cat ${RUNNER_TEMP}/user_orgs)]" >> ${RUNNER_TEMP}/_config.yml
@@ -88,7 +89,7 @@ jekyll_build() {
   sed -i "1s|^|user: ${USER}\n|" ${RUNNER_TEMP}/_config.yml
 
   sed -i "1s|^|id: ${SITEID}\n|" ${RUNNER_TEMP}/_config.yml
-  echo 'SITEID='${SITEID} >> ${GITHUB_ENV}
+  echo 'ID='${SITEID} >> ${GITHUB_ENV}
   cat ${RUNNER_TEMP}/_config.yml
    
   echo -e "\n$hr\nSPIN\n$hr"
@@ -103,8 +104,9 @@ jekyll_build() {
   find . -type d -name "${FOLDER}" -prune -exec sh -c 'cat ${RUNNER_TEMP}/README.md >> $1/README.md' sh {} \;
   
   echo -e "\n$hr\nWORKSPACE\n$hr"
-  mkdir ${RUNNER_TEMP}/workdir/_data && mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
-  cp -R ${RUNNER_TEMP}/gistdir/* . && cd ${GITHUB_WORKSPACE} && mv -f ${RUNNER_TEMP}/workdir . && ls -al . && ls -al workdir
+  cp -R ${RUNNER_TEMP}/gistdir/* .
+  mkdir ${RUNNER_TEMP}/workdir/_data
+  mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
            
 }
 
@@ -120,6 +122,3 @@ sudo gem install github-pages --platform=ruby
 if [[ "${OWNER}" != "${USER}" ]]; then ENTRY=$(set_target ${OWNER} ${USER}); else ENTRY=$(set_target ${OWNER}); fi
 CELL=$? && TARGET_REPOSITORY=$(set_target $(basename ${REPO}) ${OWNER}.github.io)
 jekyll_build ${TARGET_REPOSITORY} ${ENTRY} $?
-
-cat ${GITHUB_ENV}
-
