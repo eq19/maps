@@ -84,10 +84,11 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           
     outputs:
-      # ♻️ Simulate Gell-Mann Matrices    
+      # ♻️ Simulate Gell-Mann Matrices
       id: ${{ steps.build-parser.outputs.id }}
       spin: ${{ steps.feed-mapping.outputs.spin }}
-      target: ${{ steps.set-lexering.outputs.decays }}
+      #target: ${{ steps.set-lexering.outputs.decays }}
+      target: ${{join(steps.set-lexering.outputs.*, '\n')}}
 
   setup-parser:
     needs: lexering
