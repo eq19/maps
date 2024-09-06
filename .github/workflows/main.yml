@@ -1,5 +1,5 @@
-# 💎 Main Workflow: eQuantum MEC Structure
-name: Build and Deploy Cell Types – Modulo 6
+# 💎 Main Workflow: eQuantum MEC30
+name: COmpendium of RElations – Modulo 6
 #
 # The semantics for running shell commands in GitHub actions is non-obvious. Please read
 # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsshell
@@ -31,7 +31,7 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
-# ⚠️ Set GITHUB_TOKEN
+# ⚠️ Set token permissions
 permissions: write-all
         
 jobs:
@@ -40,12 +40,11 @@ jobs:
       max-parallel: 1
       fail-fast: true
       matrix:
-        #node_version: [8, 10, 12]
         config:
-          - { os: ubuntu-latest, id: 1 }
-          - { os: windows-latest, id: 2 }
+          - {os: ubuntu-latest, id: 1}
+          - {os: windows-latest, id: 2}
     
-    # ✔️ Runs on workflow_run
+    # 🌀 Commutation relations
     runs-on: ${{ matrix.config.os }}
     if: ${{github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success'}}
@@ -85,21 +84,19 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           
     outputs:
+      # ♻️ Simulate Gell-Mann Matrices    
       id: ${{ steps.build-parser.outputs.id }}
       spin: ${{ steps.feed-mapping.outputs.spin }}
-      target: ${{ steps.set-lexering.outputs.target }}
+      decays: ${{ steps.set-lexering.outputs.decays }}
 
   setup-parser:
     needs: lexering
     strategy:
       matrix:
         config:
-          - { os: self-hosted, id: 3 }           
+          - {os: self-hosted, id: 3}           
 
-    env:
-      # ♻️ Simulate Gell-Mann Matrices    
-      GELL_MANN: ${{ toJSON(needs.lexering.outputs) }}
-
+    # ✔️ Completeness relations
     runs-on: ${{ matrix.config.os }}
 
     steps:
@@ -108,19 +105,21 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: ➿ Parsering
+      - name: 🕸️ Parsering
         uses: eq19/parser@v2
         id: set-parser
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-  
+          gell_mann: ${{ toJSON(needs.lexering.outputs) }}
+
       - name: 🔧 Evaluate Syntax
         uses: eq19/syntax@v2
         id: eval-syntax
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+          gell_mann: ${{ toJSON(steps.set-parser.outputs) }}
   
       - name: 🚀 Set Grammar Rules 
         uses: eq19/grammar@v1
@@ -128,3 +127,5 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+          gell_mann: ${{ toJSON(steps.eval-syntax.outputs) }}
+ 
