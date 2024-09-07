@@ -2,6 +2,8 @@
 # Structure: Cell Types – Modulo 6
 # https://www.hexspin.com/proof-of-confinement/
 
+hr='------------------------------------------------------------------------------------'
+
 echo -e "\n$hr\nENVIRONTMENT\n$hr"
 printenv | sort
 
