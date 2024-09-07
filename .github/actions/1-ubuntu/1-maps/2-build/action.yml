@@ -43,7 +43,7 @@ runs:
       uses: devcontainers/ci@v0.3
       with:
         push: always
-        imageTag: spin-${{ env.ID }}
+        imageTag: build-${{ github.run_number }}
         runCmd: ls -alR /home/terraform
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}

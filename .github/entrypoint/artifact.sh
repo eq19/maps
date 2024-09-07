@@ -1,56 +1,124 @@
 #!/usr/bin/env bash
+# Structure: Cell Types – Modulo 6
+# https://www.hexspin.com/proof-of-confinement/
 
-# workspace
-echo -e "\n$hr\nVIRTUAL ENV\n$hr"
-echo ${VIRTUAL_ENV}
-ls -al ${VIRTUAL_ENV}
+set_target() {
+  
+  # Get Structure
+  if [[ $2 == *"github.io"* ]]; then
+    [[ -n "$CELL" ]] && SPIN=$(( $CELL * 13 ))
+    pinned_repos.rb ${OWNER} publicly | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/pinned_repo
+    [[ "${OWNER}" != "eq19" ]] && sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${RUNNER_TEMP}/pinned_repo
+    IFS=', '; array=($(cat ${RUNNER_TEMP}/pinned_repo))
+  else
+    gh api -H "${HEADER}" /user/orgs  --jq '.[].login' | sort -uf | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/user_orgs
+    IFS=', '; array=($(cat ${RUNNER_TEMP}/user_orgs))
+    echo "[" > ${RUNNER_TEMP}/orgs.json
+    for ((i=0; i < ${#array[@]}; i++)); do
+      IFS=', '; pr=($(pinned_repos.rb ${array[$i]} public | yq eval -P | sed "s/ /, /g"))      
+      gh api -H "${HEADER}" /orgs/${array[$i]} | jq '. +
+        {"key1": ["maps","feed","lexer","parser","syntax","grammar"]} +
+        {"key2": ["'${pr[0]}'","'${pr[1]}'","'${pr[2]}'","'${pr[3]}'","'${pr[4]}'","'${pr[5]}'"]}' >> ${RUNNER_TEMP}/orgs.json
+      if [[ "$i" -lt "${#array[@]}-1" ]]; then echo "," >> ${RUNNER_TEMP}/orgs.json; fi
+    done
+    echo "]" >> ${RUNNER_TEMP}/orgs.json
+  fi
+  
+  # Iterate the Structure
+  printf -v array_str -- ',,%q' "${array[@]}"
+  if [[ ! "${array_str},," =~ ",,$1,," ]]; then
+    SPAN=0; echo ${array[0]}
+  elif [[ "${array[-1]}" == "$1" ]]; then
+    SPAN=${#array[@]}; echo $2 | sed "s|${OWNER}.github.io|${ENTRY}.github.io|g"
+    if [[ -n "$CELL" ]]; then    
+      pinned_repos.rb ${ENTRY} public | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/pinned_repo
+      [[ "${ENTRY}" != "eq19" ]] && sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${RUNNER_TEMP}/pinned_repo
+    fi
+  else
+    for ((i=0; i < ${#array[@]}; i++)); do
+      if [[ "${array[$i]}" == "$1" && "$i" -lt "${#array[@]}-1" ]]; then 
+        SPAN=$(( $i + 1 )); echo ${array[$SPAN]}
+      fi
+    done
+  fi
+  
+  # Generate id from the Structure
+  [[ -z "$SPIN" ]] && if [[ "$1" != "$2" ]]; then SPIN=0; else SPIN=13; fi
+  if [[ -n "$CELL" ]]; then
+    SPANPLUS=$(($SPAN + 1))
+    if (( $CELL == 0 )); then MOD=7; else MOD=13; fi
+    if (( $SPANPLUS == $MOD )); then 
+      SPANPLUS=0
+      CELLPLUS=$(($CELL + 1))
+      if (( $CELLPLUS == 14 )); then CELLPLUS=0; fi
+    else
+      CELLPLUS=$(($CELL + 0))
+    fi
+    
+    echo "SPIN=[${CELLPLUS}, ${SPANPLUS}]" >> ${GITHUB_ENV}
+    echo "  spin: [${CELLPLUS}, ${SPANPLUS}]" >> ${RUNNER_TEMP}/_config.yml
+    echo "  pinned: [$(cat ${RUNNER_TEMP}/pinned_repo)]" >> ${RUNNER_TEMP}/_config.yml
+    echo "  organization: [$(cat ${RUNNER_TEMP}/user_orgs)]" >> ${RUNNER_TEMP}/_config.yml
+  fi
+  return $(( $SPAN + $SPIN ))
+}
 
-# workspace
-if [ "${WORKING_DIR}" == "${JEKYLL_SRC}" ]
-then
-  echo -e "\n$hr\nWORKING DIRECTORY\n$hr"
-  cd ${WORKING_DIR} && pwd
-  ls -al ${WORKING_DIR}
-else
-  echo -e "\n$hr\nWORKING DIRECTORY\n$hr"
-  cd ${WORKING_DIR} && pwd
-  ls -al ${WORKING_DIR}
+jekyll_build() {
 
-  echo -e "\n$hr\nJEKYLL DIRECTORY\n$hr"
-  cd ${JEKYLL_SRC} && pwd
-  chown -R $(whoami) .git/config
-  git config --unset http.https://github.com/.extraheader
-  git config --unset-all http.https://github.com/.extraheader
-  git config --global --unset http.https://github.com/.extraheader
-  git config --system --unset http.https://github.com/.extraheader
-  ls -al ${JEKYLL_SRC}.
-fi
+  echo -e "\n$hr\nCONFIG\n$hr"
+  
+  [[ $1 == *"github.io"* ]] && OWNER=$2  
+  echo 'TARGET_REPOSITORY='${OWNER}/$1 >> ${GITHUB_ENV}
+  if [[ $1 != "eq19.github.io" ]]; then SITEID=$(( $3 + 2 )); else SITEID=1; fi
 
-# pinned repos
-# https://dev.to/thomasaudo/get-started-with-github-grapql-api--1g8b
-echo -e "\n$hr\nPINNED  REPOSITORIES\n$hr"
-AUTH="Authorization: bearer $JEKYLL_GITHUB_TOKEN"
-curl -L -X POST "${GITHUB_GRAPHQL_URL}" -H "$AUTH" \
---data-raw '{"query":"{\n  user(login: \"'${GITHUB_REPOSITORY_OWNER}'\") {\n pinnedItems(first: 6, types: REPOSITORY) {\n nodes {\n ... on Repository {\n name\n }\n }\n }\n }\n}"'
+  if  [[ "${OWNER}" == "eq19" ]]; then
+    sed -i "1s|^|description: An attempt to discover the Final Theory\n\n|" ${RUNNER_TEMP}/_config.yml
+  else
+    DESCRIPTION=$(gh api -H "${HEADER}" /orgs/${OWNER} --jq '.description')
+    sed -i "1s|^|description: ${DESCRIPTION}\n\n|" ${RUNNER_TEMP}/_config.yml
+  fi
+  
+  # Note: If you need to use a workflow run's URL from within a job, you can combine
+  # these variables: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID
+  sed -i "1s|^|action: ${REPO}/actions/runs/${RUN}\n|" ${RUNNER_TEMP}/_config.yml
+  sed -i "1s|^|repository: ${OWNER}/$1\n|" ${RUNNER_TEMP}/_config.yml
+  [[ $1 != *"github.io"* ]] && sed -i "1s|^|baseurl: /$1\n|" ${RUNNER_TEMP}/_config.yml
+  
+  sed -i "1s|^|title: eQuantum\n|" ${RUNNER_TEMP}/_config.yml
+  FOLDER="span$(( 17 - $3 ))" && sed -i "1s|^|span: ${FOLDER}\n|" ${RUNNER_TEMP}/_config.yml
+  sed -i "1s|^|user: ${USER}\n|" ${RUNNER_TEMP}/_config.yml
 
-# makefile
-echo -e "\n$hr\nMAKEFILE\n$hr"
-cat ${WORKING_DIR}/Makefile
+  sed -i "1s|^|id: ${SITEID}\n|" ${RUNNER_TEMP}/_config.yml
+  echo 'ID='${SITEID} >> ${GITHUB_ENV}
+  cat ${RUNNER_TEMP}/_config.yml
+   
+  echo -e "\n$hr\nSPIN\n$hr"
+  gist.sh $1 ${OWNER} ${FOLDER} #&>/dev/null
+  find ${RUNNER_TEMP}/gistdir -type d -name .git -prune -exec rm -rf {} \;
+  
+  cd ${RUNNER_TEMP}/workdir && mv -f ${RUNNER_TEMP}/_config.yml .
+  rm -rf ${RUNNER_TEMP}/Sidebar.md && cp _Sidebar.md ${RUNNER_TEMP}/Sidebar.md
+  sed -i 's/0. \[\[//g' ${RUNNER_TEMP}/Sidebar.md && sed -i 's/\]\]//g' ${RUNNER_TEMP}/Sidebar.md
 
-# config file
-echo -e "\n$hr\nJEKYLL CONFIG FILE\n$hr"
-cat ${JEKYLL_CFG}
+  find . -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'
+  find . -type d -name "${FOLDER}" -prune -exec sh -c 'cat ${RUNNER_TEMP}/README.md >> $1/README.md' sh {} \;
+  
+  echo -e "\n$hr\nWORKSPACE\n$hr"
+  cp -R ${RUNNER_TEMP}/gistdir/* .
+  mkdir ${RUNNER_TEMP}/workdir/_data
+  mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
+           
+}
 
-# Directory Setting
-# remote_theme: eQ19/parser
-# https://jekyllrb.com/docs/configuration/default/
-# https://jekyllrb.com/docs/continuous-integration/github-actions/
-# https://docs.github.com/en/actions/security-guides/encrypted-secrets
+# Get structure on gist files
+PATTERN='sort_by(.created_at)|.[] | select(.public == true).files.[] | select(.filename != "README.md").raw_url'
+HEADER="Accept: application/vnd.github+json" && echo ${TOKEN} | gh auth login --with-token
+gh api -H "${HEADER}" "/users/eq19/gists" --jq "${PATTERN}" > ${RUNNER_TEMP}/gist_files
 
-if [[ "${OWNER}" == "eq19" ]]; then
-  chown -R root:root ${HOME} && mv ${HOME}/.keras ${VENDOR_BUNDLE}/keras
-  cd ${VENDOR_BUNDLE}/keras && rm -rf .git && apt-get install git-lfs
-  mv -f /maps/.gitattributes . && git init && git lfs install
-  source ${SCRIPT_DIR}/remote.sh && touch .nojekyll
-  deploy_remote "eq19/maps"
-fi
+mv ${GITHUB_WORKSPACE}/.github/templates/_config.yml ${RUNNER_TEMP}/_config.yml
+sudo gem install github-pages --platform=ruby
+
+# Capture the string and return status
+if [[ "${OWNER}" != "${USER}" ]]; then ENTRY=$(set_target ${OWNER} ${USER}); else ENTRY=$(set_target ${OWNER}); fi
+CELL=$? && TARGET_REPOSITORY=$(set_target $(basename ${REPO}) ${OWNER}.github.io)
+jekyll_build ${TARGET_REPOSITORY} ${ENTRY} $?

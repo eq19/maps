@@ -27,14 +27,6 @@ runs:
     - name: 💎 Update workflow conveniently
       id: update
       shell: bash
-      env:
-        TMP: ${{ inputs.tmp }}
-        RUN: ${{ github.run_id }}
-        USER: ${{ github.actor }}
-        TOKEN: ${{ inputs.token }}
-        REPO: ${{ github.repository }}
-        ACTOR: ${{ github.triggering_actor }}
-        OWNER: ${{ github.repository_owner }}
       run: |
         git config --global user.name "${{ inputs.actor }}"
         git config --global user.email "${{ inputs.actor }}@users.noreply.github.com"
@@ -44,15 +36,15 @@ runs:
         
         cd "${{ github.workspace }}" && rm -rf .github
         BASE=/home/runner/work/_actions/eq19/eq19/main/.github
+ 
         if [ "$RUNNER_OS" == "Windows" ]; then BASE="D:/a/_actions/eq19/eq19/main/.github"; fi
         cp -r "$BASE" . && chown -R "$(whoami)" .github
-        export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && set
 
         REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
         git remote set-url origin $REMOTE_REPO
         
         git add . && git commit -m "Assign eQuantum" && git push
-        if [ $? -eq 0 ]; then exit 1; else init.sh; fi
+        if [ $? -eq 0 ]; then exit 1; else set; fi
 
     - name: View context attributes
       uses: actions/github-script@v7
