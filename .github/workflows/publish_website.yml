@@ -1,0 +1,73 @@
+# Builds the website sourced from docs/website/ using `mkdocs` and pushes
+# to the gh-pages branch for publishing on GitHub Pages.
+#
+# See https://squidfunk.github.io/mkdocs-material/publishing-your-site/
+
+name: Publish Website
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      # This file itself.
+      - ".github/workflows/publish_website.yml"
+      # Directly authored website source files.
+      - "docs/website/**"
+      # Python/pip release index page.
+      - "build_tools/scripts/generate_release_index.py"
+      # MLIR dialect definitions and .md generation using iree-tblgen.
+      #   Technically this should also include the sources for Tablegen, but
+      #   that rarely changes and we want to run this workflow conservatively.
+      - "**.td"
+      - "build_tools/cmake/iree_tablegen_doc.cmake"
+  # Regenerate the release pip index when a release is created or deleted.
+  release:
+    types: [published, unpublished]
+
+jobs:
+  publish_website:
+    # Note: a clean build of `iree-tblgen` takes ~5 minutes on standard runners.
+    runs-on: ubuntu-20.04
+    env:
+      CC: clang
+      CXX: clang++
+    steps:
+      - name: Checkout out repository
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          submodules: true
+          token: ${{ secrets.WRITE_ACCESS_TOKEN }}
+      - name: Fetching base gh-pages branch
+        # We have to explicitly fetch the gh-pages branch as well to preserve history
+        run: git fetch --no-tags --prune --depth=1 origin "gh-pages:gh-pages"
+      - name: Setting up Python
+        uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.1.0
+        with:
+          python-version: 3.x
+          cache: "pip"
+      - name: Installing dependencies
+        run: |
+          pip install -r docs/website/requirements.txt
+          pip install requests
+          sudo apt update
+          sudo apt install -y ninja-build
+      - name: Generating release index
+        run: |
+          ./build_tools/scripts/generate_release_index.py \
+            --repo="${GITHUB_REPOSITORY}" \
+            --output=docs/website/docs/pip-release-links.html
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@ed74d11c0b343532753ecead8a951bb09bb34bc9 # v1.2.14
+        with:
+          key: ${{ github.job }}
+      - name: Building documentation files
+        run: ./docs/website/generate_extra_files.sh
+      - name: Setting git config
+        run: |
+          git config --local user.email "iree-github-actions-bot@google.com"
+          git config --local user.name "Website Publish Action"
+      - name: Deploying to gh-pages
+        working-directory: docs/website
+        run: mkdocs gh-deploy
