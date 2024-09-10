@@ -1,0 +1,93 @@
+name: Docker Deploy Action
+
+description: >
+  🪂  A Github Action to deploy pages
+
+branding:
+  icon: 'command'
+  color: 'yellow'
+
+inputs:
+  docker_hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}
+    required: false
+  docker_hub_password:
+    description: Docker Hub password
+    required: true
+  docker_hub_token:
+    description: Docker Hub authentication token
+    required: true
+  image_name:
+    description: Tag to use for the new image
+    default: ${{ github.action_repository }}
+    required: true
+  credentials:
+    description: The Google cloud credentials
+    required: true
+  token:
+    description: The Github personal token
+    required: true
+  base:
+    description: The path to .github folder
+    required: true
+  tmp:
+    description: The path according to os
+    required: true
+
+outputs:
+  id:
+    description: The site id
+    value: ${{ steps.build.outputs.site_id}}
+
+runs:
+  using: composite
+  steps:
+    - name: Initial action
+      uses: eq19/eq19/.github@v1
+      id: init
+      with:
+        tmp: ${{ inputs.tmp }}
+        base: ${{ inputs.base }}
+        token: ${{ inputs.token }}
+        actor: ${{ github.actor }}
+
+    - name: Target Configuration
+      if: runner.os == 'Linux'
+      uses: eq19/eq19/.github/actions/1-ubuntu/1-maps/2-build@v1
+      id: build
+      with:
+        hub_username: ${{ inputs.docker_hub_username }}
+        hub_password: ${{ inputs.docker_hub_password }}
+        hub_token: ${{ inputs.docker_hub_token }}
+        action_path: ${{ github.action_path}}
+        image_name: ${{ inputs.image_name }}
+
+    - name: Profiling Feedback
+      if: runner.os == 'Windows'
+      uses: eq19/eq19/.github/actions/2-windows/1-maps/1-build@v1
+      with:
+        token: ${{ inputs.token }}
+        action_path: ${GITHUB_ACTION_PATH//\\//}
+        hub_username: ${{ inputs.docker_hub_username }}
+        hub_token: ${{ inputs.docker_hub_token }} 
+
+    - uses: ikalnytskyi/action-setup-postgres@v6 
+      with:
+        username: yoda
+        password: GrandMaster
+        database: test
+        port: 34837
+      id: postgres
+
+    - run: |
+        python3 -m pip install --upgrade pip pytest psycopg furl
+        #psql -U postgres -c 'SHOW config_file'
+        cp ./.github/entrypoint/test.py .
+        python3 -m pytest -vv test.py
+      env:
+        CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
+        SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
+        EXPECTED_CONNECTION_URI: postgresql://yoda:GrandMaster@localhost:34837/test
+        EXPECTED_SERVICE_NAME: yoda
+      shell: bash
