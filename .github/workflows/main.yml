@@ -53,6 +53,7 @@ jobs:
       - name: 📂 Checkout
         uses: actions/checkout@v4
         with:
+          submodules: 'recursive'
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: ⚙️ Build Maps
@@ -103,6 +104,7 @@ jobs:
       - name: 📂 Checkout
         uses: actions/checkout@v4
         with:
+          repository: eq19/eq19
           token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: 🕸️ Parsering
