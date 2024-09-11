@@ -46,7 +46,7 @@ runs:
         runCmd: ls -alR /
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
-        imageTag: build-${{ github.run_number }}
+        imageTag: target-${{ github.run_number }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
 
     - name: 💎 Variables
