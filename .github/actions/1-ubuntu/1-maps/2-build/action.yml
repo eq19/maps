@@ -47,7 +47,7 @@ runs:
     - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('${{ inputs.action_path }}/requirements.txt') }}
+        key: ${{ runner.os }}-pip
 
     - name: Install dependencies
       shell: bash
@@ -59,7 +59,7 @@ runs:
       uses: devcontainers/ci@v0.3
       with:
         push: always
-        runCmd: ls -alR /
+        runCmd: ls -alR /data
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
         imageTag: target-${{ github.run_number }}
