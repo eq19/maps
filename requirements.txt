@@ -5,6 +5,9 @@ flavio
 imageio
 keras
 lxml
+iree-compiler
+iree-runtime
+iree-tools-tf
 matplotlib
 numpy
 opencv-python
