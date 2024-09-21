@@ -93,7 +93,7 @@ jekyll_build() {
   cat ${RUNNER_TEMP}/_config.yml
    
   echo -e "\n$hr\nSPIN\n$hr"
-  gist.sh $1 ${OWNER} ${FOLDER} #&>/dev/null
+  gist.sh $1 ${OWNER} ${FOLDER}
   find ${RUNNER_TEMP}/gistdir -type d -name .git -prune -exec rm -rf {} \;
   
   cd ${RUNNER_TEMP}/workdir && mv -f ${RUNNER_TEMP}/_config.yml .
@@ -116,7 +116,7 @@ HEADER="Accept: application/vnd.github+json" && echo ${TOKEN} | gh auth login --
 gh api -H "${HEADER}" "/users/eq19/gists" --jq "${PATTERN}" > ${RUNNER_TEMP}/gist_files
 
 mv ${GITHUB_WORKSPACE}/.github/templates/_config.yml ${RUNNER_TEMP}/_config.yml
-sudo gem install github-pages --platform=ruby
+sudo gem install nokogiri --platform=ruby &>/dev/null
 
 # Capture the string and return status
 if [[ "${OWNER}" != "${USER}" ]]; then ENTRY=$(set_target ${OWNER} ${USER}); else ENTRY=$(set_target ${OWNER}); fi
