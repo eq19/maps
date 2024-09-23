@@ -115,10 +115,12 @@ jekyll_build() {
   find . -type d -name "${FOLDER}" -prune -exec sh -c 'cat ${RUNNER_TEMP}/README.md >> $1/README.md' sh {} \;
   
   echo -e "\n$hr\nWORKSPACE\n$hr"
-  cp -R ${RUNNER_TEMP}/gistdir/* .
-  mkdir ${RUNNER_TEMP}/workdir/_data
+  cp -R ${RUNNER_TEMP}/gistdir/* . && mkdir ${RUNNER_TEMP}/workdir/_data
   mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
            
+  git clone --single-branch -b gh-pages https://github.com/${OWNER}/$1 ${RUNNER_TEMP}/$1 &>/dev/null
+  [[ -f ${RUNNER_TEMP}/$1/.jekyll-metadata ]] && mv -f ${RUNNER_TEMP}/$1/.jekyll-metadata .
+  [[ -d ${RUNNER_TEMP}/$1/.sass-cache ]] && mv -f ${RUNNER_TEMP}/$1/.sass-cache .
 }
 
 # Get structure on gist files
