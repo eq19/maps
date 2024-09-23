@@ -14,10 +14,12 @@ opencv-python
 pandas
 pillow
 # projectq  # uncomment once quantum/quantum_random.py is fixed
+psycopg2
 qiskit
 qiskit-aer
 requests
 rich
+robyn
 # scikit-fuzzy  # uncomment once fuzzy_logic/fuzzy_operations.py is fixed
 scikit-learn
 statsmodels
