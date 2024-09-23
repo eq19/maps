@@ -1,0 +1,22 @@
+{%- include common/rest/site_pages.liquid -%}
+
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="{{ site.baseurl }}/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+{%- for page in site_pages -%}
+    {%- if site.repository == "eq19/eq19.github.io" or site.repository != "eq19/eq19.github.io" and page.url contains site.span %}
+    <url>
+        {%- assign item_url = page.url -%}
+        {%- if site.repository == "eq19/eq19.github.io" -%}
+            {%- assign item_spin = page.spin | times: 1 -%}
+            {%- include common/rest/itemurl.liquid -%}
+        {%- endif %}
+        <loc>{{ item_url | absolute_url | xml_escape }}</loc>
+        <priority>{{ page.content | size | divided_by: 204800 | times: 10 | ceil | divided_by: 10.0 | at_least: 0.1 | at_most: 1.0}}</priority>
+        <lastmod>{{ site.time | date_to_xmlschema }}</lastmod>
+    </url>
+    {%- endif -%}
+{%- endfor %}
+</urlset>

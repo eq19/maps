@@ -1,0 +1,52 @@
+<div class="navigation-top d-flex flex-justify-between">
+    <ul class="breadcrumb" role="navigation" aria-label="breadcrumbs navigation">
+        <li class="breadcrumb-item">
+            <a class="no-underline" href="https://eq19.com/" title="Home">
+            <i class="fa fa-home"></i>
+            </a>
+        </li>
+
+        {%- if site.repository != "eq19/eq19.github.io" -%}
+            {%- if site.repository contains "eq19/" -%}
+                <li class="breadcrumb-item">
+                    <a href="{{ site.baseurl }}/">{{ site.repository | split: "/" | last | capitalize }}</a>
+                </li>
+            {%- else -%}
+                <li class="breadcrumb-item">
+                    <a href="/">{{ site.property }}</a>
+                </li>
+                {%- unless site.repository contains "github.io" -%}
+                    <li class="breadcrumb-item">
+                        <a href="{{ site.baseurl }}/">{{ site.repository | split: "/" | last | capitalize }}</a>
+                    </li>
+                {%- endunless -%}
+            {%- endif -%}  
+        {%- endif -%}        
+
+        {%- case page.url -%}
+            {%- when "/search.html" -%}
+                <li class="breadcrumb-item" aria-current="page">
+                    {{ __.search | default: "Search" }}
+                </li>
+            {%- when "/404.html" -%}
+                <li class="breadcrumb-item" aria-current="page">
+                    404
+                </li>
+            {%- else -%}
+                {%- assign blocks = page.path | split: "/" -%}
+                {%- for block in blocks -%}
+                    <li class="breadcrumb-item" {% if forloop.last %}aria-current="page"{% endif %}>
+                        {%- if forloop.last -%}
+                            {{ page.name | split: "." | first | capitalize | replace: "Readme", "Intro"  }}
+                        {%- else -%}
+                            <a href="{{ site.baseurl }}/{% for block in blocks limit: forloop.index %}{{ block }}/{% endfor %}">{{ block | capitalize }}</a>
+                        {%- endif -%}
+                    </li>
+                {%- endfor -%}
+        {%- endcase -%}
+    </ul>
+    {%- capture github_edit_link %}{% github_edit_link %}{% endcapture -%}
+    <a class="edit" href="{{ github_edit_link | replace: "/docs/", "/"  }}" title="{{ __.edit | default: 'Edit on GitHub'}}" rel="noreferrer" target="_blank">
+        <i class="fa fa-edit"></i>
+    </a>
+</div>

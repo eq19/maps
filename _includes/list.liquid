@@ -1,0 +1,55 @@
+{%- include templates/leads/baseline.liquid -%}
+
+{%- assign zone = "zone" -%}
+{%- assign gist = "zone" -%}
+{%- assign section = page.sort | times: 1 -%}
+{%- if page.sort > 4 -%}
+    {%- assign zone = "gist" -%}
+    {%- assign gist = "gist" -%}
+    {%- assign section = page.sort | minus: 4 -%}
+{%- endif -%}
+{%- if page.sort > 22 -%}
+    {%- assign zone = "main" -%}
+    {%- assign gist = "spin" -%}
+    {%- assign section = page.sort | minus: 22 -%}
+    {%- endif -%}
+{%- if page.sort > 28 -%}
+    {%- assign zone = "orgs" -%}
+    {%- assign section = page.sort | minus: 28 -%}
+{%- endif -%}
+
+{%- assign tip1 = "This section is referring to _[wiki page-" |
+    append: page.sort |
+    append: "](https://github.com/eq19/eq19.github.io/wiki)_ of _[" |
+    append: zone |
+    append: " section-" |
+    append: section |
+    append: "](" |
+    append: item_baseline |
+    append: ")_ that is _[" -%}
+{%- assign tip2 = "](" |
+    append: site.baseurl |
+    append: item_source |
+    append: ")_ " |
+    append: "from _[the " |
+    append: gist |
+    append: " section-" |
+    append: page.suit |
+    append: "](https://gist.github.com/eq19)_ by _[prime spin-" |
+    append: page.spin |
+    append: "](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#file-spin-csv)_ " |
+    append: "and _[span-" |
+    append: page.span |
+    append: "](https://www.eq19.com/exponentiation/#basic-transformation)_ with _[the " |
+    append: "partitions](https://www.eq19.com/identition/#parallel-universes)_ " |
+    append: "as below." -%}
+
+```tip
+{{ tip1 }}{% source inherited %}{{ tip2 }}
+```
+
+{{ item_baseline }}
+{{ site.baseurl }}
+{{ item_source }}
+
+{%- include common/core/list.liquid -%}

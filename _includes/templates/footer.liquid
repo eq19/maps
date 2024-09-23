@@ -1,0 +1,55 @@
+{% comment %} prev and next {% endcomment %}
+{%- if page.url != "/search.html" and page.url != "/404.html" -%}
+    {%- if next or prev -%}
+        <div class="navigation-bottom d-flex flex-justify-between py-3" role="navigation" aria-label="footer navigation">
+            <div class="prev">
+                {%- if prev -%}
+                    <a href="{{ prev.url | relative_url }}" class="btn" title="{{ prev.title }}" accesskey="p" rel="prev">
+                        <i class="fa fa-arrow-circle-left"></i> {{ __.previous | default: "Previous" }}
+                    </a>
+                {%- endif -%}
+            </div>
+            <div class="next">
+                {%- if next -%}
+                    <a href="{{ next.url | relative_url }}" class="btn" title="{{ next.title }}" accesskey="n" rel="next">
+                        {{ __.next | default: "Next" }} <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                {%- endif -%}
+            </div>
+        </div>
+    {%- endif -%}
+{%- endif -%}
+
+<hr/>
+
+<div class="copyright text-center text-gray" role="contentinfo">
+    <a class="text-gray" href="https://www.eq19.com/identition/span12/#disclaimer">
+        <i class="fa fa-copyright"></i>
+        <span class="time">
+            {%- assign created_time = rest_created_at | date: "%Y" -%}
+            {%- assign updated_time = rest_updated_at | date: "%Y" -%}
+            {%- if created_time == updated_time -%}
+                {{- created_time -}},
+            {%- else -%}
+                {{- created_time }}-{{ updated_time -}},
+            {%- endif -%}
+        </span>
+    </a>
+    <a class="text-gray" href="https://github.com/eq19" rel="noreferrer" target="_blank">
+        eQuantum,
+    </a>
+    <a class="text-gray" href="https://github.com/{{ site.repository }}" title="{{ docs.build_revision }}" rel="noreferrer" target="_blank">
+        {{ __.revision | default: "Repository" }} {{ site.track.spin | jsonify -}}
+    </a>
+    {% unless site.url contains "rundocs.io" %}
+        <br/>
+        <div class="generator">
+            Built with
+            <a href="https://pages.github.com" rel="noreferrer" target="_blank" title="github-pages v{{ docs.versions.github-pages }}">GitHub Pages</a>
+            using a
+            <a href="https://sphinx-rtd-theme.readthedocs.io/en/stable/" rel="noreferrer" target="_blank" title="{{ generator }} v{{ version }}">theme</a>
+            created by
+            <a href="https://www.sphinx-doc.org/en/master/" rel="noreferrer" target="_blank">Sphinx</a>.
+        </div>
+    {% endunless %}
+</div>

@@ -1,0 +1,115 @@
+name: 'Docker Deploy Action'
+
+description: >
+  🪂  A Github Action to deploy pages conveniently
+
+branding:
+  icon: 'command'
+  color: 'red'
+
+inputs:
+  docker_hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}       
+    required: true
+  docker_hub_password:
+    description: Docker Hub authentication token
+    required: true
+  docker_hub_token:
+    description: Docker Hub authentication token
+    required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: Tag to use for the new image
+    default: ${{ github.action_repository }}
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  build_args:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  repository:
+    description: 'The deploy repository'
+    default: ${{ github.repository }}
+    required: false
+
+outputs:
+  spin:
+    description: 'The spin of current repository'
+    value: ${{ steps.set_output.outputs.runCmdOutput }}
+
+runs:
+  using: composite
+  steps:
+    - name: 💎 Set Artifact
+      if: runner.os != 'Windows'
+      shell: bash
+      env:
+        TMP: ${{ inputs.tmp }}
+        RUN: ${{ github.run_id }}
+        USER: ${{ github.actor }}
+        TOKEN: ${{ inputs.token }}
+        REPO: ${{ github.repository }}
+        ACTOR: ${{ github.triggering_actor }}
+        OWNER: ${{ github.repository_owner }}
+      run: |
+        export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH
+        mv -f ${{ github.action_path }}/_config.yml ${RUNNER_TEMP}/
+        artifact.sh && ls -al ${RUNNER_TEMP}/workdir && shopt -s dotglob
+        mv -f ${RUNNER_TEMP}/workdir/* ${{ github.action_path }}/ && ls -al ${{ github.action_path }}
+        
+    - name: 🚀 Initiate Lexer
+      if: runner.os != 'Windows'
+      uses: devcontainers/ci@v0.3
+      id: set_output
+      with:
+        push: always
+        runCmd: ls /
+        imageTag: spin-${{ github.run_number }}
+        skipContainerUserIdUpdate: true
+        imageName: ${{ inputs.image_name }}
+        configFile: ${{ github.action_path }}/.devcontainer.json
+
+    - name: 💎 Variables
+      if: runner.os != 'Windows'
+      id: variables
+      shell: bash
+      run: |
+        BASE_NAME=$(basename ${{ inputs.image_name }})
+        mkdir -p ${{ github.workspace }}/_site && cp -R ${{ github.action_path }}/. ${{ github.workspace }}/_site/       
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g"))
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [ "${array[$i]}" != "latest" ]; then
+            HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.docker_hub_username }}\", \"password\": \"${{ inputs.docker_hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
+            curl -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.docker_hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
+            echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
+          fi
+        done

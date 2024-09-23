@@ -1,0 +1,27 @@
+{%- include common/rest/site_pages.liquid -%}
+{%- include common/rest/workdir.liquid -%}
+
+{%- assign base = page.dir | append: "temp/" | split: "/" | size -%}
+{%- assign size = workdir_level | minus: base -%}
+{%- assign size_p1 = size | plus: 1 -%}
+
+{%- assign dir = site_pages | where: "url", workdir | first -%}
+{%- assign item_url = dir.url -%}
+{%- if site.repository == "eq19/eq19.github.io" -%}
+{%- assign item_spin = dir.spin | times: 1 -%}
+{%- include common/rest/itemurl.liquid -%}
+{%- endif %}
+{% include common/rest/tabs.liquid size=size %} 1. [{{ dir.title | default: item_url }}]({{ item_url | relative_url }})
+
+{%- if liquid.all -%}
+{%- for item in workdir_files -%}
+{%- assign item_url = item.url -%}
+{%- if site.repository == "eq19/eq19.github.io" -%}
+{%- assign item_spin = item.spin | times: 1 -%}
+{%- include common/rest/itemurl.liquid -%}
+{%- endif %}
+{% include common/rest/tabs.liquid size=size_p1 %}- [{{ item.title | default: item.name }}]({{ item_url | relative_url }})
+{%- endfor -%}
+{%- endif -%}
+
+{%- for workdir in workdir_dirs %}{% include common/core/_list.liquid %}{% endfor -%}

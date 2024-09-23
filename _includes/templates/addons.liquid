@@ -1,0 +1,49 @@
+<div class="addons-wrap d-flex flex-column overflow-y-auto">
+    <div class="status d-flex flex-justify-between p-2">
+        <div class="title p-1">
+            <i class="fa fa-book"></i> {{ site.title }}
+        </div>
+        <div class="branch p-1">
+            <span class="name">
+                profiles
+            </span>
+            <i class="fa fa-caret-down"></i>
+        </div>
+    </div>
+    <div class="addons d-flex flex-column height-full p-2 d-none">
+        <dl>
+            <dt>{{ __.github | default: "GitHub" }}</dt>
+            <dd>
+                <a href="{{ site.baseurl }}/sitemap.xml" title="Sitemap">
+                    <i class="fa fa-home"></i>
+                    {{ __.sitemap | default: "Sitemap" }}
+                </a>
+            </dd>
+            <dd>
+                <a href="https://github.com/{{ site.action }}" title="Action" target="_blank">
+                    <i class="fa fa-github"></i>
+                    {{ __.action | default: "Action" }}
+                </a>
+            </dd>
+            <dd>
+                <a href="https://gist.github.com/eq19" title="Gist" target="_blank">
+                    <i class="fa fa-download"></i>
+                    {{ __.gist | default: "Gist" }}
+                </a>
+            </dd>
+            <dd>
+                <a href="https://github.com/settings/organizations" title="Organization" target="_blank">
+                    <i class="fa fa-institution"></i>
+                    {{ __.organization | default: "Orgs" }}
+                </a>
+            </dd>
+        </dl>
+        <hr/>
+        <div class="license f6 pb-2">
+            Code 
+            <a href="http://validator.w3.org/check?uri={{ pageUrlWithHost | replace: ":", "%3A" | replace: "/", "%2F" }};ss=1;group=1;outline=1" title="{{ site.title }}">Source</a>
+            is under the terms of
+            <a href="https://www.eq19.com/identition/span12/#disclaimer">{{ docs.license.name | default: "The Disclaimer" }}</a>.
+        </div>
+    </div>
+</div>

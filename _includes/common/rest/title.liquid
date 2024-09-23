@@ -1,0 +1,29 @@
+{%- comment -%}
+eQuantum | Prime Identity* - An attempt to discover the Final Theory 👉 150 projects
+Theory of Everything* - Mapping the Quantum Way acrross Prime Identity* | eQuantum 👈 37 pages per project
+{%- endcomment -%}
+
+{%- case page.url -%}
+    {%- when "/" -%}
+        {%- assign title = site.title
+            | append: " | "
+            | append: docs.latest_release.name 
+            | default: page.title
+            | append: " - "
+            | append: site.description | truncate: 110 -%}
+    {%- when "/search.html" -%}
+        {%- assign title = __.search | default: "Search"
+            | append: " · "
+            | append: site.title | truncate: 110 -%}
+    {%- when "/404.html" -%}
+        {%- assign title = "404"
+            | append: " · "
+            | append: site.title | truncate: 110 -%}
+    {%- else -%}
+        {%- assign title = page.title | default: page.name
+            | append: " - "
+            | append: docs.project_tagline
+            | truncate: 100
+            | append: " | "
+            | append: site.title -%}
+{%- endcase -%}

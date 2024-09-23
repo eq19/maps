@@ -1,0 +1,25 @@
+{%- include common/rest/workdir.liquid -%}
+
+{% comment %} list the root files {% endcomment %}
+{%- unless workdir_files == empty -%}
+<ul title="toctree">
+    {%- for item in workdir_files -%}
+        {%- assign level = item.dir | append: "temp" | replace_first: "/", "" | split: "/" | size -%}
+        {%- capture current -%}
+            {%- if page.url == item.url %}current{% endif -%}
+        {%- endcapture %}
+        <li class="toc level-{{ level }} {{ current }}" data-sort="{{ item.sort }}" data-level="{{ level }}">
+            <a class="d-flex flex-items-baseline {{ current }}" href="{{ item.url | relative_url }}">
+                {%- if item.spin -%}
+                    {{ item.spin }}. {{ item.title | default: item.name }}
+                {%- else -%}
+                    {{ item.title | default: item.name }}
+                {%- endif -%}
+            </a>
+        </li>
+    {%- endfor %}
+</ul>
+{%- endunless -%}
+
+{% comment %}list the root dirs{% endcomment %}
+{%- for workdir in workdir_dirs %}{% include templates/_toctree.liquid %}{% endfor -%}

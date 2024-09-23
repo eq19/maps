@@ -1,0 +1,54 @@
+description: Jekyll theme compatible with GitHub Pages
+
+theme: null
+
+# debug:
+#   compress: true
+#   dist: false
+#   shortcodes: true
+
+readme_index:
+  with_frontmatter: true
+
+plugins:
+  - jemoji
+  - jekyll-avatar
+  - jekyll-mentions
+  - jekyll-readme-index
+  - jekyll-github-metadata
+
+exclude:
+  - Makefile
+  - CNAME
+  - LICENSE
+  - update.sh
+  - Gemfile
+  - Gemfile.lock
+  - requirements.txt
+  - node_modules
+  - package.json
+  - package-lock.json
+  - webpack.config.js
+  - jekyll-rtd-theme.gemspec
+
+# Where things are
+source              : .
+collections:
+  posts:
+    output          : true
+collections_dir     : .
+destination         : ./_site
+sass:
+  sass_dir          : _feed/text/_sass
+data_dir            : _feed/text/_data
+includes_dir        : _feed/text/_includes
+layouts_dir         : _feed/text/_layouts
+plugins_dir         : _feed/text/_plugins # takes an array of strings and loads plugins in that order
+
+# Front Matter Defaults
+defaults:
+  -
+    scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "default"

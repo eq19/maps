@@ -1,0 +1,36 @@
+---
+layout: tasks/compress
+---
+
+{%- include rest/defaults.liquid -%}
+{%- include common/rest/defaults.liquid -%}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="https://www.facebook.com/2008/fbml"
+      xml:lang="{{ lang }}" lang="{{ lang }}" dir="{{ direction }}">
+<head>
+        {%- include common/metadata.liquid -%}
+        {%- include common/title.liquid -%}
+        {%- include common/twitter_cards.liquid -%}
+        {%- include common/opengraph.liquid -%}
+        {%- include common/schema.liquid -%}
+        {%- include common/links.liquid -%}
+        {%- include rest/styles.liquid -%}
+        {%- include common/script.liquid -%}
+        {%- include extra/head.html -%}
+    </head>
+    <body class="container">
+        {%- include templates/sidebar.liquid -%}
+        {%- include templates/content.liquid -%}
+        {%- include templates/addons.liquid -%}
+        {%- include extra/body.html -%}
+        {%- include rest/script.liquid -%}
+        {%- include common/mermaid.liquid-%}
+        {%- include common/mathjax.liquid-%}
+        {%- include common/google_gtag.liquid-%}
+        {%- include common/google_adsense.liquid-%}
+    </body>
+</html>
