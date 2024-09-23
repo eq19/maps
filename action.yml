@@ -80,11 +80,11 @@ runs:
         REPO: ${{ github.repository }}
         ACTOR: ${{ github.triggering_actor }}
         OWNER: ${{ github.repository_owner }}
-      run: |
-        export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH
+      run: |      
+        rm -rf ${{ github.action_path }}/.git
         mv -f ${{ github.action_path }}/_config.yml ${RUNNER_TEMP}/
-        artifact.sh && ls -al ${RUNNER_TEMP}/workdir && shopt -s dotglob
-        mv -f ${RUNNER_TEMP}/workdir/* ${{ github.action_path }}/ && ls -al ${{ github.action_path }}
+        export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && artifact.sh
+        shopt -s dotglob && mv -f ${RUNNER_TEMP}/workdir/* ${{ github.action_path }}/
         
     - name: 🚀 Initiate Lexer
       if: runner.os != 'Windows'
@@ -92,10 +92,10 @@ runs:
       id: set_output
       with:
         push: always
-        runCmd: ls /
-        imageTag: spin-${{ github.run_number }}
+        runCmd: ls -al /
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
+        imageTag: spin-${{ github.run_number }}
         configFile: ${{ github.action_path }}/.devcontainer.json
 
     - name: 💎 Variables
