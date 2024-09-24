@@ -68,11 +68,6 @@ branding:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-java@v4
-      with:
-        distribution: 'microsoft'
-        java-version: '21'
-
     - name: Set Docker Hub description
       uses: peter-evans/dockerhub-description@v4
       with:

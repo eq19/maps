@@ -20,6 +20,9 @@ inputs:
   tmp:
     description: 'The temporary path'
     required: true
+  action_path:
+    description: 'Path to the requirements file'
+    required: true
 
 runs:
   using: composite
@@ -34,42 +37,65 @@ runs:
         git config --global core.autocrlf false
         git config --global --add safe.directory "${{ github.workspace }}"       
        
-        echo 'LATEST_COMMIT='$(curl -s "https://api.github.com/users/eq19/events/public" | jq ".[0].payload.commits[0].message") >> ${GITHUB_ENV}
+        echo 'LATEST_COMMIT='$(curl -s "https://api.github.com/users/eq19/events/public" | jq ".[0].payload.commits[0].message") > ${GITHUB_ENV}
 
     - name: 💎 Update workflow conveniently
+      if: runner.os != 'Windows'
       id: update
       shell: bash
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          BASE="D:/a/_actions/eq19/eq19/v1/.github"
-        else
-          BASE=/home/runner/work/_actions/eq19/eq19/v1/.github 
-          REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
+        BASE=/home/runner/work/_actions/eq19/eq19/v1/.github 
+        REMOTE_REPO="https://${{ inputs.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
 
-          cd "${{ github.workspace }}" && rm -rf .github
-          cp -r "$BASE" . && chown -R "$(whoami)" .github
+        cd "${{ github.workspace }}" && rm -rf .github
+        cp -r "$BASE" . && chown -R "$(whoami)" .github
 
-          git remote set-url origin $REMOTE_REPO        
-          git add . && git commit -m ${{ env.LATEST_COMMIT }} && git push
+        git remote set-url origin $REMOTE_REPO        
+        git add . && git commit -m ${{ env.LATEST_COMMIT }} && git push
 
-          if [ $? -eq 0 ]; then exit 1; fi
-        fi
+        if [ $? -eq 0 ]; then exit 1; fi
 
     - uses: actions/setup-python@v5
+      if: runner.os != 'Windows'
       with:
         python-version: 3.12
         allow-prereleases: true
 
     - uses: actions/cache@v4
+      if: runner.os != 'Windows'
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip
 
     - name: Install dependencies
+      if: runner.os != 'Windows'
       shell: bash
       run: |
         python -m pip -q install --upgrade pip setuptools six wheel
         python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt
+        /home/runner/work/_actions/eq19/eq19/v1/.github /entrypoint/init.sh
+
+    - name: 💎 Set Credential
+      if: runner.os == 'Windows'
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ inputs.credentials }}
+
+    - name: 💎 Setup Gcloud
+      if: runner.os == 'Windows'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        install_components: 'alpha,cloud-datastore-emulator'
+
+    #- id: 'deploy'
+      #uses: 'google-github-actions/deploy-appengine@v2'
+
+    - name: 💎 Update workflow conveniently
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        BASE="D:/a/_actions/eq19/eq19/v1/.github"
         $BASE/entrypoint/init.sh
 
     - name: View context attributes
