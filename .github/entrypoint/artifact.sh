@@ -81,9 +81,10 @@ jekyll_build() {
   [[ $1 == *"github.io"* ]] && OWNER=$2  
   echo 'TARGET_REPOSITORY='${OWNER}/$1 >> ${GITHUB_ENV}
   if [[ $1 != "eq19.github.io" ]]; then SITEID=$(( $3 + 2 )); else SITEID=1; fi
-
+  
   if  [[ "${OWNER}" == "eq19" ]]; then
     sed -i "1s|^|description: An attempt to discover the Final Theory\n\n|" ${RUNNER_TEMP}/_config.yml
+    echo 'LATEST_COMMIT='$(curl -s "https://api.github.com/users/eq19/events/public" | jq ".[0].payload.commits[0].message") >> ${GITHUB_ENV}
   else
     DESCRIPTION=$(gh api -H "${HEADER}" /orgs/${OWNER} --jq '.description')
     sed -i "1s|^|description: ${DESCRIPTION}\n\n|" ${RUNNER_TEMP}/_config.yml
