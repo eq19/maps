@@ -39,22 +39,6 @@ runs:
         username: ${{ inputs.hub_username }}
         password: ${{ inputs.hub_token }} 
         
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
-        allow-prereleases: true
-
-    - uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip
-
-    - name: Install dependencies
-      shell: bash
-      run: |
-        python -m pip -q install --upgrade pip setuptools six wheel
-        python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt
-
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
       with:
@@ -74,7 +58,7 @@ runs:
         for ((i=0; i < ${#array[@]}; i++)); do
           if [ "${array[$i]}" != "latest" ]; then
             HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.hub_username }}\", \"password\": \"${{ inputs.hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
-            curl -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
+            curl -s -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
             echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
           fi
         done
