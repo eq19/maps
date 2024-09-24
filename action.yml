@@ -51,6 +51,7 @@ runs:
         base: ${{ inputs.base }}
         token: ${{ inputs.token }}
         actor: ${{ github.actor }}
+        action_path: ${{ github.action_path}}
 
     - name: Target Configuration
       if: runner.os == 'Linux'
