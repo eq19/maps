@@ -85,7 +85,27 @@ runs:
         mv -f ${{ github.action_path }}/_config.yml ${RUNNER_TEMP}/
         export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && artifact.sh
         shopt -s dotglob && mv -f ${RUNNER_TEMP}/workdir/* ${{ github.action_path }}/
-        
+
+    - uses: ikalnytskyi/action-setup-postgres@v6 
+      if: runner.os != 'Windows'
+      id: postgres
+      with:
+        username: yoda
+        password: GrandMaster
+        database: test
+        port: 34837
+
+    - run: |
+        cp ./.github/entrypoint/test.py .
+        python3 -m pytest -vv test.py
+      env:
+        CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
+        SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
+        EXPECTED_CONNECTION_URI: postgresql://yoda:GrandMaster@localhost:34837/test
+        EXPECTED_SERVICE_NAME: yoda
+      if: runner.os != 'Windows'
+      shell: bash
+
     - name: 🚀 Initiate Lexer
       if: runner.os != 'Windows'
       uses: devcontainers/ci@v0.3
@@ -109,7 +129,12 @@ runs:
         for ((i=0; i < ${#array[@]}; i++)); do
           if [ "${array[$i]}" != "latest" ]; then
             HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.docker_hub_username }}\", \"password\": \"${{ inputs.docker_hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
-            curl -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.docker_hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
+            curl -s -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.docker_hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
             echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
           fi
         done
+
+    - id: 'deploy'
+      if: runner.os == 'Ubuntu'
+      uses: 'google-github-actions/deploy-appengine@v2'
+
