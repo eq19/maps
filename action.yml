@@ -134,7 +134,8 @@ runs:
           fi
         done
 
-    - id: 'deploy'
-      if: runner.os == 'Ubuntu'
-      uses: 'google-github-actions/deploy-appengine@v2'
-
+    - name: Setup .NET SDK
+      if: runner.os == 'Windows'
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
