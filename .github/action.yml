@@ -97,7 +97,7 @@ runs:
       uses: 'google-github-actions/deploy-cloud-functions@v3'
       id: deploy
       with:
-        name: function-1
+        name: function-2
         runtime: nodejs20
         source_dir: ./.github/functions
 
@@ -105,7 +105,7 @@ runs:
     - name: Example of using the output 
       if: runner.os == 'Windows'
       shell: bash
-      run: 'curl -s "${{ steps.deploy.outputs.url }}"'
+      run: 'curl "${{ steps.deploy.outputs.url }}"'
 
     - name: 💎 Setup Gcloud
       if: runner.os == 'Windows'
