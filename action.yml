@@ -133,9 +133,3 @@ runs:
             echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
           fi
         done
-
-    - name: Setup .NET SDK
-      if: runner.os == 'Windows'
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
