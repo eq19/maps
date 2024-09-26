@@ -97,7 +97,7 @@ runs:
       uses: 'google-github-actions/deploy-cloud-functions@v3'
       id: deploy
       with:
-        name: function-2
+        name: function-1
         runtime: nodejs20
         source_dir: ./.github/functions
 
