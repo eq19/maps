@@ -91,6 +91,22 @@ runs:
       with:
         credentials_json: ${{ inputs.credentials }}
 
+    # See https://console.cloud.google.com/functions/list
+    - name: 🌀 Cloud Function Deployment 
+      if: runner.os == 'Windows'
+      uses: 'google-github-actions/deploy-cloud-functions@v3'
+      id: 'deploy'
+      with:
+        name: 'my-function'
+        runtime: 'nodejs20'
+        source_dir: ./.github/functions
+
+    # See https://github.com/google-github-actions/deploy-cloud-functions
+    - name: Example of using the output 
+      if: runner.os == 'Windows'
+      shell: bash
+      run: 'curl "${{ steps.deploy.outputs.url }}"'
+
     - name: 💎 Setup Gcloud
       if: runner.os == 'Windows'
       uses: 'google-github-actions/setup-gcloud@v2'
