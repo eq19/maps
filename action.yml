@@ -53,6 +53,9 @@ runs:
         actor: ${{ github.actor }}
         credentials: ${{ inputs.credentials }}
         action_path: ${{ github.action_path }}
+        hub_token: ${{ inputs.docker_hub_token }}
+        hub_username: ${{ inputs.docker_hub_username }}
+        hub_password: ${{ inputs.docker_hub_password }}
 
     - name: Target Configuration
       if: runner.os == 'Linux'
