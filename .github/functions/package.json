@@ -1,19 +1,26 @@
 {
-  "name": "helloworld",
-  "description": "Simple hello world sample in Node",
-  "version": "1.0.0",
+  "name": "nodejs-docs-samples-functions-hello-world-get",
+  "version": "0.0.1",
   "private": true,
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "start": "node index.js"
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleCloudPlatform/nodejs-docs-samples.git"
   },
   "engines": {
     "node": ">=16.0.0"
   },
-  "author": "Google LLC",
-  "license": "Apache-2.0",
+  "scripts": {
+    "test": "c8 mocha -p -j 2 test/*.test.js --timeout=6000 --exit"
+  },
   "dependencies": {
-    "express": "^4.17.1"
+    "@google-cloud/functions-framework": "^3.1.0"
+  },
+  "devDependencies": {
+    "c8": "^10.0.0",
+    "gaxios": "^6.0.0",
+    "mocha": "^10.0.0",
+    "wait-port": "^1.0.4"
   }
 }
