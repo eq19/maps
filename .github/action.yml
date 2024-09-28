@@ -113,6 +113,7 @@ runs:
       with:
         install_components: 'alpha,cloud-datastore-emulator'
 
+    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
     - name: 💎 Remove Existing Self-Hosted Runner
       if: runner.os == 'Windows'
       shell: bash
