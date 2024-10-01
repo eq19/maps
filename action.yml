@@ -124,7 +124,6 @@ runs:
       shell: bash
       run: |
         BASE_NAME=$(basename ${{ inputs.image_name }})                    
-        if [[ "$RUNNER_OS" == "Windows" ]]; then choco install yq; fi
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
         for ((i=0; i < ${#array[@]}; i++)); do
           if [[ "${array[$i]}" != "latest" ]]; then
@@ -142,6 +141,7 @@ runs:
     # See https://github.com/thesofproject/sof/blob/main/zephyr/docker-run.sh
     - name: 🪂 Cloud Config
       if: runner.os == 'Windows'
+      id: cloud_config
       shell: bash
       run: |
         cat << EOL >> cloud-config
@@ -223,7 +223,6 @@ runs:
               -e RUNNER_NAME=Google-optimized-instance \
               -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} \
               -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} \
-              -e CONNECTION_URI="postgresql+psycopg2://postgres:postgres@172.17.0.1:5432/postgres?sslmode=disable" \
               -v /var/run/docker.sock:/var/run/docker.sock \
               -v /mnt:/mnt \
               --name myrunner --pull=always eq19/lexer:id-${{ steps.variables.outputs.image_tag }}
@@ -238,8 +237,9 @@ runs:
         - mkdir -p /mnt/disks/platform
         - mount -o nosuid,nodev,commit=30,defaults -t ext4 /dev/sdb1 /mnt/disks/platform
         EOL
+        echo 'user_data='$(awk '{printf "%s\\n", $0}' cloud-config) >> ${GITHUB_OUTPUT}
 
-    - name: 🪂 Setup Runner
+    - name: 🪂 Setup Runner by Gcloud
       if: runner.os == 'Windows'          
       shell: bash
       # Ref: https://stackoverflow.com/a/47018417/4058484
@@ -249,4 +249,115 @@ runs:
         --zone=us-central1-a --machine-type=e2-micro --enable-display-device --tags=https-server
         --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
         --create-disk=boot=no,auto-delete=no,name=tensorflow,device-name=deeplearning,mode=ro,size=50,type=pd-standard,image-project=deeplearning-platform-release,image-family=tf-ent-latest-gpu
-        
+
+    - name: 💎 Set Access Token
+      if: runner.os == 'Windows'
+      id: 'o2auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: 'access_token'
+        credentials_json: ${{ inputs.credentials }}
+
+    # Ref: https://cloud.google.com/compute/docs/instances/startup-scripts/linux#passing-directly
+    - name: 🪂 Setup Runner by API
+      if: runner.os == 'Ubuntu'          
+      shell: bash
+      run: >
+        curl -s -H "Authorization: Bearer ${{ steps.o2auth.outputs.access_token }}" -H "Content-Type: application/json"
+        -X POST https://compute.googleapis.com/compute/v1/projects/feedmapping/zones/us-central1-a/instances -d 
+        '{         
+          "canIpForward": false,
+          "confidentialInstanceConfig": {
+            "enableConfidentialCompute": false
+          },
+          "deletionProtection": false,
+          "description": "",
+          "disks": [
+            {
+              "autoDelete": true,
+              "boot": true,
+              "deviceName": "instance-20240930-102016",
+              "diskEncryptionKey": {},
+              "initializeParams": {
+                "diskSizeGb": "10",
+                "diskType": "projects/feedmapping/zones/us-central1-f/diskTypes/pd-standard",
+                "labels": {},
+                "sourceImage": "projects/cos-cloud/global/images/cos-101-17162-528-49"
+              },
+              "mode": "READ_WRITE",
+              "type": "PERSISTENT"
+            },
+            {
+              "autoDelete": false,
+              "boot": false,
+              "deviceName": "tensorflow",
+              "interface": "SCSI",
+              "mode": "READ_ONLY",
+              "source": "projects/feedmapping/zones/us-central1-a/disks/tensorflow",
+              "type": "PERSISTENT"
+            }
+          ],
+          "displayDevice": {
+            "enableDisplay": false
+          },
+          "guestAccelerators": [],
+          "instanceEncryptionKey": {},
+          "keyRevocationActionType": "NONE",
+          "labels": {
+            "goog-ec-src": "vm_add-rest"
+          },
+          "machineType": "projects/feedmapping/zones/us-central1-a/machineTypes/e2-micro",
+          "metadata": {
+            "items": [
+              {
+                "key": "user-data",
+                "value": "${{ steps.cloud_config.outputs.user_data }}"
+              }
+            ]
+          },
+          "name": "spin-1",
+          "networkInterfaces": [
+            {
+              "accessConfigs": [
+                {
+                  "name": "External NAT",
+                  "type": "ONE_TO_ONE_NAT",
+                  "networkTier": "PREMIUM"
+                }
+              ],
+              "stackType": "IPV4_ONLY",
+              "subnetwork": "projects/feedmapping/regions/us-central1/subnetworks/default"
+            }
+          ],
+          "params": {
+            "resourceManagerTags": {}
+          },
+          "reservationAffinity": {
+            "consumeReservationType": "NO_RESERVATION"
+          },
+          "scheduling": {
+            "automaticRestart": true,
+            "onHostMaintenance": "MIGRATE",
+            "provisioningModel": "STANDARD"
+         },
+         "serviceAccounts": [
+            {
+              "email": "project-owner@feedmapping.iam.gserviceaccount.com",
+              "scopes": [
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/devstorage.read_only"
+              ]
+            }
+          ],
+          "shieldedInstanceConfig": {
+            "enableIntegrityMonitoring": true,
+            "enableSecureBoot": false,
+            "enableVtpm": true
+          },
+          "tags": {
+            "items": [
+              "https-server"
+            ]
+          },
+          "zone": "projects/feedmapping/zones/us-central1-a"
+        }'
