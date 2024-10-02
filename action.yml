@@ -18,6 +18,10 @@ inputs:
   docker_hub_token:
     description: Docker Hub authentication token
     required: true
+  initiate_pauli:
+    description: Build args
+    required: false
+    default: ""
   image_name:
     description: Tag to use for the new image
     default: ${{ github.action_repository }}
