@@ -65,6 +65,7 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          initiate_pauli: ${{ toJSON(steps.set-lexering.outputs) }}
 
       - name: 🪂 Feed Mapping
         uses: eq19/feed@v3
@@ -74,6 +75,7 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          initiate_pauli: ${{ toJSON(steps.build-parser.outputs) }}
 
       - name: 🏃‍♂️ Lexering Runner
         uses: eq19/lexer@v1
@@ -81,9 +83,11 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
+          #private_key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          
+          initiate_pauli: ${{ toJSON(steps.feed-mapping.outputs) }}
+         
     outputs:
       # ♻️ Simulate Gell-Mann Matrices
       id: ${{ join(steps.build-parser.outputs.*, '\n') }}
