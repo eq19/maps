@@ -28,7 +28,7 @@ inputs:
   dockerfile_path:
     description: Path to the dockerfile from which to build the image
     required: true
-  build_args:
+  initiate_pauli:
     description: Build args
     required: false
     default: ""
@@ -65,6 +65,9 @@ outputs:
   spin:
     description: 'The spin of current repository'
     value: ${{ steps.set_output.outputs.runCmdOutput }}
+  private_key:
+    description: 'The generated key to connect to VM'
+    value: ${{ steps.matadata.outputs.private_key }}
 
 runs:
   using: composite
@@ -138,10 +141,26 @@ runs:
           fi
         done
   
+    - name: 💎 Set Access Token
+      if: runner.os == 'Windows'
+      id: 'o2auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: 'access_token'
+        credentials_json: ${{ inputs.credentials }}
+
+    - name: 🪂 Generate SSH keys
+      if: runner.os == '-Windows'          
+      shell: bash
+      run: |
+        ssh-keygen -t rsa -b 4096 -N '' -f $HOME/.ssh/id_rsa -C root
+        echo 'private_key='$(cat $HOME/.ssh/id_rsa) >> ${GITHUB_OUTPUT}
+        echo 'public_key='$(cat $HOME/.ssh/id_rsa.pub) >> ${GITHUB_OUTPUT}
+ 
     # See https://github.com/thesofproject/sof/blob/main/zephyr/docker-run.sh
     - name: 🪂 Cloud Config
       if: runner.os == 'Windows'
-      id: cloud_config
+      id: metadata
       shell: bash
       run: |
         cat << EOL >> cloud-config
@@ -214,7 +233,7 @@ runs:
             [Service]
             RestartSec=5s
             Restart=on-failure
-            Environment="HOME=/home/runner"
+            Environment=HOME=/home/runner
             ExecStop=/usr/bin/docker stop myrunner
             ExecStopPost=/usr/bin/docker rm myrunner
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
@@ -239,10 +258,10 @@ runs:
         EOL
         echo 'user_data='$(awk '{printf "%s\\n", $0}' cloud-config) >> ${GITHUB_OUTPUT}
 
+    # Ref: https://stackoverflow.com/a/47018417/4058484
     - name: 🪂 Setup Runner by Gcloud
-      if: runner.os == 'Windows'          
+      if: runner.os == 'Windows' #&& os.linux.outcome == 'success'
       shell: bash
-      # Ref: https://stackoverflow.com/a/47018417/4058484
       run: >
         gcloud compute instances create grid-${{ steps.variables.outputs.image_tag }}
         --service-account=project-owner@feedmapping.iam.gserviceaccount.com
@@ -250,72 +269,18 @@ runs:
         --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
         --create-disk=boot=no,auto-delete=no,name=tensorflow,device-name=deeplearning,mode=ro,size=50,type=pd-standard,image-project=deeplearning-platform-release,image-family=tf-ent-latest-gpu
 
-    - name: 💎 Set Access Token
-      if: runner.os == 'Windows'
-      id: 'o2auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        token_format: 'access_token'
-        credentials_json: ${{ inputs.credentials }}
-
     # Ref: https://cloud.google.com/compute/docs/instances/startup-scripts/linux#passing-directly
     - name: 🪂 Setup Runner by API
-      if: runner.os == 'Ubuntu'          
+      if: runner.os == 'Windows'
+      id: setup_runner
       shell: bash
       run: >
-        curl -s -H "Authorization: Bearer ${{ steps.o2auth.outputs.access_token }}" -H "Content-Type: application/json"
-        -X POST https://compute.googleapis.com/compute/v1/projects/feedmapping/zones/us-central1-a/instances -d 
+        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function 
+        -H "Authorization: Bearer $(gcloud auth print-identity-token)"
+        -H "Content-Type: application/json" -d
         '{         
-          "canIpForward": false,
-          "confidentialInstanceConfig": {
-            "enableConfidentialCompute": false
-          },
-          "deletionProtection": false,
-          "description": "",
-          "disks": [
-            {
-              "autoDelete": true,
-              "boot": true,
-              "deviceName": "instance-20240930-102016",
-              "diskEncryptionKey": {},
-              "initializeParams": {
-                "diskSizeGb": "10",
-                "diskType": "projects/feedmapping/zones/us-central1-f/diskTypes/pd-standard",
-                "labels": {},
-                "sourceImage": "projects/cos-cloud/global/images/cos-101-17162-528-49"
-              },
-              "mode": "READ_WRITE",
-              "type": "PERSISTENT"
-            },
-            {
-              "autoDelete": false,
-              "boot": false,
-              "deviceName": "tensorflow",
-              "interface": "SCSI",
-              "mode": "READ_ONLY",
-              "source": "projects/feedmapping/zones/us-central1-a/disks/tensorflow",
-              "type": "PERSISTENT"
-            }
-          ],
-          "displayDevice": {
-            "enableDisplay": false
-          },
-          "guestAccelerators": [],
-          "instanceEncryptionKey": {},
-          "keyRevocationActionType": "NONE",
-          "labels": {
-            "goog-ec-src": "vm_add-rest"
-          },
-          "machineType": "projects/feedmapping/zones/us-central1-a/machineTypes/e2-micro",
-          "metadata": {
-            "items": [
-              {
-                "key": "user-data",
-                "value": "${{ steps.cloud_config.outputs.user_data }}"
-              }
-            ]
-          },
-          "name": "spin-1",
+          "name": "grid-${{ steps.variables.outputs.image_tag }}",
+          "zone": "projects/feedmapping/zones/us-central1-a",
           "networkInterfaces": [
             {
               "accessConfigs": [
@@ -359,5 +324,113 @@ runs:
               "https-server"
             ]
           },
-          "zone": "projects/feedmapping/zones/us-central1-a"
-        }'
+          "canIpForward": true,
+          "confidentialInstanceConfig": {
+            "enableConfidentialCompute": false
+          },
+          "deletionProtection": false,
+          "description": "",
+          "disks": [
+            {
+              "autoDelete": true,
+              "boot": true,
+              "deviceName": "instance-20240930-102016",
+              "diskEncryptionKey": {},
+              "initializeParams": {
+                "diskSizeGb": "10",
+                "diskType": "projects/feedmapping/zones/us-central1-f/diskTypes/pd-standard",
+                "labels": {},
+                "sourceImage": "projects/cos-cloud/global/images/cos-101-17162-528-49"
+              },
+              "mode": "READ_WRITE",
+              "type": "PERSISTENT"
+            },
+            {
+              "autoDelete": false,
+              "boot": false,
+              "deviceName": "tensorflow",
+              "interface": "SCSI",
+              "mode": "READ_ONLY",
+              "source": "projects/feedmapping/zones/us-central1-a/disks/tensorflow",
+              "type": "PERSISTENT"
+            }
+          ],
+          "displayDevice": {
+            "enableDisplay": true
+          },
+          "guestAccelerators": [],
+          "instanceEncryptionKey": {},
+          "keyRevocationActionType": "NONE",
+          "labels": {
+            "goog-ec-src": "vm_add-rest"
+          },
+          "machineType": "projects/feedmapping/zones/us-central1-a/machineTypes/e2-micro",
+          "metadata": {
+            "items": [
+              {
+                "key": "user-data",
+                "value": "${{ steps.metadata.outputs.user_data }}"
+              },
+              {
+                "key": "ssh-keys",
+                "value": "root:${{ steps.metadata.outputs.public_key }}"
+              }
+            ]
+          }
+        }' | jq '.'
+
+    - name: 🪂 Setup Runner by API
+      if: runner.os == '-Windows'
+      id: targetLink
+      shell: bash
+      run: >
+        echo 'targetLink='$(curl -s -H "Authorization: Bearer ${{ steps.o2auth.outputs.access_token }}" -H "Content-Type: application/json"
+        -X POST https://compute.googleapis.com/compute/beta/projects/feedmapping/zones/us-central1-a/instances -d 
+        '{}' | jq '.targetLink') >> ${GITHUB_OUTPUT}
+
+    - name: 🪂 Setup Runner by API
+      if: runner.os == '-Windows'
+      id: connectLink
+      shell: bash
+      run: |
+        TF=$(choco install terraform)
+        #gcloud compute firewall-rules create allow-rdp-ingress-from-iap --direction=INGRESS --action=allow --rules=tcp:3389 --source-ranges=35.235.240.0/20
+        #gcloud compute firewall-rules create allow-ssh-ingress-from-iap --direction=INGRESS --action=allow --rules=tcp:22 --source-ranges=35.235.240.0/20
+        #curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip
+        #curl -s -H "Authorization: Bearer ${{ steps.o2auth.outputs.access_token }}" -H "Content-Type: application/json" -X POST ${{ steps.setup_runner.outputs.targetLink }} -d '{}'
+        curl -H Metadata-Flavor:Google 169.254.169.254/computeMetadata/v1/instance/vendor/identity/document
+
+    #See https://github.com/google-github-actions/ssh-compute
+    - uses: 'google-github-actions/ssh-compute@v1'
+      if: runner.os == '-Windows'
+      with:
+        instance_name: 'grid-5'
+        zone: 'us-central1-a'
+        ssh_private_key: '${{ steps.metadata.outputs.private_key }}'
+        command: 'echo Hello world'
+
+    # Ref: https://blog.benoitblanchon.fr/github-action-run-ssh-commands/
+    - name: Configure SSH
+      id: 'compute-ssh'
+      if: runner.os == '-Windows'
+      shell: bash
+      run: |
+        mkdir -p $HOME/.ssh/
+        echo "${{ steps.metadata.outputs.private_key }}" > $HOME/.ssh/staging.key
+        #ssh-keyscan -t rsa  ${{ steps.setup_runner.outputs.external_ip }} >> ~/.ssh/known_hosts
+        chmod 600 $HOME/.ssh/staging.key
+        cat >> $HOME/.ssh/config <<END
+        Host staging
+          HostName ${{ steps.setup_runner.outputs.targetLink }}
+          User root
+          IdentityFile ~/.ssh/staging.key
+          StrictHostKeyChecking no
+        END
+          
+    # See https://cloud.google.com/compute/docs/connect/root-ssh
+    - id: 'test'
+      if: runner.os == '-Windows'
+      shell: bash
+      run: |-
+        ssh staging 'sudo whoami'
+        echo '${{ steps.compute-ssh.outputs.stdout }}'
