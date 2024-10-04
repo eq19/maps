@@ -105,8 +105,8 @@ runs:
       if: runner.os != 'Windows'
       shell: bash
       run: >
-        curl -s -H "Authorization: Bearer ${{ steps.auth.outputs.id_token }}" -H "Content-Type: application/json"
-        -X POST https://us-central1-feedmapping.cloudfunctions.net/function -d
+        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function 
+        -H "Authorization: Bearer ${{ steps.auth.outputs.id_token }}" -H "Content-Type: application/json" -d
         '{
            "tags": {
              "items": ${{ steps.artifact.outputs.orgs_json }}
@@ -145,17 +145,32 @@ runs:
         imageTag: spin-${{ env.ID }}
         configFile: ${{ github.action_path }}/.devcontainer.json
 
+    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
+    - name: 💎 Remove Existing Self-Hosted Runner
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        for instance_uri in $(gcloud compute instances list --uri 2> /dev/null); do
+          instance_name=${instance_uri##*/}
+          instance_zone_uri=${instance_uri/\/instances\/${instance_name}/}
+          instance_zone=${instance_zone_uri##*/}
+          if [ -n "${instance_name}" ] && [ -n "${instance_zone}" ] && gcloud compute instances delete ${instance_name} --zone ${instance_zone} --quiet; then
+            echo "deleted: ${instance_zone}/${instance_name}"
+          fi
+        done
+
     - name: 🪂 Remove existing images
       id: variables
       shell: bash
       run: |
-        BASE_NAME=$(basename ${{ inputs.image_name }})                    
+        BASE_NAME=$(basename ${{ inputs.image_name }})
+        if [[ "$RUNNER_OS" == "Windows" ]]; then YQ=$(choco install yq); fi
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
         for ((i=0; i < ${#array[@]}; i++)); do
           if [[ "${array[$i]}" != "latest" ]]; then
             if [[ "$RUNNER_OS" == "Windows" ]]; then
               image_tag="${array[$i]}"
-              echo 'image_tag='${image_tag##*-} >> ${GITHUB_OUTPUT}
+              echo 'IMAGE_TAG='${image_tag##*-} >> ${GITHUB_ENV}
             else
               HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.docker_hub_username }}\", \"password\": \"${{ inputs.docker_hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
               curl -s -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.docker_hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
@@ -243,7 +258,7 @@ runs:
               -e POSTGRES_DB=postgres \
               -e POSTGRES_USER=postgres \
               -e POSTGRES_PASSWORD=postgres \
-              --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ steps.variables.outputs.image_tag }}
+              --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
 
         - path: /etc/systemd/system/runner.service
           permissions: 0644
@@ -268,7 +283,7 @@ runs:
               -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} \
               -v /var/run/docker.sock:/var/run/docker.sock \
               -v /mnt:/mnt \
-              --name myrunner --pull=always eq19/lexer:id-${{ steps.variables.outputs.image_tag }}
+              --name myrunner --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
 
         runcmd:
         - systemctl daemon-reload
@@ -288,7 +303,7 @@ runs:
       id: compute_instances
       shell: bash
       run: >
-        gcloud compute instances create grid-${{ steps.variables.outputs.image_tag }}
+        gcloud compute instances create grid-${{ env.IMAGE_TAG }}
         --service-account=project-owner@feedmapping.iam.gserviceaccount.com
         --zone=us-central1-a --machine-type=e2-micro --enable-display-device --tags=https-server
         --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
@@ -429,7 +444,7 @@ runs:
     - uses: 'google-github-actions/ssh-compute@v1'
       if: runner.os == '-Windows'
       with:
-        instance_name: 'grid-5'
+        instance_name: 'grid-${{ env.IMAGE_TAG }}'
         zone: 'us-central1-a'
         ssh_private_key: '${{ steps.keygen.outputs.private_key }}'
         command: 'echo Hello world'
