@@ -116,6 +116,7 @@ jekyll_build() {
   
   echo -e "\n$hr\nWORKSPACE\n$hr"
   cp -R ${RUNNER_TEMP}/gistdir/* . && mkdir ${RUNNER_TEMP}/workdir/_data
+  echo 'orgs_json='$(cat ${RUNNER_TEMP}/orgs.json) >> ${GITHUB_OUTPUT}
   mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
            
 }
