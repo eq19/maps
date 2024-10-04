@@ -117,21 +117,6 @@ runs:
       if: runner.os == 'Windows'
       shell: bash
       run: |
-        for instance_uri in $(gcloud compute instances list --uri 2> /dev/null); do
-          instance_name=${instance_uri##*/}
-          instance_zone_uri=${instance_uri/\/instances\/${instance_name}/}
-          instance_zone=${instance_zone_uri##*/}
-          if [ -n "${instance_name}" ] && [ -n "${instance_zone}" ] && gcloud compute instances delete ${instance_name} --zone ${instance_zone} --quiet; then
-            echo "deleted: ${instance_zone}/${instance_name}"
-          fi
-        done
-
-    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
-    - name: 💎 Remove Existing Self-Hosted Runner
-      if: runner.os == 'Windows'
-      shell: bash
-      run: |
-        YQ=$(choco install yq)      
         BASE="D:/a/_actions/eq19/eq19/v1/.github"
         $BASE/entrypoint/init.sh
 
