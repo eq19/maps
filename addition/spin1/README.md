@@ -28,6 +28,8 @@ In short this project is mapping [the quantum way](https://www.eq19.com/) within
 
 ![default](https://user-images.githubusercontent.com/8466209/199364847-6a8d2d64-ee12-4379-bfa6-9f5d9fa7da59.png)
 
+This export/import process is specific to each frontend and typically involves a number of stages which can then be "imported" into [IREE](https://iree.dev/).
+
 ```note
 The 5+7+11+13 is the smallest square number expressible as the sum of four consecutive primes which are also two couples of prime twins!
 - Their sum is 36 which is [the smallest square](https://primes.utm.edu/curios/page.php?number_id=270) that is the sum of a twin prime pair {17, 19}.
@@ -54,7 +56,21 @@ $True Prime Pairs:
  -----+-----+---------
 ```
 
-![](https://user-images.githubusercontent.com/36441664/71587951-4f8a5580-2b52-11ea-84cd-a2b1465fce8b.png## )
+IREE supports the most popular machine learning [frameworks](https://iree.dev/guides/ml-frameworks/#execution) using the same underlying technology. Here we are going to use SavedModels from [TensorFlow Hub](https://www.tensorflow.org/hub).
+
+```note
+Each machine learning framework has some "export" mechanism that snapshots the structure and data in your program.
+
+- Capture/trace/freeze the ML model into a graph
+- Write that graph to an interchange format (e.g. SavedModel, TorchScript, ONNX)
+- Load the saved program into an import tool and convert to MLIR
+- Legalize the graph's operations so only IREE-compatible operations remain
+- Write the imported MLIR to a file
+
+This fully imported form can then be compiled indepedently of the source language and framework.
+```
+
+[![framework](https://user-images.githubusercontent.com/36441664/71587951-4f8a5580-2b52-11ea-84cd-a2b1465fce8b.png)](https://iree.dev/guides/ml-frameworks/#execution)
 
 ```txt
 $True Prime Pairs:
@@ -369,6 +385,3 @@ What is critical to understand, is that the invisible hand of 2, 3 and 5, and th
 
 [![One_Grand_Pyramid_Teaser](https://github.com/eq19/maps/assets/8466209/31cec66a-566f-466d-9ea6-f924e7499f01)](https://www.primesdemystified.com/First1000Primes.html)
 
-## Importing the Prime Model
-
-[IREE](https://iree.dev/) supports popular machine learning [frameworks](https://iree.dev/guides/ml-frameworks/#execution) using the same underlying technology. By this project we are going to use SavedModels from [TensorFlow Hub](https://www.tensorflow.org/hub).
