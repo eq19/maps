@@ -369,3 +369,6 @@ What is critical to understand, is that the invisible hand of 2, 3 and 5, and th
 
 [![One_Grand_Pyramid_Teaser](https://github.com/eq19/maps/assets/8466209/31cec66a-566f-466d-9ea6-f924e7499f01)](https://www.primesdemystified.com/First1000Primes.html)
 
+## Importing the Prime Model
+
+[IREE](https://iree.dev/) supports popular machine learning [frameworks](https://iree.dev/guides/ml-frameworks/#execution) using the same underlying technology. By this project we are going to use SavedModels from [TensorFlow Hub](https://www.tensorflow.org/hub).
