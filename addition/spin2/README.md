@@ -7,8 +7,13 @@ description:
 ---
 # Primes Platform
 
+The program used to demonstrate includes functions with varying uses of dynamic shapes. 
 
 {% include list.liquid all=true %}
+
+See this paper for a discussion of the challenges imposed by dynamic shapes and one project's approach to addressing them.
+
+## Dynamic Shapes
 
 [Prime hexagon](https://www.hexspin.com/) is a mathematical structure developed by mathematician T. Gallion that is formed when integers are sequentially added to a field of tessellating equilateral triangles, where the path of the integers is changed whenever a prime is encountered.
 
@@ -31,6 +36,14 @@ s p i n
 19 1 1 1 ◄--- 8th prime
 ```
 
+```note
+- Create a program that includes dynamic shapes in program inputs and outputs
+- Import that program into IREE's compiler
+- Compile that program to an IREE VM bytecode module
+- Load the compiled program using IREE's high level runtime C API
+- Call exported functions on the loaded program
+```
+
 ***17 = 7th prime = (18 - 11) th prime***
 
 ![](https://user-images.githubusercontent.com/8466209/226643815-f8c926cd-ae36-43d3-b271-8df07272f429.png)
@@ -51,9 +64,19 @@ p r i m e s
 11 23 2 1 1 23 ◄--- 9th prime √
 ```
 
+You may learn that sets of algebraic objects has a multilinear relationship related to a vector space called _[tensor](https://en.wikipedia.org/wiki/Tensor)_.
+
 ## Residual objects
 
-You may learn that sets of algebraic objects has a multilinear relationship related to a vector space called _[tensor](https://en.wikipedia.org/wiki/Tensor)_. Tensors may map between different objects such as vectors, scalars, and even other tensors.
+Tensors may map between different objects such as vectors, scalars, and even other tensors.
+
+```note
+Tensors are multi-dimensional arrays with a uniform type (e.g. int32, float32) and a shape. Shapes consist of a rank and a list of dimensions and may be static (i.e. fully known and fixed) or varying degrees of dynamic. For more information, see these references:
+- PyTorch: [Compiler dynamic shapes](https://pytorch.org/docs/stable/torch.compiler_dynamic_shapes.html), [torch.Tensor](https://pytorch.org/docs/stable/tensors.html)
+- TensorFlow: [Introduction to Tensors](https://www.tensorflow.org/guide/tensor)
+
+[Dynamic shapes](https://github.com/iree-org/iree/tree/main/samples/dynamic_shapes) are useful for passing variable sized batches as input, receiving variable length sentences of text as output, etc.
+```
 
 [![300px-Components_stress_tensor svg](https://user-images.githubusercontent.com/8466209/211590875-9cae3c47-bbdc-43d8-acc5-d8c64c802967.png)](https://en.wikipedia.org/wiki/Tensor)
 
