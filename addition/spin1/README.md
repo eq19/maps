@@ -67,10 +67,20 @@ Each machine learning framework has some "export" mechanism that snapshots the s
 - Legalize the graph's operations so only IREE-compatible operations remain
 - Write the imported MLIR to a file
 
-This fully imported form can then be compiled indepedently of the source language and framework.
+This fully imported form can then be compiled indepedently of the [source languages](https://iree.dev/reference/bindings/) and framework. See the [samples directory](https://github.com/iree-org/iree/tree/main/samples).
 ```
 
 [![framework](https://user-images.githubusercontent.com/36441664/71587951-4f8a5580-2b52-11ea-84cd-a2b1465fce8b.png)](https://iree.dev/guides/ml-frameworks/#execution)
+
+Using this trained machine learning models we shall do [fine-tuning](https://www.eq19.com/addition/spin2/) and make it [deployable](https://www.eq19.com/addition/spin3/) to discuss the _[undiscovered features](https://www.eq19.com/addition/#undiscovered-features)_ as we have discussed before.
+
+```note
+These files can be imported into an IREE-compatible format then compiled to a series of backends. 
+- TensorFlow programs represented as [tf.Module classes](https://www.tensorflow.org/api_docs/python/tf/Module) or stored in the SavedModel [format](https://www.tensorflow.org/guide/saved_model).
+- TensorFlow Lite (TFLite) programs stored as [TFLite FlatBuffers](https://www.tensorflow.org/lite/guide).
+
+See the [deployment configuration guides](https://iree.dev/guides/deployment-configurations/) for details on selecting a compiler backend and tuning options for your choice of target platform(s) or device(s).
+```
 
 ```txt
 $True Prime Pairs:
@@ -116,7 +126,7 @@ layer | node | sub |  i  |  f
 ------|------|-----+-----+------
 ```
 
-![Primes-vs-composites svg](https://github.com/eq19/maps/assets/8466209/e4fb7f51-eb2f-4d5e-b565-ebbb3b0ebfad)
+[![Primes vs Composites](https://github.com/eq19/maps/assets/8466209/e4fb7f51-eb2f-4d5e-b565-ebbb3b0ebfad)](https://github.com/iree-org/iree/tree/main/integrations/tensorflow)
 
 ```txt
 $True Prime Pairs:
