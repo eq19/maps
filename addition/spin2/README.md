@@ -51,7 +51,7 @@ The program used to demonstrate functions of dynamic shapes where the path of th
 
 [![Prime hexagon](https://user-images.githubusercontent.com/8466209/226643815-f8c926cd-ae36-43d3-b271-8df07272f429.png)](https://youtu.be/fQL4KRH3wUQ)
 
-To match the different shape, we will need a common shape, and the result is a two-dimensional array. This could later be multilinear dimensions.
+To match the different shape, we will need a common shape, and the result is a two-dimensional array. This would later be multilinear dimensions.
 
 ```txt
 p r i m e s
@@ -76,11 +76,11 @@ You may learn that sets of algebraic objects has a multilinear relationship rela
 Tensors may map between different objects such as vectors, scalars, and even other tensors.
 
 ```note
-Tensors are multi-dimensional arrays with a uniform type (e.g. int32, float32) and a shape. Shapes consist of a rank and a list of dimensions and may be static (i.e. fully known and fixed) or varying degrees of dynamic. For more information, see these references:
+Tensors are multi-dimensional arrays with a uniform type (e.g. int32, float32) and a shape. Shapes consist of a rank and a list of dimensions and may be static (i.e. fully known and fixed) or varying degrees of dynamic. See these references:
 - PyTorch: [Compiler dynamic shapes](https://pytorch.org/docs/stable/torch.compiler_dynamic_shapes.html), [torch.Tensor](https://pytorch.org/docs/stable/tensors.html)
 - TensorFlow: [Introduction to Tensors](https://www.tensorflow.org/guide/tensor)
 
-[Dynamic shapes](https://github.com/iree-org/iree/tree/main/samples/dynamic_shapes) are useful for passing variable sized batches as input, receiving variable length sentences of text as output, etc.
+All tensors are immutable like Python numbers and strings: you can never update the contents of a tensor, only create a new one. [Dynamic shapes](https://github.com/iree-org/iree/tree/main/samples/dynamic_shapes) are useful for passing variable sized batches as input, receiving variable length sentences of text as output.
 ```
 
 [![300px-Components_stress_tensor svg](https://user-images.githubusercontent.com/8466209/211590875-9cae3c47-bbdc-43d8-acc5-d8c64c802967.png)](https://en.wikipedia.org/wiki/Tensor)
