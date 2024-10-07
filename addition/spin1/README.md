@@ -56,7 +56,7 @@ $True Prime Pairs:
  -----+-----+---------
 ```
 
-IREE supports the most popular machine learning [frameworks](https://iree.dev/guides/ml-frameworks/#execution) using the same underlying technology. Here we are going to use SavedModels from [TensorFlow Hub](https://www.tensorflow.org/hub).
+IREE supports most popular machine learning [frameworks](https://iree.dev/guides/ml-frameworks/#execution) using the same underlying technology. Here we are going to use SavedModels from [TensorFlow Hub](https://www.tensorflow.org/hub).
 
 ```note
 Each machine learning framework has some "export" mechanism that snapshots the structure and data in your program.
