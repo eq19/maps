@@ -5,7 +5,7 @@ span:
 suit: 109
 description: 
 ---
-# Exponentiation Zones (30-36)
+# Numerical Symmetries(30-36)
 
 _[Exponentiation](https://en.wikipedia.org/wiki/Exponentiation)_ is an operation involving two numbers, the 
 _[Exponentiation](https://en.wikipedia.org/wiki/Exponentiation)_ is an operation involving two numbers, the base and the exponent or power. Exponentiation is written as ***b<sup>n</sup>***, where ***b*** is the base and ***n*** is the power.

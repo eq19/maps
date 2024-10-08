@@ -157,9 +157,11 @@ Using the same procedure, any direct product representation is easily reduced.
 ![1_RMV1kvtEZ-o-_8WKQLnCSA](https://github.com/eq19/maps/assets/8466209/715b20a8-d5c2-4b72-8993-b696a8b25d23)
 ### 40
 ![slide_1](https://github.com/eq19/maps/assets/8466209/e6937ad3-6ecd-449b-bdc1-712d0ffb9e9a)
-# Architecture Overview
+# Prime Unit Identity
 
 We are going to assign prime identity as a ***standard model*** that attempts to stimulate a quantum field model called ***[eQuantum](https://github.com/eq19)*** for _[the four (4) known fundamental forces](https://en.wikipedia.org/wiki/Fundamental_interaction)_.
+
+{% include list.liquid all=true %}
 
 This presentation was inspired by [theoretical works](https://github.com/eq19/maps/files/13468466/OU1938-Y1.1.pdf) from _[Hideki Yukawa](https://en.wikipedia.org/wiki/Hideki_Yukawa)_ who in 1935 had predicted the existence of _[mesons as the carrier particles](https://en.wikipedia.org/wiki/Meson)_ of strong nuclear force.
 
@@ -313,17 +315,13 @@ Or may be [start again from the Euler Function](https://youtu.be/FCpRl0NzVu4).
 
 ## Identition Zones
 
-The value of the [vacuum energy](https://en.wikipedia.org/wiki/Vacuum_energy) (or more precisely, the [renormalization](https://en.wikipedia.org/wiki/Renormalization) scale used to calculate this energy) may also be treated as an additional free parameter.
-
-[![Right_left_helicity svg](https://github.com/eq19/maps/assets/8466209/6a9a0f44-a1ed-41e5-878f-62948c19d9de)](https://en.wikipedia.org/wiki/Left-right_model)
-
 _[Freeman Dyson](https://en.wikipedia.org/wiki/Freeman_Dyson#Quantum_physics_and_prime_numbers)_ discovered an intriguing connection between quantum physics and [Montgomery's pair correlation conjecture](https://en.wikipedia.org/wiki/Montgomery%27s_pair_correlation_conjecture) about the zeros of the [zeta function](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#zeta-function) which dealts with the distribution of primes.
 
 ```note
 The Mathematical Elementary Cell 30 (***MEC30***) standard _[unites](https://www.eq19.com/multiplication/12.html#entrypoint-of-momentum-spin-3)_ the mathematical and physical results of 1972 by _the mathematician Hugh Montgomery and the physicist Freeman Dyson_ and thus reproduces energy distribution in systems as a path plan ***more accurately than a measurement***. _([Google Patent DE102011101032A9](https://patents.google.com/patent/DE102011101032A9/en#similarDocuments))_
 ```
 
-![Symmetry State](https://github.com/eq19/maps/assets/8466209/70cb2eb0-0955-4d18-8400-e05ac1b9d325)
+[![The Mathematical Elementary Cell 30](https://user-images.githubusercontent.com/36441664/74366957-992db780-4e03-11ea-8f26-cca32bd26003.png)](https://patentimages.storage.googleapis.com/6f/e3/f0/b8f7292f1f2749/DE102011101032A9.pdf)
 
 The path plan assume that a symmetric distribution of prime numbers with equal axial lengths from a ***middle zero axis = 15*** is able to determine the distribution of primes in a given number space. This assumption finally bring us to the equation of ***[Euler's identity](https://en.wikipedia.org/wiki/Euler%27s_identity)***. 
 
@@ -331,7 +329,7 @@ The path plan assume that a symmetric distribution of prime numbers with equal a
 Euler's identity is considered to be an exemplar of deep mathematical beauty as it shows a profound connection between the most fundamental numbers. Three (3) of the basic arithmetic operations occur exactly once each: ***addition***, ***multiplication***, and ***exponentiation*** _([Wikipedia](https://en.wikipedia.org/wiki/Euler%27s_identity))_.
 ```
 
-[![Symmetry Breaking](https://github.com/eq19/maps/assets/8466209/80bb1b09-e1d4-479a-b570-815786058b04)](https://www.eq19.com/multiplication/20.html#strand-partition)
+[![Euler's identity](https://user-images.githubusercontent.com/8466209/219584666-703f4584-db7c-4f2d-9714-f52067869ef3.png)](https://en.wikipedia.org/wiki/Euler%27s_identity)
 
 The finiteness position of Euler's identity by the said _MEC30_ opens up the possibility of accurately representing the self-similarity based on the distribution of _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_ so that all number would belongs together with [their own identitities](https://www.eq19.com/identition/). 
 
@@ -339,7 +337,7 @@ The finiteness position of Euler's identity by the said _MEC30_ opens up the pos
 {{ site.github.latest_release.body }}
 ```
 
-[![Base of TOE](https://user-images.githubusercontent.com/8466209/249753163-6cfbcecf-3713-409b-8d8b-5fa5cf8489ac.png)](https://www.hexspin.com/finding-a-number-in-the-hexagon/)
+[![DE102011101032A9.pdf](https://user-images.githubusercontent.com/36441664/74591731-f5cfe300-504c-11ea-9e04-d814c57aa969.png)](https://www.eq19.com/exponentiation/#parsering-structure)
 
 Nothing is going to be easly about the nature of prime numbers but they demonstrably congruent to something organized. Let's discuss starting with the _[addition zones](https://www.eq19.com/addition/)_.
 

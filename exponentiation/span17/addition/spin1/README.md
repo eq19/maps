@@ -28,6 +28,8 @@ In short this project is mapping [the quantum way](https://www.eq19.com/) within
 
 ![default](https://user-images.githubusercontent.com/8466209/199364847-6a8d2d64-ee12-4379-bfa6-9f5d9fa7da59.png)
 
+This export/import process is specific to each frontend and typically involves a number of stages which can then be "imported" into [IREE](https://iree.dev/).
+
 ```note
 The 5+7+11+13 is the smallest square number expressible as the sum of four consecutive primes which are also two couples of prime twins!
 - Their sum is 36 which is [the smallest square](https://primes.utm.edu/curios/page.php?number_id=270) that is the sum of a twin prime pair {17, 19}.
@@ -54,7 +56,31 @@ $True Prime Pairs:
  -----+-----+---------
 ```
 
-![](https://user-images.githubusercontent.com/36441664/71587951-4f8a5580-2b52-11ea-84cd-a2b1465fce8b.png## )
+IREE supports most popular machine learning [frameworks](https://iree.dev/guides/ml-frameworks/#execution) using the same underlying technology. Here we are going to use SavedModels from [TensorFlow Hub](https://www.tensorflow.org/hub).
+
+```note
+Each machine learning framework has some "export" mechanism that snapshots the structure and data in your program.
+
+- Capture/trace/freeze the ML model into a graph
+- Write that graph to an interchange format (e.g. SavedModel, TorchScript, ONNX)
+- Load the saved program into an import tool and convert to MLIR
+- Legalize the graph's operations so only IREE-compatible operations remain
+- Write the imported MLIR to a file
+
+This fully imported form can then be compiled indepedently of the [source languages](https://iree.dev/reference/bindings/) and framework. See the [samples directory](https://github.com/iree-org/iree/tree/main/samples).
+```
+
+[![framework](https://user-images.githubusercontent.com/36441664/71587951-4f8a5580-2b52-11ea-84cd-a2b1465fce8b.png)](https://iree.dev/guides/ml-frameworks/#execution)
+
+Using this trained machine learning models we shall do [fine-tuning](https://www.eq19.com/addition/spin2/) and make it [deployable](https://www.eq19.com/addition/spin3/) to discuss the _[undiscovered features](https://www.eq19.com/addition/#undiscovered-features)_ as we have discussed before.
+
+```note
+These files can be imported into an IREE-compatible format then compiled to a series of backends. 
+- TensorFlow programs represented as [tf.Module classes](https://www.tensorflow.org/api_docs/python/tf/Module) or stored in the SavedModel [format](https://www.tensorflow.org/guide/saved_model).
+- TensorFlow Lite (TFLite) programs stored as [TFLite FlatBuffers](https://www.tensorflow.org/lite/guide).
+
+See the [deployment configuration guides](https://iree.dev/guides/deployment-configurations/) for details on selecting a compiler backend and tuning options for your choice of target platform(s) or device(s).
+```
 
 ```txt
 $True Prime Pairs:
@@ -100,7 +126,7 @@ layer | node | sub |  i  |  f
 ------|------|-----+-----+------
 ```
 
-![Primes-vs-composites svg](https://github.com/eq19/maps/assets/8466209/e4fb7f51-eb2f-4d5e-b565-ebbb3b0ebfad)
+[![Primes vs Composites](https://github.com/eq19/maps/assets/8466209/e4fb7f51-eb2f-4d5e-b565-ebbb3b0ebfad)](https://github.com/iree-org/iree/tree/main/integrations/tensorflow)
 
 ```txt
 $True Prime Pairs:

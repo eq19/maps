@@ -69,11 +69,7 @@ p r i m e s
 11 23 2 1 1 23 ◄--- 9th prime √
 ```
 
-You may learn that sets of algebraic objects has a multilinear relationship related to a vector space called _[tensor](https://en.wikipedia.org/wiki/Tensor)_.
-
-## Residual objects
-
-Tensors may map between different objects such as vectors, scalars, and even other tensors.
+You may learn that sets of algebraic objects has a multilinear relationship related to a vector space called _[tensor](https://en.wikipedia.org/wiki/Tensor)_. Tensors may map between different objects such as vectors, scalars, and even other tensors.
 
 ```note
 Tensors are multi-dimensional arrays with a uniform type (e.g. int32, float32) and a shape. Shapes consist of a rank and a list of dimensions and may be static (i.e. fully known and fixed) or varying degrees of dynamic. See these references:

@@ -27,17 +27,7 @@ GUT is also successful in describing a system of carrier particles for all four 
 
 ![image](https://github.com/eq19/maps/assets/36441664/37c92ad8-99ee-4137-a7e3-3273d973cf1b)
 
-![image](https://github.com/eq19/maps/assets/8466209/d08043d0-91fc-4931-9fc1-af5ba231e5c4)
-
-```note
-How can the Universe be so uniform? Now, the time for light to cross a significant part of the Universe is billions of years. We call this time the light communication time, and it is the shortest time required for any changes to be felt between two parts of the Universe. (From J. Schombert)
-```
-
-![horizon_problem](https://github.com/eq19/maps/assets/8466209/94e118cb-9a89-49d6-b3ac-f5394fa761d7)
-
 ## Unification
-
-GUT predicts that the other forces become identical under conditions so extreme that they cannot be tested in the laboratory, although there may be lingering evidence of them in the evolution of the universe.
 
 ```txt
 $True Prime Pairs:
@@ -304,11 +294,7 @@ This would even close to the similar ability of human brain without undertanding
 
 ![](https://user-images.githubusercontent.com/8466209/200475393-f3e42f0b-d291-4f17-93c4-9bec6e6943de.png)
 
-![ckm-angles-n](https://github.com/eq19/maps/assets/8466209/d9cf0e77-97be-4372-a8b2-5428719bc3e1)
-
 ![HEXAHEDRONTORUS1](https://github.com/eq19/maps/assets/8466209/ce33a44d-7431-44b9-9073-902cbbcfc68b)
-
-[![0](https://github.com/eq19/maps/assets/8466209/e84da25f-c03c-4116-8278-b4ea7ea503e4)](https://nige.wordpress.com/2010/05/07/category-morphisms-for-quantum-gravity-masses-and-draft-material-for-new-paper/)
 
 ![](https://user-images.githubusercontent.com/8466209/200472044-dab44257-7c9a-4a91-82bb-c90cb7143e91.png)
 

@@ -41,12 +41,9 @@ Experiments have verified that the weak and electromagnetic force become identic
 
 ![image](https://github.com/eq19/maps/assets/8466209/f7dd5f3a-e63d-4a7f-ac4a-b4e16e1038f6)
 
-### 1
 ![EWT3b-600x400](https://github.com/eq19/maps/assets/8466209/70b992e3-252b-4e6f-8dcc-01bc1e982822)
 
 ![Figure_34_06_01](https://github.com/eq19/maps/assets/8466209/305ca73b-1e79-4510-9e9c-8ccb914a7d1f)
-
-![w-boson-kaon-w-and-z-bosons-weak-interaction-meson-standard-model-feynman-diagram-elementary-particle-pion-boson](https://github.com/eq19/maps/assets/8466209/fa4275d6-a5b8-4951-b012-9c86534ce23f)
 
 ![weak-nuclear-force-1](https://github.com/eq19/maps/assets/8466209/62a25ce1-ecd3-4d62-91d0-fd52bed169cd)
 
@@ -123,19 +120,6 @@ $True Prime Pairs:
 ```
 
 ![Beta-minus_Decay svg](https://github.com/eq19/maps/assets/8466209/9f176844-b61c-4623-80d8-fdcf6c457cf1)
-
-Unlike the strong and electromagnetic forces, the intermediary particles of the weak interaction, the W+, the W-, and the Z0 have rather large masses.
-
-```note
-A key aspect of the theory is the explanation of why three out of four of the intermediary particles of the electroweak force are massive. Illustration of two weak reactions.
-- The left panel shows beta decay while the middle panel shows how electron antineutrinos can be detected by conversion to a positron.
-- The right panel shows how W- emission works according to the quark model, ***resulting in the conversion of a down quark to an up quark and the resulting transformation of a neutron into a proton***.
-
-The real reason for the apparent weakness of the weak force is the large mass of the intermediary particles. As we have seen, large mass translates into short range for a virtual particle at low momentum transfers. This short range is what causes the weak force to appear weak for momentum transfers much less than the masses of the W and Z particles. _([libre texts.org](https://phys.libretexts.org/Bookshelves/University_Physics/Radically_Modern_Introductory_Physics_Text_II_(Raymond)/20%3A_The_Standard_Model/20.03%3A_The_Electroweak_Theory))_
-```
-
-[![Beta decay](https://github.com/eq19/maps/assets/8466209/e4a41d26-7ffd-43f2-9ff8-fc3abfe4247c)
-](https://opg.optica.org/oe/fulltext.cfm?uri=oe-27-20-28350&id=420769)
 
 ```txt
 $True Prime Pairs:

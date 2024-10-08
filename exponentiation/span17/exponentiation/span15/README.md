@@ -236,7 +236,7 @@ $True Prime Pairs:
 ![images (8)](https://github.com/eq19/maps/assets/8466209/cf192c00-aa54-4ea2-8702-2ec51ca03155)
 ![16-0054-07 hr-web](https://github.com/eq19/maps/assets/8466209/98112bc5-ca88-4c97-8ee7-87fc0d59211f)
 ![images (12)](https://github.com/eq19/maps/assets/8466209/bfacddf4-73db-4943-90fd-3219441d1abb)
-![1-neutrino-oscillation-l](https://github.com/eq19/maps/assets/8466209/8216ea51-eebd-4b25-82c2-b4f11e9ecc3e)
+
 ![](https://github.com/eq19/maps/assets/8466209/f97a0e7e-af2c-402c-ae25-2570aab8f467)
 
 ![](https://github.com/eq19/maps/assets/8466209/938e3517-d66e-4f37-8488-f18a8b522f14)
