@@ -157,9 +157,9 @@ Using the same procedure, any direct product representation is easily reduced.
 ![1_RMV1kvtEZ-o-_8WKQLnCSA](https://github.com/eq19/maps/assets/8466209/715b20a8-d5c2-4b72-8993-b696a8b25d23)
 ### 40
 ![slide_1](https://github.com/eq19/maps/assets/8466209/e6937ad3-6ecd-449b-bdc1-712d0ffb9e9a)
-We analyze the inference process of dynamic and observe that the dynamic tensor shapes and control flow hinder by prime numbers
+## Primes Platforms
 
-{% include list.liquid all=true %}
+We analyze the inference process of dynamic and observe that the dynamic tensor shapes and control flow hinder by prime numbers
 
 See [this paper](https://github.com/user-attachments/files/17277693/s11390-021-1161-y.pdf) for a discussion of the challenges imposed by dynamic shapes and one project's approach to addressing them.
 
@@ -618,4 +618,18 @@ layer | node | sub |  i  |  f.                                       MEC 30 / 2
 The number 120 has 32 prime positions minus 5 prime number products = 27 prime numbers. The information of the prime number products translates our theory into a checkerboard-like pattern using the finite 8 prime positions from the MEC 30, we call it Ikon. 8 × 8 primary positions = 64 primary positions of the checkerboard icon.
 - First, there are two main features that we use. To Ikon 1: The primes information and their products. In this left icon, the redundants (the doubles) are to be determined through the number information in the positions Impeccable.
 - Second: The product positions. In the icon, the cyclic behavior is shown in identical 8 horizontal and 8 vertical orders, we call these orders templates that would not be visible through the pure number information. The cyclical behavior of the 8 × 8 product positions continues indefinitely.
-- Since the prime positions are finite, a total of 8 positions in the 30th order, an already revolutionary system opens up, the entire infinite distribution of the prime number products in
+- Since the prime positions are finite, a total of 8 positions in the 30th order, an already revolutionary system opens up, the entire infinite distribution of the prime number products in an icon as a "checkerboard pattern". represent and thus obtain mathematically exact results.
+- The three and 4 , Square Graphics (Ikon) will now be in the following, larger graphic 5 transfer. As stated above, we use the properties of the numbers, they consist of one information and one position. Thus we are able to calculate the redundant product positions by means of identical information in different positions.
+- And subtracting them from the total prime positions gives us the number of prime numbers. This succeeds due to the self-similarity of the 30th order of the MEC 30, as shown in the graph 5 is articulated. At the top of the following larger graphic 5 the self-similarity of the 30th order (MEC 30) can be seen.
+- This results in a fundamental causal relation to the primes, systemically the products are entered into the position system. Therefore, the distribution of primes products also determines the distribution of primes themselves. The reason lies in the one-system, since the prime number as a number itself also consists of an information and a position.
+
+We apply the same principle as above for the determination of the prime position. Only with the difference that we move in the even positions of the MEC 30.
+```
+
+***7 x π(89) = 7 x 24 = 168 = π(1000)***
+
+![](https://user-images.githubusercontent.com/8466209/244855108-b80b3c2e-1a13-4b55-828a-72ed15b448dd.png)
+
+{{ site.github.latest_release.body }}
+
+[![Theory of Everything](https://github.com/eq19/maps/assets/8466209/6e26ada0-c545-4771-810b-9f721512a03c)](https://www.primesdemystified.com/Factorization.html)
