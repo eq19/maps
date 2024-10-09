@@ -157,195 +157,465 @@ Using the same procedure, any direct product representation is easily reduced.
 ![1_RMV1kvtEZ-o-_8WKQLnCSA](https://github.com/eq19/maps/assets/8466209/715b20a8-d5c2-4b72-8993-b696a8b25d23)
 ### 40
 ![slide_1](https://github.com/eq19/maps/assets/8466209/e6937ad3-6ecd-449b-bdc1-712d0ffb9e9a)
-# Prime Unit Identity
-
-We are going to assign prime identity as a ***standard model*** that attempts to stimulate a quantum field model called ***[eQuantum](https://github.com/eq19)*** for _[the four (4) known fundamental forces](https://en.wikipedia.org/wiki/Fundamental_interaction)_.
+We analyze the inference process of dynamic and observe that the dynamic tensor shapes and control flow hinder by prime numbers
 
 {% include list.liquid all=true %}
 
-This presentation was inspired by [theoretical works](https://github.com/eq19/maps/files/13468466/OU1938-Y1.1.pdf) from _[Hideki Yukawa](https://en.wikipedia.org/wiki/Hideki_Yukawa)_ who in 1935 had predicted the existence of _[mesons as the carrier particles](https://en.wikipedia.org/wiki/Meson)_ of strong nuclear force.
+See [this paper](https://github.com/user-attachments/files/17277693/s11390-021-1161-y.pdf) for a discussion of the challenges imposed by dynamic shapes and one project's approach to addressing them.
 
-## Addition Zones
+## Dynamic Shapes
 
-Here we would like to explain the way of said prime identity on getting the [arithmetic expression](https://youtu.be/S9oPqBeSsZA) of an ***individual unit identity*** such as a taxicab number below.
+[Prime hexagon](https://youtu.be/fQL4KRH3wUQ) is a mathematical structure that is formed when integers are sequentially added to a field of tessellating equilateral triangles
+
 
 ```note
-It is a taxicab number, and is variously known as Ramanujan's number and the Ramanujan-Hardy number, after an anecdote of the British mathematician _[GH Hardy](https://en.wikipedia.org/wiki/G._H._Hardy)_ when he visited Indian mathematician _[Srinivasa Ramanujan](https://en.wikipedia.org/wiki/Srinivasa_Ramanujan)_ in hospital _([Wikipedia](https://en.wikipedia.org/wiki/1729_(number)))_.
+This is not easy as they are linked to the nature of prime numbers, and nothing is easy about the nature of prime numbers.  But I begin with this assumption: if the hexagons participate in the Universe in any way other than haphazardly, they must be demonstrably ***congruent to something organized*** _([T. Gallion](https://www.hexspin.com/minor-hexagons/))_.
 ```
 
-[![Ramanujan-Hardy number](https://user-images.githubusercontent.com/36441664/103107461-173c2b00-4671-11eb-962c-da7e9eab022e.png)](https://en.wikipedia.org/wiki/1729_(number))
+```txt
+s p i n
+0 0 0 0
+1 0 0 0
+2 0 1 0  ◄--- 1st prime
+3 1 1 0  ◄--- 2nd prime
+--------
+5 2 1 0  ◄--- 3rd prime
+7 3 1 0
+11 4 1 0
+13 5 1 0
+17 0 1 1 ◄--- 7th prime
+19 1 1 1 ◄--- 8th prime
+```
 
-These three (3) number are [twin primes](https://en.wikipedia.org/wiki/Twin_prime). We called the pairs as _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_. Our scenario is mapping the distribution out of these pairs by taking the symmetrical behaviour of 36 as the smallest power (greater than 1) which is not a prime power.
+The program used to demonstrate functions of dynamic shapes where the path of the integers is changed whenever a prime is encountered.
+
+```note
+- Create a program that includes dynamic shapes in program inputs and outputs
+- Import that program into IREE's compiler
+- Compile that program to an IREE VM bytecode module
+- Load the compiled program using IREE's high level runtime C API
+- Call exported functions on the loaded program
+```
+
+***17 = 7th prime = (18 - 11) th prime***
+
+[![Prime hexagon](https://user-images.githubusercontent.com/8466209/226643815-f8c926cd-ae36-43d3-b271-8df07272f429.png)](https://youtu.be/fQL4KRH3wUQ)
+
+To match the different shape, we will need a common shape, and the result is a two-dimensional array. This would later be multilinear dimensions.
+
+```txt
+p r i m e s
+1 0 0 0 0
+2 1 0 0 0
+3 2 0 1 0 2 ◄--- 1st prime
+4 3 1 1 0 3 ◄--- 2nd prime
+5 5 2 1 0 5 ◄--- 3rd prime
+6 7 3 1 0
+7 11 4 1 0
+8 13 5 1 0
+9 17 0 1 1 17 ◄--- 7th prime
+10 19 1 1 1 19 ◄--- 8th prime
+-----
+11 23 2 1 1 23 ◄--- 9th prime √
+```
+
+You may learn that sets of algebraic objects has a multilinear relationship related to a vector space called _[tensor](https://en.wikipedia.org/wiki/Tensor)_. Tensors may map between different objects such as vectors, scalars, and even other tensors.
+
+```note
+Tensors are multi-dimensional arrays with a uniform type (e.g. int32, float32) and a shape. Shapes consist of a rank and a list of dimensions and may be static (i.e. fully known and fixed) or varying degrees of dynamic. See these references:
+- PyTorch: [Compiler dynamic shapes](https://pytorch.org/docs/stable/torch.compiler_dynamic_shapes.html), [torch.Tensor](https://pytorch.org/docs/stable/tensors.html)
+- TensorFlow: [Introduction to Tensors](https://www.tensorflow.org/guide/tensor)
+
+All tensors are immutable like Python numbers and strings: you can never update the contents of a tensor, only create a new one. [Dynamic shapes](https://github.com/iree-org/iree/tree/main/samples/dynamic_shapes) are useful for passing variable sized batches as input, receiving variable length sentences of text as output.
+```
+
+[![300px-Components_stress_tensor svg](https://user-images.githubusercontent.com/8466209/211590875-9cae3c47-bbdc-43d8-acc5-d8c64c802967.png)](https://en.wikipedia.org/wiki/Tensor)
+
+```txt
+p r i m e s
+1 0 0 0 0
+2 1 0 0 0
+3 2 0 1 0 2 ◄--- 1st prime
+4 3 1 1 0 3 ◄--- 2nd prime
+5 5 2 1 0 5 ◄--- 3rd prime
+6 7 3 1 0
+7 11 4 1 0
+8 13 5 1 0
+9 17 0 1 1 17 ◄--- 7th prime
+10 19 1 1 1 ∆1 ◄--- 8th prime ◄--- Terminating Digit
+-----
+11 23 2 1 1 √
+```
+
+***(17+13) + (11+19) = (7+11) + (19+23) = 60***
+
+![image](https://github.com/eq19/maps/assets/8466209/a95b5e7d-37e4-47ff-aeb2-55361b98a37b)
+
+![image](https://github.com/eq19/maps/assets/8466209/922fac71-d793-477c-a56c-ec21e552d695)
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7
+7 11 4 1 0 11
+8 13 5 1 0 13
+9 17 0 1 1 17 ◄--- 7th prime
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Terminating Digit #0 √
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Terminating Digit #1 √
++29 rows √
+-----
+41 √
+```
+
+In order to maintain the 36 symmetry (whether it is an addition zone or not), with this prime number 19 was found at least seven (7) pairs of _[truncated patterns](https://www.eq19.com/multiplication/file19.html#truncated-patterns)_.
 
 ```tip
-The smallest square number expressible as the sum of **four (4) consecutive primes** in two ways (5 + 7 + 11 + 13 and 17 + 19) which are also **two (2) couples** of prime twins! _([Prime Curios!](https://en.wikipedia.org/wiki/1729_(number)](https://primes.utm.edu/curios/page.php?number_id=270)))_.
+The tessellating field of equilateral triangles fills with numbers, with spin orientation flipping with each prime number encountered, creating ***3 minor hexagons***.
 ```
 
-```scss
-$True Prime Pairs:
- (5,7), (11,13), (17,19)
- 
- layer|  i  |   f
- -----+-----+---------
-      |  1  | 5
-   1  +-----+
-      |  2  | 7
- -----+-----+---  } 36 » 6®
-      |  3  | 11
-   2  +-----+
-      |  4  | 13
- -----+-----+---------
-      |  5  | 17
-   3  +-----+     } 36 » 6®
-      |  6  | 19
- -----+-----+---------
+***π(6+11) = π(17) = 7***
+
+![](https://user-images.githubusercontent.com/36441664/274093531-0878e3e5-6be3-448e-9ad4-3b34523c1e9c.jpg)
+
+## Central Polarity
+
+This polarity is happened per ***six (6) cycles*** by the polar of ***six (6) to one (1)*** and ***six (6) to seven (7)*** that leads to the prime number ***61 and 67***.
+
+```note
+The above ***characteristics of primes in the hexagon suggests 0 family numbers split more than twin primes***. I speculate these numbers split all primes. That is, all primes have a partner (of the opposite family) equidistant from such a number. For instance, ***0 family member 18 splits twin primes 17 and 19***, but is also 5 more than 13 and 5 less than 23, and it is also 11 more the 7, and 11 less than 29, etc. _([Hexspin](https://www.hexspin.com/cell-types/))_
 ```
 
-Thus in short this is all about a method that we called as the ***[19 vs 18 Scenario](https://www.eq19.com/grammar/identition/#the-77-principles)*** of mapping [the quantum way](https://www.google.com/search?q=eQuantum) within a huge of [primes objects](https://github.com/eq19) (5 to 19) by [lexering](https://en.wikipedia.org/wiki/Lexer_generator) (11) the un[grammar](https://en.wikipedia.org/wiki/Grammar)ed feed (7) and [parsering](https://en.wikipedia.org/wiki/Comparison_of_parser_generators) (13) across [syntax](https://en.wikipedia.org/wiki/Syntax) (17). 
+[![](https://user-images.githubusercontent.com/8466209/219239425-90f075fa-fe8a-4f80-b3ce-7b2053956c6b.png)](http://www.hexspin.com/0-1-and-negative-numbers/)
 
-***Φ(1,2,3) = Φ(6,12,18) = Φ(13,37,61)***
+By which we finally found if this behaviour is cascaded bilaterally within the correlation between ***61*** as [the 18th prime](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef) and ***67*** as [the 19th prime](https://gist.github.com/eq19/c9bdc2bbe55f2d162535023c8d321831).
 
-```scss
+```note
+The solution is not only to prove Re(z)= 1/2 but also to calculate ways for the imaginary part of the complex root of ζ(z)=0 and also to solve the Functional equations of Riemann
+```
+
+***18 + 19 = π(61) + π(67) = 37***
+
+![](https://camo.githubusercontent.com/492732f872ab84bf8c013f106230ea47d355661f5faf6a6e3b0661b30cb9bc28/68747470733a2f2f75706c6f61642e77696b696d656469612e6f72672f77696b6970656469612f636f6d6d6f6e732f662f66632f5269656d616e6e5a6574615f5a65726f732e737667)
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7
+7 11 4 1 0 11
+8 13 5 1 0 13
+9 17 0 1 1 17 ◄--- 7th prime
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Terminating Digit #0 (spin 18) √
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Terminating Digit #1 (spin 19) √
++29 rows
+-----
+41
+```
+```note
+The Prime Spiral Sieve possesses remarkable structural and numeric symmetries. For starters, the intervals between the prime roots (and every subsequent row or rotation of the sieve) are perfectly balanced, with a period ***eight (8) difference sequence*** of: {6, 4, 2, 4, 2, 4, 6, 2} 
+_([Primesdemystified](https://primesdemystified.com/#deepsymmetries))_.
+```
+
+[![image](https://user-images.githubusercontent.com/8466209/219260933-4331d79b-5815-4566-82e3-1a485bb2c61f.png)](https://primesdemystified.com/#deepsymmetries)
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7
+7 11 4 1 0 11
+8 13 5 1 0 13
+9 17 0 1 1 17 ◄--- 7th prime
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Terminating Digit #0 (spin 18)
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Terminating Digit #1 (spin 19)
++29 rows
+-----
+41
++59 rows √
+```
+
+```note
+Speaking of the Fibonacci number sequence, there is symmetry mirroring the above in the relationship between the terminating digits of Fibonacci numbers and their index numbers equating to members of the array populating the Prime Spiral Sieve.
+```
+
+[![11's additive sums](https://user-images.githubusercontent.com/8466209/221473004-867a1b50-f91f-470d-9922-e5e4f543a590.png)](https://primesdemystified.com/#deepsymmetries)
+
+***Fibonacci level-1 (29) x Fibonacci level-2 (59) = 10x10 = 💯***
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7
+7 11 4 1 0 11
+8 13 5 1 0 13
+9 17 0 1 1 17 ◄--- 7th prime
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Terminating Digit #0 ◄- Fibonacci Index #18 √
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Terminating Digit #1 ◄- Fibonacci Index #19 √
+..
+..
+40 163 5 1 0 ∆31 ◄- 11th ∆prime ◄- Terminating Digit #11 ◄- Fibonacci Index #29 √
+-----
+41
++59 rows ◄--- total 41+59 = 💯 rows = 10x10 rows √
+```
+
+## Numeric Symmetries
+
+***(59² − 31²) = 360 x 7***
+
+![Squares_Distribution](https://github.com/eq19/maps/assets/8466209/0f7725e3-52b0-4e5d-93bb-b12358bdf1d4)
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7
+7 11 4 1 0 11
+8 13 5 1 0 13
+9 17 0 1 1 17 ◄--- 7th prime
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Fibonacci Index #18
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Fibonacci Index #19
+..
+..
+40 163 5 1 0 ∆31 ◄- 11th ∆prime ◄-- Fibonacci Index #29
+-----
+41 167 0 1 1 ∆0
+42 173 0 -1 1 ∆1
+43 179 0 1 1 ∆2 ◄--- ∆∆1
+44 181 1 1 1 ∆3 ◄--- ∆∆2 ◄--- 1st ∆∆prime ◄--- Fibonacci Index #30 ✔️
+..
+..
+100 521 0 -1 2 ∆59 ◄--- ∆∆17 ◄--- 7th ∆∆prime ◄--- Fibonacci Index #36 ✔️
+-----
+```
+
+![](https://user-images.githubusercontent.com/8466209/219261961-10e4d77f-ead3-43d4-9407-f01d83f1f204.png)
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7
+7 11 4 1 0 11
+8 13 5 1 0 13
+9 17 0 1 1 17 ◄--- 7th prime 👉 7s ✔️
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Fibonacci Index #18
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Fibonacci Index #19
+..
+..
+40 163 5 1 0 ∆31 ◄- 11th ∆prime ◄-- Fibonacci Index #29 👉 11s ✔️
+-----
+41 167 0 1 1 ∆0
+42 173 0 -1 1 ∆1
+43 179 0 1 1 ∆2 ◄--- ∆∆1
+44 181 1 1 1 ∆3 ◄--- ∆∆2 ◄--- 1st ∆∆prime ◄--- Fibonacci Index #30
+..
+..
+100 521 0 -1 2 ∆59 ◄--- ∆∆17 ◄--- 7th ∆∆prime ◄--- Fibonacci Index #36  👉 7s ✔️
+-----
+```
+
+```note
+These positions: 1 7 11 13 17 19 23 29. We refer to this basic system as MEC 30 - "Mathematical Elementary Cell 30".
+- By repeating the positions we show the function of the basic system in the next step. If we extend the 30th order of the MEC, for example, to the number 120, the result is 4 times a 30th order and thus 4 × 8 = 32 prime positions.
+- Hypothetical assumption: If the product of the primes (except 2, 3, 5,) would not fall into the prime positions, thus be divided by 2, 3 or 5, the information would have 120 = 32 primes in 32 prime positions.
+- Prime positions (not the primes) 1, 7, 11, 13, 17, 19, 23, 29, / 1, 7, 11, 13, 17, 19, 23, 29, / 1, 7, 11, 13, 17 , 19, 23, 29, / 1, 7, 11, 13, 17, 19, 23, 29,
+- The 30th order is repeated in the number space 120 = 4 times, 4 × 8 = 32 prime positions, thus 4 terms. From our considerations and also from the graphic see 2 However, we can conclude that the distribution of prime numbers must have a static base structure, which is also confirmed logically in the further course. 
+
+This static structure is altered by the products of the primes themselves, since these products must fall into the prime positions since they are not divisible by 2, 3 and 5.
+```
+
+![](https://user-images.githubusercontent.com/36441664/74366957-992db780-4e03-11ea-8f26-cca32bd26003.png)
+
+```note
+The numbers not divisible by 2, 3 or 5 are highlighted. We call them prime positions, hence 1, 7, 11, 13, 17, 19, 23, 29. Important for our work is that in the following the term prime refers only to prime numbers that are in the prime positions. ***So primes 2, 3 and 5 are always excluded***.
+```
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1 ◄--- #29 ✔️
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7 ◄--- #23 ✔️
+7 11 4 1 0 11 ◄--- #19 ✔️
+8 13 5 1 0 13 ◄--- # 17 ✔️
+9 17 0 1 1 17 ◄--- 7th prime 👉 7s
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Fibonacci Index #18
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Fibonacci Index #19
+..
+..
+40 163 5 1 0 ∆31 ◄- 11th ∆prime ◄-- Fibonacci Index #29 👉 11
+-----
+41 167 0 1 1 ∆0
+42 173 0 -1 1 ∆1
+43 179 0 1 1 ∆2 ◄--- ∆∆1
+44 181 1 1 1 ∆3 ◄--- ∆∆2 ◄--- 1st ∆∆prime ◄--- Fibonacci Index #30
+..
+..
+100 521 0 -1 2 ∆59 ◄--- ∆∆17 ◄--- 7th ∆∆prime ◄--- Fibonacci Index #36  👉 7s
+-----
+```
+
+```note
+In this one system, reproduced as an icon, we can show the distribution profile of the primes as well as their products over a checkerboard-like model in the 4.
+- We show this fundamental causal relationship in the MEC 30 mathematically accurate in the table 13 , The organization of this table is based on the well-known idea of Christian Goldbach. That every even number should consist of the sum of two primes.
+- All pairs of prime numbers without "1", 2, 3, 5, we call henceforth Goldbach pairs. The MEC 30 transforms this idea of Christian Goldbach into the structure of a numerical double-strand, into an opposing member of the MEC 30 scale.
+- We call this double strand a convolution, which results in an opposite arrangement. It represents the natural vibration, thus also the redundant vibrations in the energy transfer. In the 6 For example, in the graph, the even number 60 is folded. At folding of the even number 60 6 result in 8 prime pairs.
+- In this case, among the 8 pairs of prime pairs there are only 6 Goldbach pairs. 2 prime positions in the prime position pairs carry products of the factors "1 × 1" and 7 × 7. Thus, 2 prime pairs do not fulfill the requirements of the Goldbach pairs. In general, any even number larger than 30 can be represented graphically within a cycle (MEC 30) as a specific cyclic convolution. This characteristic convolution of the even numbers is a fundamental test element in the numerical table. The result Even the even numbers to infinity occupy a fixed position within the 30s system MEC 30. The even numbers thus have 15 positions: 30/2 = 15 even positions of the MEC 30.
+- There are therefore only 15 even positions for all even numbers to infinity. Every even number has a specific convolution due to its position in the 30s system. First, we have to determine the positions of the even numbers in the 30s system to make them one in the following graph 7 attributable to the 15 specific folds.
+```
+
+![](https://user-images.githubusercontent.com/36441664/74591945-2b75cb80-504f-11ea-85dd-14d0a803ee6b.png)
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1 ◄--- #29 ◄--- #61 ✔️
+3 2 0 1 0 2
+4 3 1 1 0 3
+5 5 2 1 0 5
+6 7 3 1 0 7 ◄--- #23
+7 11 4 1 0 11 ◄--- #19
+8 13 5 1 0 13 ◄--- # 17 ◄--- #49 ✔️
+9 17 0 1 1 17 ◄--- 7th prime 👉 7s
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Fibonacci Index #18
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Fibonacci Index #19 ◄--- #43 ✔️
+..
+..
+40 163 5 1 0 ∆31 ◄- 11th ∆prime ◄-- Fibonacci Index #29 👉 11
+-----
+41 167 0 1 1 ∆0
+42 173 0 -1 1 ∆1
+43 179 0 1 1 ∆2 ◄--- ∆∆1
+44 181 1 1 1 ∆3 ◄--- ∆∆2 ◄--- 1st ∆∆prime ◄--- Fibonacci Index #30
+..
+..
+100 521 0 -1 2 ∆59 ◄--- ∆∆17 ◄--- 7th ∆∆prime ◄--- Fibonacci Index #36  👉 7s
+-----
+```
+
+## Palindromic Sequence 
+
+```note
+In the matrix pictured below, we list the first 24 elements of our domain, take their squares, calculate the modulo 90 congruence and digital roots of each square, and display the digital root factorization dyad for each square (and map their ***collective bilateral 9 sum symmetry***). _([PrimesDemystified](https://primesdemystified.com/))_
+```
+
+***7 x π(89) = 7 x 24 = 168 = π(1000)***
+
+[![collective bilateral 9 sum symmetry](https://user-images.githubusercontent.com/8466209/200229388-03811f48-2492-4845-b15f-85259cd93717.png)](https://www.eq19.com/multiplication/#elementary-structure)
+
+```txt
+p r i m e s
+1 0 0 0 0 0
+2 1 0 0 0 1 ◄--- #29 ◄--- #61
+3 2 0 1 0 2 👉 2 ✔️
+4 3 1 1 0 3 👉 61 - 1 = 60 ✔️
+5 5 2 1 0 5
+6 7 3 1 0 7 ◄--- #23
+7 11 4 1 0 11 ◄--- #19
+8 13 5 1 0 13 ◄--- # 17 ◄--- #49
+9 17 0 1 1 17 ◄--- 7th prime 👉 7s
+10 19 1 1 1 ∆1 ◄--- 0th ∆prime ◄--- Fibonacci Index #18
+-----
+11 23 2 1 1 ∆2 ◄--- 1st ∆prime ◄--- Fibonacci Index #19 ◄--- #43
+..
+..
+40 163 5 1 0 ∆31 ◄- 11th ∆prime ◄-- Fibonacci Index #29 👉 11
+-----
+41 167 0 1 1 ∆0
+42 173 0 -1 1 ∆1
+43 179 0 1 1 ∆2 ◄--- ∆∆1
+44 181 1 1 1 ∆3 ◄--- ∆∆2 ◄--- 1st ∆∆prime ◄--- Fibonacci Index #30
+..
+..
+100 521 0 -1 2 ∆59 ◄--- ∆∆17 ◄--- 7th ∆∆prime ◄--- Fibonacci Index #36  👉 7s
+-----
+```
+
+```note
+The color spin addresses for numbers are generally straightforward – a composite number takes the spin of the prior prime.  4 spins blue because 3 spins blue.  8 is red because 7 is red.  However, twin primes, and the 0 type numbers between them, are open to some interpretation.
+```
+
+[![base](https://user-images.githubusercontent.com/8466209/249753163-6cfbcecf-3713-409b-8d8b-5fa5cf8489ac.png)](https://www.hexspin.com/finding-a-number-in-the-hexagon/)
+
+***(43 - 19)the prime = 24th prime = 89***
+
+```
 $True Prime Pairs:
 (5,7), (11,13), (17,19)
  
-layer | node | sub |  i  |  f
-------+------+-----+----------
-      |      |     |  1  | 
-      |      |  1  +-----+          
-      |  1   |     |  2  | (5)
-      |      |-----+-----+
-      |      |     |  3  |
-  1   +------+  2  +-----+----
-      |      |     |  4  |
-      |      +-----+-----+
-      |  2   |     |  5  | (7)
-      |      |  3  +-----+
-      |      |     |  6  |
-------+------+-----+-----+------      } (36)
-      |      |     |  7  |
-      |      |  4  +-----+
-      |  3   |     |  8  | (11)
-      |      +-----+-----+
-      |      |     |  9  |
-  2   +------|  5  +-----+-----
-      |      |     |  10 |
-      |      |-----+-----+
-      |  4   |     |  11 | (13)
-      |      |  6  +-----+
-      |      |     |  12 |
-------+------+-----+-----+------------------
-      |      |     |  13 |
-      |      |  7  +-----+
-      |  5   |     |  14 | (17)
-      |      |-----+-----+
-      |      |     |  15 |
-  3   +------+  8  +-----+-----       } (36)
-      |      |     |  16 |
-      |      |-----+-----+
-      |  6   |     |  17 | (19)
-      |      |  9  +-----+
-      |      |     |  18 |
-------|------|-----+-----+------
+layer | node | sub |  i  |  f.                                       MEC 30 / 2
+------+------+-----+-----+------      ‹------------------------------ 0 {-1/2}
+      |      |     |  1  | --------------------------
+      |      |  1  +-----+                           |    
+      |  1   |     |  2  | (5)                       |
+      |      |-----+-----+                           |
+      |      |     |  3  |                           |
+  1   +------+  2  +-----+----                       |
+      |      |     |  4  |                           |
+      |      +-----+-----+                           |
+      |  2   |     |  5  | (7)                       |
+      |      |  3  +-----+                           |
+      |      |     |  6  |                          11s ‹-- ∆28 = (71-43) √
+------+------+-----+-----+------      } (36)         |
+      |      |     |  7  |                           |
+      |      |  4  +-----+                           |
+      |  3   |     |  8  | (11)                      |
+      |      +-----+-----+                           |
+      |      |     |  9  |‹-- ∆9 = (89-71) / 2 √     |
+  2   +------|  5  +-----+-----                      |
+      |      |     |  10 |                           |
+      |      |-----+-----+                           |
+      |  4   |     |  11 | (13) --------------------- 
+      |      |  6  +-----+            ‹------------------------------ 15 {0}
+      |      |     |  12 |---------------------------
+------+------+-----+-----+------------               |
+      |      |     |  13 |                           |
+      |      |  7  +-----+                           |
+      |  5   |     |  14 | (17)                      |
+      |      |-----+-----+                           |
+      |      |     |  15 |                           7s ‹-- ∆24 = (43-19) √
+  3   +------+  8  +-----+-----       } (36)         |
+      |      |     |  16 |                           |
+      |      |-----+-----+                           |
+      |  6   |     |  17 | (19)                      |
+      |      |  9  +-----+                           |
+      |      |     |  18 | -------------------------- 
+------|------|-----+-----+-----  ‹----------------------------------- 30 {+1/2}
 ```
-
-The main background is that, as you may aware, the prime number theorem describes the [asymptotic distribution](https://youtu.be/j5s0h42GfvM) of prime numbers which is still a major problem in mathematic. 
-
-## Multiplication Zones
-
-Instead of a proved formula we came to a unique expression called ***zeta function***. This expression first appeared in a paper in 1737 entitled _Variae observationes circa series infinitas_. 
-
-```tip
-This expression states that the sum of the zeta function is equal to the product of the reciprocal of one minus the reciprocal of primes to the powers. But what has this got to do with the primes?  The answer is in the following product taken over the primes p (discovered by _[Leonhard Euler](https://en.wikipedia.org/wiki/Leonhard_Euler)_):
-```
-
-![zeta function](https://user-images.githubusercontent.com/8466209/219739322-ebdc1916-249a-49da-8ded-ce0fe1205550.png)
-
-This issue is actually come from ***[Riemann hypothesis](https://youtu.be/zlm1aajH6gY)***, a conjecture about the distribution of complex zeros of the Riemann zeta function that is considered to be ***the most important*** of _[unsolved problems](https://en.wikipedia.org/wiki/List_of_unsolved_problems_in_mathematics)_ in pure mathematics.
 
 ```note
-In addition to the trivial roots, there also exist ***complex roots*** for real t. We find that the he first ten (10) non-trivial roots of the Riemann zeta function is occured when the values of t below 50. A plot of the values of ζ(1/2 + it) for t ranging from –50 to +50 is shown below. The roots occur each time ***the locus passes through the origin***. _([mathpages](https://www.mathpages.com/home/kmath738/kmath738.htm))_.
-```
-
-[![trivial roots](https://user-images.githubusercontent.com/8466209/219828222-615a2037-dbcd-4412-95bf-740bb32094de.png)](https://www.mathpages.com/home/kmath738/kmath738.htm)
-
-Meanwhile obtaining the non complex numbers it is easier to look at a graph like the one below which shows Li(x) (blue), R(x) (black), π(x) (red) and x/ln x (green); and then proclaim "R(x) is the best estimate of π(x)." Indeed it is for that range, but as we mentioned above, Li(x)-π(x) changes sign infinitely often, and near where it does, Li(x) would be the best value.
-
-[![non complex numbers](https://user-images.githubusercontent.com/8466209/219214486-e6412fb0-d190-45ae-990f-524532661444.png)](https://primes.utm.edu/howmany.html#better)
-
-And we can see in the same way that the function Li(x)-(1/2)Li(x1/2) is 'on the average' a better approximation than Li(x) to π(x); but no importance can be attached to the latter terms in Riemann's formula even by repeated averaging.
-
-## Exponentiation Zones
-
-The problem is that the contributions from the non-trivial zeros at times swamps that of any but the main terms in these expansions.
-
-```warning
-A. E. Ingham says it this way: Considerable importance was attached formerly to a function suggested by Riemann as an approximation to π(x)... This function represents π(x) with astonishing accuracy for all values of x for which π(x) has been calculated, but we now see that its superiority over Li(x) ***is illusory***... and for special values of x (as large as we please) the one approximation will deviate as widely as the other from the true value _([primes.utm.edu](https://primes.utm.edu/howmany.html#better))_.
-```
-
-[![howmany primes](https://user-images.githubusercontent.com/36441664/87958552-dea18f80-cadb-11ea-9499-6c2ee580a5ca.png)](https://primes.utm.edu/howmany.html#pnt)
-
-Moreover in it was verified numerically, in a rigorous way using interval arithmetic, that _[The Riemann hypothesis is true up to 3 · 10^12](https://arxiv.org/pdf/2004.09765.pdf)_. That is, all zeroes β+iγ of the Riemann zeta-function with 0<γ≤3⋅1012 have β=1/2.
-
-```danger
-We have Λ ≤ 0.2. The next entry is conditional on taking H a little higher than 10*13, which of course, is not achieved by Theorem 1. This would enable one to prove Λ < 0.19. Given that our value of H falls between the entries in this table, it is possible that some extra decimals could be wrought out of the calculation. We have not pursued this _([arXiv:2004.09765](https://arxiv.org/abs/2004.09765))_.
-```
-
-[![functional equation](https://user-images.githubusercontent.com/8466209/219715694-751fe538-378d-4f58-ae82-ac9e6823ad65.png)](https://arxiv.org/pdf/2004.09765.pdf)
-
-This Euler formula represents the distribution of a group of numbers that are positioned at regular intervals on a straight line to each other. Riemann later extended the definition of zeta(s) to all complex numbers (***except the simple pole at s=1 with residue one***). Euler's product still holds if the real part of s is greater than one. Riemann derived the functional equation of zeta function.
-
-```danger
-The Riemann zeta function has the trivial zeros at -2, -4, -6, ... (the poles of gamma(s/2)).  Using the Euler product (with the functional equation) it is easy to show that all the other zeros are in the critical strip of non-real complex numbers with 0 < Re(s) < 1, and that they are symmetric about the critical line Re(s)=1/2. The unproved Riemann hypothesis is that all of the nontrivial zeros are actually on the critical line _([primes.utm.edu](https://primes.utm.edu/notes/rh.html))_.
-```
-
-[![zeta function](https://user-images.githubusercontent.com/8466209/219720444-e5ba30ac-e000-4c85-8678-186676b93d2b.png)](https://primes.utm.edu/notes/rh.html)
-
-If both of the above statements are true then mathematically this Riemann Hypothesis is proven to be incorrect because it only applies to certain cases or limitations. So first of all the basis of the Riemann Hypothesis has to be considered.
-
-```warning
-The solution is not only to prove Re(z)= 1/2 but also to calculate ways for the imaginary part of the complex root of ζ(z)=0 and also to solve the functional equations. _([Riemann Zeta - pdf](https://www.maths.tcd.ie/pub/HistMath/People/Riemann/Zeta/EZeta.pdf))_
-```
-
-[![Riemann hypothesis](https://user-images.githubusercontent.com/8466209/218374273-729fee09-5480-4fb3-a3a6-0dc050bdbe26.png)](https://en.wikipedia.org/wiki/Riemann_hypothesis)
-
-On the other hand, the possibility of obtaining the function of the distribution of prime numbers shall go backwards since it needs significant studies to be traced.
-
-Or may be [start again from the Euler Function](https://youtu.be/FCpRl0NzVu4).
-
-## Identition Zones
-
-_[Freeman Dyson](https://en.wikipedia.org/wiki/Freeman_Dyson#Quantum_physics_and_prime_numbers)_ discovered an intriguing connection between quantum physics and [Montgomery's pair correlation conjecture](https://en.wikipedia.org/wiki/Montgomery%27s_pair_correlation_conjecture) about the zeros of the [zeta function](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#zeta-function) which dealts with the distribution of primes.
-
-```note
-The Mathematical Elementary Cell 30 (***MEC30***) standard _[unites](https://www.eq19.com/multiplication/12.html#entrypoint-of-momentum-spin-3)_ the mathematical and physical results of 1972 by _the mathematician Hugh Montgomery and the physicist Freeman Dyson_ and thus reproduces energy distribution in systems as a path plan ***more accurately than a measurement***. _([Google Patent DE102011101032A9](https://patents.google.com/patent/DE102011101032A9/en#similarDocuments))_
-```
-
-[![The Mathematical Elementary Cell 30](https://user-images.githubusercontent.com/36441664/74366957-992db780-4e03-11ea-8f26-cca32bd26003.png)](https://patentimages.storage.googleapis.com/6f/e3/f0/b8f7292f1f2749/DE102011101032A9.pdf)
-
-The path plan assume that a symmetric distribution of prime numbers with equal axial lengths from a ***middle zero axis = 15*** is able to determine the distribution of primes in a given number space. This assumption finally bring us to the equation of ***[Euler's identity](https://en.wikipedia.org/wiki/Euler%27s_identity)***. 
-
-```note
-Euler's identity is considered to be an exemplar of deep mathematical beauty as it shows a profound connection between the most fundamental numbers. Three (3) of the basic arithmetic operations occur exactly once each: ***addition***, ***multiplication***, and ***exponentiation*** _([Wikipedia](https://en.wikipedia.org/wiki/Euler%27s_identity))_.
-```
-
-[![Euler's identity](https://user-images.githubusercontent.com/8466209/219584666-703f4584-db7c-4f2d-9714-f52067869ef3.png)](https://en.wikipedia.org/wiki/Euler%27s_identity)
-
-The finiteness position of Euler's identity by the said _MEC30_ opens up the possibility of accurately representing the self-similarity based on the distribution of _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_ so that all number would belongs together with [their own identitities](https://www.eq19.com/identition/). 
-
-```tip
-{{ site.github.latest_release.body }}
-```
-
-[![DE102011101032A9.pdf](https://user-images.githubusercontent.com/36441664/74591731-f5cfe300-504c-11ea-9e04-d814c57aa969.png)](https://www.eq19.com/exponentiation/#parsering-structure)
-
-Nothing is going to be easly about the nature of prime numbers but they demonstrably congruent to something organized. Let's discuss starting with the _[addition zones](https://www.eq19.com/addition/)_.
-
-**[eQuantum Project](https://github.com/eq19)**   
-Copyright © 2023-2024
-
-Reference:
-* [Riemann Zeta](https://commons.wikimedia.org/wiki/File:RiemannZeta_Zeros.svg)
-* [Mersenne Prime](https://en.wikipedia.org/wiki/Mersenne_prime)
-* [The Prime Hexagon](https://youtu.be/fQL4KRH3wUQ)
-* [The Primes Demystified](https://www.primesdemystified.com/First1000Primes.html)
+The number 120 has 32 prime positions minus 5 prime number products = 27 prime numbers. The information of the prime number products translates our theory into a checkerboard-like pattern using the finite 8 prime positions from the MEC 30, we call it Ikon. 8 × 8 primary positions = 64 primary positions of the checkerboard icon.
+- First, there are two main features that we use. To Ikon 1: The primes information and their products. In this left icon, the redundants (the doubles) are to be determined through the number information in the positions Impeccable.
+- Second: The product positions. In the icon, the cyclic behavior is shown in identical 8 horizontal and 8 vertical orders, we call these orders templates that would not be visible through the pure number information. The cyclical behavior of the 8 × 8 product positions continues indefinitely.
+- Since the prime positions are finite, a total of 8 positions in the 30th order, an already revolutionary system opens up, the entire infinite distribution of the prime number products in
