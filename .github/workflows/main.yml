@@ -18,7 +18,7 @@ name: COmpendium of RElations – Modulo 6
 #
 # Our strategy is to rely on the built-in (unspecified) shell, and explicitly set the
 # shell settings we want (with `set -eo pipefail`) at the beginning of anybash script.
-# For more information on these settings, see `man bash`.
+# For more information on these settings, see https://www.tensorflow.org/quantum/design.
 #
 on:
   push:
