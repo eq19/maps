@@ -626,10 +626,12 @@ The number 120 has 32 prime positions minus 5 prime number products = 27 prime n
 We apply the same principle as above for the determination of the prime position. Only with the difference that we move in the even positions of the MEC 30.
 ```
 
+```tip
+{{ site.github.latest_release.body }}
+```
+
 ***7 x π(89) = 7 x 24 = 168 = π(1000)***
 
 ![](https://user-images.githubusercontent.com/8466209/244855108-b80b3c2e-1a13-4b55-828a-72ed15b448dd.png)
-
-{{ site.github.latest_release.body }}
 
 [![Theory of Everything](https://github.com/eq19/maps/assets/8466209/6e26ada0-c545-4771-810b-9f721512a03c)](https://www.primesdemystified.com/Factorization.html)
