@@ -7,23 +7,29 @@ description:
 ---
 # Electrodynamics (maps)
 
-It is shown that a considerable simplification can be attained in writing down matrix elements for complex processes in electrodynamics.
+The term of electrodynamics is referring to Quantum Electrodynamics ([QED](https://en.wikipedia.org/wiki/Quantum_electrodynamics)) which is the [relativistic](https://en.wikipedia.org/wiki/Theory_of_relativity) [quantum field theory](https://en.wikipedia.org/wiki/Quantum_field_theory) of [Electromagnetism](https://en.wikipedia.org/wiki/Electrodynamics).
 
 {% include list.liquid all=true %}
 
-All matrix elements are now finite, with the exception of those relating to problems of vacuum polarization. The more conventional Hamiltonian point of view is discussed.
+In essence, it describes how [light](https://en.wikipedia.org/wiki/Light) and [matter](https://en.wikipedia.org/wiki/Matter) interact and is **the first theory** where full agreement between [quantum mechanics](https://en.wikipedia.org/wiki/Quantum_mechanics) and [special relativity](https://en.wikipedia.org/wiki/Special_relativity) is achieved.
 
 ## Basic Transformation
 
-The first appearance of ***e*** in a printed publication was in Euler's [Mechanica](https://en.m.wikipedia.org/wiki/Mechanica) (1736). It is unknown why Euler chose the letter e. 
+QED has served as the model and template for all subsequent quantum field theories. One such subsequent theory is Quantum Chromodynamics ([QCD](https://www.eq19.com/lexer/exponentiation/span15/)).
 
 ```note
-[Leonhard Euler](https://en.m.wikipedia.org/wiki/Leonhard_Euler) started to use ***the letter e*** for the constant in 1727 or 1728, in an unpublished paper on explosive forces in cannons, and in a letter to [Christian Goldbach](https://en.m.wikipedia.org/wiki/Christian_Goldbach) on 25 November 1731. _([Wikipedia](https://en.wikipedia.org/wiki/E_(mathematical_constant)))_
+The key components of Feynman's presentation of QED are [three basic actions](https://en.wikipedia.org/wiki/Quantum_electrodynamics#cite_note-feynbook-2)
+
+- A [photon](https://en.wikipedia.org/wiki/Photon) goes from one place and time to another place and time.
+- An [electron](https://en.wikipedia.org/wiki/Electron) goes from one place and time to another place and time.
+- An electron emits or absorbs a photon at a certain place and time.
+
+These actions are represented in the form of visual shorthand by the three basic elements of [diagrams](https://en.wikipedia.org/wiki/Feynman_diagram): a wavy line for the photon, a straight line for the electron and a junction of two straight lines and a wavy one for a vertex representing emission or absorption of a photon by an electron. _([Wikipedia](https://en.wikipedia.org/wiki/Quantum_electrodynamics))_
 ```
 
-[![Letter e](https://user-images.githubusercontent.com/36441664/262249679-b5d6fc1a-6e42-4775-b09d-965ddd046171.png)](https://en.wikipedia.org/wiki/E_(mathematical_constant))
+![1_RMV1kvtEZ-o-_8WKQLnCSA](https://github.com/eq19/maps/assets/8466209/715b20a8-d5c2-4b72-8993-b696a8b25d23)
 
-![images (5)](https://github.com/eq19/maps/assets/8466209/6c3e81a2-049f-40a8-a4da-674bf086d2fa)
+QED is based on the above three building blocks and then using the probability amplitudes to calculate the probability of any such complex interaction.
 
 ```note
 It turns out that the basic idea of QED can be communicated while assuming that the square of the total of the probability amplitudes mentioned above (P(A to B), E(C to D) and j) acts just like our everyday probability (a simplification made in [Feynman's book](https://github.com/eq19/maps/files/13930690/PhysRev.76.769.pdf)). Later on, this will be corrected to include specifically quantum-style mathematics, following Feynman.
@@ -153,8 +159,6 @@ Using the same procedure, any direct product representation is easily reduced.
 ![008869256_1-75ca18aad2faf65f52f4c7706d7d8bd3-768x994](https://github.com/eq19/maps/assets/8466209/7c7f069f-dcfb-439e-961e-68c63c76dc9d)
 ### 38
 ![bigwuethrich_figuresrules-peskin-qed-v2](https://github.com/eq19/maps/assets/8466209/a8a798b5-a7f5-4ed7-b692-9cdb372624a6)
-### 39
-![1_RMV1kvtEZ-o-_8WKQLnCSA](https://github.com/eq19/maps/assets/8466209/715b20a8-d5c2-4b72-8993-b696a8b25d23)
 ### 40
 ![slide_1](https://github.com/eq19/maps/assets/8466209/e6937ad3-6ecd-449b-bdc1-712d0ffb9e9a)
 ## Primes Platforms

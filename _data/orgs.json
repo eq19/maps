@@ -48,6 +48,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -131,6 +132,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -214,6 +216,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -297,6 +300,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -380,6 +384,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -463,6 +468,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -546,6 +552,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": false,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -629,6 +636,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -712,6 +720,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -795,6 +804,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -878,6 +888,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -961,6 +972,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
@@ -1044,6 +1056,7 @@
   "web_commit_signoff_required": false,
   "members_can_create_public_pages": true,
   "members_can_create_private_pages": true,
+  "deploy_keys_enabled_for_repositories": false,
   "plan": {
     "name": "free",
     "space": 976562499,
