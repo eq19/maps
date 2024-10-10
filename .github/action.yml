@@ -65,7 +65,6 @@ runs:
 
         git remote set-url origin $REMOTE_REPO        
         git add . && git commit -m ${{ env.LATEST_COMMIT }} && git push
-
         if [ $? -eq 0 ]; then exit 1; fi
 
     - name: Login to DockerHub
