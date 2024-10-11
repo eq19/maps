@@ -98,7 +98,7 @@ jobs:
     strategy:
       matrix:
         config:
-          - { os: self-hosted, id: 3 }           
+          - { os: self-hosted, id: 3 }
 
     # ✔️ Completeness relations
     runs-on: ${{ matrix.config.os }}
@@ -135,9 +135,10 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           gell_mann: ${{ toJSON(steps.eval-syntax.outputs) }}
  
-  job-failure:
+  job-conclusion:
     if: always()
     runs-on: macos-latest
+    # 👀 to do for (id: 4) 
     needs: [lexering,setup-parser]
 
     steps:
@@ -148,7 +149,7 @@ jobs:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: ⏪ Rewind all jobs if failure
+      - name: ⏪ Rewind all jobs
         if: contains(needs.*.result, 'failure')
         shell: bash
         run: |
