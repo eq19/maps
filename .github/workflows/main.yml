@@ -134,6 +134,7 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           gell_mann: ${{ toJSON(steps.eval-syntax.outputs) }}
+        if: ${{ failure() || contains(needs.*.result, 'failure') }}
  
   job-conclusion:
     if: always()
