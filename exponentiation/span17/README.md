@@ -67,7 +67,7 @@ The graph below depicts the total time spent to traverse each of the paths above
 Feynman avoids exposing the reader to the mathematics of complex numbers by using a simple but accurate representation of them as arrows on a piece of paper or screen.
 
 ```note
-It should be remembered that the expression hides a lot of complexity. We have summed over all possible timeorderings and summed over all polarization states of the virtual photon. If we are then presented with a new Feynman diagram we don’t want to go through the full calculation again. Fortunately this isn’t necessary – can just write down matrix element using a set of simple rules Basic Feynman Rules: e+ g m+ Propagator factor for each internal line (i. e. each internal virtual particle) Dirac Spinor for each external line e–
+Mathematically, QED is an [abelian](https://en.wikipedia.org/wiki/Abelian_group) [gauge theory](https://en.wikipedia.org/wiki/Gauge_theory) with the symmetry group [U(1)](https://en.wikipedia.org/wiki/U(1)), defined on [Minkowski space](https://en.wikipedia.org/wiki/Minkowski_space) (flat spacetime). The [gauge field](https://en.wikipedia.org/wiki/Gauge_field), which mediates the interaction between the charged [spin-1/2](https://en.wikipedia.org/wiki/Spin_(physics)) [fields](https://en.wikipedia.org/wiki/Field_(physics)), is the [electromagnetic field](https://en.wikipedia.org/wiki/Electromagnetic_field). The QED [Lagrangian](https://en.wikipedia.org/wiki/Lagrangian_(field_theory)) for a spin-1/2 field interacting with the electromagnetic field in natural units gives rise to the QED Action
 ```
 
 [![image-18](https://github.com/eq19/maps/assets/8466209/f233cea8-77c7-4456-bc5c-65b0e98b3f73)](https://slidetodoc.com/particle-physics-michaelmas-term-2011-prof-mark-thomson-6/)
@@ -77,6 +77,10 @@ Finally, one has to compute P(A to B) and E(C to D) corresponding to the probabi
 ## Mapping Scheme
 
 QED has served as the model and template for all subsequent quantum field theories. One such subsequent theory is Quantum Chromodynamics ([QCD](https://www.eq19.com/lexer/exponentiation/span15/)).
+
+```note
+Quantum Chromo Dynamics (in short QCD) is the field that studies the strong force between quarks . Like QED (Quantum Electro Dynamics) studies the electromagnetic force on the basis of quantum field theory, QCD does so as well. So we will find many similarities in applying fields, waves, interactions and how the force comes about. However, many of the processes in QCD cannot be calculated exactly. So it is not as advanced as QED.
+```
 
 ![images (10)](https://github.com/eq19/maps/assets/8466209/05f120ec-515e-4457-9625-bf4a6d7ee28f)
 
@@ -90,7 +94,11 @@ Within [a cycle](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#t
 
 ![qcd_together](https://github.com/eq19/maps/assets/8466209/86fe9814-2aa3-42ba-9549-6569858c4690)
 
+Renormalizability has become an essential criterion for a quantum field theory to be considered as a viable one.
+
 ![axioms-12-01058-g004](https://github.com/eq19/maps/assets/8466209/b43f5e6e-8a2d-4cf2-bff8-f111c263e273)
+
+All the theories describing fundamental interactions, except gravitation, whose quantum counterpart is only conjectural and presently under very active research, are renormalizable theories.
 
 ![I15-73-Feynman](https://github.com/eq19/maps/assets/8466209/1acfbce9-61d4-443e-9aba-45d09d86659f)
 
@@ -111,23 +119,39 @@ Using the same procedure, any direct product representation is easily reduced.
 
 ![images (5)](https://github.com/eq19/maps/assets/8466209/d31951c3-ece1-4aff-88b3-b85f64e3e5e2)
 
+From them, computations of probability amplitudes are straightforwardly given. An example is Compton scattering, with an electron and a photon undergoing elastic scattering.
+
 ![300px-Compton_qed](https://github.com/eq19/maps/assets/8466209/36f87779-9386-46cb-b934-d3a01e375346)
 
 The coupling constant runs to infinity at finite energy, signalling a Landau pole.
 
 ![mqdefault](https://github.com/eq19/maps/assets/8466209/68994f5a-614a-4d63-9446-6acac3df2829)
 
+From a modern perspective, we say that QED is not well defined as a quantum field theory to arbitrarily high energy.
+
 ![478517_2_En_18_Fig10_HTML](https://github.com/eq19/maps/assets/8466209/9a1b324a-db44-4044-8058-61bb61372ee4)
+
+The entanglement implies that there remains a connection between the photon and the emitting atom after emission even in very strong fields.
 
 ![Diagrams-in-strong-field-quantum-electrodynamics-SFQED-versus-ordinary-quantum](https://github.com/eq19/maps/assets/8466209/d7775d3a-d9e2-4993-82be-4279f209f58d)
 
+An argument by Freeman Dyson shows that the radius of convergence of the perturbation series in QED is zero.
+
+```note
+Despite the conceptual clarity of this Feynman approach to QED, almost no early textbooks follow him in their presentation. When performing calculations, it is much easier to work with the [Fourier transforms](https://en.wikipedia.org/wiki/Fourier_transform) of the [propagators](https://en.wikipedia.org/wiki/Propagator).
+- Experimental tests of quantum electrodynamics are typically scattering experiments. In scattering theory, particles' [momenta](https://en.wikipedia.org/wiki/Momentum) rather than their positions are considered, and it is convenient to think of particles as being created or annihilated when they interact. Feynman diagrams then look the same, but the lines have different interpretations.
+- The electron line represents an electron with a given energy and momentum, with a similar interpretation of the photon line. A vertex diagram represents the annihilation of one electron and the creation of another together with the absorption or creation of a photon, each having specified energies and momenta.
+
+Using [Wick's theorem](https://en.wikipedia.org/wiki/Wick%27s_theorem) on the terms of the **Dyson series**, all the terms of the [S-matrix](https://en.wikipedia.org/wiki/S-matrix) for quantum electrodynamics can be computed through the technique of [Feynman diagrams](https://en.wikipedia.org/wiki/Feynman_diagrams). In this case, rules for drawing are the following
+```
+
 ![a-Summary-of-the-Feynman-rules-Solid-line-represents-the-fermionic-propagator-G-0-pp](https://github.com/eq19/maps/assets/8466209/f3430964-392b-43f9-80fa-84eed55f474d)
+
+Quantum electrodynamics also leads to predictions beyond perturbation theory. In the presence of very strong electric fields, it predicts that electrons and positrons will be spontaneously produced, so causing the decay of the field.
 
 ![axioms-12-01058-g002-550](https://github.com/eq19/maps/assets/8466209/66dc1ba2-cbfd-4063-9f65-b6f32ce21dfd)
 
 ![hq720 (1)](https://github.com/eq19/maps/assets/8466209/9a6fd867-6867-416a-9b36-126198f4d259)
-
-From a modern perspective, we say that QED is not well defined as a quantum field theory to arbitrarily high energy.
 
 [![1-quantum-electrodynamics-laguna-designscience-photo-library](https://github.com/eq19/maps/assets/8466209/968afaea-ff71-4a56-b9ff-423f4a9748d2)](https://en.wikipedia.org/wiki/Quantum_electrodynamics)
 
