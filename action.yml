@@ -18,7 +18,7 @@ inputs:
   docker_hub_token:
     description: Docker Hub authentication token
     required: true
-  initiate_pauli:
+  initiate_pauli_sum:
     description: Build args
     required: false
     default: ""
