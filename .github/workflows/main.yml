@@ -137,6 +137,6 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           gell_mann: ${{ toJSON(steps.eval-syntax.outputs) }}
-        if: failure() ||
+        if: ${{ failure() ||
             contains(steps.*.conclusion, 'failure') ||
-            (runner.os == 'macOS' && contains(needs.*.result, 'failure'))              
+            (runner.os == 'macOS' && contains(needs.*.result, 'failure')) }}
