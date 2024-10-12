@@ -23,7 +23,7 @@ on:
     types: [completed]
     workflows: ["pages-build-deployment"]
 
-# 💢 Allow concurrent
+# 🕸️ Allow concurrent
 concurrency:
   group: "pages"
   cancel-in-progress: true
@@ -41,7 +41,7 @@ jobs:
           - { os: ubuntu-latest, id: 1 }
           - { os: windows-latest, id: 2 }
     
-    # 🌀 Commutation relations
+    # 🔧 Commutation relations
     runs-on: ${{ matrix.config.os }}
     if: ${{ github.event_name == 'push' ||
         github.event.workflow_run.conclusion == 'success' }}
@@ -74,7 +74,7 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
 
-      - name: 🏃‍♂️ Lexering Runner
+      - name: ♻️ Lexering Runner
         uses: eq19/lexer@v2
         id: set-lexering
         with:
@@ -85,7 +85,7 @@ jobs:
           initiate_pauli_sum: ${{ toJSON(steps.feed-mapping.outputs) }}
          
     outputs:
-      # ♻️ Simulate Gell-Mann Matrices
+      # 🏃‍♂️ Simulate Gell-Mann Matrices
       id: ${{ join(steps.build-parser.outputs.*, '\n') }}
       spin: ${{ join(steps.feed-mapping.outputs.*, '\n') }}
       target: ${{ join(steps.set-lexering.outputs.*, '\n') }}
@@ -114,7 +114,7 @@ jobs:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: 🕸️ Setup Parser
+      - name: 💢 Setup Parser
         uses: eq19/parser@v2
         id: set-parser
         with:
@@ -122,7 +122,7 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           gell_mann: ${{ toJSON(needs.lexering.outputs) }}
 
-      - name: 🔧 Evaluate Syntax
+      - name: 🌀 Evaluate Syntax
         uses: eq19/syntax@v2
         id: eval-syntax
         with:
