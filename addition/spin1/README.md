@@ -126,7 +126,24 @@ layer | node | sub |  i  |  f
 ------|------|-----+-----+------
 ```
 
+TensorFlow Quantum ([TFQ](https://www.tensorflow.org/quantum/design)) is designed for the problems of NISQ-era quantum machine learning. It brings quantum computing primitives—like building quantum circuits—to the TensorFlow ecosystem.
+
+```note
+TensorFlow Quantum implements the components needed to integrate TensorFlow with quantum computing hardware. To that end, TFQ introduces two datatype primitives:
+
+- Quantum circuit: This represents Cirq-defined quantum circuits (cirq.Circuit) within TensorFlow. Create batches of circuits of varying size, similar to batches of different real-valued datapoints.
+- Pauli sum: Represent linear combinations of tensor products of Pauli operators defined in Cirq (cirq.PauliSum). Like circuits, create batches of operators of varying size.
+
+Using the quantum circuit primitives within a tf.Tensor, TensorFlow Quantum implements ops that process these circuits and produce meaningful outputs.
+```
+
 [![Primes vs Composites](https://github.com/eq19/maps/assets/8466209/e4fb7f51-eb2f-4d5e-b565-ebbb3b0ebfad)](https://github.com/iree-org/iree/tree/main/integrations/tensorflow)
+
+TensorFlow Quantum layers expose sampling, expectation, and state calculation to developers using the [tf.keras.layers.Layer](https://www.tensorflow.org/api_docs/python/tf/keras/Layer) interface.
+
+```note
+It's convenient to create a circuit layer for classical control parameters or for readout operations. Additionally, you can create a layer with a high degree of complexity supporting batch circuit, batch control parameter value, and perform batch readout operations. See tfq.layers.Sample for an example.
+```
 
 ```txt
 $True Prime Pairs:
@@ -172,6 +189,8 @@ layer | node | sub |  i  |  f
 ------|------|-----+-----+------# 
 ```
 
+Unlike many TensorFlow operations, observables in quantum circuits do not have formulas for gradients that are relatively easy to calculate.
+
 ```note
 We consider a certain theory of 3-forms in 7 dimensions, and study its dimensional reduction to 4D, compactifying the 7-dimensional manifold on the 3-sphere of a fixed radius.
 - We show that the resulting 4D theory is (Riemannian) [General Relativity](https://www.sciencedirect.com/topics/physics-and-astronomy/general-relativity) (GR) in Plebanski formulation, modulo corrections that are negligible for curvatures smaller than Planckian.
@@ -181,6 +200,8 @@ In our approach ***a 3-form is not an object that exist in addition to the metri
 ```
 
 ![Symmetry State](https://github.com/eq19/maps/assets/8466209/70cb2eb0-0955-4d18-8400-e05ac1b9d325)
+
+The [tfq.datasets](https://www.tensorflow.org/quantum/api_docs/python/tfq/datasets) module is used as the data source for quantum machine learning tasks. It ensures structured comparisons for the model and performance.
 
 ```note
 In this article we will support this conjecture and develop a new approach to quantum gravity called smooth quantum gravity by using ***smooth 4-manifolds*** with an exotic smoothness structure.
@@ -195,11 +216,8 @@ The scaling behavior of this action is analyzed to obtain the classical theory o
 
 [![addition zones](https://github.com/eq19/maps/assets/8466209/4945cbd3-57ff-42ee-a363-7b27ed693a0e)](https://www.eq19.com/addition/)
 
-The holonomy tells you how to propagate MEC30. A spin network state assigns an amplitude to a set of ***spin half particles*** tracing out a path in space, merging and splitting. 
 
-![](https://user-images.githubusercontent.com/36441664/74366957-992db780-4e03-11ea-8f26-cca32bd26003.png)
-
-This kind of approach has some obvious properties: there are non-linear gravitons, a connection to lattice gauge field theory and a ***dimensional reduction from 4D to 2D***.
+The TensorFlow ops are written in **optimized C++**. These ops sample from circuits, calculate expectation values, and output the state produced by the given circuits.
 
 ## Construction of a State
 
@@ -264,6 +282,12 @@ These items are elementary parts possessing familiar properties but they never e
 ***f(18) = f(7) + f(11) = (1+7+29) + 11th prime = 37 + 31 = 36 + 32 = 68***
 
 ![](https://github-production-user-asset-6210df.s3.amazonaws.com/8466209/260269050-deb0e309-2178-4dc5-a1d6-30c81c4a8305.png)
+
+The holonomy tells you how to propagate MEC30. A spin network state assigns an amplitude to a set of ***spin half particles*** tracing out a path in space, merging and splitting. 
+
+![](https://user-images.githubusercontent.com/36441664/74366957-992db780-4e03-11ea-8f26-cca32bd26003.png)
+
+This kind of approach has some obvious properties: there are non-linear gravitons, a connection to lattice gauge field theory and a ***dimensional reduction from 4D to 2D***.
 
 ## Bilateral 9 Sums
 
@@ -395,3 +419,20 @@ What is critical to understand, is that the invisible hand of 2, 3 and 5, and th
 
 [![One_Grand_Pyramid_Teaser](https://github.com/eq19/maps/assets/8466209/31cec66a-566f-466d-9ea6-f924e7499f01)](https://www.primesdemystified.com/First1000Primes.html)
 
+Moreover it can generate an on-line documentation browser (in HTML) and/or an off-line reference manual (in LaTeX) from a set of documented source files such as _[Doxygen](https://www.doxygen.nl/manual/index.html)_.
+
+```note
+Many scientific communities have adopted community-based models that integrate multiple components to simulate whole system dynamics.
+- The community software projects’ complexity, stems from the integration of multiple individual software components that were developed under different application requirements and various machine architectures, has become a challenge for effective software system understanding and continuous software development.
+- The paper presents an integrated software toolkit called X-ray Software Scanner (in abbreviation, XScan) for a better understanding of large-scale community-based scientific codes.
+- Our software tool provides support to quickly summarize the overall information of scientific codes, including the number of lines of code, programming languages, external library dependencies, as well as architecture-dependent parallel software features.
+- The XScan toolkit also realizes a static software analysis component to collect detailed structural information and provides an interactive visualization and analysis of the functions.
+
+We use a large-scale community-based Earth System Model to demonstrate the workflow, functions and visualization of the toolkit. We also discuss the application of advanced graph analytics techniques to assist software modular design and component refactoring. _([ResearchGate](https://www.researchgate.net/publication/333664805_XScan_An_Integrated_Tool_for_Understanding_Open_Source_Community-Based_Scientific_Code))_
+```
+
+[![doxygen](https://github.com/user-attachments/assets/824735b6-a27d-4470-9835-8162e5561369)](https://github.com/user-attachments/files/17319976/ICCS2019-17.pdf)
+
+Then, we will apply machine
+ learning approaches (such as reinforcement learning) to aid users in optimizing
+software structure and functional redesigns.
