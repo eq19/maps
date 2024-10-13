@@ -114,7 +114,7 @@ jobs:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: 💢 Setup Parser
+      - name: ⚧️ Setup Parser
         uses: eq19/parser@v2
         id: set-parser
         with:
