@@ -26,14 +26,18 @@ In short this project is mapping [the quantum way](https://www.eq19.com/) within
 19, 1, 1, 1
 ```
 
+```note
+The 5+7+11+13 is the smallest square number expressible as the sum of four consecutive primes which are also two couples of prime twins!
+- Their sum is 36 which is [the smallest square](https://primes.utm.edu/curios/page.php?number_id=270) that is the sum of a twin prime pair {17, 19}.
+- This 36 is the smallest number expressible as the sum of consecutive prime in **two (2) ways** (5+7+11+13 and 17+19). 
+```
+
 ![default](https://user-images.githubusercontent.com/8466209/199364847-6a8d2d64-ee12-4379-bfa6-9f5d9fa7da59.png)
 
 This export/import process is specific to each frontend and typically involves a number of stages which can then be "imported" into [IREE](https://iree.dev/).
 
 ```note
-The 5+7+11+13 is the smallest square number expressible as the sum of four consecutive primes which are also two couples of prime twins!
-- Their sum is 36 which is [the smallest square](https://primes.utm.edu/curios/page.php?number_id=270) that is the sum of a twin prime pair {17, 19}.
-- This 36 is the smallest number expressible as the sum of consecutive prime in **two (2) ways** (5+7+11+13 and 17+19). 
+IREE (Intermediate Representation Execution Environment[1](https://iree.dev/#fn:1)) is an [MLIR](https://mlir.llvm.org/)-based end-to-end compiler and runtime that lowers Machine Learning (ML) models to a unified IR that scales up to meet the needs of the datacenter and down to satisfy the constraints and special considerations of mobile and edge deployments.
 ```
 
 ```liquid
@@ -419,7 +423,7 @@ What is critical to understand, is that the invisible hand of 2, 3 and 5, and th
 
 [![One_Grand_Pyramid_Teaser](https://github.com/eq19/maps/assets/8466209/31cec66a-566f-466d-9ea6-f924e7499f01)](https://www.primesdemystified.com/First1000Primes.html)
 
-Moreover it can generate an on-line documentation browser (in HTML) and/or an off-line reference manual (in LaTeX) from a set of documented source files such as _[Doxygen](https://www.doxygen.nl/manual/index.html)_.
+Moreover it can generate an on-line documentation browser (in HTML) and/or an off-line reference manual (in LaTeX) from a set of documented source files.
 
 ```note
 Many scientific communities have adopted community-based models that integrate multiple components to simulate whole system dynamics.
@@ -428,11 +432,9 @@ Many scientific communities have adopted community-based models that integrate m
 - Our software tool provides support to quickly summarize the overall information of scientific codes, including the number of lines of code, programming languages, external library dependencies, as well as architecture-dependent parallel software features.
 - The XScan toolkit also realizes a static software analysis component to collect detailed structural information and provides an interactive visualization and analysis of the functions.
 
-We use a large-scale community-based Earth System Model to demonstrate the workflow, functions and visualization of the toolkit. We also discuss the application of advanced graph analytics techniques to assist software modular design and component refactoring. _([ResearchGate](https://www.researchgate.net/publication/333664805_XScan_An_Integrated_Tool_for_Understanding_Open_Source_Community-Based_Scientific_Code))_
+We use a large-scale community-based Earth System Model to demonstrate the workflow, functions and visualization of the toolkit. We also discuss the application of advanced graph analytics techniques to assist software modular design and component refactoring. _([XScan - pdf](https://github.com/user-attachments/files/17319976/ICCS2019-17.pdf))_
 ```
 
-[![doxygen](https://github.com/user-attachments/assets/824735b6-a27d-4470-9835-8162e5561369)](https://github.com/user-attachments/files/17319976/ICCS2019-17.pdf)
+[![doxygen](https://github.com/user-attachments/assets/824735b6-a27d-4470-9835-8162e5561369)](https://www.doxygen.nl/manual/starting.html)
 
-Then, we will apply machine
- learning approaches (such as reinforcement learning) to aid users in optimizing
-software structure and functional redesigns.
+Then, we will apply machine learning approaches to aid users in optimizing software structure and functional redesigns.
