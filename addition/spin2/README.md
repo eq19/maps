@@ -17,7 +17,6 @@ See [this paper](https://github.com/user-attachments/files/17277693/s11390-021-1
 
 [Prime hexagon](https://youtu.be/fQL4KRH3wUQ) is a mathematical structure that is formed when integers are sequentially added to a field of tessellating equilateral triangles
 
-
 ```note
 This is not easy as they are linked to the nature of prime numbers, and nothing is easy about the nature of prime numbers.  But I begin with this assumption: if the hexagons participate in the Universe in any way other than haphazardly, they must be demonstrably ***congruent to something organized*** _([T. Gallion](https://www.hexspin.com/minor-hexagons/))_.
 ```
@@ -81,6 +80,18 @@ All tensors are immutable like Python numbers and strings: you can never update 
 
 [![300px-Components_stress_tensor svg](https://user-images.githubusercontent.com/8466209/211590875-9cae3c47-bbdc-43d8-acc5-d8c64c802967.png)](https://en.wikipedia.org/wiki/Tensor)
 
+Connecting nodes seems a trivial operation, but it hides some difficulties related to the concept of tensor’s shape in both its variants: static and dynamic.
+
+```note
+Every tensor has a name, a type, a rank and a shape.
+- The name uniquely identifies the tensor in the computational graphs (for a complete understanding of the importance of the tensor name and how the full name of a tensor is defined, I suggest the reading of the article [Understanding Tensorflow using Go](https://pgaleone.eu/tensorflow/go/2017/05/29/understanding-tensorflow-using-go/)).
+- The type is the data type of the tensor, e.g.: a tf.float32, a tf.int64, a tf.string, …
+- The rank, in the [ Tensorflow](https://pgaleone.eu/tensorflow/2018/07/28/understanding-tensorflow-tensors-shape-static-dynamic/#) world (that’s different from the [ mathematics](https://pgaleone.eu/tensorflow/2018/07/28/understanding-tensorflow-tensors-shape-static-dynamic/#) world), is just the number of dimension of a tensor, e.g.: a scalar has rank 0, a vector has rank 1, …
+- The shape is the number of elements in each dimension, e.g.: a scalar has a rank 0 and an empty shape (), a vector has rank 1 and a shape of (D0), a matrix has rank 2 and a shape of (D0, D1) and so on.
+
+So you might wonder: what’s difficult about the shape of a tensor? It just looks easy, is the number of elements in each dimension, hence we can have a shape of () and be sure to work with a scalar, a shape of (10) and be sure to work with a vector of size 10, a shape of (10,2) and be sure to work with a matrix with 10 rows and 2 columns. Where’s the difficulty? _([tensors shape: static and dynamic](https://pgaleone.eu/tensorflow/2018/07/28/understanding-tensorflow-tensors-shape-static-dynamic/))_
+```
+
 ```txt
 p r i m e s
 1 0 0 0 0
@@ -97,11 +108,27 @@ p r i m e s
 11 23 2 1 1 √
 ```
 
+The difficulties (and the cool stuff) arises when we dive deep into the Tensorflow peculiarities, and we find out that there’s no constraint about the definition of the shape of a tensor.
+
+```note
+Tensorflow, in fact, allows us to represent the shape of a Tensor in 3 different ways:
+- Fully-known shape: that are exactly the examples described above, in which we know the rank and the size for each dimension.
+- Partially-known shape: in this case, we know the rank, but we have an unknown size for one or more dimension (everyone that has trained a model in batch is aware of this, when we define the input we just specify the feature vector shape, letting the batch dimension set to None, e.g.: (None, 28, 28, 1).
+Unknown shape and known rank: in this case we know the rank of the tensor, but we don’t know any of the dimension value, e.g.: (None, None, None).
+- Unknown shape and rank: this is the toughest case, in which we know nothing about the tensor; the rank nor the value of any dimension.
+
+Tensorflow, when used in its non-eager mode, separates the graph definition from the graph execution. This allows us to first define the relationships among nodes and only after executing the graph.
+```
+
 ***(17+13) + (11+19) = (7+11) + (19+23) = 60***
 
 ![image](https://github.com/eq19/maps/assets/8466209/a95b5e7d-37e4-47ff-aeb2-55361b98a37b)
 
+Remember that the success of a machine learning model depends on the fact that both the train and the test set are from the same distribution; however, it seems that this constraint is violated in the case of [prime numbers](https://github.com/zetbaitsu/tensorflow_sample/blob/master/prime.py).
+
 ![image](https://github.com/eq19/maps/assets/8466209/922fac71-d793-477c-a56c-ec21e552d695)
+
+It doesn’t do learning in the required way to learn from examples, but at least it was proposing mathematical theorems and representing mathematical ideas in a more natural format such as _[terminating digits](https://primesdemystified.com/#deepsymmetries)_.
 
 ```txt
 p r i m e s
@@ -124,8 +151,20 @@ p r i m e s
 
 In order to maintain the 36 symmetry (whether it is an addition zone or not), with this prime number 19 was found at least seven (7) pairs of _[truncated patterns](https://www.eq19.com/multiplication/file19.html#truncated-patterns)_.
 
-```tip
-The tessellating field of equilateral triangles fills with numbers, with spin orientation flipping with each prime number encountered, creating ***3 minor hexagons***.
+```py
+total_parameters = 0
+for variable in tf.trainable_variables():
+    # shape is an array of tf.Dimension
+    shape = variable.get_shape()
+    print(shape)
+    print(len(shape))
+    variable_parameters = 1
+    for dim in shape:
+        print(dim)
+        variable_parameters *= dim.value
+    print(variable_parameters)
+    total_parameters += variable_parameters
+print(total_parameters)
 ```
 
 ***π(6+11) = π(17) = 7***
@@ -479,5 +518,9 @@ We apply the same principle as above for the determination of the prime position
 ***7 x π(89) = 7 x 24 = 168 = π(1000)***
 
 ![](https://user-images.githubusercontent.com/8466209/244855108-b80b3c2e-1a13-4b55-828a-72ed15b448dd.png)
+
+```tip
+"Not every beautiful theory has a physical application, but all fundamental physical theories found so far–without exception–have a type of beauty or symmetry." – Michio Kaku, The God Equation
+```
 
 [![Theory of Everything](https://github.com/eq19/maps/assets/8466209/6e26ada0-c545-4771-810b-9f721512a03c)](https://www.primesdemystified.com/Factorization.html)
