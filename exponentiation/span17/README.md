@@ -84,7 +84,11 @@ Quantum Chromo Dynamics (in short QCD) is the field that studies the strong forc
 
 ![images (10)](https://github.com/eq19/maps/assets/8466209/05f120ec-515e-4457-9625-bf4a6d7ee28f)
 
+The three kinds of [charge](https://en.m.wikipedia.org/wiki/Charge_(physics)) in QCD (as opposed to one in [quantum electrodynamics](https://en.m.wikipedia.org/wiki/Quantum_electrodynamics) or QED) are usually referred to as "[color charge](https://en.m.wikipedia.org/wiki/Color_charge)" by loose analogy to the three kinds of [color](https://en.m.wikipedia.org/wiki/Color) (red, green and blue) [perceived by humans](https://en.m.wikipedia.org/wiki/Color_vision). 
+
 ![QCD](https://github.com/eq19/maps/assets/8466209/fb3bf635-808c-4105-b8d6-2821486ed219)
+
+Other than this nomenclature, the quantum parameter "color" is completely unrelated to the everyday, familiar phenomenon of color.
 
 ```note
 In the 1980s, scientists discovered that a proton's three valance quarks (red, green, blue) account for only a fraction of the proton's overall spin. More recent measurements have revealed that gluons (yellow corkscrews) contribute as much as or possibly more than the quarks. _([Brookhaven National Laboratory](https://phys.org/news/2017-03-proton.html))_
@@ -92,11 +96,13 @@ In the 1980s, scientists discovered that a proton's three valance quarks (red, g
 
 [![proton-1](https://github.com/eq19/maps/assets/8466209/b110ca02-ac35-400a-8c83-dfb23e1c1c4b)](https://bigthink.com/starts-with-a-bang/why-8-types-gluon/)
 
-Within [a cycle](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#true-prime-pairs) this scheme would generate the [prime platform](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#primes-platform) which is performing ***the rank of 10 shapes*** starting with the primes 2,3,5,7. 
+Since the theory of electric charge is dubbed "[electrodynamics](https://en.m.wikipedia.org/wiki/Electrodynamics)", the [Greek](https://en.m.wikipedia.org/wiki/Ancient_Greek) word χρῶμα (chrōma, "color") is applied to the theory of color charge, "chromodynamics".
 
 ![qcd-620px](https://github.com/eq19/maps/assets/8466209/3d4c5903-0d79-4c11-8c89-1a62fedb8e29)
 
-![qcd_together](https://github.com/eq19/maps/assets/8466209/86fe9814-2aa3-42ba-9549-6569858c4690)
+The hadrons were sorted into groups having similar properties and masses using the **[eightfold way](https://en.m.wikipedia.org/wiki/Eightfold_way_(physics))**, invented in 1961 by Gell-Mann[[11]](https://en.m.wikipedia.org/wiki/Quantum_chromodynamics#cite_note-11).
+
+[![qcd_together](https://github.com/eq19/maps/assets/8466209/86fe9814-2aa3-42ba-9549-6569858c4690)](https://github.com/user-attachments/files/17381139/eightfold.pdf)
 
 Renormalizability has become an essential criterion for a quantum field theory to be considered as a viable one.
 
@@ -155,7 +161,17 @@ Quantum electrodynamics also leads to predictions beyond perturbation theory. In
 
 ![axioms-12-01058-g002-550](https://github.com/eq19/maps/assets/8466209/66dc1ba2-cbfd-4063-9f65-b6f32ce21dfd)
 
-![hq720 (1)](https://github.com/eq19/maps/assets/8466209/9a6fd867-6867-416a-9b36-126198f4d259)
+The absence of any new particles beyond the Standard Model (SM) in high-energy collisions at the LHC highlights the need to probe the SM in low-energy experiments.
+
+```note
+Abstract flavio is an open source tool for phenomenological analyses in flavour physics and other precision observables in the Standard Model and beyond. It consists of a library to compute predictions for a plethora of observables in quark and lepton flavour physics and electroweak precision tests, a database of experimental measurements of these observables, a statistics package that allows to construct Bayesian and frequentist likelihoods, and of convenient plotting and visualization routines. _([flavio - pdf](https://github.com/user-attachments/files/17380517/1810.08132v1.pdf))_
+```
+
+[![hq720 (1)](https://github.com/eq19/maps/assets/8466209/9a6fd867-6867-416a-9b36-126198f4d259)](https://github.com/user-attachments/files/17380517/1810.08132v1.pdf)
+
+New physics effects are parameterised as Wilson coefficients
+of dimension-six operators in the weak effective theory below the electroweak scale
+or the Standard Model EFT above it. 
 
 ```tip
 To display automatically generated tables with lists of all observables currently implemented in [flavio](https://github.com/flav-io/flavio). See also the notes on conventions at the bottom.
@@ -178,217 +194,46 @@ To display automatically generated tables with lists of all observables currentl
 - c hadron decays
   - Leptonic tree-level decays (6 observables)
   - Semi-leptonic tree-level decays (52 observables)
+- e+ e− scattering
+  - VV (2 observables)
+- s hadron decays
+  - FCNC decays (8 observables)
+  - Leptonic tree-level decays (6 observables)
+  - Non-leptonic decays (1 observable)
+  - Semi-leptonic tree-level decays (18 observables)
+- Dipole moments
+  - Atomic electric dipole moments (1 observable)
+  - Lepton anomalous magnetic moments (3 observables)
+  - Molecular energy shifts (3 observables)
+  - Nucleon electric dipole moments (1 observable)
+- Higgs production and decay
+  - h→VV (30 observables)
+  - h→ff (24 observables)
+- Meson-antimeson mixing
+  - B° B° mixing (5 observables)
+  - Bs Bs mixing (5 observables)
+  - D° D° mixing (8 observables)
+  - K° K° mixing (1 observable)
+- Nucleon decays
+  - Beta decays (25 observables)
+- Unflavoured meson decays
+  + Leptonic tree-level decays (4 observables)
+- contact interactions
+  - pp→μν (1 observable)
+  - pp→μ+ μ− (1 observable)
+  - pp→eν (1 observable)
+  - pp→e+ e− (1 observable)
+- muon decays
+  - LFV decays (5 observables)
+- neutrino physics
+  - scattering cross sections (1 observable)
+- quarkonium lepton decays
+  - P→ℓ+ ℓ− (16 observables)
+  - S→ℓ+ ℓ− (24 observables)
+  - V→ℓ+ ℓ− (135 observables)
+  - V→ℓ+ ℓ−γ (120 observables)
 
-e
-+
-e
-−
-e
-+
- e
-−
-  scattering
-e
-+
-e
-−
-→
-V
-V
-e
-+
- e
-−
- →VV (2 observables)
-s
-s hadron decays
-FCNC decays (8 observables)
-
-Leptonic tree-level decays (6 observables)
-
-Non-leptonic decays (1 observable)
-
-Semi-leptonic tree-level decays (18 observables)
-
-Dipole moments
-Atomic electric dipole moments (1 observable)
-
-Lepton anomalous magnetic moments (3 observables)
-
-Molecular energy shifts (3 observables)
-
-Nucleon electric dipole moments (1 observable)
-
-Higgs production and decay
-h
-→
-V
-V
-h→VV (30 observables)
-
-h
-→
-f
-f
-h→ff (24 observables)
-
-Meson-antimeson mixing
-B
-0
-B
-0
- -
-B
-¯
-0
-B
-¯
- 
-0
-  mixing (5 observables)
-
-B
-s
-B
-s
- -
-B
-¯
-s
-B
-¯
- 
-s
-  mixing (5 observables)
-
-D
-0
-D
-0
- -
-D
-¯
-0
-D
-¯
- 
-0
-  mixing (8 observables)
-
-K
-0
-K
-0
- -
-K
-¯
-0
-K
-¯
- 
-0
-  mixing (1 observable)
-
-Nucleon decays
-Beta decays (25 observables)
-Unflavoured meson decays
-Leptonic tree-level decays (4 observables)
-contact interactions
-p
-p
-→
-μ
-ν
-pp→μν (1 observable)
-
-p
-p
-→
-μ
-+
-μ
-−
-pp→μ
-+
- μ
-−
-  (1 observable)
-
-p
-p
-→
-e
-ν
-pp→eν (1 observable)
-
-p
-p
-→
-e
-+
-e
-−
-pp→e
-+
- e
-−
-  (1 observable)
-
-muon decays
-LFV decays (5 observables)
-neutrino physics
-scattering cross sections (1 observable)
-quarkonium lepton decays
-P
-→
-ℓ
-+
-ℓ
-−
-P→ℓ
-+
- ℓ
-−
-  (16 observables)
-
-S
-→
-ℓ
-+
-ℓ
-−
-S→ℓ
-+
- ℓ
-−
-  (24 observables)
-
-V
-→
-ℓ
-+
-ℓ
-−
-V→ℓ
-+
- ℓ
-−
-  (135 observables)
-
-V
-→
-ℓ
-+
-ℓ
-−
-γ
-V→ℓ
-+
- ℓ
-−
- γ (120 observables)
-
-_([flavio](https://flav-io.github.io/docs/observables.html))_
+We discuss how higher-spin operators and QED corrections alter the standard angular distribution used throughout the literature, potentially leading to differences between the method of moments and the likelihood fits. _([flavio](https://flav-io.github.io/docs/observables.html))_
 ```
 
 [![1-quantum-electrodynamics-laguna-designscience-photo-library](https://github.com/eq19/maps/assets/8466209/968afaea-ff71-4a56-b9ff-423f4a9748d2)](https://en.wikipedia.org/wiki/Quantum_electrodynamics)
