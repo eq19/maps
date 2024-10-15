@@ -86,6 +86,10 @@ Quantum Chromo Dynamics (in short QCD) is the field that studies the strong forc
 
 ![QCD](https://github.com/eq19/maps/assets/8466209/fb3bf635-808c-4105-b8d6-2821486ed219)
 
+```note
+In the 1980s, scientists discovered that a proton's three valance quarks (red, green, blue) account for only a fraction of the proton's overall spin. More recent measurements have revealed that gluons (yellow corkscrews) contribute as much as or possibly more than the quarks. _([Brookhaven National Laboratory](https://phys.org/news/2017-03-proton.html))_
+```
+
 [![proton-1](https://github.com/eq19/maps/assets/8466209/b110ca02-ac35-400a-8c83-dfb23e1c1c4b)](https://bigthink.com/starts-with-a-bang/why-8-types-gluon/)
 
 Within [a cycle](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#true-prime-pairs) this scheme would generate the [prime platform](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#primes-platform) which is performing ***the rank of 10 shapes*** starting with the primes 2,3,5,7. 
@@ -152,6 +156,240 @@ Quantum electrodynamics also leads to predictions beyond perturbation theory. In
 ![axioms-12-01058-g002-550](https://github.com/eq19/maps/assets/8466209/66dc1ba2-cbfd-4063-9f65-b6f32ce21dfd)
 
 ![hq720 (1)](https://github.com/eq19/maps/assets/8466209/9a6fd867-6867-416a-9b36-126198f4d259)
+
+```tip
+To display automatically generated tables with lists of all observables currently implemented in [flavio](https://github.com/flav-io/flavio). See also the notes on conventions at the bottom.
+- W± decays
+  - Hadronic decays (1 observable)
+  - Leptonic decays (12 observables)
+- Z° decays
+  - FCNC decays (3 observables)
+  - Flavour conserving decays (51 observables)
+- τ lepton decays
+  - Hadronic tree-level decays (2 observables)
+  - LFV decays (16 observables)
+  - Leptonic tree-level decays (2 observables)
+- b hadron decays
+  - FCNC decays (860 observables)
+  - Leptonic tree-level decays (6 observables)
+  - Lifetimes (1 observable)
+  - Non-leptonic decays (2 observables)
+  - Semi-leptonic tree-level decays (686 observables)
+- c hadron decays
+  - Leptonic tree-level decays (6 observables)
+  - Semi-leptonic tree-level decays (52 observables)
+
+e
++
+e
+−
+e
++
+ e
+−
+  scattering
+e
++
+e
+−
+→
+V
+V
+e
++
+ e
+−
+ →VV (2 observables)
+s
+s hadron decays
+FCNC decays (8 observables)
+
+Leptonic tree-level decays (6 observables)
+
+Non-leptonic decays (1 observable)
+
+Semi-leptonic tree-level decays (18 observables)
+
+Dipole moments
+Atomic electric dipole moments (1 observable)
+
+Lepton anomalous magnetic moments (3 observables)
+
+Molecular energy shifts (3 observables)
+
+Nucleon electric dipole moments (1 observable)
+
+Higgs production and decay
+h
+→
+V
+V
+h→VV (30 observables)
+
+h
+→
+f
+f
+h→ff (24 observables)
+
+Meson-antimeson mixing
+B
+0
+B
+0
+ -
+B
+¯
+0
+B
+¯
+ 
+0
+  mixing (5 observables)
+
+B
+s
+B
+s
+ -
+B
+¯
+s
+B
+¯
+ 
+s
+  mixing (5 observables)
+
+D
+0
+D
+0
+ -
+D
+¯
+0
+D
+¯
+ 
+0
+  mixing (8 observables)
+
+K
+0
+K
+0
+ -
+K
+¯
+0
+K
+¯
+ 
+0
+  mixing (1 observable)
+
+Nucleon decays
+Beta decays (25 observables)
+Unflavoured meson decays
+Leptonic tree-level decays (4 observables)
+contact interactions
+p
+p
+→
+μ
+ν
+pp→μν (1 observable)
+
+p
+p
+→
+μ
++
+μ
+−
+pp→μ
++
+ μ
+−
+  (1 observable)
+
+p
+p
+→
+e
+ν
+pp→eν (1 observable)
+
+p
+p
+→
+e
++
+e
+−
+pp→e
++
+ e
+−
+  (1 observable)
+
+muon decays
+LFV decays (5 observables)
+neutrino physics
+scattering cross sections (1 observable)
+quarkonium lepton decays
+P
+→
+ℓ
++
+ℓ
+−
+P→ℓ
++
+ ℓ
+−
+  (16 observables)
+
+S
+→
+ℓ
++
+ℓ
+−
+S→ℓ
++
+ ℓ
+−
+  (24 observables)
+
+V
+→
+ℓ
++
+ℓ
+−
+V→ℓ
++
+ ℓ
+−
+  (135 observables)
+
+V
+→
+ℓ
++
+ℓ
+−
+γ
+V→ℓ
++
+ ℓ
+−
+ γ (120 observables)
+
+_([flavio](https://flav-io.github.io/docs/observables.html))_
+```
 
 [![1-quantum-electrodynamics-laguna-designscience-photo-library](https://github.com/eq19/maps/assets/8466209/968afaea-ff71-4a56-b9ff-423f4a9748d2)](https://en.wikipedia.org/wiki/Quantum_electrodynamics)
 
