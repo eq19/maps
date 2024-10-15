@@ -1,7 +1,7 @@
 algorithms
 beautifulsoup4
 fake_useragent
-flavio
+flavio[sampling,plotting]
 imageio
 keras
 lxml
