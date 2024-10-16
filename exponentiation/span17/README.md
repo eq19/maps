@@ -175,9 +175,9 @@ or the Standard Model EFT above it.
 
 ```tip
 To display automatically generated tables with lists of all observables currently implemented in [flavio](https://github.com/flav-io/flavio). See also the notes on conventions at the bottom.
-- W± decays
-  - Hadronic decays (1 observable)
-  - Leptonic decays (12 observables)
+- [W± decays](https://github.com/user-attachments/files/17380517/1810.08132v1.pdf)
+  - [Hadronic decays](https://github.com/user-attachments/files/17387607/1503.07872v2.pdf) (1 observable)
+  - [Leptonic decays](https://github.com/user-attachments/files/17387797/1706.08945v3.pdf) (12 observables)
 - Z° decays
   - FCNC decays (3 observables)
   - Flavour conserving decays (51 observables)
