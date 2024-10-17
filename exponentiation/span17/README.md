@@ -121,6 +121,8 @@ When recombination is occur then the prime **13 is forced to → 12** where the 
 [![Young_tableaux_17](https://github.com/eq19/maps/assets/8466209/6647c9e1-026f-4aaa-b3a0-102a274bbc46)
 ![Young_tableaux_18](https://github.com/eq19/maps/assets/8466209/9adba5c0-a334-4d06-8bc1-b52662bd7d12)](https://en.m.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients_for_SU(3))
 
+[![1-quantum-electrodynamics-laguna-designscience-photo-library](https://github.com/eq19/maps/assets/8466209/968afaea-ff71-4a56-b9ff-423f4a9748d2)](https://en.wikipedia.org/wiki/Quantum_electrodynamics)
+
 ## Subsequent Theories
 
 Using the same procedure, any direct product representation is easily reduced.
@@ -137,27 +139,11 @@ The coupling constant runs to infinity at finite energy, signalling a Landau pol
 
 ![mqdefault](https://github.com/eq19/maps/assets/8466209/68994f5a-614a-4d63-9446-6acac3df2829)
 
-From a modern perspective, we say that QED is not well defined as a quantum field theory to arbitrarily high energy.
-
-![478517_2_En_18_Fig10_HTML](https://github.com/eq19/maps/assets/8466209/9a1b324a-db44-4044-8058-61bb61372ee4)
-
-The entanglement implies that there remains a connection between the photon and the emitting atom after emission even in very strong fields.
-
-![Diagrams-in-strong-field-quantum-electrodynamics-SFQED-versus-ordinary-quantum](https://github.com/eq19/maps/assets/8466209/d7775d3a-d9e2-4993-82be-4279f209f58d)
-
-An argument by Freeman Dyson shows that the radius of convergence of the perturbation series in QED is zero.
+Quantum electrodynamics also leads to predictions beyond perturbation theory. In the presence of very strong electric fields, it predicts that electrons and positrons will be spontaneously produced, so causing the decay of the field.
 
 ```note
-Despite the conceptual clarity of this Feynman approach to QED, almost no early textbooks follow him in their presentation. When performing calculations, it is much easier to work with the [Fourier transforms](https://en.wikipedia.org/wiki/Fourier_transform) of the [propagators](https://en.wikipedia.org/wiki/Propagator).
-- Experimental tests of quantum electrodynamics are typically scattering experiments. In scattering theory, particles' [momenta](https://en.wikipedia.org/wiki/Momentum) rather than their positions are considered, and it is convenient to think of particles as being created or annihilated when they interact. Feynman diagrams then look the same, but the lines have different interpretations.
-- The electron line represents an electron with a given energy and momentum, with a similar interpretation of the photon line. A vertex diagram represents the annihilation of one electron and the creation of another together with the absorption or creation of a photon, each having specified energies and momenta.
-
-Using [Wick's theorem](https://en.wikipedia.org/wiki/Wick%27s_theorem) on the terms of the **Dyson series**, all the terms of the [S-matrix](https://en.wikipedia.org/wiki/S-matrix) for quantum electrodynamics can be computed through the technique of [Feynman diagrams](https://en.wikipedia.org/wiki/Feynman_diagrams). In this case, rules for drawing are the following
+The Schrödinger-Pauli theory of electrons explicitly considers the spin moment of the electrons, and therefore goes beyond the Schrödinger theory description of spinless electrons. As a consequence of the electrons possessing a spin moment, the Schrödinger-Pauli theory Hamiltonian is derived non-relativistically via the Feynman kinetic energy operator. In this chapter, the Schrödinger-Pauli theory of electrons in the presence of static and time-dependent electromagnetic fields is described from the new perspective of the individual electron via the corresponding ‘Quantal Newtonian’ First and Second Laws. These laws are a description in terms of ‘classical’ fields experienced by each electron, the fields arising from sources that are quantum-mechanical expectation values of Hermitian operators taken with respect to the system wave function. In the temporal case–the Second Law–each electron experiences an external field comprised of the Coulomb and Lorentz fields, and an internal field whose components are representative of electron correlations due to the Pauli principle and Coulomb repulsion, kinetic effects, the electron density, and an internal magnetic field. The response of the electron is described by a field representative of the physical current density which is a sum of its paramagnetic, diamagnetic and magnetization components. The First Law, descriptive of the stationary-state theory, constitutes a special case. The Schrödinger-Pauli theory is generalized such that the Hamiltonian operator is proved to be an exactly known universal functional of the wave function. This then shows the stationary-state and time-dependent Schrödinger-Pauli equations to be intrinsically self-consistent. To facilitate the understanding of this new description and of proofs within it, further relevant aspects of the stationary-state Schrödinger theory of spinless electrons in an electromagnetic field are discussed. The Hamiltonian operator, as obtained by the correspondence principle, is expressed in terms of operators representative of the gauge invariant properties of the electronic density and physical current density. It is also written so as to explicitly show the existence of the Lorentz force via the corresponding operator. Thus, with any scalar potential representative of external electrostatic forces, the Hamiltonian can now be seen to explicitly encompass both the external Coulomb and Lorentz forces. Finally, it is proved that the stationary state wave function is a functional of a gauge function. (As will be proved in a future chapter, for a uniform magnetic field, the wave function is also a functional of the gauge invariant ground state density and physical current density). The wave function is thus ensured to be gauge variant.
 ```
-
-![a-Summary-of-the-Feynman-rules-Solid-line-represents-the-fermionic-propagator-G-0-pp](https://github.com/eq19/maps/assets/8466209/f3430964-392b-43f9-80fa-84eed55f474d)
-
-Quantum electrodynamics also leads to predictions beyond perturbation theory. In the presence of very strong electric fields, it predicts that electrons and positrons will be spontaneously produced, so causing the decay of the field.
 
 ![axioms-12-01058-g002-550](https://github.com/eq19/maps/assets/8466209/66dc1ba2-cbfd-4063-9f65-b6f32ce21dfd)
 
@@ -169,10 +155,27 @@ Abstract flavio is an open source tool for phenomenological analyses in flavour 
 
 [![hq720 (1)](https://github.com/eq19/maps/assets/8466209/9a6fd867-6867-416a-9b36-126198f4d259)](https://github.com/user-attachments/files/17380517/1810.08132v1.pdf)
 
-Here we use observables of Standard Model called [Flavio](https://github.com/flav-io/flavio). New physics effects are parameterised as Wilson coefficients of dimension-six operators in the weak effective theory below the electroweak scale or the Standard Model EFT above it. 
+From a modern perspective, we say that QED is not well defined as a quantum field theory to arbitrarily high energy.
+
+![478517_2_En_18_Fig10_HTML](https://github.com/eq19/maps/assets/8466209/9a1b324a-db44-4044-8058-61bb61372ee4)
+
+The entanglement implies that there remains a connection between the photon and the emitting atom after emission even in very strong fields.
+
+```note
+Despite the conceptual clarity of this Feynman approach to QED, almost no early textbooks follow him in their presentation. When performing calculations, it is much easier to work with the [Fourier transforms](https://en.wikipedia.org/wiki/Fourier_transform) of the [propagators](https://en.wikipedia.org/wiki/Propagator).
+- Experimental tests of quantum electrodynamics are typically scattering experiments. In scattering theory, particles' [momenta](https://en.wikipedia.org/wiki/Momentum) rather than their positions are considered, and it is convenient to think of particles as being created or annihilated when they interact. Feynman diagrams then look the same, but the lines have different interpretations.
+- The electron line represents an electron with a given energy and momentum, with a similar interpretation of the photon line. A vertex diagram represents the annihilation of one electron and the creation of another together with the absorption or creation of a photon, each having specified energies and momenta.
+
+Using [Wick's theorem](https://en.wikipedia.org/wiki/Wick%27s_theorem) on the terms of the **Dyson series**, all the terms of the [S-matrix](https://en.wikipedia.org/wiki/S-matrix) for quantum electrodynamics can be computed through the technique of [Feynman diagrams](https://en.wikipedia.org/wiki/Feynman_diagrams). In this case, rules for drawing are the following
+```
+
+![Diagrams-in-strong-field-quantum-electrodynamics-SFQED-versus-ordinary-quantum](https://github.com/eq19/maps/assets/8466209/d7775d3a-d9e2-4993-82be-4279f209f58d)
+
+An argument by Freeman Dyson shows that the radius of convergence of the perturbation series in QED is zero.
+Here we use observables of Standard Model called [Flavio](https://github.com/flav-io/flavio).
 
 ```tip
-To display automatically generated tables with lists of all observables currently implemented in [flavio](https://github.com/user-attachments/files/17380517/1810.08132v1.pdf). See also the notes on conventions at the bottom.
+New physics effects are parameterised as Wilson coefficients of dimension-six operators in the weak effective theory below the electroweak scale or the Standard Model EFT above it. To display automatically generated tables with lists of all observables currently implemented in [flavio](https://github.com/user-attachments/files/17380517/1810.08132v1.pdf). See also the notes on conventions at the bottom.
 - [W± decays](https://github.com/user-attachments/files/17387607/1503.07872v2.pdf)
   - [Hadronic decays](https://github.com/user-attachments/files/17387797/1706.08945v3.pdf) (1 observable)
   - [Leptonic decays](https://github.com/user-attachments/files/17387797/1706.08945v3.pdf) (12 observables)
@@ -234,7 +237,7 @@ To display automatically generated tables with lists of all observables currentl
 We discuss how higher-spin operators and QED corrections alter the standard angular distribution used throughout the literature, potentially leading to differences between the method of moments and the likelihood fits. _([flavio](https://flav-io.github.io/docs/observables.html))_
 ```
 
-[![1-quantum-electrodynamics-laguna-designscience-photo-library](https://github.com/eq19/maps/assets/8466209/968afaea-ff71-4a56-b9ff-423f4a9748d2)](https://en.wikipedia.org/wiki/Quantum_electrodynamics)
+![a-Summary-of-the-Feynman-rules-Solid-line-represents-the-fermionic-propagator-G-0-pp](https://github.com/eq19/maps/assets/8466209/f3430964-392b-43f9-80fa-84eed55f474d)
 
 The problem is essentially that QED appears to suffer from quantum triviality issues. This is one of the motivations for embedding QED within a [Grand Unified Theory](https://www.eq19.com/syntax/exponentiation/span13/).
 ## Primes Platforms
