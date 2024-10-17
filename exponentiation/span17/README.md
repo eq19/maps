@@ -129,9 +129,11 @@ Using the same procedure, any direct product representation is easily reduced.
 
 ![InteractionVertexOfQED](https://github.com/eq19/maps/assets/8466209/821ddfaf-5e0e-4434-8ab0-2778d4a971d8)
 
+From them, computations of probability amplitudes are straightforwardly given. An example is Compton scattering, with an electron and a photon undergoing elastic scattering.
+
 ![images (5)](https://github.com/eq19/maps/assets/8466209/d31951c3-ece1-4aff-88b3-b85f64e3e5e2)
 
-From them, computations of probability amplitudes are straightforwardly given. An example is Compton scattering, with an electron and a photon undergoing elastic scattering.
+Given a Model, [MARTY](https://github.com/user-attachments/files/17411621/2011.02478v2.pdf) may compute symbolically and automatically theoretical quantities. First, Feynman rules are derived.
 
 ```note
 [MARTY](https://github.com/docbrown1955/marty-public) is a code generator. Analytical expressions, squared amplitudes or Wilson coefficients are converted into C++ code in a self-contained library compiled independently of MARTY. This code can therefore be used for numerical evaluation in different scenarios to perform a phenomenological analysis. _([marty-manual.pdf](https://github.com/user-attachments/files/17410077/marty-manual.pdf))_
@@ -139,11 +141,11 @@ From them, computations of probability amplitudes are straightforwardly given. A
 
 [![300px-Compton_qed](https://github.com/eq19/maps/assets/8466209/36f87779-9386-46cb-b934-d3a01e375346)](https://marty.in2p3.fr/)
 
-The coupling constant runs to infinity at finite energy, signalling a Landau pole.
+The coupling constant runs to infinity at finite energy, signalling a Landau pole. Quantum electrodynamics also leads to predictions beyond perturbation theory.
 
 ![mqdefault](https://github.com/eq19/maps/assets/8466209/68994f5a-614a-4d63-9446-6acac3df2829)
 
-Quantum electrodynamics also leads to predictions beyond perturbation theory. In the presence of very strong electric fields, it predicts that electrons and positrons will be spontaneously produced, so causing the decay of the field.
+In the presence of very strong electric fields, it predicts that electrons and positrons will be spontaneously produced, so causing the decay of the field.
 
 ```note
 The Schrödinger-Pauli theory of electrons explicitly considers the spin moment of the electrons, and therefore goes beyond the Schrödinger theory description of spinless electrons.
