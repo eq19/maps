@@ -32,8 +32,9 @@ We would expect that the quantum theory reduces to Einstein's theory of gravity.
 
 [![searching graviton](https://github.com/eq19/maps/assets/8466209/a5789ee5-ba96-423c-b199-d899887e3599)](https://web2.ph.utexas.edu/~coker2/index.files/quantumgravity.htm)
 
-### 20
-![4dfbafd3f1e223eff196f2b8691bb992](https://github.com/eq19/maps/assets/8466209/2d509860-707d-4f3e-ba1a-61ccc4d9bf9b)
+Einstein’s theory of General Relativity states that spacetime is curved by the  presence of mass. This curvature influences the motion other objects with mass and gives rise to gravitation. Thus, gravity is a result of geometric features in spacetime.
+
+.![4dfbafd3f1e223eff196f2b8691bb992](https://github.com/eq19/maps/assets/8466209/2d509860-707d-4f3e-ba1a-61ccc4d9bf9b)
 ### 21
 ![main-qimg-b18921fc2fe38539d30c68227a3b41cc-pjlq](https://github.com/eq19/maps/assets/8466209/909ad5d3-97f4-4cb0-972a-a2be205eeafc)
 
@@ -155,3 +156,5 @@ majorana-3 |   2x2   |    -    |    13     |     -     |     13     |   i13
 ```
 
 ![PRI_196247467](https://github.com/eq19/maps/assets/8466209/3c88a36a-19fd-4b34-b956-3f3d19143538)
+
+Despite the popularity of dark matter and dark energy as an explanation of various  empirical observations in physics, there remains _[no direct evidence](https://github.com/user-attachments/files/17408958/Title_Alternative_Explanation_of_Dark_Ma.pdf)_ of either. 
