@@ -257,6 +257,10 @@ The problem is essentially that QED appears to suffer from quantum triviality is
 
 We analyze the inference process of dynamic and observe that the dynamic tensor shapes and control flow hinder by prime numbers
 
+```tip
+{{ site.github.latest_release.body }}
+```
+
 See [this paper](https://github.com/user-attachments/files/17277693/s11390-021-1161-y.pdf) for a discussion of the challenges imposed by dynamic shapes and one project's approach to addressing them.
 
 ## Dynamic Shapes
@@ -720,10 +724,6 @@ The number 120 has 32 prime positions minus 5 prime number products = 27 prime n
 - This results in a fundamental causal relation to the primes, systemically the products are entered into the position system. Therefore, the distribution of primes products also determines the distribution of primes themselves. The reason lies in the one-system, since the prime number as a number itself also consists of an information and a position.
 
 We apply the same principle as above for the determination of the prime position. Only with the difference that we move in the even positions of the MEC 30.
-```
-
-```tip
-{{ site.github.latest_release.body }}
 ```
 
 ***7 x π(89) = 7 x 24 = 168 = π(1000)***
