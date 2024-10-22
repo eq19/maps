@@ -187,7 +187,7 @@ Using [Wick's theorem](https://en.wikipedia.org/wiki/Wick%27s_theorem) on the te
 An argument by Freeman Dyson shows that the radius of convergence of the perturbation series in QED is zero.
 Here we use [observables](https://github.com/smelli/smelli/tree/master/smelli/data/yaml) of Standard Model.
 
-```tip
+```note
 New physics effects are parameterised as Wilson coefficients of dimension-six operators in the weak effective theory below the electroweak scale or the Standard Model EFT above it. To display automatically generated tables with lists of all observables currently implemented in [flavio](https://github.com/user-attachments/files/17380517/1810.08132v1.pdf). See also the notes on conventions at the bottom.
 - [W± decays](https://github.com/user-attachments/files/17387607/1503.07872v2.pdf)
   - [Hadronic decays](https://github.com/user-attachments/files/17387797/1706.08945v3.pdf) (1 observable)
