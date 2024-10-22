@@ -141,7 +141,7 @@ TensorFlow Quantum implements the components needed to integrate TensorFlow with
 Using the quantum circuit primitives within a tf.Tensor, TensorFlow Quantum implements ops that process these circuits and produce meaningful outputs.
 ```
 
-[![Primes vs Composites](https://github.com/eq19/maps/assets/8466209/e4fb7f51-eb2f-4d5e-b565-ebbb3b0ebfad)](https://github.com/iree-org/iree/tree/main/integrations/tensorflow)
+[![blackhole simulation](https://github.com/user-attachments/assets/13e370cb-05c9-44da-825b-39986a010c2f)](https://blog.tensorflow.org/2022/12/unfolding-universe-using-tensorflow.html)
 
 TensorFlow Quantum layers expose sampling, expectation, and state calculation to developers using the [tf.keras.layers.Layer](https://www.tensorflow.org/api_docs/python/tf/keras/Layer) interface.
 
