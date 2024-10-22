@@ -932,7 +932,7 @@ layer | node | sub |  i  |  f
 The most general Lagrangian with massless neutrinos, one finds that the dynamics depend on ***19 parameters***, whose numerical values are established by experiment.
 
 ```note
-Straightforward extensions of the Standard Model with massive neutrinos need 7 more parameters (3 masses and 4 PMNS matrix parameters) for a total of [26 parameters](https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model#cite_note-Thomson499-15). The neutrino parameter values are still uncertain. The 19 certain parameters are summarized here:
+Straight forward extensions of the Standard Model with massive neutrinos need 7 more parameters (3 masses and 4 PMNS matrix parameters) for a total of [26 parameters](https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model#cite_note-Thomson499-15). The neutrino parameter values are still uncertain. The 19 certain parameters are summarized here:
 
 [![IMG_20231230_232603](https://github.com/eq19/maps/assets/8466209/2b4f5d82-d000-46f0-91ee-618ff55f01a4)](https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model#Free_parameters)
 
