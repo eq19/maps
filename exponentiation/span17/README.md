@@ -74,7 +74,7 @@ Mathematically, QED is an [abelian](https://en.wikipedia.org/wiki/Abelian_group)
 
 Finally, one has to compute P(A to B) and E(C to D) corresponding to the probability amplitudes for the photon and the electron respectively.
 
-## Mapping Scheme
+## Subsequent Theories
 
 QED has served as the model and template for all subsequent quantum field theories. One such subsequent theory is Quantum Chromodynamics ([QCD](https://www.eq19.com/lexer/exponentiation/span15/)).
 
@@ -98,17 +98,35 @@ In the 1980s, scientists discovered that a proton's three valance quarks (red, g
 
 Since the theory of electric charge is dubbed "[electrodynamics](https://en.m.wikipedia.org/wiki/Electrodynamics)", the [Greek](https://en.m.wikipedia.org/wiki/Ancient_Greek) word χρῶμα (chrōma, "color") is applied to the theory of color charge, "chromodynamics".
 
+```note
+By 1947, physicists believed that they had a good understanding of what the smallest bits of matter were. There were [electrons](https://en.m.wikipedia.org/wiki/Electron), [protons](https://en.m.wikipedia.org/wiki/Proton), [neutrons](https://en.m.wikipedia.org/wiki/Neutron), and [photons](https://en.m.wikipedia.org/wiki/Photon) (the components that make up the vast part of everyday experience such as atoms and light) along with a handful of unstable (i.e., they undergo [radioactive decay](https://en.m.wikipedia.org/wiki/Radioactive_decay)) exotic particles needed to explain [cosmic rays](https://en.m.wikipedia.org/wiki/Cosmic_ray) observations such as [pions](https://en.m.wikipedia.org/wiki/Pion), [muons](https://en.m.wikipedia.org/wiki/Muon) and hypothesized [neutrino](https://en.m.wikipedia.org/wiki/Neutrino).
+- In addition, the discovery of the [positron](https://en.m.wikipedia.org/wiki/Positron) suggested there could be [anti-particles](https://en.m.wikipedia.org/wiki/Anti-particle) for each of them.
+- It was known a "[strong interaction](https://en.m.wikipedia.org/wiki/Strong_interaction)" must exist to overcome [electrostatic repulsion](https://en.m.wikipedia.org/wiki/Coulomb%27s_law) in atomic nuclei.
+- Not all particles are influenced by this strong force but those that are, are dubbed "hadrons", which are now further classified as [mesons](https://en.m.wikipedia.org/wiki/Meson) (middle mass) and [baryons](https://en.m.wikipedia.org/wiki/Baryon) (heavy weight).
+- But the discovery of the neutral [kaon](https://en.m.wikipedia.org/wiki/Kaon) in late 1947 and the subsequent discovery of a positively charged kaon in 1949 extended the meson family in an unexpected way and in 1950 the [lambda particle](https://en.m.wikipedia.org/wiki/Lambda_particle) did the same thing for the baryon family.
+- These particles decay much more slowly than they are produced, a hint that there are two different physical processes involved. This was first suggested by [Abraham Pais](https://en.m.wikipedia.org/wiki/Abraham_Pais) in 1952.
+- In 1953, [Murray Gell-Mann](https://en.m.wikipedia.org/wiki/Murray_Gell-Mann) and a collaboration in Japan, Tadao Nakano with [Kazuhiko Nishijima](https://en.m.wikipedia.org/wiki/Kazuhiko_Nishijima), independently suggested a new conserved value now known as "[strangeness](https://en.m.wikipedia.org/wiki/Strangeness)" during their attempts to understand the growing collection of known particles.[[4]](https://en.m.wikipedia.org/wiki/Eightfold_way_(physics)#cite_note-Gell-Mann-1953-11-5)[[5]](https://en.m.wikipedia.org/wiki/Eightfold_way_(physics)#cite_note-Nakano-Nishijima-1953-11-6)[[b]](https://en.m.wikipedia.org/wiki/Eightfold_way_(physics)#cite_note-7)
+- The trend of discovering new mesons and baryons would continue through the 1950s as the number of known "elementary" particles ballooned. Physicists were interested in understanding hadron-hadron interactions via the strong interaction.
+- The concept of [isospin](https://en.m.wikipedia.org/wiki/Isospin), introduced in 1932 by [Werner Heisenberg](https://en.m.wikipedia.org/wiki/Werner_Heisenberg) shortly after the discovery of the neutron, was used to group some hadrons together into "multiplets" but no successful scientific theory as yet covered the hadrons as a whole.
+
+This was the beginning of a chaotic period in particle physics that has become known as the "[particle zoo](https://en.m.wikipedia.org/wiki/Particle_zoo)" era. The eightfold way represented a step out of this confusion and towards the [quark model](https://en.m.wikipedia.org/wiki/Quark_model), which proved to be the solution _([Wikipedia](https://en.m.wikipedia.org/wiki/Eightfold_way_(physics)))_.
+```
+
 ![qcd-620px](https://github.com/eq19/maps/assets/8466209/3d4c5903-0d79-4c11-8c89-1a62fedb8e29)
 
 The hadrons were sorted into groups having similar properties and masses using the **[eightfold way](https://en.m.wikipedia.org/wiki/Eightfold_way_(physics))**, invented in 1961 by Gell-Mann[[11]](https://en.m.wikipedia.org/wiki/Quantum_chromodynamics#cite_note-11).
 
+```note
+The [pseudoscalar meson](https://en.m.wikipedia.org/wiki/Pseudoscalar_meson) octet. Particles along the same horizontal line share the same [strangeness](https://en.m.wikipedia.org/wiki/Strangeness_(particle_physics)), s, while those on the same left-leaning diagonals share the same [charge](https://en.m.wikipedia.org/wiki/Electric_charge), q (given as multiples of the [elementary charge](https://en.m.wikipedia.org/wiki/Elementary_charge)).
+```
+
 [![qcd_together](https://github.com/eq19/maps/assets/8466209/86fe9814-2aa3-42ba-9549-6569858c4690)](https://github.com/user-attachments/files/17381139/eightfold.pdf)
 
-Renormalizability has become an essential criterion for a quantum field theory to be considered as a viable one.
-
-![axioms-12-01058-g004](https://github.com/eq19/maps/assets/8466209/b43f5e6e-8a2d-4cf2-bff8-f111c263e273)
-
 All the theories describing fundamental interactions, except gravitation, whose quantum counterpart is only conjectural and presently under very active research, are renormalizable theories.
+
+```note
+Renormalization was first developed in quantum electrodynamics (QED) to make sense of infinite integrals in perturbation theory. Initially viewed as a suspect provisional procedure even by some of its originators, renormalization eventually was embraced as an important and self-consistent actual mechanism of scale physics in several fields of physics and mathematics. Despite his later skepticism, it was Paul Dirac who pioneered renormalization.
+```
 
 ![I15-73-Feynman](https://github.com/eq19/maps/assets/8466209/1acfbce9-61d4-443e-9aba-45d09d86659f)
 
@@ -116,10 +134,35 @@ Via the [11 partitions](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa4300
 
 [![6 minor hexagons](https://github.com/eq19/maps/assets/8466209/1e7dc443-b7d8-44d9-8da0-5fe50dd7ee70)](https://www.hexspin.com/minor-hexagons/)
 
+Renormalizability has become an essential criterion for a quantum field theory to be considered as a viable one.
+
+```note
+Renormalization is a collection of techniques in [quantum field theory](https://en.wikipedia.org/wiki/Quantum_field_theory), [statistical field theory](https://en.wikipedia.org/wiki/Statistical_field_theory), and the theory of [self-similar](https://en.wikipedia.org/wiki/Self-similarity) geometric structures, that are used to treat [infinities](https://en.wikipedia.org/wiki/Infinity) arising in calculated quantities by altering values of these quantities to compensate for effects of their self-interactions.
+- But even if no infinities arose in [loop diagrams](https://en.wikipedia.org/wiki/One-loop_Feynman_diagram) in quantum field theory, it could be shown that it would be necessary to renormalize the mass and fields appearing in the original [Lagrangian](https://en.wikipedia.org/wiki/Lagrangian_(field_theory)).[[1]](https://en.wikipedia.org/wiki/Renormalization#cite_note-1)
+- For example, an [electron](https://en.wikipedia.org/wiki/Electron) theory may begin by postulating an electron with an initial mass and charge. In [quantum field theory](https://en.wikipedia.org/wiki/Quantum_field_theory) a cloud of [virtual particles](https://en.wikipedia.org/wiki/Virtual_particle), such as [photons](https://en.wikipedia.org/wiki/Photon), [positrons](https://en.wikipedia.org/wiki/Positron), and others surrounds and interacts with the initial electron.
+- Accounting for the interactions of the surrounding particles (e.g. collisions at different energies) shows that the electron-system behaves as if it had a different mass and charge than initially postulated.
+
+Renormalization, in this example, mathematically replaces the initially postulated mass and charge of an electron with the experimentally observed mass and charge. _([Wikipedia](https://en.wikipedia.org/wiki/Renormalization))_
+```
+
+![axioms-12-01058-g004](https://github.com/eq19/maps/assets/8466209/b43f5e6e-8a2d-4cf2-bff8-f111c263e273)
+
 When recombination is occur then the prime **13 is forced to → 12** where the impact (Δ1) goes to 18+The tensor product of a triplet with an octet reducing to a deciquintuplet, an anti-sextet, and a triplet appears diagrammatically as ***a total of 24 states***.
+
+```note
+The special unitary group SU is the group of unitary matrices whose determinant is equal to 1.[1] This set is closed under matrix multiplication.
+- All transformations characterized by the special unitary group leave norms unchanged. The SU(3) symmetry appears in the light quark flavour symmetry (among up, down, and strange quarks) dubbed the Eightfold Way (physics).
+- The same group acts in quantum chromodynamics on the colour quantum numbers of the quarks that form the fundamental (triplet) representation of the group.
+- The group SU(3) is a subgroup of group U(3), the group of all 3×3 unitary matrices. The unitarity condition imposes nine constraint relations on the total 18 degrees of freedom of a 3×3 complex matrix. 
+- Thus, the dimension of the U(3) group is 9. Furthermore, multiplying a U by a phase, eiφ leaves the norm invariant. Thus U(3) can be decomposed into a direct product U(1) × SU(3)/Z3. 
+
+***Because of this additional constraint, SU(3) has dimension 8***. _([Wikipedia](https://en.m.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients_for_SU(3)))_
+```
 
 [![Young_tableaux_17](https://github.com/eq19/maps/assets/8466209/6647c9e1-026f-4aaa-b3a0-102a274bbc46)
 ![Young_tableaux_18](https://github.com/eq19/maps/assets/8466209/9adba5c0-a334-4d06-8bc1-b52662bd7d12)](https://en.m.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients_for_SU(3))
+
+So then a logical explanation is needed. How can quantum electrodynamics (QED) be so successful when it is clearly not a complete theory?
 
 ```note
 Quantum Electrodynamics (QED) is a fundamental theory of nature and also the most accurate one. Since 1947 it has been tested to ever increasing precision. The highest precision measurement now matches the theoretical prediction to 12 significant digits.
@@ -132,14 +175,20 @@ Quantum Electrodynamics (QED) is a fundamental theory of nature and also the mos
 - It is successfully resolved in QED by a highly sophisticated and extremely complex mathematical procedure known as renormalization, that makes the theory free of infinity. After renormalization the QED provides extremely precise values of physically measurable quantities, for example the magnetic dipole moment of the electron.
 - The basic equation of QED, known as the path integral, is far too complex to solve and to this ray no exact solution of this equation has ever been found. But that doesn’t mean that this equation has not been solved at all. It is possible to solve the complex path integral of QED by transforming it into an infinite series in such a way that the sum of all these terms gives the exact value of this integral.
 
-Each term represents increasing number of Feynman loops. So the first term has zero loops, second term contains 1 loop and so on. It is the measure of the complexity of QED that since 1948 only the first six terms have been computed. The last term has been calculated only partially and that too using the most powerful computers in the world _([Quora](Answer to Can you explain how Quantum Electrodynamics (QED) works and how we can trust a theory that is based on complex equations that have not been solved? by Sanjay Sood https://www.quora.com/Can-you-explain-how-Quantum-Electrodynamics-QED-works-and-how-we-can-trust-a-theory-that-is-based-on-complex-equations-that-have-not-been-solved/answer/Sanjay-Sood-8))_. 
+Each term represents increasing number of Feynman loops. So the first term has zero loops, second term contains 1 loop and so on.  _([Quora](https://www.quora.com/Can-you-explain-how-Quantum-Electrodynamics-QED-works-and-how-we-can-trust-a-theory-that-is-based-on-complex-equations-that-have-not-been-solved/answer/Sanjay-Sood-8))_. 
 ```
 
 [![1-quantum-electrodynamics-laguna-designscience-photo-library](https://github.com/eq19/maps/assets/8466209/968afaea-ff71-4a56-b9ff-423f4a9748d2)](https://en.wikipedia.org/wiki/Quantum_electrodynamics)
 
-## Subsequent Theories
+It is the measure of the complexity of QED that since 1948 only the first six terms have been computed. The last term has been calculated only partially and that too using the most powerful computers in the world
 
-Using the same procedure, any direct product representation is easily reduced.
+## Quantum Triviality Issues
+
+If the only resulting value of the renormalized charge is zero, the theory is said to become a "trivial" theory of noninteracting free particles.
+
+```
+This phenomenon is referred to as quantum triviality. Strong evidence supports the idea that a field theory involving only a scalar [Higgs boson](https://en.wikipedia.org/wiki/Higgs_boson) is trivial in four spacetime dimensions,[[1]](https://en.wikipedia.org/wiki/Quantum_triviality#cite_note-1)[[2]](https://en.wikipedia.org/wiki/Quantum_triviality#cite_note-TrivPurs-2) but the situation for realistic models including other particles in addition to the Higgs boson is not known in general. Nevertheless, because the Higgs boson plays a central role in the [Standard Model](https://en.wikipedia.org/wiki/Standard_Model) of [particle physics](https://en.wikipedia.org/wiki/Particle_physics), the question of triviality in Higgs models is of great importance. _([Wikipedia](https://en.wikipedia.org/wiki/Quantum_triviality))_
+```
 
 ![InteractionVertexOfQED](https://github.com/eq19/maps/assets/8466209/821ddfaf-5e0e-4434-8ab0-2778d4a971d8)
 
@@ -156,6 +205,10 @@ Given a Model, [MARTY](https://github.com/user-attachments/files/17411621/2011.0
 [![300px-Compton_qed](https://github.com/eq19/maps/assets/8466209/36f87779-9386-46cb-b934-d3a01e375346)](https://marty.in2p3.fr/)
 
 The coupling constant runs to infinity at finite energy, signalling a Landau pole. Quantum electrodynamics also leads to predictions beyond perturbation theory.
+
+```
+Feynman was concerned that all field theories known in the 1960s had the property that the interactions become infinitely strong at short enough distance scales. This property called a Landau pole, made it plausible that quantum field theories were all inconsistent. In 1974, Gross, Politzer and Wilczek showed that another quantum field theory, quantum chromodynamics, does not have a Landau pole. Feynman, along with most others, accepted that QCD was a fully consistent theory.
+```
 
 ![mqdefault](https://github.com/eq19/maps/assets/8466209/68994f5a-614a-4d63-9446-6acac3df2829)
 
