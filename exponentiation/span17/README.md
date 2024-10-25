@@ -206,7 +206,7 @@ Given a Model, [MARTY](https://github.com/user-attachments/files/17411621/2011.0
 
 The coupling constant runs to infinity at finite energy, signalling a Landau pole. Quantum electrodynamics also leads to predictions beyond perturbation theory.
 
-```
+```note
 Feynman was concerned that all field theories known in the 1960s had the property that the interactions become infinitely strong at short enough distance scales. This property called a Landau pole, made it plausible that quantum field theories were all inconsistent. In 1974, Gross, Politzer and Wilczek showed that another quantum field theory, quantum chromodynamics, does not have a Landau pole. Feynman, along with most others, accepted that QCD was a fully consistent theory.
 ```
 
