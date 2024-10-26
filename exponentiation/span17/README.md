@@ -186,7 +186,7 @@ It is the measure of the complexity of QED that since 1948 only the first six te
 
 If the only resulting value of the renormalized charge is zero, the theory is said to become a "trivial" theory of noninteracting free particles.
 
-```
+```note
 This phenomenon is referred to as quantum triviality. Strong evidence supports the idea that a field theory involving only a scalar [Higgs boson](https://en.wikipedia.org/wiki/Higgs_boson) is trivial in four spacetime dimensions,[[1]](https://en.wikipedia.org/wiki/Quantum_triviality#cite_note-1)[[2]](https://en.wikipedia.org/wiki/Quantum_triviality#cite_note-TrivPurs-2) but the situation for realistic models including other particles in addition to the Higgs boson is not known in general. Nevertheless, because the Higgs boson plays a central role in the [Standard Model](https://en.wikipedia.org/wiki/Standard_Model) of [particle physics](https://en.wikipedia.org/wiki/Particle_physics), the question of triviality in Higgs models is of great importance. _([Wikipedia](https://en.wikipedia.org/wiki/Quantum_triviality))_
 ```
 
