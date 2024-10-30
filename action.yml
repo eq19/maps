@@ -80,6 +80,7 @@ runs:
       with:
         token: ${{ inputs.token }}
         image_name: ${{ inputs.image_name }}
+        credentials: ${{ inputs.credentials }}
         action_path: ${GITHUB_ACTION_PATH//\\//}
         hub_token: ${{ inputs.docker_hub_token }} 
         hub_username: ${{ inputs.docker_hub_username }} 
