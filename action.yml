@@ -69,7 +69,8 @@ runs:
         hub_username: ${{ inputs.docker_hub_username }}
         hub_password: ${{ inputs.docker_hub_password }}
         hub_token: ${{ inputs.docker_hub_token }}
-        action_path: ${{ github.action_path}}
+        action_path: ${{ github.action_path }}
+        credentials: ${{ inputs.credentials }}
         image_name: ${{ inputs.image_name }}
         token: ${{ inputs.token }}
 
