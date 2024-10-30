@@ -23,7 +23,6 @@ inputs:
     required: true
   image_name:
     description: "Name for the container to be created. Example: nginx"
-    default: 'prime'
     required: false
   image_tag:
     description: Tag to use for the new image
@@ -93,6 +92,19 @@ runs:
           instance_zone=${instance_zone_uri##*/}
           if [ -n "${instance_name}" ] && [ -n "${instance_zone}" ] && gcloud compute instances delete ${instance_name} --zone ${instance_zone} --quiet; then
             echo "deleted: ${instance_zone}/${instance_name}"
+          fi
+        done
+
+    - name: 🪂 Remove existing images
+      id: variables
+      shell: bash
+      run: |
+        YQ=$(choco install yq)
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [[ "${array[$i]}" != "latest" ]]; then
+            image_tag="${array[$i]}"
+            echo 'IMAGE_TAG='${image_tag##*-} >> ${GITHUB_ENV}
           fi
         done
 

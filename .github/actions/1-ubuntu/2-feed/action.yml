@@ -144,3 +144,17 @@ runs:
         imageName: ${{ inputs.image_name }}
         imageTag: spin-${{ env.ID }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
+
+    - name: 🪂 Remove existing images
+      id: variables
+      shell: bash
+      run: |
+        BASE_NAME=$(basename ${{ inputs.image_name }})
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [[ "${array[$i]}" != "latest" ]]; then
+            HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.hub_username }}\", \"password\": \"${{ inputs.hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
+            curl -s -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
+            echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
+          fi
+        done
