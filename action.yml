@@ -71,6 +71,7 @@ runs:
         hub_token: ${{ inputs.docker_hub_token }}
         action_path: ${{ github.action_path}}
         image_name: ${{ inputs.image_name }}
+        token: ${{ inputs.token }}
 
     - name: Profiling Feedback
       if: runner.os == 'Windows'
