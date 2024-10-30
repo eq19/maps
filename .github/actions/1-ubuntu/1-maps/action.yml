@@ -18,12 +18,50 @@ inputs:
   hub_token:
     description: Docker Hub authentication token
     required: true
-  image_name:
-    description: "Name for the container to be created. Example: nginx"
-    required: false
   action_path:
     description: Path to the dockerfile from which to build the image
     required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  initiate_pauli_sum:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  repository:
+    description: 'The deploy repository'
+    default: ${{ github.repository }}
+    required: false
 
 outputs:
   site_id:
@@ -33,6 +71,43 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.hub_username }}
+        password: ${{ inputs.hub_token }}
+        
+    - uses: actions/setup-python@v5
+      if: runner.os != 'Windows'
+      with:
+        python-version: 3.12
+        allow-prereleases: true
+
+    - uses: actions/cache@v4
+      if: runner.os != 'Windows'
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip
+
+    - name: Install dependencies
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        HEADER="Accept: application/vnd.github+json"
+        echo ${{ inputs.token }} | gh auth login --with-token
+        python -m pip -q install --upgrade pip setuptools six wheel
+        python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt && ./.github/entrypoint/init.sh
+
+        #See: https://docs.github.com/en/rest/actions/self-hosted-runners
+        TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
+        RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
+        if (( $TOTAL_COUNT != 0 )); then gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}; fi 
+
+    - name: View context attributes
+      uses: actions/github-script@v7
+      with:
+        script: console.log(context)
+
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
       with:

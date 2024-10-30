@@ -68,6 +68,37 @@ branding:
 runs:
   using: composite
   steps:
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.hub_username }}
+        password: ${{ inputs.hub_token }}
+
+    - name: 💎 Set ID Token
+      if: runner.os == 'Windows'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ inputs.credentials }}
+
+    - name: 💎 Setup Gcloud
+      if: runner.os == 'Windows'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        install_components: 'alpha,cloud-datastore-emulator'
+
+    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
+    - name: 💎 Remove Existing Self-Hosted Runner
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        BASE="D:/a/_actions/eq19/eq19/v1/.github"
+        $BASE/entrypoint/init.sh
+
+    - name: View context attributes
+      uses: actions/github-script@v7
+      with:
+        script: console.log(context)
+        
     - name: Set Docker Hub description
       uses: peter-evans/dockerhub-description@v4
       with:
@@ -79,7 +110,7 @@ runs:
 
     - name: Build and Push my_awesome_microservice
       uses: mr-smithers-excellent/docker-build-push@v5
-      if: runner.os == 'Ubuntu'
+      if: runner.os == '-Windows'
       with:
         image: my_awesome_microservice
         registry: ghcr.io
