@@ -118,7 +118,9 @@ jekyll_build() {
   cp -R ${RUNNER_TEMP}/gistdir/* . && mkdir ${RUNNER_TEMP}/workdir/_data
   echo 'orgs_json='$(cat ${RUNNER_TEMP}/orgs.json) >> ${GITHUB_OUTPUT}
   mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
-           
+
+  #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
+  curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @./.github/entrypoint/artifact/python/manual_v2.ipynb | jq '.'    
 }
 
 # Get structure on gist files
