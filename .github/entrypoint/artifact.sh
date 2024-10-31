@@ -104,8 +104,8 @@ jekyll_build() {
   cat ${RUNNER_TEMP}/_config.yml
    
   echo -e "\n$hr\nSPIN\n$hr"
-  #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
-  curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @./.github/entrypoint/artifact/python/manual_v2.ipynb | jq '.'    
+  #Fill in metadata with ./.github/entrypoint/artifact/python/manual_v2.ipynb
+  curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @${RUNNER_TEMP}/orgs.json | jq '.'    
 
   echo -e "\n$hr\nWORKSPACE\n$hr"
   gist.sh $1 ${OWNER} ${FOLDER}

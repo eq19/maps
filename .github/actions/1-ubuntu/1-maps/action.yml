@@ -96,6 +96,7 @@ runs:
         HEADER="Accept: application/vnd.github+json"
         echo ${{ inputs.token }} | gh auth login --with-token
         python -m pip -q install --upgrade pip setuptools six wheel
+        #Fill in metadata with ./.github/entrypoint/artifact/python/manual_v2.ipynb vs prime hexagon
         python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt && ./.github/entrypoint/init.sh
 
         #See: https://docs.github.com/en/rest/actions/self-hosted-runners
