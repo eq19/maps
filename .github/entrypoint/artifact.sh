@@ -104,6 +104,10 @@ jekyll_build() {
   cat ${RUNNER_TEMP}/_config.yml
    
   echo -e "\n$hr\nSPIN\n$hr"
+  #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
+  curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @./.github/entrypoint/artifact/python/manual_v2.ipynb | jq '.'    
+
+  echo -e "\n$hr\nWORKSPACE\n$hr"
   gist.sh $1 ${OWNER} ${FOLDER}
   find ${RUNNER_TEMP}/gistdir -type d -name .git -prune -exec rm -rf {} \;
   
@@ -114,13 +118,10 @@ jekyll_build() {
   find . -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'
   find . -type d -name "${FOLDER}" -prune -exec sh -c 'cat ${RUNNER_TEMP}/README.md >> $1/README.md' sh {} \;
   
-  echo -e "\n$hr\nWORKSPACE\n$hr"
   cp -R ${RUNNER_TEMP}/gistdir/* . && mkdir ${RUNNER_TEMP}/workdir/_data
   echo 'orgs_json='$(cat ${RUNNER_TEMP}/orgs.json) >> ${GITHUB_OUTPUT}
   mv -f ${RUNNER_TEMP}/orgs.json ${RUNNER_TEMP}/workdir/_data/orgs.json
 
-  #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
-  curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @./.github/entrypoint/artifact/python/manual_v2.ipynb | jq '.'    
 }
 
 # Get structure on gist files
