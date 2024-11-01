@@ -180,7 +180,7 @@ runs:
               -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} \
               -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} \
               -v /var/run/docker.sock:/var/run/docker.sock \
-              -v /mnt:/mnt \
+              -v /mnt:/mnt -v /home/runner/.docker:/home/runner/.docker \
               --name myrunner --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
 
         runcmd:
