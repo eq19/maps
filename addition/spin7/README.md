@@ -129,6 +129,17 @@ They interact, they transfer energy and momentum and angular momentum; excitatio
 
 [![fundamental interaction in nature](https://user-images.githubusercontent.com/8466209/284403402-a0ba27e5-1964-46c2-b7d8-72758eb0944d.png)](https://en.wikipedia.org/wiki/Talk:Standard_Model/Archive_2)
 
+[The (3) layers](https://github.com/eq19/eq19/blob/v1/.github/entrypoint/artifact/python/manual_v2.ipynb) represents generation in the _[particle objects](https://github.com/eq19/eq19/blob/v1/.github/entrypoint/artifact/python/manual_v2.ipynb)_ of flavor that counts ***six (6) flavours of [quarks](https://en.wikipedia.org/wiki/Quark)*** and ***six (6) flavours of [leptons](https://en.wikipedia.org/wiki/Lepton)***.
+
+|QUARKS|no|LEPTONS|no|GAUGE AND HIGGS BOSONS|no|
+|------|---|------|----|--|--|
+|d| 1|$$e^-$$|11|$$g$$|(9)21|
+|u| 2|$$\\nu_e$$|12|$$\\gamma$$|22|
+|s| 3|$$\\mu^-$$|13|$$Z^0$$|23|
+|c| 4|$$\\nu_\\mu$$|14|$$W^+$$|24|
+|b| 5|$$\\tau^-$$|15|$$H^0$$|25|
+|t| 6|$$\\nu_\\tau$$|16|||
+
 The SM was basically developed in 1970-s. It describes the electromagnetic, weak and strong fundamental interactions.
 
 ```note
@@ -151,6 +162,23 @@ By our project the 18's on the gist will cover five (5) unique functions that be
 ```
 
 ***5 + 2 x 5 x 168 = 5 + 1680 = 1685 root functions***
+
+$$
+\begin{aligned}
+  & \phi(x,y) = \phi \left(\sum_{i=1}^n x_ie_i, \sum_{j=1}^n y_je_j \right)
+  = \sum_{i=1}^n \sum_{j=1}^n x_i y_j \phi(e_i, e_j) = \\
+  & (x_1, \ldots, x_n) \left( \begin{array}{ccc}
+      \phi(e_1, e_1) & \cdots & \phi(e_1, e_n) \\
+      \vdots & \ddots & \vdots \\
+      \phi(e_n, e_1) & \cdots & \phi(e_n, e_n)
+    \end{array} \right)
+  \left( \begin{array}{c}
+      y_1 \\
+      \vdots \\
+      y_n
+    \end{array} \right)
+\end{aligned}
+$$
 
 ![](https://github.com/eq19/maps/assets/8466209/a04f4573-5f35-41d3-8cae-06506616cbab)
 
