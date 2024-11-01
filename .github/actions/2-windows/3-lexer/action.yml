@@ -112,7 +112,7 @@ runs:
           StrictHostKeyChecking no
         EOL
         #Ref: https://github.com/cloudkite-io/google-container-optimized-os-tools
-        ssh staging 'sudo whoami && sudo ls -al /'
+        ssh staging 'sudo whoami && sudo ls -alR /home/runner'
 
     - name: 💎 Set Access Token
       if: runner.os == '-Windows'
