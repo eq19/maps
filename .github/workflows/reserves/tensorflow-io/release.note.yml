@@ -1,0 +1,34 @@
+name: Release Note
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  release-note:
+    permissions:
+      contents: write  # for peter-evans/create-pull-request to create branch
+      pull-requests: write  # for peter-evans/create-pull-request to create a PR
+    name: README.md
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          fetch-depth: 0
+      - run: git tag
+      - run: python3 tools/release/note_create.py
+      - run: git diff
+      - run: python3 tools/release/note_update.py
+      - run: git diff
+      - uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
+        with:
+          commit-message: Update RELEASE.md [bot]
+          branch: bot-RELEASE.md
+          delete-branch: true
+          title: 'Update RELEASE.md [bot]'
+          body: |
+            README.md: auto-updated by .github/workflows/release.note.yml

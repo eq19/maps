@@ -1,0 +1,70 @@
+name: "Eventide component workflow: deploy"
+
+on:
+  workflow_call:
+    inputs:
+      component_name:
+        required: true
+        type: string
+      namespace:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+
+    secrets:
+      CLUSTER_NAME:
+        required: true
+      CLUSTER_REGION:
+        required: true
+      GOOGLE_CREDENTIALS:
+        required: true
+      GCLOUD_PROJECT_ID:
+        required: true
+      GOOGLE_CREDENTIALS_GITHUB_ACTIONS:
+        required: true
+
+jobs:
+  deploy:
+    env:
+      IMAGEBASE: europe-docker.pkg.dev/nimble-lead-281209/eu.gcr.io/${{ inputs.component_name }}
+
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_GITHUB_ACTIONS }}'
+
+      - id: 'get-credentials'
+        uses: 'google-github-actions/get-gke-credentials@v2'
+        with:
+          cluster_name: ${{ secrets.CLUSTER_NAME }}
+          location: ${{ secrets.CLUSTER_REGION }}
+          project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
+
+      - name: Cache imagetag
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-imagetag
+        with:
+          path: imagetag
+          key: image-cache-${{ runner.os }}-${{ github.repository }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            image-cache-${{ runner.os }}-${{ github.repository }}-${{ github.ref_name }}-
+
+      - name: Build image and deploy
+        run: |
+          imagetag=`cat imagetag`
+          cd kustomize/${{ inputs.environment }}
+          kustomize edit set image ${{ inputs.component_name }}-image=${{ env.IMAGEBASE }}:$imagetag
+          kustomize build | kubectl apply --namespace=${{ inputs.namespace }} -f-
+
+      - name: Check status
+        run: |
+          source /home/runner/status_deployment.sh
+          check_status_and_auto_rollback_if_necessary "${{ inputs.environment }}-${{ inputs.component_name }}" "${{ inputs.namespace }}"
