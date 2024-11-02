@@ -1,0 +1,30 @@
+name: "Eventide component workflow: Publish a new package version"
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
+
+    secrets:
+      PUBLISH_PACKAGE_WORKFLOW:
+        required: true
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+
+      - name: Build gem
+        run: gem build ${{ inputs.package }}.gemspec
+
+      - name: Store version
+        run: echo "version=$( ls -a | grep -P ".gem$" | grep -oP "\d+\.\d+\.\d+")" >> $GITHUB_ENV
+
+      - name: Publish gem
+        run: GEM_HOST_API_KEY=${{ secrets.PUBLISH_PACKAGE_WORKFLOW }} gem push --host https://rubygems.pkg.github.com/hubbado ${{ inputs.package }}-${{ env.version}}.gem

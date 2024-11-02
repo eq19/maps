@@ -1,0 +1,119 @@
+name: 'Docker Deploy Action'
+
+description: >
+  🪂  A Github Action to deploy pages conveniently
+
+branding:
+  icon: 'command'
+  color: 'green'
+
+inputs:
+  hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}       
+    required: true
+  hub_password:
+    description: Docker Hub authentication token
+    required: true
+  hub_token:
+    description: Docker Hub authentication token
+    required: true
+  action_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: Tag to use for the new image
+    default: ${{ github.action_repository }}
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  initiate_pauli_sum:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  repository:
+    description: 'The deploy repository'
+    default: ${{ github.repository }}
+    required: false
+
+outputs:
+  command:
+    description: 'The command.outputs'
+    value: ${{ steps.command.outputs.stdout }}
+  decays:
+    description: 'The target repository'
+    value: ${{ env.PGSERVICEFILE }}
+
+runs:
+  using: composite
+  steps:
+    - name: 🪂 Adapt feed mapping
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        git clone --single-branch -b gh-pages https://github.com/${{ env.TARGET_REPOSITORY }} ${{ inputs.action_path }}/_site &>/dev/null  
+        mv -f ${{ inputs.action_path }}/_site/docs ${RUNNER_TEMP}/ && rm -rf ${{ inputs.action_path }}/_site/*
+        mv -f ${{ github.workspace }}/_site/* ${{ inputs.action_path }}/_site/
+        mv -f ${RUNNER_TEMP}/docs ${{ inputs.action_path }}/_site/
+
+        rm -rf ${{ inputs.action_path }}/_site/.devcontainer.json ${{ inputs.action_path }}/_site/Dockerfile
+        echo 'TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}' > ${{ inputs.action_path }}/_site/.env
+        echo 'LATEST_COMMIT=${{ env.LATEST_COMMIT }}' >> ${{ inputs.action_path }}/_site/.env 
+        cat ${{ inputs.action_path }}/_site/.env && cat ${{ inputs.action_path }}/Dockerfile
+
+    - name: 🚀 Initiate Lexer
+      if: runner.os != 'Windows'
+      uses: devcontainers/ci@v0.3
+      id: set-output
+      with:
+        push: always
+        imageTag: id-${{ env.ID }}
+        skipContainerUserIdUpdate: true
+        runCmd: ls -alR /home/runner/_site
+        imageName: ${{ inputs.image_name }}
+        configFile: ${{ inputs.action_path }}/.devcontainer.json
+        env: |
+          TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
+
+    - name: 💎 Variables
+      if: runner.os != 'Windows'
+      id: variables
+      shell: bash
+      run: |
+        BASE_NAME=$(basename ${{ inputs.image_name }})
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g"))
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [ "${array[$i]}" != "latest" ]; then
+            HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.hub_username }}\", \"password\": \"${{ inputs.hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
+            curl -s -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
+            echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
+          fi
+        done

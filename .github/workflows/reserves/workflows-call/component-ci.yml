@@ -1,0 +1,92 @@
+name: "Eventide component workflow: CI Tests"
+
+on:
+  workflow_call:
+    inputs:
+      component_name:
+        required: true
+        type: string
+
+    secrets:
+      GOOGLE_CREDENTIALS:
+        required: true
+      BUNDLE_RUBYGEMS__PKG__GITHUB__COM:
+        required: true
+      BUNDLE_GITHUB__COM:
+        required: false
+      GCLOUD_PROJECT_ID:
+        required: true
+      GOOGLE_CREDENTIALS_GITHUB_ACTIONS:
+        required: true
+
+jobs:
+  build:
+    env:
+      IMAGEBASE: europe-docker.pkg.dev/nimble-lead-281209/eu.gcr.io/${{ inputs.component_name }}
+      POSTGRES_HOST_AUTH_METHOD: trust
+      PGHOST: postgres
+      PGUSER: postgres
+      EVENTIDE_DATABASE_URL: postgres://message_store@postgres/message_store
+      DATABASE_URL: postgres://postgres@postgres:5432
+
+    runs-on: self-hosted
+
+    services:
+      postgres:
+        image: postgres:alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GOOGLE_CREDENTIALS_GITHUB_ACTIONS }}'
+
+      - name: Set branch
+        run: echo "branch=${GITHUB_REF_NAME:-$(git branch | grep "\*" | cut -d\  -f2)}" >> $GITHUB_ENV
+
+      - name: Set commit_sha
+        run: echo "commit_sha=${GITHUB_SHA:-$(git rev-parse HEAD)}" >> $GITHUB_ENV
+
+      - name: Set imagetag
+        run: echo "imagetag=${IMAGETAG:-${{ env.branch }}-$(date +%Y-%m-%d-%H-%M-%z |sed -e 's/+//')-$(echo "${{ env.commit_sha }}"|cut -c1-8)}" >> $GITHUB_ENV
+
+      - name: Build image and load locally to Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          push: false
+          cache-from: |
+            ${{ env.IMAGEBASE }}:latest
+          tags: |
+            ${{ env.IMAGEBASE }}:${{ env.imagetag }}
+          labels: |
+            ${{ inputs.component_name }}
+          build-args: |
+            POSTURE=dev
+          secrets: |
+            BUNDLE_RUBYGEMS__PKG__GITHUB__COM=${{ secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM }}
+            BUNDLE_GITHUB__COM=${{ secrets.BUNDLE_GITHUB__COM }}
+
+      - name: Tests
+        run: |
+          docker run --network "${{ job.container.network }}" \
+            --env POSTGRES_HOST_AUTH_METHOD=$POSTGRES_HOST_AUTH_METHOD \
+            --env PGHOST=$PGHOST \
+            --env PGUSER=$PGUSER \
+            --env EVENTIDE_DATABASE_URL=$EVENTIDE_DATABASE_URL \
+            --env DATABASE_URL=$DATABASE_URL \
+            --rm ${{ env.IMAGEBASE }}:${{ env.imagetag }} \
+            /bin/bash -c "bin/ci_tests"

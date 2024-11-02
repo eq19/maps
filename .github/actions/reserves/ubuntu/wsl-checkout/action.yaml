@@ -1,0 +1,38 @@
+name: Azure WSL repo clone
+description: 'Clones your repo into WSL.'
+
+inputs:
+  distro:
+    description: Which (installed) distro to use. Use the name as shown in 'wsl -l -v'.
+    required: true
+  working-dir:
+    description: Where the repo should be cloned
+    required: false
+    default: "."
+  submodules:
+    description: Whether to fetch submodules or not
+    required: false
+    default: "false"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Clone repo
+      uses: ubuntu/WSL/.github/actions/wsl-bash@main
+      with:
+        distro: ${{ inputs.distro }}
+        exec: |
+          set -eu
+
+          export GIT_TERMINAL_PROMPT=0
+
+          mkdir -p ${{ inputs.working-dir }}
+          git clone --quiet --depth 1 https://github.com/${{ github.repository }}.git ${{ inputs.working-dir }}
+
+          cd ${{ inputs.working-dir }}
+          git fetch --quiet --depth 1 --no-tags --prune --update-head-ok origin +${{ github.sha }}:${{ github.ref }}
+          git checkout --quiet ${{ github.sha }}
+
+          if [ "${{ inputs.submodules }}" = true ] ; then
+              git submodule --quiet update --init --recursive --depth 1
+          fi

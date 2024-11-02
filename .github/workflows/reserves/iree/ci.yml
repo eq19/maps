@@ -1,0 +1,408 @@
+# Copyright 2022 The IREE Authors
+#
+# Licensed under the Apache License v2.0 with LLVM Exceptions.
+# See https://llvm.org/LICENSE.txt for license information.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+name: CI
+
+# A few notes:
+#
+# Variables:
+# GitHub actions don't have variables or even support normal yaml anchors (they
+# are specially disabled because...reasons?):
+# See https://github.com/github-community/community/discussions/4501
+# https://github.community/t/support-for-yaml-anchors/16128/92
+# https://github.com/actions/runner/issues/1182
+# Neither does it have any contexts that are available everywhere. The
+# top-level `env` field is available in many places, but not all. We already
+# have a "setup" job that every other job depends on, so we leverage that
+# for variables that every other job can use, since that *is* available in all
+# sub-fields of the job.
+# See https://docs.github.com/en/actions/learn-github-actions/contexts#context-availability
+# and https://github.com/community/community/discussions/27370
+#
+# Runner label ordering:
+# - self-hosted always has to be listed first in a runs-on block:
+# https://docs.github.com/en/actions/hosting-your-own-runners/using-self-hosted-runners-in-a-workflow
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+concurrency:
+  # A PR number if a pull request and otherwise the commit hash. This cancels
+  # queued and in-progress runs for the same PR (presubmit) or commit
+  # (postsubmit). The workflow name is prepended to avoid conflicts between
+  # different workflows.
+  group: ${{ github.workflow }}-${{ github.event.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  # This needs to be in env instead of the outputs of setup because it contains
+  # the run attempt and we want that to be the current attempt, not whatever
+  # attempt the setup step last ran in.
+  GCS_URL: https://storage.googleapis.com/iree-github-actions-${{ github.event_name == 'pull_request' && 'presubmit' || 'postsubmit' }}-artifacts/${{ github.run_id }}/${{ github.run_attempt }}
+
+# Jobs are organized into groups and topologically sorted by dependencies
+jobs:
+  setup:
+    uses: ./.github/workflows/setup.yml
+
+  ################################### Basic ####################################
+  # Jobs that build all of IREE "normally"
+  ##############################################################################
+  # TODO(scotttodd): drop this job in favor of ci_linux_x64_clang.yml once no jobs depend on it
+  build_all:
+    needs: setup
+    if: contains(fromJson(needs.setup.outputs.enabled-jobs), 'build_all')
+    uses: ./.github/workflows/build_all.yml
+    with:
+      runner-group: ${{ needs.setup.outputs.runner-group }}
+      runner-env: ${{ needs.setup.outputs.runner-env }}
+      write-caches: ${{ needs.setup.outputs.write-caches }}
+      run-tests: true
+
+  build_test_all_bazel:
+    needs: setup
+    if: contains(fromJson(needs.setup.outputs.enabled-jobs), 'build_test_all_bazel')
+    runs-on:
+      - self-hosted # must come first
+      - runner-group=${{ needs.setup.outputs.runner-group }}
+      - environment=${{ needs.setup.outputs.runner-env }}
+      - cpu
+      - os-family=Linux
+    steps:
+      - name: "Checking out repository"
+        uses: actions/checkout@v4.1.7
+        with:
+          submodules: true
+      - name: "Building and testing with Bazel"
+        env:
+          IREE_WRITE_REMOTE_BAZEL_CACHE: ${{ needs.setup.outputs.write-caches }}
+        run: |
+          ./build_tools/github_actions/docker_run.sh \
+            --env "IREE_WRITE_REMOTE_BAZEL_CACHE=${IREE_WRITE_REMOTE_BAZEL_CACHE}" \
+            gcr.io/iree-oss/base-bleeding-edge@sha256:cf2e78194e64fd0166f4141317366261d7a62432b72e9a324cb8c2ff4e1a515a \
+            ./build_tools/bazel/build_test_all.sh
+
+  # Disabled while runner is offline.
+  # test_nvidia_a100:
+  #   needs: [setup, build_all]
+  #   if: contains(fromJson(needs.setup.outputs.enabled-jobs), 'test_nvidia_a100')
+  #   env:
+  #     BUILD_DIR: build-tests
+  #     INSTALL_DIR: ${{ needs.build_all.outputs.install-dir }}
+  #     INSTALL_DIR_ARCHIVE: ${{ needs.build_all.outputs.install-dir-archive }}
+  #     INSTALL_DIR_GCS_URL: ${{ needs.build_all.outputs.install-dir-gcs-url }}
+  #     IREE_CPU_DISABLE: 1
+  #     IREE_VULKAN_DISABLE: 0
+  #     IREE_CUDA_DISABLE: 0
+  #     IREE_HIP_DISABLE: 1
+  #   runs-on:
+  #     - self-hosted # must come first
+  #     - runner-group=${{ needs.setup.outputs.runner-group }}
+  #     - environment=${{ needs.setup.outputs.runner-env }}
+  #     - a100
+  #     - os-family=Linux
+  #   steps:
+  #     - name: "Checking out repository"
+  #       uses: actions/checkout@v4.1.7
+  #     - name: "Checking out runtime submodules"
+  #       run: ./build_tools/scripts/git/update_runtime_submodules.sh
+  #     - name: Querying GPU information
+  #       run: |
+  #         ./build_tools/scripts/check_cuda.sh
+  #         ./build_tools/scripts/check_vulkan.sh
+  #     - name: "Downloading install dir archive"
+  #       run: wget "${INSTALL_DIR_GCS_URL}" -O "${INSTALL_DIR_ARCHIVE}"
+  #     - name: "Extracting install directory"
+  #       run: tar -xf "${INSTALL_DIR_ARCHIVE}"
+  #     - name: "Building tests"
+  #       run: |
+  #         ./build_tools/github_actions/docker_run.sh \
+  #             --env IREE_CPU_DISABLE \
+  #             --env IREE_VULKAN_DISABLE \
+  #             --env IREE_CUDA_DISABLE \
+  #             --env IREE_HIP_DISABLE \
+  #             gcr.io/iree-oss/nvidia@sha256:433e072f075f90fdf07471673626b17091d8d8e2395626f1e6ac6c98803c8807 \
+  #             ./build_tools/pkgci/build_tests_using_package.sh ${INSTALL_DIR}/bin
+  #     - name: "Running GPU tests"
+  #       env:
+  #         IREE_CTEST_LABEL_REGEX: ^requires-gpu-sm80|^requires-gpu|^driver=vulkan$|^driver=cuda$
+  #         IREE_NVIDIA_SM80_TESTS_DISABLE: 0
+  #         IREE_MULTI_DEVICE_TESTS_DISABLE: 1
+  #       run: |
+  #         ./build_tools/github_actions/docker_run.sh \
+  #             --env IREE_VULKAN_DISABLE \
+  #             --env IREE_CUDA_DISABLE \
+  #             --env IREE_HIP_DISABLE \
+  #             --env IREE_CTEST_LABEL_REGEX \
+  #             --env IREE_NVIDIA_SM80_TESTS_DISABLE \
+  #             --env IREE_MULTI_DEVICE_TESTS_DISABLE \
+  #             --env IREE_VULKAN_F16_DISABLE=0 \
+  #             --env IREE_NVIDIA_GPU_TESTS_DISABLE=0 \
+  #             --env CTEST_PARALLEL_LEVEL=4 \
+  #             --env NVIDIA_DRIVER_CAPABILITIES=all \
+  #             --gpus all \
+  #             gcr.io/iree-oss/nvidia@sha256:433e072f075f90fdf07471673626b17091d8d8e2395626f1e6ac6c98803c8807 \
+  #             bash -euo pipefail -c \
+  #               "./build_tools/scripts/check_cuda.sh
+  #               ./build_tools/scripts/check_vulkan.sh
+  #               ./build_tools/cmake/ctest_all.sh ${BUILD_DIR}"
+
+  ############################### Configurations ###############################
+  # Jobs that build IREE in some non-default configuration
+  ##############################################################################
+
+  build_test_runtime:
+    needs: setup
+    name: "build_test_runtime :: ${{ matrix.name }}"
+    if: contains(fromJson(needs.setup.outputs.enabled-jobs), 'build_test_runtime')
+    runs-on: ${{ matrix.runs-on }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: ubuntu-20.04
+            runs-on: ubuntu-20.04
+          - name: windows-2022
+            runs-on: windows-2022
+          - name: macos-14
+            runs-on: macos-14
+    env:
+      BUILD_DIR: build-runtime
+      BUILD_PRESET: test
+      IREE_READ_REMOTE_CCACHE: 0
+      IREE_WRITE_REMOTE_CCACHE: 0
+      IREE_READ_LOCAL_CCACHE: 1
+      IREE_WRITE_LOCAL_CCACHE: ${{ needs.setup.outputs.write-caches }}
+    steps:
+      - uses: actions/checkout@v4.1.7
+      - uses: actions/setup-python@v5.1.0
+        with:
+          python-version: "3.11"
+
+      - name: (Linux) Install requirements
+        if: contains(matrix.name, 'ubuntu')
+        run: |
+          sudo apt update
+          sudo apt install -y ninja-build
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
+      - name: (Windows) Configure MSVC
+        if: contains(matrix.name, 'windows')
+        uses: ilammy/msvc-dev-cmd@v1.13.0
+      - name: (macOS) Install requirements
+        if: contains(matrix.name, 'macos')
+        run: brew install ninja ccache coreutils bash
+
+      - name: Checkout runtime submodules
+        run: bash ./build_tools/scripts/git/update_runtime_submodules.sh
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ github.job }}-${{ matrix.name }}
+          save: ${{ needs.setup.outputs.write-caches == 1 }}
+
+      - name: Install Python requirements
+        run: pip install -r ./runtime/bindings/python/iree/runtime/build_requirements.txt
+      - name: Build runtime
+        run: bash ./build_tools/cmake/build_runtime.sh "${BUILD_DIR}"
+      - name: Test runtime
+        run: bash ./build_tools/cmake/ctest_all.sh "${BUILD_DIR}"
+
+  small_runtime:
+    needs: setup
+    if: contains(fromJson(needs.setup.outputs.enabled-jobs), 'small_runtime')
+    runs-on: ubuntu-20.04
+    env:
+      BUILD_DIR: build-runtime
+    steps:
+      - name: "Checking out repository"
+        uses: actions/checkout@v4.1.7
+      - name: "Checking out runtime submodules"
+        run: ./build_tools/scripts/git/update_runtime_submodules.sh
+      - name: "Building size-optimized runtime"
+        run: |
+          ./build_tools/github_actions/docker_run.sh \
+            gcr.io/iree-oss/base@sha256:dc314b4fe30fc1315742512891357bffed4d1b62ffcb46258b1e0761c737b446 \
+            ./build_tools/cmake/build_runtime_small.sh \
+            "${BUILD_DIR}"
+      - name: "Testing runtime"
+        run: |
+          ./build_tools/github_actions/docker_run.sh \
+            gcr.io/iree-oss/base@sha256:dc314b4fe30fc1315742512891357bffed4d1b62ffcb46258b1e0761c737b446 \
+            ./build_tools/cmake/ctest_all.sh \
+            "${BUILD_DIR}"
+
+  tracing:
+    needs: setup
+    if: contains(fromJson(needs.setup.outputs.enabled-jobs), 'tracing')
+    runs-on: ubuntu-20.04
+    env:
+      BUILD_DIR: build-tracing
+    steps:
+      - name: "Checking out repository"
+        uses: actions/checkout@v4.1.7
+      - name: "Checking out runtime submodules"
+        run: ./build_tools/scripts/git/update_runtime_submodules.sh
+      - name: "Building IREE runtime with tracing - Tracy"
+        run: |
+          ./build_tools/github_actions/docker_run.sh \
+            --env "TRACING_PROVIDER=tracy" \
+            gcr.io/iree-oss/base@sha256:dc314b4fe30fc1315742512891357bffed4d1b62ffcb46258b1e0761c737b446 \
+            ./build_tools/cmake/build_runtime_tracing.sh \
+            "${BUILD_DIR}"
+      - name: "Building IREE runtime with tracing - console"
+        run: |
+          ./build_tools/github_actions/docker_run.sh \
+            --env "TRACING_PROVIDER=console" \
+            gcr.io/iree-oss/base@sha256:dc314b4fe30fc1315742512891357bffed4d1b62ffcb46258b1e0761c737b446 \
+            ./build_tools/cmake/build_runtime_tracing.sh \
+            "${BUILD_DIR}"
+
+  ############################## Crosscompilation ##############################
+  # Jobs that cross-compile IREE for other platforms
+  ##############################################################################
+
+  # Disabled to reduce self-hosted runners needed. See #17957
+  # cross_compile_and_test:
+  #   needs: [setup, build_all]
+  #   if: contains(fromJson(needs.setup.outputs.enabled-jobs), 'cross_compile_and_test')
+  #   runs-on:
+  #     - self-hosted # must come first
+  #     - runner-group=${{ needs.setup.outputs.runner-group }}
+  #     - environment=${{ needs.setup.outputs.runner-env }}
+  #     - cpu
+  #     - os-family=Linux
+  #   strategy:
+  #     matrix:
+  #       target:
+  #         - platform: linux
+  #           arch: riscv_64
+  #           abi: lp64d
+  #           docker_image: "gcr.io/iree-oss/riscv@sha256:62e87bad3405d691ddba6f9be0ef44eeb60461a467c8d86f0842c81a1f97da79"
+  #           build_script: "./build_tools/cmake/build_riscv.sh"
+  #           test_script: "./build_tools/cmake/test_riscv.sh"
+  #         - platform: linux
+  #           arch: riscv_32
+  #           abi: ilp32d
+  #           docker_image: "gcr.io/iree-oss/riscv@sha256:62e87bad3405d691ddba6f9be0ef44eeb60461a467c8d86f0842c81a1f97da79"
+  #           build_script: "./build_tools/cmake/build_riscv.sh"
+  #           test_script: "./build_tools/cmake/test_riscv.sh"
+  #         - platform: generic
+  #           arch: riscv_32
+  #           abi: ilp32
+  #           docker_image: "gcr.io/iree-oss/riscv@sha256:62e87bad3405d691ddba6f9be0ef44eeb60461a467c8d86f0842c81a1f97da79"
+  #           build_script: "./build_tools/cmake/build_riscv.sh"
+  #           test_script: "./tests/riscv32/smoke.sh"
+  #         - platform: emscripten
+  #           arch: wasm32
+  #           abi: wasm32
+  #           docker_image: "gcr.io/iree-oss/emscripten@sha256:2dd4c52f1bb499ab365aad0111fe5538b685d88af38636b409b0cf6a576ab214"
+  #           build_script: "./build_tools/cmake/build_runtime_emscripten.sh"
+  #           # No test script
+  #   env:
+  #     PLATFORM: ${{ matrix.target.platform }}
+  #     ARCH: ${{ matrix.target.arch }}
+  #     ABI: ${{ matrix.target.abi }}
+  #     DOCKER_IMAGE: ${{ matrix.target.docker_image }}
+  #     BUILD_SCRIPT: ${{ matrix.target.build_script }}
+  #     TEST_SCRIPT: ${{ matrix.target.test_script }}
+  #     INSTALL_DIR: ${{ needs.build_all.outputs.install-dir }}
+  #     INSTALL_DIR_ARCHIVE: ${{ needs.build_all.outputs.install-dir-archive }}
+  #     INSTALL_DIR_GCS_ARTIFACT: ${{ needs.build_all.outputs.install-dir-gcs-artifact }}
+  #     TARGET_BUILD_DIR: build-${{ matrix.target.platform }}-${{ matrix.target.arch }}
+  #     IREE_WRITE_REMOTE_CCACHE: ${{ needs.setup.outputs.write-caches }}
+  #   steps:
+  #     - name: "Checking out repository"
+  #       uses: actions/checkout@v4.1.7
+  #     - name: "Checking out runtime submodules"
+  #       run: ./build_tools/scripts/git/update_runtime_submodules.sh
+  #     - name: "Downloading install dir archive"
+  #       run: gcloud storage cp "${INSTALL_DIR_GCS_ARTIFACT}" "${INSTALL_DIR_ARCHIVE}"
+  #     - name: "Extracting install directory"
+  #       run: tar -xf "${INSTALL_DIR_ARCHIVE}"
+  #     - name: "Build cross-compiling target"
+  #       run: |
+  #         ./build_tools/github_actions/docker_run.sh \
+  #           --env "IREE_CCACHE_GCP_TOKEN=$(gcloud auth application-default print-access-token)" \
+  #           --env "IREE_WRITE_REMOTE_CCACHE=${IREE_WRITE_REMOTE_CCACHE}" \
+  #           --env "CCACHE_NAMESPACE=${DOCKER_IMAGE}" \
+  #           --env "IREE_TARGET_PLATFORM=${PLATFORM}" \
+  #           --env "IREE_TARGET_ARCH=${ARCH}" \
+  #           --env "IREE_TARGET_ABI=${ABI}" \
+  #           --env "IREE_TARGET_BUILD_DIR=${TARGET_BUILD_DIR}" \
+  #           --env "BUILD_PRESET=test" \
+  #           --env "IREE_HOST_BIN_DIR=${INSTALL_DIR}/bin" \
+  #           "${DOCKER_IMAGE}" \
+  #           "${BUILD_SCRIPT}"
+  #     - name: "Test cross-compiling target"
+  #       if: matrix.target.test_script
+  #       run: |
+  #         ./build_tools/github_actions/docker_run.sh \
+  #           --env "IREE_TARGET_PLATFORM=${PLATFORM}" \
+  #           --env "IREE_TARGET_ARCH=${ARCH}" \
+  #           --env "IREE_TARGET_BUILD_DIR=${TARGET_BUILD_DIR}" \
+  #           --env "BUILD_PRESET=test" \
+  #           "${DOCKER_IMAGE}" \
+  #           "${TEST_SCRIPT}"
+
+  ##############################################################################
+
+  # Depends on all the other jobs to provide a single anchor that indicates the
+  # final status. Status reporting will become more sophisticated in the future
+  # and we can hopefully avoid the need to explicitly list every single job...
+  summary:
+    # Even if you have an explicit if condition, you still need to override
+    # GitHub's default behavior of not running if any dependencies failed.
+    if: always()
+    runs-on: ubuntu-20.04
+    needs:
+      - setup
+
+      # Basic
+      - build_all
+      - build_test_all_bazel
+
+      # Accelerators
+      # - test_nvidia_a100
+
+      # Configurations
+      - build_test_runtime
+      - small_runtime
+      - tracing
+
+      # Crosscompilation
+      # - cross_compile_and_test
+    steps:
+      - name: "Checking out repository"
+        uses: actions/checkout@v4.1.7
+      - name: Getting failed jobs
+        id: failed_jobs
+        run: |
+          echo '${{ toJson(needs) }}'
+          FAILED_JOBS="$(echo '${{ toJson(needs) }}' \
+            | jq --raw-output \
+            'map_values(select(.result!="success" and .result!="skipped")) | keys | join(",")' \
+          )"
+          echo "failed-jobs=${FAILED_JOBS}" >> $GITHUB_OUTPUT
+          if [[ "${FAILED_JOBS}" != "" ]]; then
+            echo "The following jobs failed: ${FAILED_JOBS}"
+            exit 1
+          fi
+      - name: Posting to Discord
+        uses: sarisia/actions-status-discord@v1.14.3
+        if: failure() && github.ref_name == 'main'
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          description: "The following jobs failed: ${{ steps.failed_jobs.outputs.failed-jobs }}"
+          url: "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/attempts/${{ github.run_attempt }}"

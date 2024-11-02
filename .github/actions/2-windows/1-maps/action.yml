@@ -1,0 +1,134 @@
+name: 'Docker Deploy Action'
+description: >
+  🪂  A Github Action to deploy pages conveniently
+inputs:
+  hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}
+    required: true
+  hub_password:
+    description: Docker Hub authentication token
+    required: true
+  hub_token:
+    description: Docker Hub authentication token
+    required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: "Name for the container to be created. Example: nginx"
+    default: 'prime'
+    required: false
+  image_tag:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  build_args:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  action_path:
+    description: 'The action path'
+    required: false
+  repository:
+    description: 'The deploy repository'
+    default: ${{ github.repository }}
+    required: false
+
+branding:
+  icon: 'command'
+  color: 'yellow'
+
+runs:
+  using: composite
+  steps:
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.hub_username }}
+        password: ${{ inputs.hub_token }}
+
+    - name: 💎 Set ID Token
+      if: runner.os == 'Windows'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: ${{ inputs.credentials }}
+
+    - name: 💎 Setup Gcloud
+      if: runner.os == 'Windows'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        install_components: 'alpha,cloud-datastore-emulator'
+
+    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
+    - name: 💎 Remove Existing Self-Hosted Runner
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        BASE="D:/a/_actions/eq19/eq19/v1/.github"
+        $BASE/entrypoint/init.sh
+
+    - name: View context attributes
+      uses: actions/github-script@v7
+      with:
+        script: console.log(context)
+        
+    - name: Set Docker Hub description
+      uses: peter-evans/dockerhub-description@v4
+      with:
+        repository: 'eq19/prime'
+        username: ${{ inputs.hub_username }}
+        password: ${{ inputs.hub_token }}
+        short-description: ${{ inputs.docker_hub_repo_short_description }}
+        readme-filepath: ${{ inputs.docker_hub_repo_readme_file_path }}
+
+    - name: Build and Push my_awesome_microservice
+      uses: mr-smithers-excellent/docker-build-push@v5
+      if: runner.os == '-Windows'
+      with:
+        image: my_awesome_microservice
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ inputs.token }}
+        platform: windows/amd64
+        tags: development-latest
+
+    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
+    - name: 💎 Remove Existing Self-Hosted Runner
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        for instance_uri in $(gcloud compute instances list --uri 2> /dev/null); do
+          instance_name=${instance_uri##*/}
+          instance_zone_uri=${instance_uri/\/instances\/${instance_name}/}
+          instance_zone=${instance_zone_uri##*/}
+          if [ -n "${instance_name}" ] && [ -n "${instance_zone}" ] && gcloud compute instances delete ${instance_name} --zone ${instance_zone} --quiet; then
+            echo "deleted: ${instance_zone}/${instance_name}"
+          fi
+        done
