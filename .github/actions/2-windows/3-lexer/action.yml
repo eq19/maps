@@ -113,7 +113,7 @@ runs:
         EOL
         #Ref: https://github.com/cloudkite-io/google-container-optimized-os-tools
         ssh staging 'sudo whoami && \
-          sudo echo ${{ steps.setup_runner.outputs.config }} > /home/runner/.ssh/function.json && \
+          sudo echo ${{ steps.setup_runner.outputs.function }} > /home/runner/.ssh/function.json && \
           sudo chown root:root /home/runner/.ssh/*.json && sudo mv -f /home/runner/.ssh/*.json /home/runner/.docker/ && sudo ls -alR /home/runner'
 
     - name: 💎 Set Access Token
