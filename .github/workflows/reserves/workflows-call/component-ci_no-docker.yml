@@ -1,0 +1,46 @@
+name: "Eventide component workflow: no docker"
+
+on:
+  workflow_call:
+    secrets:
+      BUNDLE_RUBYGEMS__PKG__GITHUB__COM:
+        required: true
+      BUNDLE_GITHUB__COM:
+        required: false
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    env:
+      ImageOS: ubuntu20
+      BUNDLE_RUBYGEMS__PKG__GITHUB__COM: ${{ secrets.BUNDLE_RUBYGEMS__PKG__GITHUB__COM }}
+      BUNDLE_GITHUB__COM: ${{ secrets.BUNDLE_GITHUB__COM }}
+      POSTGRES_HOST_AUTH_METHOD: trust
+      PGHOST: localhost
+      PGUSER: postgres
+      EVENTIDE_DATABASE_URL: postgres://message_store@localhost/message_store
+
+    services:
+      postgres:
+        image: postgres:alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Tests
+        run: bin/ci_tests

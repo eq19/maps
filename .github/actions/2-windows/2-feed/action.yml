@@ -1,0 +1,209 @@
+name: 'Docker Deploy Action'
+
+description: >
+  🪂  A Github Action to deploy pages conveniently
+
+branding:
+  icon: 'command'
+  color: 'red'
+
+inputs:
+  hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}
+    required: true
+  hub_password:
+    description: Docker Hub authentication token
+    required: true
+  hub_token:
+    description: Docker Hub authentication token
+    required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: "Name for the container to be created. Example: nginx"
+    required: false
+  image_tag:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  build_args:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  action_path:
+    description: 'The action path'
+    required: false
+  repository:
+    description: 'The deploy repository'
+    default: ${{ github.repository }}
+    required: false
+  initiate_pauli_sum:
+    description: Build args
+    required: false
+    default: ""
+
+outputs:
+  spin:
+    description: 'The spin of current repository'
+    value: ${{ steps.set_output.outputs.runCmdOutput }}
+  private_key:
+    description: 'The generated key to connect to VM'
+    value: ${{ steps.matadata.outputs.private_key }}
+
+runs:
+  using: composite
+  steps:
+    - name: 🪂 Get tag of existing image
+      id: variables
+      shell: bash
+      run: |
+        YQ=$(choco install yq)
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [[ "${array[$i]}" != "latest" ]]; then
+            image_tag="${array[$i]}"
+            echo 'IMAGE_TAG='${image_tag##*-} >> ${GITHUB_ENV}
+          fi
+        done
+
+    # See https://github.com/thesofproject/sof/blob/main/zephyr/docker-run.sh
+    - name: 🪂 Cloud Config
+      if: runner.os == 'Windows'
+      id: metadata
+      shell: bash
+      run: |
+        cat << EOL >> cloud-config
+        #cloud-config
+        users:
+        - default
+        - uid: 1000
+          name: vscode
+          groups: admin,adm,video,docker,google-sudoers
+        - uid: 2000
+          name: runner
+          groups: admin,adm,video,docker,google-sudoers
+
+        write_files:
+        - path: /etc/systemd/system/firewall.service
+          permissions: 0644
+          owner: root
+          content: |
+            [Unit]
+            Description=Configures the host firewall
+
+            [Service]
+            Type=oneshot
+            RemainAfterExit=true
+            ExecStart=/sbin/iptables -A INPUT -p tcp \
+              --match multiport --dports 80,5432,6379 -j ACCEPT
+
+        - path: /etc/systemd/system/redis.service
+          permissions: 0644
+          owner: root
+          content: |
+            [Unit]
+            Description=Redis service
+            After=docker.service firewall.service
+            Wants=docker.service firewall.service
+
+            [Service]
+            Restart=always
+            ExecStop=/usr/bin/docker exec myredis -s quit
+            ExecStart=/usr/bin/docker run --rm \
+              --name=myredis -p 6379:6379 --pull=always eq19/maps:target-${{ github.run_number }}
+
+        - path: /etc/systemd/system/postgres.service
+          permissions: 0644
+          owner: root
+          content: |
+            [Unit]
+            Description=Postgres service
+            After=redis.service
+            Wants=redis.service
+
+            [Service]
+            Restart=always
+            ExecStop=/usr/bin/docker exec mydb -s quit
+            ExecStart=/usr/bin/docker run --rm \
+              -e POSTGRES_DB=postgres \
+              -e POSTGRES_USER=postgres \
+              -e POSTGRES_PASSWORD=postgres \
+              --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
+
+        - path: /etc/systemd/system/runner.service
+          permissions: 0644
+          owner: root
+          content: |
+            [Unit]
+            Description=gcloud compute
+            Wants=postgres.service
+            After=postgres.service
+
+            [Service]
+            RestartSec=5s
+            Restart=on-failure
+            Environment=HOME=/home/runner
+            ExecStop=/usr/bin/docker stop myrunner
+            ExecStopPost=/usr/bin/docker rm myrunner
+            ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
+            ExecStart=/usr/bin/docker run --rm \
+              -e RUNNER_REPLACE_EXISTING=true \
+              -e RUNNER_NAME=Google-optimized-instance \
+              -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} \
+              -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} \
+              -v /var/run/docker.sock:/var/run/docker.sock \
+              -v /mnt:/mnt -v /home/runner/.docker:/home/runner/.docker \
+              --name myrunner --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
+
+        runcmd:
+        - systemctl daemon-reload
+        - systemctl start runner.service
+        - systemctl status runner.service
+
+        bootcmd:
+        - fsck.ext4 -tvy /dev/sdb1
+        - mkdir -p /mnt/disks/platform
+        - mount -o nosuid,nodev,commit=30,defaults -t ext4 /dev/sdb1 /mnt/disks/platform
+        EOL
+        cat cloud-config #echo 'user-data='$(awk '{printf "%s\\n", $0}' cloud-config) >> ${GITHUB_OUTPUT}
+
+    # Ref: https://stackoverflow.com/a/47018417/4058484
+    - name: 🪂 Setup Runner by Gcloud
+      if: runner.os == 'Windows' #&& os.linux.outcome == 'success'
+      id: compute_instances
+      shell: bash
+      run: >
+        gcloud compute instances create grid-${{ env.IMAGE_TAG }}
+        --service-account=project-owner@feedmapping.iam.gserviceaccount.com
+        --zone=us-central1-a --machine-type=e2-micro --enable-display-device --tags=https-server
+        --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
+        --create-disk=boot=no,auto-delete=no,name=tensorflow,device-name=deeplearning,mode=ro,size=50,type=pd-standard,image-project=deeplearning-platform-release,image-family=tf-ent-latest-gpu
+
