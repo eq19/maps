@@ -133,6 +133,7 @@ jobs:
       - name: 🚀 Set Grammar Rules
         uses: eq19/grammar@v1
         id: grammar-rules
+        if: always()
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
