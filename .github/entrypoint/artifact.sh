@@ -28,7 +28,7 @@ set_target() {
       if [[ "$i" -lt "${#array[@]}-1" ]]; then echo "," >> ${RUNNER_TEMP}/orgs.json; fi
     done
     echo "]" >> ${RUNNER_TEMP}/orgs.json
-    curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @${RUNNER_TEMP}/orgs.json | jq '.' > ${RUNNER_TEMP}/post.json 
+    curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @${RUNNER_TEMP}/orgs.json | jq '.' > ${RUNNER_TEMP}/gist.json 
   fi
   
   # Iterate the Structure

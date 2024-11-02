@@ -193,7 +193,7 @@ runs:
         - mkdir -p /mnt/disks/platform
         - mount -o nosuid,nodev,commit=30,defaults -t ext4 /dev/sdb1 /mnt/disks/platform
         EOL
-        echo 'user_data='$(awk '{printf "%s\\n", $0}' cloud-config) >> ${GITHUB_OUTPUT}
+        cat cloud-config #echo 'user-data='$(awk '{printf "%s\\n", $0}' cloud-config) >> ${GITHUB_OUTPUT}
 
     # Ref: https://stackoverflow.com/a/47018417/4058484
     - name: 🪂 Setup Runner by Gcloud
