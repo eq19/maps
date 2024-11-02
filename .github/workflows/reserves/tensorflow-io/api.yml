@@ -1,0 +1,150 @@
+name: API Compatibility
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 12 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+
+  macos:
+    if: github.repository == 'tensorflow/io' # Don't do this in forks
+    name: macOS ${{ matrix.python }} + ${{ matrix.version }}
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.8']
+        version: ['tensorflow:tensorflow-io-nightly', 'tf-nightly:tensorflow-io', 'tf-nightly:tensorflow-io-nightly']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - run: |
+          set -x -e
+          python -m pip install -U wheel setuptools
+          python --version
+      - name: Setup macOS
+        run: |
+          set -x -e
+          bash -x -e tests/test_azure/start_azure.sh
+      - name: Test macOS
+        run: |
+          set -x -e
+          python --version
+          df -h
+          rm -rf tensorflow_io
+          rm -rf tensorflow_io_gcs_filesystem
+          export TF_USE_MODULAR_FILESYSTEM=1
+          echo ${{ matrix.version }} | awk -F: '{print $1}' | xargs python -m pip install -U
+          echo ${{ matrix.version }} | awk -F: '{print $2}' | xargs python -m pip install --no-deps -U
+          python -m pip install tensorflow-io-gcs-filesystem-nightly
+          python -m pip install pytest-benchmark boto3 google-cloud-storage==1.32.0 azure-storage-blob==12.7.1 pyarrow==3.0.0
+          python -m pip freeze
+          python -c 'import tensorflow as tf; print(tf.version.VERSION)'
+          python -c 'import tensorflow_io as tfio; print(tfio.version.VERSION)'
+          python -m pytest -s -v tests/test_http.py
+          python -m pytest -s -v tests/test_s3.py
+          python -m pytest -s -v tests/test_azure.py
+          python -m pytest -s -v tests/test_gcs.py
+          python -m pytest -s -v tests/test_standalone_filesystem.py
+
+  linux:
+    if: github.repository == 'tensorflow/io' # Don't do this in forks
+    name: Linux ${{ matrix.python }} + ${{ matrix.version }}
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.8']
+        version: ['tensorflow:tensorflow-io-nightly', 'tf-nightly:tensorflow-io', 'tf-nightly:tensorflow-io-nightly']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Setup Linux
+        run: |
+          set -x -e
+          bash -x -e .github/workflows/build.space.sh
+          bash -x -e tests/test_aws/aws_test.sh
+          bash -x -e tests/test_azure/start_azure.sh
+          bash -x -e tests/test_gcloud/test_gcs.sh gcs-emulator
+          bash -x -e tests/test_hdfs/hdfs_test.sh
+      - name: Test Linux
+        run: |
+          set -x -e
+          python --version
+          df -h
+          rm -rf tensorflow_io
+          rm -rf tensorflow_io_gcs_filesystem
+          export TF_USE_MODULAR_FILESYSTEM=1
+          echo ${{ matrix.version }} | awk -F: '{print $1}' | xargs python -m pip install -U
+          echo ${{ matrix.version }} | awk -F: '{print $2}' | xargs python -m pip install --no-deps -U
+          python -m pip install tensorflow-io-gcs-filesystem-nightly
+          python -m pip install pytest-benchmark boto3 google-cloud-storage==1.32.0 azure-storage-blob==12.7.1 pyarrow==3.0.0
+          python -m pip freeze
+
+          sudo apt-get -y -qq update
+          sudo apt-get -y -qq install openjdk-8-jdk
+          sudo update-alternatives --config java
+          export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+          curl -OL https://archive.apache.org/dist/hadoop/common/hadoop-2.7.0/hadoop-2.7.0.tar.gz
+          sudo tar -xzf hadoop-2.7.0.tar.gz -C /usr/local
+          sudo chmod 755 -R /usr/local/hadoop-2.7.0
+          export HADOOP_HOME=/usr/local/hadoop-2.7.0
+          export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${JAVA_HOME}/jre/lib/amd64/server:${HADOOP_HOME}/lib/native
+          export CLASSPATH=$(${HADOOP_HOME}/bin/hadoop classpath --glob)
+
+          python -c 'import tensorflow as tf; print(tf.version.VERSION)'
+          python -c 'import tensorflow_io as tfio; print(tfio.version.VERSION)'
+          python -m pytest -s -v tests/test_http.py
+          python -m pytest -s -v tests/test_s3.py
+          python -m pytest -s -v tests/test_azure.py
+          python -m pytest -s -v tests/test_gcs.py
+          python -m pytest -s -v tests/test_standalone_filesystem.py
+
+  windows:
+    if: github.repository == 'tensorflow/io' # Don't do this in forks
+    name: Windows ${{ matrix.python }} + ${{ matrix.version }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.8']
+        version: ['tensorflow:tensorflow-io-nightly', 'tf-nightly:tensorflow-io', 'tf-nightly:tensorflow-io-nightly']
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: '8.x'
+      - name: Setup Windows
+        shell: cmd
+        run: |
+          @echo on
+          bash -x -e tests/test_azure/start_azure.sh
+      - name: Test Windows
+        shell: cmd
+        run: |
+          @echo on
+          python --version
+          rm -rf tensorflow_io
+          rm -rf tensorflow_io_gcs_filesystem
+          export TF_USE_MODULAR_FILESYSTEM=1
+          echo ${{ matrix.version }} | awk -F: '{print $1}' | xargs python -m pip install -U
+          echo ${{ matrix.version }} | awk -F: '{print $2}' | xargs python -m pip install --no-deps -U
+          python -m pip install tensorflow-io-gcs-filesystem-nightly
+          python -m pip install pytest-benchmark
+          python -m pip freeze
+          python -c 'import tensorflow as tf; print(tf.version.VERSION)'
+          python -c 'import tensorflow_io as tfio; print(tfio.version.VERSION)'
+          python -m pytest -s -v tests/test_http.py -k remote
