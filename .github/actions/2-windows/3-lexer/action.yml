@@ -114,7 +114,14 @@ runs:
         #Ref: https://github.com/cloudkite-io/google-container-optimized-os-tools
         ssh staging 'sudo whoami && \
           sudo echo ${{ steps.setup_runner.outputs.function }} > /home/runner/.ssh/function.json && \
-          sudo chown root:root /home/runner/.ssh/*.json && sudo mv -f /home/runner/.ssh/*.json /home/runner/.docker/ && sudo ls -alR /home/runner'
+          sudo chown root:root /home/runner/.ssh/*.json && sudo mv -f /home/runner/.ssh/*.json /home/runner/.docker/'
+        if [ $? -eq 0 ]; then
+          ssh staging 'sudo ls -alR /home/runner'
+        else
+          git clone --single-branch -b gh-pages ${{ env.REMOTE_REPO }} gh-pages && cd gh-pages
+          git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
+          exit 1
+        fi
 
     - name: 💎 Set Access Token
       if: runner.os == '-Windows'

@@ -90,9 +90,11 @@ runs:
     - name: 💎 Remove Existing Self-Hosted Runner
       if: runner.os == 'Windows'
       shell: bash
+      env:
+        GITHUB_ACCESS_TOKEN: ${{ inputs.token }}
+        BASE: "D:/a/_actions/eq19/eq19/v1/.github"
       run: |
-        BASE="D:/a/_actions/eq19/eq19/v1/.github"
-        $BASE/entrypoint/init.sh
+        ${BASE}/entrypoint/init.sh
 
     - name: View context attributes
       uses: actions/github-script@v7
