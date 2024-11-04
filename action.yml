@@ -75,12 +75,12 @@ runs:
         token: ${{ inputs.token }}
 
     - name: Profiling Feedback
-      if: runner.os == 'Windows'
-      uses: eq19/eq19/.github/actions/2-windows/1-maps@v1
+      if: runner.os != 'Linux'
+      uses: eq19/eq19/.github/actions/2-macos/1-maps@v1
       with:
         token: ${{ inputs.token }}
         image_name: ${{ inputs.image_name }}
         credentials: ${{ inputs.credentials }}
-        action_path: ${GITHUB_ACTION_PATH//\\//}
+        action_path: ${{ github.action_path }}
         hub_token: ${{ inputs.docker_hub_token }} 
         hub_username: ${{ inputs.docker_hub_username }} 
