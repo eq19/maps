@@ -1,4 +1,3 @@
-
 name: 'Jekyll Deploy Action'
 
 description: >
@@ -9,6 +8,47 @@ branding:
   color: 'red'
 
 inputs:
+  hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}       
+    required: true
+  hub_password:
+    description: Docker Hub authentication token
+    required: true
+  hub_token:
+    description: Docker Hub authentication token
+    required: true
+  action_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
+  initiate_pauli_sum:
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
   provider:
     description: 'The deploy provider'
     required: true
@@ -18,22 +58,15 @@ inputs:
   token:
     description: 'The deploy token'
     required: false
-  credentials:
-    description: 'The gcloud credentials'
-    required: true
   repository:
     description: 'The deploy repository'
+    default: ${{ github.repository }}
     required: false
-  branch:
-    description: 'The deploy branch'
-    required: false
-  actor:
-    description: 'The github username creating the commit'
-    default: ${{ github.actor }}
-    required: false
-  gell_mann:
-    description: 'The pre-build configuration'
-    required: true
+
+outputs:
+  site_id:
+    description: "A file path to a results file."
+    value: ${{ env.ID}}
 
 runs:
   #using: 'node20'
