@@ -110,9 +110,9 @@ jobs:
       - name: 📂 Checkout
         uses: actions/checkout@v4
         with:
-          ref: gh-pages
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
+          ref: ${{ matrix.config.id == 3 && gh-source || gh-pages }}
 
       - name: ⚧️ Setup Parser
         uses: eq19/parser@v2
