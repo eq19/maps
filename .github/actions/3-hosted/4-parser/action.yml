@@ -1,0 +1,87 @@
+
+name: 'Jekyll Deploy Action'
+
+description: >
+  A Github Action to deploy the Jekyll site conveniently for GitHub Pages
+
+branding:
+  icon: 'command'
+  color: 'red'
+
+inputs:
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  credentials:
+    description: 'The gcloud credentials'
+    required: true
+  repository:
+    description: 'The deploy repository'
+    required: false
+  branch:
+    description: 'The deploy branch'
+    required: false
+  actor:
+    description: 'The github username creating the commit'
+    default: ${{ github.actor }}
+    required: false
+  gell_mann:
+    description: 'The pre-build configuration'
+    required: true
+
+runs:
+  #using: 'node20'
+  #main: '.github/run/main.js'
+  #post: '.github/run/post.js'
+  #post-if: 'success()'
+  using: composite
+  
+  steps:
+    - name: 💎 Reinvented
+      if: runner.os != 'macOS'
+      shell: bash
+      run: |
+        if [ ! -d /mnt/disks/platform/usr/local/sbin ]; then
+          #cd "${{ github.workspace }}" && git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
+          exit 1
+        fi
+
+    #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
+    - name: Run identity
+      shell: bash
+      run: |
+        TOKEN=$(/mnt/disks/platform/usr/bin/gcloud auth print-identity-token)
+        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
+          -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
+          --data @${{ github.workspace }}/docs/data.json | jq '.'
+
+    - name: 💎 Connect to Redis
+      if: runner.os != 'macOS'
+      # Runs a script that creates a Redis client, populates
+      # the client with data, and retrieves data
+      env:
+        # The hostname used to communicate with the Redis service container
+        # Ref: https://stackoverflow.com/a/48547074/4058484
+        REDIS_PORT: 6379
+        REDIS_HOST: 172.17.0.1
+      shell: bash
+      run: |
+        node ${{ github.action_path}}/main.js
+    
+    - name: 💎 Connect to postgres
+      if: runner.os != 'macOS'
+      env:
+        # use the internal host here because we have specified a container for the job.
+        # If we were running the job on the VM this would be localhost
+        POSTGRES_PORT: 5432
+        POSTGRES_HOST: 172.17.0.1
+      shell: bash
+      run: |
+        node ${{ github.action_path}}/post.js
+        echo '${{ inputs.gell_mann }}'
