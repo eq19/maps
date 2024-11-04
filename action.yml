@@ -47,20 +47,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Initial action
-      uses: eq19/eq19.github.io@v1
-      id: init
-      with:
-        tmp: ${{ inputs.tmp }}
-        base: ${{ inputs.base }}
-        token: ${{ inputs.token }}
-        actor: ${{ github.actor }}
-        credentials: ${{ inputs.credentials }}
-        action_path: ${{ github.action_path }}
-        hub_token: ${{ inputs.docker_hub_token }}
-        hub_username: ${{ inputs.docker_hub_username }}
-        hub_password: ${{ inputs.docker_hub_password }}
-
     - name: Target Configuration
       if: runner.os == 'Linux'
       uses: eq19/eq19/.github/actions/1-ubuntu/1-maps@v1
