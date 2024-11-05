@@ -40,9 +40,8 @@ inputs:
     required: true
 
 outputs:
-  id:
-    description: The site id
-    value: ${{ steps.build.outputs.site_id}}
+  description: 'The command.outputs'
+  value: ${{ steps.*.outputs.* }}
 
 runs:
   using: composite
