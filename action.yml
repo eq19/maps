@@ -39,9 +39,7 @@ inputs:
     description: The id according to os
     required: true
 
-outputs:
-  description: 'The command.outputs'
-  value: ${{ steps.*.outputs.* }}
+outputs: ${{ steps.*.outputs.* }}
 
 runs:
   using: composite
