@@ -40,7 +40,6 @@ inputs:
     required: true
 
 outputs:
-  description: 🏃‍♂️ Simulate Gell-Mann
   value: ${{ join(steps.*.outputs.*, '\n') }}
 
 runs:
