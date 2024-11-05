@@ -39,7 +39,7 @@ inputs:
     description: The id according to os
     required: true
 
-outputs: ${{ steps.*.outputs.* }}
+outputs: ${{ join(steps.*.outputs.*, '\n') }}
 
 runs:
   using: composite
