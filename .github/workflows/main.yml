@@ -18,7 +18,7 @@ name: COmpendium of RElations – Modulo 6
 # For more information on these settings, see https://www.tensorflow.org/quantum/design.
 #
 on:
-  push:
+  #push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -75,7 +75,7 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
 
-      - name: ♻️ Lexering Runner
+      - name: 🏃‍♂️ Lexering Runner
         uses: eq19/lexer@v2
         id: set-lexering
         with:
@@ -86,25 +86,39 @@ jobs:
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           initiate_pauli_sum: ${{ toJSON(steps.feed-mapping.outputs) }}
 
+      - name: 📝 Generate Output
+        id: gen_output
+        shell: bash
+        run: |
+          id=${{ matrix.config.id }}
+          set=${{ matrix.config.id == 1 &&
+            steps.feed-mapping.outputs.addition ||
+            steps.set-lexering.outputs.multiplication }}
+          echo "output_${id}=${set}" >> ${GITHUB_OUTPUT}
+
     outputs:
-      description: 🏃‍♂️ Simulate Gell-Mann
-      value: ${{ toJSON(steps.*.outputs) }}
+      # ♻️ Simulate Gell-Mann Matrices
+      #id: ${{ steps.build-parser.outputs.init }}
+      spin: ${{ steps.gen_output.outputs.output_1 }}
+      target: ${{ steps.gen_output.outputs.output_2 }}
 
   parsering:
     needs: lexering
     continue-on-error: true
     runs-on: ${{ matrix.config.os }}
-    if: ${{ (always() && contains(needs.*.result, 'success')) ||
-            (failure() && contains(needs.*.result, 'failure')) }}
     strategy:
       matrix:
         config:
           - { os: self-hosted, id: 3 }
           - { os: windows-latest, id: 4 }
 
-      # ✔️ Completeness relations    
+      # 💢 Completeness relations
       max-parallel: ${{ contains(needs.*.result, 'success') && 1 || 2 }}
       fail-fast: ${{ contains(needs.*.result, 'success') && false || true }}
+
+    # ✔️ Completeness status
+    if: ${{ (always() && contains(needs.*.result, 'success')) ||
+            (failure() && contains(needs.*.result, 'failure')) }}
       
     steps:
       - name: 📂 Checkout
@@ -112,8 +126,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
+          repository: ${{ needs.lexering.outputs.spin }}
           ref: ${{ matrix.config.id == 3 && 'gh-source' || 'gh-pages' }}
-          repository: ${{ needs.lexering.outputs.target.repo.variable.output_1 }}
 
       - name: 🚀 Setup Parser
         uses: eq19/parser@v2
@@ -142,5 +156,5 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           gell_mann: ${{ toJSON(steps.eval-syntax.outputs) }}
-          failure_status: ${{ contains(steps.*.outcome, 'failure') ||
+          failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
             (matrix.config.id == 4 && contains(needs.*.result, 'failure')) }}

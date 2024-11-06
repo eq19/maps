@@ -64,9 +64,9 @@ inputs:
     required: false
 
 outputs:
-  site_id:
-    description: "A file path to a results file."
-    value: ${{ env.ID}}
+  all_outputs:
+    description: Collect all outputs
+    value: ${{ toJSON(steps.*.outputs) }}
 
 runs:
   #using: 'node20'
@@ -76,45 +76,30 @@ runs:
   using: composite
   
   steps:
-    - name: 💎 Reinvented
-      if: runner.os != 'macOS'
-      shell: bash
-      run: |
-        if [ ! -d /mnt/disks/platform/usr/local/sbin ]; then
-          #cd "${{ github.workspace }}" && git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
-          exit 1
-        fi
+    - name: 💎 Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        cache-version: 1
+        bundler-cache: true
+        
+    - name: 💎 Set ID Token
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: 'id_token'
+        create_credentials_file: false
+        credentials_json: ${{ inputs.credentials }}
+        id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
 
     #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
     - name: Run identity
+      if: runner.os == '-Windows'           
       shell: bash
+      env:
+        TOKEN: ${{ steps.auth.outputs.id_token }}
       run: |
-        TOKEN=$(/mnt/disks/platform/usr/bin/gcloud auth print-identity-token)
+        #brew install ruby-full
+        #gem install faraday-retry github-pages --platform=ruby
         curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
           -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
           --data @${{ github.workspace }}/docs/data.json | jq '.'
-
-    - name: 💎 Connect to Redis
-      if: runner.os != 'macOS'
-      # Runs a script that creates a Redis client, populates
-      # the client with data, and retrieves data
-      env:
-        # The hostname used to communicate with the Redis service container
-        # Ref: https://stackoverflow.com/a/48547074/4058484
-        REDIS_PORT: 6379
-        REDIS_HOST: 172.17.0.1
-      shell: bash
-      run: |
-        node ${{ inputs.action_path}}/main.js
-    
-    - name: 💎 Connect to postgres
-      if: runner.os != 'macOS'
-      env:
-        # use the internal host here because we have specified a container for the job.
-        # If we were running the job on the VM this would be localhost
-        POSTGRES_PORT: 5432
-        POSTGRES_HOST: 172.17.0.1
-      shell: bash
-      run: |
-        node ${{ inputs.action_path}}/post.js
-        echo '${{ inputs.gell_mann }}'

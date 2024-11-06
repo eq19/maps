@@ -71,12 +71,12 @@ inputs:
     default: ""
 
 outputs:
-  spin:
-    description: 'The spin of current repository'
-    value: ${{ steps.set_output.outputs.runCmdOutput }}
-  private_key:
-    description: 'The generated key to connect to VM'
-    value: ${{ steps.matadata.outputs.private_key }}
+  variables:
+    description: Collect variables outputs
+    value: ${{ toJSON(steps.variables.outputs) }}
+  metadata:
+    description: Collect metadata outputs
+    value: ${{ toJSON(steps.metadata.outputs) }}
 
 runs:
   using: composite
@@ -85,7 +85,7 @@ runs:
       id: variables
       shell: bash
       run: |
-        YQ=$(choco install yq)
+        brew install mosh
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
         for ((i=0; i < ${#array[@]}; i++)); do
           if [[ "${array[$i]}" != "latest" ]]; then
@@ -96,7 +96,6 @@ runs:
 
     # See https://github.com/thesofproject/sof/blob/main/zephyr/docker-run.sh
     - name: 🪂 Cloud Config
-      if: runner.os == 'Windows'
       id: metadata
       shell: bash
       run: |
@@ -122,8 +121,7 @@ runs:
             [Service]
             Type=oneshot
             RemainAfterExit=true
-            ExecStart=/sbin/iptables -A INPUT -p tcp \
-              --match multiport --dports 80,5432,6379 -j ACCEPT
+            ExecStart=/sbin/iptables -A INPUT -p tcp --match multiport --dports 80,5432,6379 -j ACCEPT
 
         - path: /etc/systemd/system/redis.service
           permissions: 0644
@@ -137,8 +135,7 @@ runs:
             [Service]
             Restart=always
             ExecStop=/usr/bin/docker exec myredis -s quit
-            ExecStart=/usr/bin/docker run --rm \
-              --name=myredis -p 6379:6379 --pull=always eq19/maps:target-${{ github.run_number }}
+            ExecStart=/usr/bin/docker run --rm --name=myredis -p 6379:6379 --pull=always eq19/maps:target-${{ github.run_number }}
 
         - path: /etc/systemd/system/postgres.service
           permissions: 0644
@@ -152,11 +149,7 @@ runs:
             [Service]
             Restart=always
             ExecStop=/usr/bin/docker exec mydb -s quit
-            ExecStart=/usr/bin/docker run --rm \
-              -e POSTGRES_DB=postgres \
-              -e POSTGRES_USER=postgres \
-              -e POSTGRES_PASSWORD=postgres \
-              --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run --rm -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
 
         - path: /etc/systemd/system/runner.service
           permissions: 0644
@@ -174,14 +167,7 @@ runs:
             ExecStop=/usr/bin/docker stop myrunner
             ExecStopPost=/usr/bin/docker rm myrunner
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm \
-              -e RUNNER_REPLACE_EXISTING=true \
-              -e RUNNER_NAME=Google-optimized-instance \
-              -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} \
-              -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} \
-              -v /home/runner/.docker:/home/runner/.docker \
-              -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock \
-              --name myrunner --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run --rm -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=Google-optimized-instance -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock --name myrunner --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
 
         runcmd:
         - systemctl daemon-reload
@@ -193,12 +179,10 @@ runs:
         - mkdir -p /mnt/disks/platform
         - mount -o nosuid,nodev,commit=30,defaults -t ext4 /dev/sdb1 /mnt/disks/platform
         EOL
-        cat cloud-config #echo 'user-data='$(awk '{printf "%s\\n", $0}' cloud-config) >> ${GITHUB_OUTPUT}
 
     # Ref: https://stackoverflow.com/a/47018417/4058484
     - name: 🪂 Setup Runner by Gcloud
-      if: runner.os == 'Windows' #&& os.linux.outcome == 'success'
-      id: compute_instances
+      id: instances
       shell: bash
       run: >
         gcloud compute instances create grid-${{ env.IMAGE_TAG }}
@@ -206,4 +190,3 @@ runs:
         --zone=us-central1-a --machine-type=e2-micro --enable-display-device --tags=https-server
         --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
         --create-disk=boot=no,auto-delete=no,name=tensorflow,device-name=deeplearning,mode=ro,size=50,type=pd-standard,image-project=deeplearning-platform-release,image-family=tf-ent-latest-gpu
-

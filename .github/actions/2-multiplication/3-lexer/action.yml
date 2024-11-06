@@ -65,48 +65,42 @@ inputs:
     required: false
 
 outputs:
-  command:
-    description: 'The command.outputs'
-    value: ${{ steps.command.outputs.stdout }}
-  decays:
-    description: 'The target repository'
-    value: ${{ env.PGSERVICEFILE }}
+  describe:
+    description: Collect describe outputs
+    value: ${{ steps.describe.outputs.ip }}
+  compute:
+    description: Collect compute outputs
+    value: ${{ toJSON(steps.compute.outputs) }}
 
 runs:
   using: composite
   steps:
     #Ref: https://gist.github.com/xtrmstep/92aab2d465e348ce1c07ed903ca0dfb8
     - id: describe
-      if: runner.os == 'Windows'
       shell: bash
       run: |
-        TF=$(choco install terraform)
-        ssh-keygen -t rsa -b 4096 -N '' -f $HOME/.ssh/id_rsa -C root && sed -i "1s|^|runner: |" $HOME/.ssh/id_rsa.pub
-        echo 'instances='$(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format json) >> ${GITHUB_OUTPUT}
+        gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a
+        ssh-keygen -t rsa -b 4096 -N '' -f $HOME/.ssh/id_rsa -C root && sed -i.backup "1s|^|runner: |" $HOME/.ssh/id_rsa.pub
         gcloud compute instances add-metadata grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --metadata-from-file ssh-keys=$HOME/.ssh/id_rsa.pub > /dev/null
-        echo 'IP='$(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(networkInterfaces.accessConfigs[0].natIP)') >> ${GITHUB_ENV}
 
-    #Ref: https://stackoverflow.com/a/29455821/4058484
-    - name: 🪂 Setup Runner by API
-      if: runner.os == 'Windows'
-      id: setup_runner
-      shell: bash
-      run: >
-        echo 'function='$(curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function 
-        -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json"
-        -d '${{ steps.describe.outputs.instances }}') >> ${GITHUB_OUTPUT}
+        echo $(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format json) > instance
+        echo 'ip='$(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(networkInterfaces.accessConfigs[0].natIP)') >> ${GITHUB_OUTPUT}
+        echo 'function='$(curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" --data @instance) >> ${GITHUB_OUTPUT}
 
     #Ref: https://blog.benoitblanchon.fr/github-action-run-ssh-commands/
     - name: Configure SSH
-      id: 'compute-ssh'
-      if: runner.os == 'Windows'
+      if: runner.os == '-Linux'           
+      id: compute
       shell: bash
+      env:
+        IP: ${{ steps.describe.outputs.ip }}
       run: |
-        ssh-keyscan -t rsa ${{ env.IP }} >> $HOME/.ssh/known_hosts
+        #localedef -i en_US -f UTF-8 en_US.UTF-8
+        ssh-keyscan -t rsa $IP >> $HOME/.ssh/known_hosts
         chmod 600 $HOME/.ssh/id_rsa
         cat << EOL >> $HOME/.ssh/config
         Host staging
-          HostName ${{ env.IP }}
+          HostName $IP
           User runner
           IdentityFile $HOME/.ssh/id_rsa
           StrictHostKeyChecking no
@@ -122,20 +116,3 @@ runs:
           git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
           exit 1
         fi
-
-    - name: 💎 Set Access Token
-      if: runner.os == '-Windows'
-      id: 'o2auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        token_format: 'access_token'
-        credentials_json: ${{ inputs.credentials }}
-
-    - name: 🪂 Setup Runner by API
-      if: runner.os == '-Windows'
-      id: targetLink
-      shell: bash
-      run: >
-        echo 'targetLink='$(curl -s -H "Authorization: Bearer ${{ steps.o2auth.outputs.access_token }}" -H "Content-Type: application/json"
-        -X POST https://compute.googleapis.com/compute/beta/projects/feedmapping/zones/us-central1-a/instances -d 
-        '{}' | jq '.targetLink') >> ${GITHUB_OUTPUT}

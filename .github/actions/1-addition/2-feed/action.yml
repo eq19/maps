@@ -5,7 +5,7 @@ description: >
 
 branding:
   icon: 'command'
-  color: 'green'
+  color: 'red'
 
 inputs:
   hub_username:
@@ -65,53 +65,87 @@ inputs:
     required: false
 
 outputs:
-  command:
-    description: 'The command.outputs'
-    value: ${{ steps.command.outputs.stdout }}
-  decays:
-    description: 'The target repository'
-    value: ${{ env.PGSERVICEFILE }}
+  artifact:
+    description: Collect artifact outputs
+    value: ${{ toJSON(steps.artifact.outputs.repo) }}
+  set_output:
+    description: Collect set_output outputs
+    value: ${{ toJSON(steps.set_output.outputs) }}
 
 runs:
   using: composite
   steps:
-    - name: 🪂 Adapt feed mapping
+    - name: 💎 Set ID Token
       if: runner.os != 'Windows'
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: 'id_token'
+        create_credentials_file: false
+        credentials_json: ${{ inputs.credentials }}
+        id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
+
+    - name: 💎 Set Artifact
+      if: runner.os != 'Windows'
+      id: artifact
       shell: bash
+      env:
+        TMP: ${{ inputs.tmp }}
+        RUN: ${{ github.run_id }}
+        USER: ${{ github.actor }}
+        TOKEN: ${{ inputs.token }}
+        REPO: ${{ github.repository }}
+        ACTOR: ${{ github.triggering_actor }}
+        OWNER: ${{ github.repository_owner }}
+        BEARER: ${{ steps.auth.outputs.id_token }}
+      run: |      
+        rm -rf ${{ inputs.action_path }}/.git
+        mv -f ${{ inputs.action_path }}/_config.yml ${RUNNER_TEMP}/
+        export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && artifact.sh
+        shopt -s dotglob && mv -f ${RUNNER_TEMP}/workdir/* ${{ inputs.action_path }}/
+        mkdir -p ${{ github.workspace }}/_site && cp -R ${{ inputs.action_path }}/. ${{ github.workspace }}/_site/       
+
+    - uses: ikalnytskyi/action-setup-postgres@v6 
+      if: runner.os != 'Windows'
+      id: postgres
+      with:
+        username: yoda
+        password: GrandMaster
+        database: test
+        port: 34837
+
+    - name: 🪂 Test postgres
+      if: runner.os != 'Windows'
       run: |
-        git clone --single-branch -b gh-pages https://github.com/${{ env.TARGET_REPOSITORY }} ${{ inputs.action_path }}/_site &>/dev/null  
-        mv -f ${{ inputs.action_path }}/_site/docs ${RUNNER_TEMP}/ && rm -rf ${{ inputs.action_path }}/_site/*
-        mv -f ${{ github.workspace }}/_site/* ${{ inputs.action_path }}/_site/
-        mv -f ${RUNNER_TEMP}/docs ${{ inputs.action_path }}/_site/
+        cp ./.github/entrypoint/test.py .
+        python3 -m pytest -vv test.py
+      env:
+        CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
+        SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
+        EXPECTED_CONNECTION_URI: postgresql://yoda:GrandMaster@localhost:34837/test
+        EXPECTED_SERVICE_NAME: yoda
+      shell: bash
 
-        rm -rf ${{ inputs.action_path }}/_site/.devcontainer.json ${{ inputs.action_path }}/_site/Dockerfile
-        echo 'TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}' > ${{ inputs.action_path }}/_site/.env
-        echo 'LATEST_COMMIT=${{ env.LATEST_COMMIT }}' >> ${{ inputs.action_path }}/_site/.env 
-        cat ${{ inputs.action_path }}/_site/.env && cat ${{ inputs.action_path }}/Dockerfile
-
-    - name: 🚀 Initiate Lexer
+    - name: 🚀 Initiate Feed Container
       if: runner.os != 'Windows'
       uses: devcontainers/ci@v0.3
-      id: set-output
+      id: set_output
       with:
         push: always
-        imageTag: id-${{ env.ID }}
+        runCmd: ls -al /
         skipContainerUserIdUpdate: true
-        runCmd: ls -alR /home/runner/_site
         imageName: ${{ inputs.image_name }}
+        imageTag: spin-${{ env.ID }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
-        env: |
-          TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
 
-    - name: 💎 Variables
-      if: runner.os != 'Windows'
+    - name: 🪂 Remove existing images
       id: variables
       shell: bash
       run: |
         BASE_NAME=$(basename ${{ inputs.image_name }})
-        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g"))
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
         for ((i=0; i < ${#array[@]}; i++)); do
-          if [ "${array[$i]}" != "latest" ]; then
+          if [[ "${array[$i]}" != "latest" ]]; then
             HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.hub_username }}\", \"password\": \"${{ inputs.hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
             curl -s -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
             echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
