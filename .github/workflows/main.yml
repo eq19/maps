@@ -132,6 +132,7 @@ jobs:
       - name: 🚀 Setup Parser
         uses: eq19/parser@v2
         id: set-parser
+        if: success()
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -141,6 +142,7 @@ jobs:
       - name: 🌀 Evaluate Syntax
         uses: eq19/syntax@v2
         id: eval-syntax
+        if: success()
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}

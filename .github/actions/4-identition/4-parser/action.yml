@@ -80,7 +80,10 @@ runs:
       uses: ruby/setup-ruby@v1
       with:
         cache-version: 1
+        ruby-version: '3.3'
+        #rubygems: latest
         bundler-cache: true
+        working-directory: ${{ github.workspace }}
         
     - name: 💎 Set ID Token
       id: 'auth'
@@ -98,7 +101,6 @@ runs:
       env:
         TOKEN: ${{ steps.auth.outputs.id_token }}
       run: |
-        #brew install ruby-full
         #gem install faraday-retry github-pages --platform=ruby
         curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
           -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
