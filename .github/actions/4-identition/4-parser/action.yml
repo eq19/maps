@@ -76,15 +76,12 @@ runs:
   using: composite
   
   steps:
-    - name: 💎 Setup Ruby
-      uses: ruby/setup-ruby@v1
+    - name: Setup .NET SDK
+      if: ${{ runner.os == 'Windows' && inputs.failure_status == 'false' }}
+      uses: actions/setup-dotnet@v4
       with:
-        cache-version: 1
-        ruby-version: '3.3'
-        #rubygems: latest
-        bundler-cache: true
-        working-directory: ${{ github.workspace }}
-        
+        dotnet-version: 8.0.x
+
     - name: 💎 Set ID Token
       id: 'auth'
       uses: 'google-github-actions/auth@v2'
