@@ -103,15 +103,10 @@ runs:
           git clone --single-branch --branch gh-pages ${{ env.REMOTE_REPO }} gh-pages && cd gh-pages
           git add . && git commit --allow-empty -m "rerun due to job failure" && git push
   
-        elif [[ ${{ inputs.id }} == 3 && '${{ inputs.failure_status }}' == 'false' ]]; then
- 
-          cd ${{ github.workspace }} && rm -rf * && mv -f /home/runner/_site/* .
-          git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
- 
-        elif [[ ${{ inputs.id }} == 4 && '${{ inputs.failure_status }}' == 'false' ]]; then
+        else
 
           cd $RUNNER_TEMP && git clone --single-branch --branch gh-pages ${{ env.TARGET_REPO }} gh-pages
-          cd gh-pages && rm -rf * && mv -f ${GITHUB_WORKSPACE//\\//}/* .
+          cd gh-pages && rm -rf * && mv -f ${{ inputs.workspace }}/* .
           git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
         
         fi
