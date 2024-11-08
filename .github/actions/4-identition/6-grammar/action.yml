@@ -8,32 +8,61 @@ branding:
   color: 'red'
 
 inputs:
-  id:
-    description: The id according to os
+  hub_username:
+    description: Username for Docker Hub
+    default: ${{ github.actor }}       
     required: true
-  owner:
-    description: The deploy owner
-    required: false
-  actor:
-    description: The github username creating the commit
-    required: false
-  token:
-    description: The deploy token
-    required: false
-  provider:
-    description: The deploy provider
+  hub_password:
+    description: Docker Hub authentication token
     required: true
-  repository:
-    description: The deploy repository
-    required: false
+  hub_token:
+    description: Docker Hub authentication token
+    required: true
+  action_path:
+    description: Path to the dockerfile from which to build the image
+    required: true
   credentials:
-    description: The gcloud credentials
+    description: 'The gcloud credentials'
+    required: true
+  image_name:
+    description: Tag to use for the new image
+    required: true
+  dockerfile_path:
+    description: Path to the dockerfile from which to build the image
     required: true
   pauli_sum:
-    description: The pre-build configuration
+    description: Build args
+    required: false
+    default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
     required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
+  cache_src:
+    description: Path for the docker cache source
+    required: false
+    default: /tmp/.buildx-cache
+  cache_dest:
+    description: Path for the docker cache destination
+    required: false
+    default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
+  owner:
+    description: 'The deploy owner'
+    required: false
+  token:
+    description: 'The deploy token'
+    required: false
+  workspace:
+    description: 'The deploy repository'
+    required: false
   failure_status:
-    description: The deploy branch
+    description: 'The deploy branch'
     required: false
 
 outputs:
@@ -49,14 +78,6 @@ runs:
   using: composite
   
   steps:
-    - name: 🏗️ Collect output
-      if: runner.os != 'macOS'
-      uses: mathiasvr/command-output@v2.0.0
-      id: command
-      with:
-        run: |
-          date +'%Y-%m-%d'
-
     - name: 💎 Get the latest commit message
       id: commit
       shell: bash
