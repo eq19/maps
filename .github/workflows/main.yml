@@ -118,8 +118,9 @@ jobs:
 
     # 🕸️ Global Environment
     env:
-      IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
+      PASS: ${{ contains(needs.*.result, 'success') && true || false }}
       TARGET_REPOSITORY: '${{ needs.lexering.outputs.target }}'
+      IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
 
     # ✔️ Completeness status
     if: ${{ (always() && contains(needs.*.result, 'success')) ||
@@ -135,9 +136,9 @@ jobs:
           repository: ${{ env.TARGET_REPOSITORY }}
 
       - name: 🚀 Setup Parser
+        if: ${{ env.PASS == true }}
         uses: eq19/parser@v2
         id: set-parser
-        if: success()
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -147,9 +148,9 @@ jobs:
             (matrix.config.id == 4 && contains(needs.*.result, 'failure')) }}
 
       - name: 🌀 Evaluate Syntax
+        if: ${{ env.PASS == true }}
         uses: eq19/syntax@v2
         id: eval-syntax
-        if: success()
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}

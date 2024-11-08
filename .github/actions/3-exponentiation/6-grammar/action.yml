@@ -1,0 +1,59 @@
+name: 'Jekyll Deploy Action'
+
+description: >
+  A Github Action to deploy the Jekyll site conveniently for GitHub Pages
+
+branding:
+  icon: 'command'
+  color: 'red'
+
+inputs:
+  id:
+    description: The id according to os
+    required: true
+  owner:
+    description: The deploy owner
+    required: false
+  actor:
+    description: The github username creating the commit
+    required: false
+  token:
+    description: The deploy token
+    required: false
+  provider:
+    description: The deploy provider
+    required: true
+  repository:
+    description: The deploy repository
+    required: false
+  credentials:
+    description: The gcloud credentials
+    required: true
+  pauli_sum:
+    description: The pre-build configuration
+    required: true
+  failure_status:
+    description: The deploy branch
+    required: false
+
+outputs:
+  all_outputs:
+    description: Collect all outputs
+    value: ${{ toJSON(steps.*.outputs) }}
+
+runs:
+  #using: 'node20'
+  #main: '.github/run/main.js'
+  #post: '.github/run/post.js'
+  #post-if: 'success()'
+  using: composite
+  
+  steps:
+    - name: 🏗️ Collect output
+      if: runner.os != 'macOS'
+      uses: mathiasvr/command-output@v2.0.0
+      id: command
+      with:
+        run: |
+          date +'%Y-%m-%d'
+

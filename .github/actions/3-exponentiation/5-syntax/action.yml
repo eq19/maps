@@ -30,9 +30,10 @@ inputs:
   dockerfile_path:
     description: Path to the dockerfile from which to build the image
     required: true
-  gell_mann:
+  pauli_sum:
     description: Build args
     required: false
+    default: ""
   docker_hub_repo_short_description:
     description: Short description text for the docker hub repo
     required: true
@@ -48,7 +49,7 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
-  failure_status:
+  provider:
     description: 'The deploy provider'
     required: true
   owner:
@@ -57,9 +58,11 @@ inputs:
   token:
     description: 'The deploy token'
     required: false
-  repository:
+  workspace:
     description: 'The deploy repository'
-    default: ${{ github.repository }}
+    required: false
+  failure_status:
+    description: 'The deploy branch'
     required: false
 
 outputs:
@@ -75,43 +78,26 @@ runs:
   using: composite
   
   steps:
-    - name: 💎 Reinvented
+    - name: 💎 Setup Ruby
+      uses: ruby/setup-ruby@v1
+      if: runner.os == '-Linux'
+      with:
+        cache-version: 1
+        rubygems: default
+        bundler-cache: true
+        ruby-version: '3.3.4'
+        working-directory: "${{ github.workspace }}"
+        
+    - name: Build Jekyll pages
+      if: runner.os == '-Linux'
+      id: jekyll_site
       shell: bash
       run: |
-        if [ ! -d /mnt/disks/platform/usr/local/sbin ]; then
-          #cd "${{ github.workspace }}" && git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
-          exit 1
-        fi
+        echo -e "\n$hr\nBuild Pages\n$hr" && cd "${{ github.workspace }}"
+        #choco install ruby -y && gem install jekyll bundler faraday-retry github-pages --platform=ruby
+ 
+        #Jekyll Quick Reference https://gist.github.com/DrOctogon/bfb6e392aa5654c63d12
+        JEKYLL_GITHUB_TOKEN=${{ inputs.token }} DISABLE_WHITELIST=true bundle exec jekyll build --profile -t -p "D:/a/lexer/lexer/_plugins" -d "D:/a/lexer/lexer/docs"   
 
-    #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
-    - name: Run identity
-      shell: bash
-      run: |
-        TOKEN=$(/mnt/disks/platform/usr/bin/gcloud auth print-identity-token)
-        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
-          -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
-          --data @${{ github.workspace }}/docs/data.json | jq '.'
-
-    - name: 💎 Connect to Redis
-      # Runs a script that creates a Redis client, populates
-      # the client with data, and retrieves data
-      env:
-        # The hostname used to communicate with the Redis service container
-        # Ref: https://stackoverflow.com/a/48547074/4058484
-        REDIS_PORT: 6379
-        REDIS_HOST: 172.17.0.1
-      shell: bash
-      run: |
-        node ${{ inputs.action_path}}/main.js
-        echo '${{ inputs.gell_mann }}'
-    
-    - name: 💎 Connect to postgres
-      env:
-        # use the internal host here because we have specified a container for the job.
-        # If we were running the job on the VM this would be localhost
-        POSTGRES_PORT: 5432
-        POSTGRES_HOST: 172.17.0.1
-      shell: bash
-      run: |
-        node ${{ inputs.action_path}}/post.js
-        echo '${{ inputs.gell_mann }}'
+        if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "www.eq19.com" > "${{ github.workspace }}/docs/CNAME"; fi
+        rm -rf "${{ github.workspace }}/docs/.nojekyll" && touch "${{ github.workspace }}/docs/.nojekyll"
