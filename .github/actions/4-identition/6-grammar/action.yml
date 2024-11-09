@@ -105,8 +105,10 @@ runs:
   
         else
 
-          cd $RUNNER_TEMP && git clone --single-branch --branch gh-pages ${{ env.TARGET_REPO }} gh-pages
-          cd gh-pages && rm -rf * && mv -f ${{ inputs.workspace }}/* .
+          cd ${{ inputs.workspace }} && rm -rf .git .bundle vendor && cd $RUNNER_TEMP
+          git clone --single-branch --branch gh-pages ${{ env.TARGET_REPO }} gh-pages
+
+          cd gh-pages && git rm -rfq . && shopt -s dotglob && mv -f ${{ inputs.workspace }}/* .
           git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
         
         fi
