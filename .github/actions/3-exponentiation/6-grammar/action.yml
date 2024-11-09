@@ -106,8 +106,13 @@ runs:
     - name: ⏪ Rewind all jobs on failure
       shell: bash
       run: |
-        if [[ '${{ inputs.failure_status }}' == 'false' ]]; then
+        if [[ '${{ inputs.failure_status }}' == 'true' ]]; then
       
+          git clone --single-branch --branch gh-pages ${{ env.REMOTE_REPO }} gh-pages && cd gh-pages
+          git add . && git commit --allow-empty -m "rerun due to job failure" && git push
+  
+        else      
+ 
           cd /home/runner/_site && rm -rf .git .github .env .ssh .cache node-modules
           cd ${{ github.workspace }} && git rm -rfq . && shopt -s dotglob && mv -f /home/runner/_site/* .
           git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
