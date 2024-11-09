@@ -82,12 +82,14 @@ runs:
       shell: bash
       run: |
         TARGET_REPO='https://github.com/${{ env.TARGET_REPOSITORY }}'
-        git clone --single-branch -b gh-pages ${TARGET_REPO} ${{ inputs.action_path }}/_site &>/dev/null  
-        mv -f ${{ inputs.action_path }}/_site/docs ${RUNNER_TEMP}/
+        git clone --single-branch -b gh-pages ${TARGET_REPO} ${{ inputs.action_path }}/_site
 
-        cd ${{ inputs.action_path }}/_site && git rm -rfq . && shopt -s dotglob
-        mv -f ${{ github.workspace }}/_site/* . && rm -rf .devcontainer.json Dockerfile
-        mv -f ${RUNNER_TEMP}/docs ${{ inputs.action_path }}/_site/
+        cd ${{ inputs.action_path }}/_site && shopt -s dotglob && rm -rf ${RUNNER_TEMP}/*
+        mv -f docs ${RUNNER_TEMP}/ && mv -f .sass-cache ${RUNNER_TEMP}/ && git rm -rfq .
+
+        cd ${{ github.workspace }}/_site && rm -rf .git .devcontainer.json Dockerfile
+        mv -f ${RUNNER_TEMP}/* ${{ inputs.action_path }}/_site/
+        mv -f * ${{ inputs.action_path }}/_site/
 
         echo 'TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}' > ${{ inputs.action_path }}/_site/.env
         echo 'LATEST_COMMIT=${{ env.LATEST_COMMIT }}' >> ${{ inputs.action_path }}/_site/.env 
