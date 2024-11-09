@@ -82,10 +82,16 @@ runs:
       shell: bash
       run: |
         TARGET_REPO='https://github.com/${{ env.TARGET_REPOSITORY }}'
-        git clone --single-branch -b gh-pages ${TARGET_REPO} ${{ inputs.action_path }}/_site
+        git clone --single-branch -b gh-pages ${TARGET_REPO} ${{ inputs.action_path }}/_site &>/dev/null
 
-        cd ${{ inputs.action_path }}/_site && shopt -s dotglob && rm -rf ${RUNNER_TEMP}/*
-        mv -f docs ${RUNNER_TEMP}/ && mv -f .sass-cache ${RUNNER_TEMP}/ && git rm -rfq . && ls -al .
+        cd ${{ inputs.action_path }}/_site
+        shopt -s dotglob && rm -rf ${RUNNER_TEMP}/*
+        [[ -d docs ]] && mv -f docs ${RUNNER_TEMP}/
+        [[ -d .sass-cache ]] && mv -f .sass-cache ${RUNNER_TEMP}/
+        [[ -f .jekyll-metadata ]] && mv -f .jekyll-metadata ${RUNNER_TEMP}/
+
+        git rm -rfq .
+        #git clean -fxd && ls -al .
 
         cd ${{ github.workspace }}/_site && rm -rf .git .devcontainer.json Dockerfile
         mv -f ${RUNNER_TEMP}/* ${{ inputs.action_path }}/_site/

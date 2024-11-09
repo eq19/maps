@@ -93,8 +93,10 @@ runs:
 
         echo 'TARGET_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/${TARGET_REPOSITORY}.git"' >> ${GITHUB_ENV}
         echo 'REMOTE_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"' >> ${GITHUB_ENV}
-        echo 'LATEST_COMMIT='$(curl -s "https://api.github.com/users/eq19/events/public" | jq ".[0].payload.commits[0].message") >> ${GITHUB_ENV}
-
+ 
+        LATEST_COMMIT=$(curl -s "https://api.github.com/users/eq19/events/public" | jq ".[0].payload.commits[0].message")
+        if [[ -z "$LATEST_COMMIT" ]]; then echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}; else echo 'LATEST_COMMIT='$LATEST_COMMIT >> ${GITHUB_ENV}; fi
+  
     - name: ⏪ Rewind all jobs on failure
       shell: bash
       run: |
