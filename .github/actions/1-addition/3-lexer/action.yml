@@ -91,14 +91,15 @@ runs:
         [[ -f .jekyll-metadata ]] && mv -f .jekyll-metadata ${RUNNER_TEMP}/
 
         git rm -rfq .
-        #git clean -fxd && ls -al .
-
+        #git clean -fxd
+        mv -f ${RUNNER_TEMP}/* .
+        
         cd ${{ github.workspace }}/_site && rm -rf .git .devcontainer.json Dockerfile
-        mv -f ${RUNNER_TEMP}/* ${{ inputs.action_path }}/_site/
         mv -f * ${{ inputs.action_path }}/_site/
 
         echo 'TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}' > ${{ inputs.action_path }}/_site/.env
         echo 'LATEST_COMMIT=${{ env.LATEST_COMMIT }}' >> ${{ inputs.action_path }}/_site/.env 
+
         cat ${{ inputs.action_path }}/_site/.env && cat ${{ inputs.action_path }}/Dockerfile
 
     - name: 🚀 Initiate Lexer
