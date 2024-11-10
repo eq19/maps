@@ -103,7 +103,8 @@ runs:
         mv -f ${{ inputs.action_path }}/_config.yml ${RUNNER_TEMP}/
         export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && artifact.sh
         shopt -s dotglob && mv -f ${RUNNER_TEMP}/workdir/* ${{ inputs.action_path }}/
-        mkdir -p ${{ github.workspace }}/_site && cp -R ${{ inputs.action_path }}/. ${{ github.workspace }}/_site/       
+        #mkdir -p ${{ github.workspace }}/_site && cp -R ${{ inputs.action_path }}/. ${{ github.workspace }}/_site/
+        mv ${{ inputs.action_path }} ${{ github.workspace }}/_site
 
     - uses: ikalnytskyi/action-setup-postgres@v6 
       if: runner.os != 'Windows'
@@ -133,10 +134,10 @@ runs:
       with:
         push: always
         runCmd: ls -al /
+        imageTag: spin-${{ env.ID }}
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
-        imageTag: spin-${{ env.ID }}
-        configFile: ${{ inputs.action_path }}/.devcontainer.json
+        configFile: ${{ github.workspace }}/_site/.devcontainer.json
 
     - name: 🪂 Remove existing images
       id: variables
