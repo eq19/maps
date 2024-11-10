@@ -85,8 +85,8 @@ runs:
         git config --global user.name "${{ github.actor }}"
         git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
-        git config --global core.autocrlf false
         git config --global --add safe.directory "${{ github.workspace }}"
+        [[ "$RUNNER_OS" == "Windows" ]] && git config --global core.autocrlf true
        
         git config --global credential.helper store
         echo "https://${{ github.actor }}:${{ inputs.token }}@github.com" > ~/.git-credentials

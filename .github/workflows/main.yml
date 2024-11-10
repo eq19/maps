@@ -87,7 +87,7 @@ jobs:
           initiate_pauli_sum: ${{ toJSON(steps.feed-mapping.outputs) }}
 
       - name: 📋 Generate Outputs
-        id: gen_output
+        id: gen_outputs
         shell: bash
         run: |
           id=${{ matrix.config.id }}
@@ -98,9 +98,10 @@ jobs:
 
     outputs:
       # ♻️ Simulate Gell-Mann Matrices
-      #init: ${{ steps.build-parser.outputs.init }}
-      target: ${{ steps.gen_output.outputs.output_1 }}
-      address: ${{ steps.gen_output.outputs.output_2 }}
+      target: ${{ steps.gen_outputs.outputs.output_1 }}
+      address: ${{ steps.gen_outputs.outputs.output_2 }}
+      addition: ${{ steps.set-lexering.outputs.addition}}
+      multiplication: ${{ steps.set-lexering.outputs.multiplication}}
 
   parsering:
     needs: lexering
@@ -143,7 +144,7 @@ jobs:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
-          pauli_sum: ${{ toJSON(needs.lexering.outputs) }}
+          pauli_sum: ${{ needs.lexering.outputs.multiplication }}
           failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
             (matrix.config.id == 4 && contains(needs.*.result, 'failure')) }}
 
