@@ -78,40 +78,13 @@ runs:
     - name: 💎 Reinvented
       shell: bash
       run: |
-        if [ ! -d /mnt/disks/platform/usr/local/sbin ]; then
-          #cd "${{ github.workspace }}" && git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
+        if [ -d /mnt/disks/platform/usr/local/sbin ]; then
+          ${{ inputs.action_path }}/.github/entrypoint/init.sh
+        else
           exit 1
         fi
 
-    #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
-    - name: Run identity
-      shell: bash
-      run: |
-        TOKEN=$(/mnt/disks/platform/usr/bin/gcloud auth print-identity-token)
-        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
-          -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
-          --data @${{ github.workspace }}/docs/data.json | jq '.'
-
-    - name: 💎 Connect to Redis
-      # Runs a script that creates a Redis client, populates
-      # the client with data, and retrieves data
-      env:
-        # The hostname used to communicate with the Redis service container
-        # Ref: https://stackoverflow.com/a/48547074/4058484
-        REDIS_PORT: 6379
-        REDIS_HOST: 172.17.0.1
-      shell: bash
-      run: |
-        node ${{ inputs.action_path}}/main.js
-        echo '${{ inputs.gell_mann }}'
-    
-    - name: 💎 Connect to postgres
-      env:
-        # use the internal host here because we have specified a container for the job.
-        # If we were running the job on the VM this would be localhost
-        POSTGRES_PORT: 5432
-        POSTGRES_HOST: 172.17.0.1
-      shell: bash
-      run: |
-        node ${{ inputs.action_path}}/post.js
-        echo '${{ inputs.gell_mann }}'
+    - name: View context attributes
+      uses: actions/github-script@v7
+      with:
+        script: console.log(context)
