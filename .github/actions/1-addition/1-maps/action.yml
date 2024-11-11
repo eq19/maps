@@ -96,20 +96,7 @@ runs:
         username: ${{ inputs.hub_username }}
         password: ${{ inputs.hub_token }}
         
-    - uses: actions/setup-python@v5
-      if: runner.os != 'Windows'
-      with:
-        python-version: 3.12
-        allow-prereleases: true
-
-    - uses: actions/cache@v4
-      if: runner.os != 'Windows'
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip
-
     - name: Install dependencies
-      if: runner.os != 'Windows'
       shell: bash
       run: |
         HEADER="Accept: application/vnd.github+json"
