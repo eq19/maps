@@ -77,19 +77,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Initial action
-      uses: eq19/eq19.github.io@v1
-      id: artifact
-      with:
-        id: ${{ inputs.id }}
-        token: ${{ inputs.token }}
-        actor: ${{ github.actor }}
-        credentials: ${{ inputs.credentials }}
-        action_path: ${{ github.action_path }}
-        hub_token: ${{ inputs.docker_hub_token }}
-        hub_username: ${{ inputs.docker_hub_username }}
-        hub_password: ${{ inputs.docker_hub_password }}
-
     - name: Login to DockerHub
       uses: docker/login-action@v3
       with:
@@ -102,6 +89,8 @@ runs:
         GH_TOKEN: ${{ inputs.token }}
       run: |
         HEADER="Accept: application/vnd.github+json"
+        /home/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
+
         #See: https://docs.github.com/en/rest/actions/self-hosted-runners
         TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
         RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
