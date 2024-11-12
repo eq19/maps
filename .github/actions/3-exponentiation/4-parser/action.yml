@@ -33,7 +33,7 @@ inputs:
   dockerfile_path:
     description: Path to the dockerfile from which to build the image
     required: true
-  gell_mann:
+  pauli_sum:
     description: Build args
     required: false
   docker_hub_repo_short_description:
@@ -79,8 +79,10 @@ runs:
       env:
         JOB_ID: ${{ inputs.id }}
         GH_TOKEN: ${{ inputs.token }}
+        PAULI_SUM: ${{ inputs.pauli_sum }}
       run: |
         if [ -d /mnt/disks/platform/usr/local/sbin ]; then
+          PAULI_SUM=$(echo -n "$PAULI_SUM" | base64 --decode);
           ${{ inputs.action_path }}/.github/entrypoint/init.sh
         else
           exit 1
