@@ -86,6 +86,7 @@ runs:
     - name: Remove Existing Connection
       shell: bash
       env:
+        JOB_ID: ${{ inputs.id }}
         GH_TOKEN: ${{ inputs.token }}
       run: |
         HEADER="Accept: application/vnd.github+json"

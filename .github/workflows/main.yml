@@ -95,12 +95,15 @@ jobs:
             steps.feed-mapping.outputs.addition ||
             steps.set-lexering.outputs.multiplication }}
           echo "output_${id}=${output}" >> "${GITHUB_OUTPUT}"
+          function=${{ steps.set-lexering.outputs.function }};
+          output_3=$(echo -n "$function" | base64);
+          echo "output_3=$output_3" >> $GITHUB_OUTPUT
 
     outputs:
       # ♻️ Simulate Gell-Mann Matrices
       target: ${{ steps.gen_outputs.outputs.output_1 }}
       address: ${{ steps.gen_outputs.outputs.output_2 }}
-      function: ${{ steps.set-lexering.outputs.function }}
+      function: ${{ steps.gen_outputs.outputs.output_3 }}
 
   parsering:
     needs: lexering
@@ -146,7 +149,7 @@ jobs:
           pauli_sum: ${{ needs.lexering.outputs.function }}
           failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
             (matrix.config.id == 4 && contains(needs.*.result, 'failure')) }}
-
+       
       - name: 🌀 Evaluate Syntax
         if: ${{ env.PASS == 'true' }}
         uses: eq19/syntax@v2

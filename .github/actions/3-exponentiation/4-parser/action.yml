@@ -8,6 +8,9 @@ branding:
   color: 'red'
 
 inputs:
+  id:
+    description: 'The deploy repository'
+    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}       
@@ -57,10 +60,6 @@ inputs:
   token:
     description: 'The deploy token'
     required: false
-  repository:
-    description: 'The deploy repository'
-    default: ${{ github.repository }}
-    required: false
 
 outputs:
   all_outputs:
@@ -77,11 +76,12 @@ runs:
   steps:
     - name: 💎 Reinvented
       shell: bash
+      env:
+        JOB_ID: ${{ inputs.id }}
+        GH_TOKEN: ${{ inputs.token }}
       run: |
         if [ -d /mnt/disks/platform/usr/local/sbin ]; then
-          #${{ inputs.action_path }}/.github/entrypoint/init.sh
-          ls -al /home/runner             
-          ls -al /home/runner/_site       
+          ${{ inputs.action_path }}/.github/entrypoint/init.sh
         else
           exit 1
         fi

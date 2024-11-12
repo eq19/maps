@@ -2,6 +2,9 @@ name: 'Docker Deploy Action'
 description: >
   🪂  A Github Action to deploy pages conveniently
 inputs:
+  id:
+    description: The id according to os
+    required: true
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}
@@ -94,7 +97,8 @@ runs:
     - name: 💎 Remove Existing Self-Hosted Runner
       shell: bash
       env:
-        GITHUB_ACCESS_TOKEN: ${{ inputs.token }}
+        JOB_ID: ${{ inputs.id }}
+        GH_TOKEN: ${{ inputs.token }}
       run: |
         ${{ inputs.action_path }}/.github/entrypoint/init.sh
 
