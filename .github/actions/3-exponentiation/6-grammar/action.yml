@@ -103,7 +103,17 @@ runs:
         echo 'REMOTE_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"' >> ${GITHUB_ENV}
  
         LATEST_COMMIT=$(curl -s "https://api.github.com/users/eq19/events/public" | jq ".[0].payload.commits[0].message")
-        if [[ -z "$LATEST_COMMIT" ]] || [[ "$LATEST_COMMIT" == null ]]; then echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}; else echo 'LATEST_COMMIT='$LATEST_COMMIT >> ${GITHUB_ENV}; fi
+        if [ $? -eq 0 ]; then
+          if [[ -z "$LATEST_COMMIT" ]]; then
+            echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}
+          elif [[ "$LATEST_COMMIT" == null ]]; then
+            echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}
+          else
+            echo 'LATEST_COMMIT='$LATEST_COMMIT >> ${GITHUB_ENV}
+          fi
+        else
+          echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}
+        fi
 
     - name: ⏪ Rewind all jobs on failure
       shell: bash
@@ -114,9 +124,15 @@ runs:
           git add . && git commit --allow-empty -m "rerun due to job failure" && git push
   
         else      
- 
+          
           cd /home/runner/_site && rm -rf .git .github .env .ssh .cache node-modules
-          cd ${{ github.workspace }} && git rm -rfq . && shopt -s dotglob && mv -f /home/runner/_site/* .
+
+          cd ${{ github.workspace }}
+          find -not -path "./.git/*" -not -name ".git" | grep git
+          find -not -path "./.git/*" -not -name ".git" -delete
+
+          shopt -s dotglob && mv -f /home/runner/_site/* .
+          #git fetch && git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git rebase && git push
           git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
  
         fi

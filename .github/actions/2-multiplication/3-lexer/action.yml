@@ -70,7 +70,7 @@ outputs:
     value: ${{ steps.describe.outputs.ip }}
   compute:
     description: Collect compute outputs
-    value: ${{ toJSON(steps.compute.outputs) }}
+    value: ${{ steps.describe.outputs.function }}
 
 runs:
   using: composite
@@ -81,6 +81,7 @@ runs:
         allow-prereleases: true
 
     - uses: actions/cache@v4
+      if: runner.os == '-macOS'
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip
@@ -88,12 +89,12 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        HEADER="Accept: application/vnd.github+json"
         python -m pip -q install --upgrade pip setuptools six wheel
         python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt
 
     - uses: ikalnytskyi/action-setup-postgres@v6 
-      if: runner.os != 'Windows'
+      env:
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: FALSE
       id: postgres
       with:
         username: yoda
@@ -102,7 +103,6 @@ runs:
         port: 34837
 
     - name: 🪂 Test postgres
-      if: runner.os != 'Windows'
       run: |
         cp ./.github/entrypoint/test.py .
         python3 -m pytest -vv test.py

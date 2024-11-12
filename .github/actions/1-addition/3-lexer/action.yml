@@ -82,6 +82,7 @@ runs:
       shell: bash
       run: |
         TARGET_REPO='https://github.com/${{ env.TARGET_REPOSITORY }}'
+        cd ${{ github.workspace }}/_site && rm -rf .git .devcontainer.json Dockerfile
         git clone --single-branch -b gh-pages ${TARGET_REPO} ${{ inputs.action_path }}/_site &>/dev/null
 
         cd ${{ inputs.action_path }}/_site
@@ -90,12 +91,11 @@ runs:
         [[ -d .sass-cache ]] && mv -f .sass-cache ${RUNNER_TEMP}/
         [[ -f .jekyll-metadata ]] && mv -f .jekyll-metadata ${RUNNER_TEMP}/
 
-        git rm -rfq .
+        rm -rf *
+        #git rm -rfq .
         #git clean -fxd
-        mv -f ${RUNNER_TEMP}/* .
-        
-        cd ${{ github.workspace }}/_site && rm -rf .git .devcontainer.json Dockerfile
-        cd ${{ inputs.action_path }}/_site && mv -f ${{ github.workspace }}/_site/* .
+        mv -f ${RUNNER_TEMP}/* .   
+        mv -f ${{ github.workspace }}/_site/* .
         cat ${{ inputs.action_path }}/Dockerfile
 
     - name: 🚀 Initiate Lexer
