@@ -91,3 +91,10 @@ runs:
       uses: actions/github-script@v7
       with:
         script: console.log(context)
+
+    - name: 🏗️ Collect outputs
+      uses: mathiasvr/command-output@v2.0.0
+      id: command
+      with:
+        run: |
+          date +'%Y-%m-%d'

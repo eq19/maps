@@ -43,9 +43,13 @@ if [[ "${JOB_ID}" == "1" ]]; then
 
 fi
 
-echo -e "\n$hr\nENVIRONTMENT\n$hr"
-echo 'TARGET_REPO='${TARGET_REPO} >> ${GITHUB_ENV}
-echo 'REMOTE_REPO='${REMOTE_REPO} >> ${GITHUB_ENV}
-printenv | sort
+if [[ -z ${PASS} ]] || [[ "${PASS}" == "true" ]]; then
 
-echo -e "\n$hr\nGITHUB CONTEXT\n$hr"
+  echo -e "\n$hr\nENVIRONTMENT\n$hr"
+  echo 'TARGET_REPO='${TARGET_REPO} >> ${GITHUB_ENV}
+  echo 'REMOTE_REPO='${REMOTE_REPO} >> ${GITHUB_ENV}
+  printenv | sort
+
+  echo -e "\n$hr\nGITHUB CONTEXT\n$hr"
+
+fi

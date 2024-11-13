@@ -67,6 +67,9 @@ inputs:
   failure_status:
     description: 'The deploy branch'
     required: false
+  runner_temp:
+    description: 'The deploy branch'
+    required: false
 
 outputs:
   all_outputs:
@@ -81,55 +84,31 @@ runs:
   using: composite
   
   steps:
-    - name: 💎 Get the latest commit message
-      id: commit
-      shell: bash
-      run: |
-        git config --global user.name "${{ github.actor }}"
-        git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-
-        git config --global --add safe.directory "${{ github.workspace }}"
-        #[[ "$RUNNER_OS" == "Windows" ]] && git config --global core.autocrlf true
-        [[ "$RUNNER_OS" == "Windows" ]] && git config --global core.safecrlf false
-       
-        git config --global credential.helper store
-        echo "https://${{ github.actor }}:${{ inputs.token }}@github.com" > ~/.git-credentials
-
-        echo 'TARGET_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/${TARGET_REPOSITORY}.git"' >> ${GITHUB_ENV}
-        echo 'REMOTE_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"' >> ${GITHUB_ENV}
- 
-        LATEST_COMMIT=$(curl -s "https://api.github.com/users/eq19/events/public" | jq ".[0].payload.commits[0].message")
-        if [ $? -eq 0 ]; then
-          if [[ -z "$LATEST_COMMIT" ]]; then
-            echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}
-          elif [[ "$LATEST_COMMIT" == null ]]; then
-            echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}
-          else
-            echo 'LATEST_COMMIT='$LATEST_COMMIT >> ${GITHUB_ENV}
-          fi
-        else
-          echo 'LATEST_COMMIT="update by workspace"' >> ${GITHUB_ENV}
-        fi
-  
     - name: ⏪ Rewind all jobs on failure
       shell: bash
+      env:
+        BASE: "D:/a/_actions/eq19/eq19/v1/.github"
       run: |
         if [[ '${{ inputs.failure_status }}' == 'true' ]]; then
       
-          git clone --single-branch --branch gh-pages ${{ env.REMOTE_REPO }} gh-pages && cd gh-pages
+          $BASE/entrypoint/init.sh
+          REMOTE_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
+
+          git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
           git add . && git commit --allow-empty -m "rerun due to job failure" && git push
   
         else
 
           cd ${{ inputs.workspace }} && rm -rf .git .bundle vendor
-          git clone --single-branch --branch gh-pages ${{ env.TARGET_REPO }} ${{ inputs.action_path }}/gh-pages
+          TARGET_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/$TARGET_REPOSITORY.git"
+          git clone --single-branch --branch gh-pages $TARGET_REPO ${{ inputs.runner_temp }}/gh-pages
 
-          cd ${{ inputs.action_path }}/gh-pages
+          cd ${{ inputs.runner_temp }}/gh-pages
           find -not -path "./.git/*" -not -name ".git" | grep git
           find -not -path "./.git/*" -not -name ".git" -delete
           
           shopt -s dotglob && mv -f ${{ inputs.workspace }}/* .
-          #git fetch && git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git rebase && git push
-          git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
-         
+          #git fetch && git add . && git commit --allow-empty -m "$LATEST_COMMIT" && git rebase && git push
+          git add . && git commit --allow-empty -m "$LATEST_COMMIT" && git push
+
         fi
