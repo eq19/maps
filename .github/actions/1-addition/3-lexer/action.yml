@@ -8,6 +8,9 @@ branding:
   color: 'green'
 
 inputs:
+  id:
+    description: The deploy id
+    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}       
@@ -63,9 +66,6 @@ inputs:
     description: 'The deploy repository'
     default: ${{ github.repository }}
     required: false
-  id:
-    description: The id according to os
-    required: true
 
 outputs:
   artifact:

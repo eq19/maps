@@ -8,6 +8,9 @@ branding:
   color: 'green'
 
 inputs:
+  id:
+    description: The deploy id
+    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}       
@@ -127,7 +130,7 @@ runs:
 
         echo $(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format json) > instance
         echo 'ip='$(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(networkInterfaces.accessConfigs[0].natIP)') >> ${GITHUB_OUTPUT}
-        echo 'function='$(curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" --data @instance) >> ${GITHUB_OUTPUT}
+        echo 'function='$(curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" --data @instance | base64) >> ${GITHUB_OUTPUT}
 
     #Ref: https://blog.benoitblanchon.fr/github-action-run-ssh-commands/
     - name: Configure SSH

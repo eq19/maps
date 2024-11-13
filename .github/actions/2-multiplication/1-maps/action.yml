@@ -3,8 +3,8 @@ description: >
   🪂  A Github Action to deploy pages conveniently
 inputs:
   id:
-    description: The id according to os
-    required: true
+    description: The deploy id
+    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}
