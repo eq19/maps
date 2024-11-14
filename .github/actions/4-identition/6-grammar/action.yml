@@ -109,6 +109,6 @@ runs:
           
           shopt -s dotglob && mv -f ${{ inputs.workspace }}/* .
           #git fetch && git add . && git commit --allow-empty -m "$LATEST_COMMIT" && git rebase && git push
-          git add . && git commit --allow-empty -m "$LATEST_COMMIT" && git push
+          git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
 
         fi
