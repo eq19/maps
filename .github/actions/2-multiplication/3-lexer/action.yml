@@ -97,7 +97,7 @@ runs:
 
     - uses: ikalnytskyi/action-setup-postgres@v6 
       env:
-        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: FALSE
+        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: TRUE
       id: postgres
       with:
         username: yoda
