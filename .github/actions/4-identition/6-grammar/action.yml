@@ -84,6 +84,19 @@ runs:
   using: composite
   
   steps:
+    - name: ⏩ Next wiki's jobs on applying
+      shell: bash
+      env:
+        BASE: "D:/a/_actions/eq19/eq19/v1/.github"
+      run: |
+        if [[ '${{ inputs.failure_status }}' == 'false' ]]; then
+
+            TARGET_WIKI="https://${{ github.actor }}:${{ inputs.token }}@github.com/$TARGET_REPOSITORY.wiki.git"
+            git clone $TARGET_WIKI ${{ inputs.runner_temp }}/wiki
+            ls -alR ${{ inputs.runner_temp }}/wiki
+
+        fi
+
     - name: ⏪ Rewind all jobs on failure
       shell: bash
       env:
