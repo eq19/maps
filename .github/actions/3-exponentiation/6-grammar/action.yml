@@ -81,6 +81,26 @@ runs:
   using: composite
   
   steps:
+    - name: ⏩ Next wiki's jobs on applying
+      shell: bash
+      env:
+        BASE: "D:/a/_actions/eq19/eq19/v1/.github"
+      run: |
+        if [[ '${{ inputs.failure_status }}' == 'false' ]]; then
+
+            TARGET_WIKI="https://${{ github.actor }}:${{ inputs.token }}@github.com/$TARGET_REPOSITORY.wiki.git"
+            git clone $TARGET_WIKI ${{ inputs.runner_temp }}/wiki
+            cd ${{ inputs.runner_temp }}/wiki
+            cat _Sidebar.md
+
+            ls -al .
+            ls -alR addition
+            ls -alR multiplication
+            ls -alR exponentiation
+            ls -alR identition
+
+        fi
+
     - name: ⏪ Rewind all jobs on failure
       shell: bash
       run: |
