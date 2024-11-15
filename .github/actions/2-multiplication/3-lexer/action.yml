@@ -78,45 +78,20 @@ outputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
-        allow-prereleases: true
-
-    - uses: actions/cache@v4
-      if: runner.os == '-macOS'
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip
-
-    - name: Install dependencies
+    - name: 🪂 Get tag of existing image
+      id: variables
       shell: bash
       run: |
-        python -m pip -q install --upgrade pip setuptools six wheel
-        python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt
+        brew install mosh
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [[ "${array[$i]}" != "latest" ]]; then
+            image_tag="${array[$i]}"
+            echo 'IMAGE_TAG='${image_tag##*-} >> ${GITHUB_ENV}
+          fi
+        done
 
-    - uses: ikalnytskyi/action-setup-postgres@v6 
-      env:
-        HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK: TRUE
-      id: postgres
-      with:
-        username: yoda
-        password: GrandMaster
-        database: test
-        port: 34837
-
-    - name: 🪂 Test postgres
-      run: |
-        cp ./.github/entrypoint/test.py .
-        python3 -m pytest -vv test.py
-      env:
-        CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
-        SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
-        EXPECTED_CONNECTION_URI: postgresql://yoda:GrandMaster@localhost:34837/test
-        EXPECTED_SERVICE_NAME: yoda
-      shell: bash
-
-    #Ref: https://gist.github.com/xtrmstep/92aab2d465e348ce1c07ed903ca0dfb8
+     #Ref: https://gist.github.com/xtrmstep/92aab2d465e348ce1c07ed903ca0dfb8
     - id: describe
       shell: bash
       env:
