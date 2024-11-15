@@ -113,6 +113,25 @@ runs:
         mv ${{ inputs.action_path }} ${{ github.workspace }}/_site
         mkdir -p ${{ inputs.action_path }} && cp -R ${{ github.workspace }}/_site/. ${{ inputs.action_path }}/
 
+    - uses: ikalnytskyi/action-setup-postgres@v6 
+      id: postgres
+      with:
+        username: yoda
+        password: GrandMaster
+        database: test
+        port: 34837
+
+    - name: 🪂 Test postgres
+      run: |
+        cp ./.github/entrypoint/test.py .
+        python3 -m pytest -vv test.py
+      env:
+        CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
+        SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
+        EXPECTED_CONNECTION_URI: postgresql://yoda:GrandMaster@localhost:34837/test
+        EXPECTED_SERVICE_NAME: yoda
+      shell: bash
+
     - name: 🚀 Initiate Feed Container
       if: runner.os != 'Windows'
       uses: devcontainers/ci@v0.3

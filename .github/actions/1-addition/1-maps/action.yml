@@ -118,25 +118,6 @@ runs:
         python -m pip -q install --upgrade pip setuptools six wheel
         python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt
 
-    - uses: ikalnytskyi/action-setup-postgres@v6 
-      id: postgres
-      with:
-        username: yoda
-        password: GrandMaster
-        database: test
-        port: 34837
-
-    - name: 🪂 Test postgres
-      run: |
-        cp ./.github/entrypoint/test.py .
-        python3 -m pytest -vv test.py
-      env:
-        CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
-        SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
-        EXPECTED_CONNECTION_URI: postgresql://yoda:GrandMaster@localhost:34837/test
-        EXPECTED_SERVICE_NAME: yoda
-      shell: bash
-
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
       with:
