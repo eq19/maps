@@ -77,6 +77,25 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Remove Existing Connection
+      shell: bash
+      env:
+        JOB_ID: ${{ inputs.id }}
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        HEADER="Accept: application/vnd.github+json"
+        /home/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
+
+        #See: https://docs.github.com/en/rest/actions/self-hosted-runners
+        TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
+        RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
+        if (( $TOTAL_COUNT != 0 )); then gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}; fi 
+
+    - name: View context attributes
+      uses: actions/github-script@v7
+      with:
+        script: console.log(context)
+
     - name: Login to DockerHub
       uses: docker/login-action@v3
       with:
@@ -118,25 +137,6 @@ runs:
         EXPECTED_CONNECTION_URI: postgresql://yoda:GrandMaster@localhost:34837/test
         EXPECTED_SERVICE_NAME: yoda
       shell: bash
-
-    - name: Remove Existing Connection
-      shell: bash
-      env:
-        JOB_ID: ${{ inputs.id }}
-        GH_TOKEN: ${{ inputs.token }}
-      run: |
-        HEADER="Accept: application/vnd.github+json"
-        /home/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
-
-        #See: https://docs.github.com/en/rest/actions/self-hosted-runners
-        TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
-        RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
-        if (( $TOTAL_COUNT != 0 )); then gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}; fi 
-
-    - name: View context attributes
-      uses: actions/github-script@v7
-      with:
-        script: console.log(context)
 
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
