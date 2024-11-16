@@ -84,6 +84,19 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: 🪂 Get tag of existing image
+      id: variables
+      shell: bash
+      run: |
+        brew install mosh
+        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
+        for ((i=0; i < ${#array[@]}; i++)); do
+          if [[ "${array[$i]}" != "latest" ]]; then
+            image_tag="${array[$i]}"
+            echo 'IMAGE_TAG='${image_tag##*-} >> ${GITHUB_ENV}
+          fi
+        done
+
     # See https://github.com/thesofproject/sof/blob/main/zephyr/docker-run.sh
     - name: 🪂 Cloud Config
       id: metadata
