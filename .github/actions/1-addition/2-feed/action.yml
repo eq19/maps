@@ -96,20 +96,24 @@ runs:
         TMP: ${{ inputs.tmp }}
         RUN: ${{ github.run_id }}
         USER: ${{ github.actor }}
-        TOKEN: ${{ inputs.token }}
+        GH_TOKEN: ${{ inputs.token }}
         REPO: ${{ github.repository }}
         ACTOR: ${{ github.triggering_actor }}
         OWNER: ${{ github.repository_owner }}
         BEARER: ${{ steps.auth.outputs.id_token }}
       run: |      
+        shopt -s dotglob
         rm -rf ${{ inputs.action_path }}/.git
-        mv -f ${{ inputs.action_path }}/_config.yml ${RUNNER_TEMP}/
 
+        mv -f ${{ inputs.action_path }}/_config.yml ${RUNNER_TEMP}/
         export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && artifact.sh
-        shopt -s dotglob && mv -f ${RUNNER_TEMP}/workdir/* ${{ inputs.action_path }}/
+
+        mv -f ${RUNNER_TEMP}/.env ${{ inputs.action_path }}/
+        mv -f ${RUNNER_TEMP}/_config.yml ${{ inputs.action_path }}/
  
-        #mkdir -p ${{ github.workspace }}/_site
-        #cp -R ${{ inputs.action_path }}/. ${{ github.workspace }}/_site/
+        mkdir -p ${{ inputs.action_path }}/_data
+        mv -f ${RUNNER_TEMP}/*.json ${{ inputs.action_path }}/_data/
+
         mv ${{ inputs.action_path }} ${{ github.workspace }}/_site
         mkdir -p ${{ inputs.action_path }} && cp -R ${{ github.workspace }}/_site/. ${{ inputs.action_path }}/
 

@@ -31,6 +31,10 @@ concurrency:
 # ⚠️ Set token permissions
 permissions: write-all
         
+# 🕸️ Global Environment
+env:
+  TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
+
 jobs:
   lexering:
     strategy:
@@ -116,11 +120,9 @@ jobs:
       max-parallel: ${{ contains(needs.*.result, 'success') && 1 || 2 }}
       fail-fast: ${{ contains(needs.*.result, 'success') && false || true }}
 
-    # 🕸️ Global Environment
     env:
-      PASS: ${{ contains(needs.*.result, 'success') && true || false }}
-      TARGET_REPOSITORY: '${{ needs.lexering.outputs.target }}'
-      IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
+     IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
+     PASS: ${{ contains(needs.*.result, 'success') && true || false }}
 
     # ✔️ Completeness status
     if: ${{ (always() && contains(needs.*.result, 'success')) ||

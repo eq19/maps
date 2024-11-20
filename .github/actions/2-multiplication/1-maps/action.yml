@@ -99,6 +99,7 @@ runs:
       env:
         JOB_ID: ${{ inputs.id }}
         GH_TOKEN: ${{ inputs.token }}
+        #TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
       run: |
         ${{ inputs.action_path }}/.github/entrypoint/init.sh
 

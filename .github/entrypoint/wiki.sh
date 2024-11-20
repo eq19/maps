@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+hr='------------------------------------------------------------------------------------'
+
 gh gist clone 0ce5848f7ad62dc46dedfaa430069857 $1/identition/span1
 gh gist clone b32915925d9d365e2e9351f0c4ed786e $1/identition/span2
 gh gist clone 88d09204b2e5986237bd66d062406fde $1/identition/span3
@@ -30,4 +32,6 @@ rm -rf ${RUNNER_TEMP}/Sidebar.md && cp $1/_Sidebar.md ${RUNNER_TEMP}/Sidebar.md
 sed -i 's/0. \[\[//g' ${RUNNER_TEMP}/Sidebar.md && sed -i 's/\]\]//g' ${RUNNER_TEMP}/Sidebar.md
 
 find $1 -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'
+
+echo -e "\n$hr\nSPIN\n$hr"
 cat ${RUNNER_TEMP}/spin.txt

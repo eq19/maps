@@ -100,10 +100,10 @@ runs:
       shell: bash
       env:
         BASE: "D:/a/_actions/eq19/eq19/v1/.github"
-        TOKEN: ${{ steps.auth.outputs.id_token }}
+        GCP_TOKEN: ${{ steps.auth.outputs.id_token }}
       run: |
         curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
-          -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
+          -H "Authorization: Bearer ${GCP_TOKEN}" -H "Content-Type: application/json" \
           --data @${{ inputs.workspace }}/docs/data.json | jq '.'
         $BASE/entrypoint/init.sh
         
