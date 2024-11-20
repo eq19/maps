@@ -18,7 +18,7 @@ name: COmpendium of RElations – Modulo 6
 # For more information on these settings, see https://www.tensorflow.org/quantum/design.
 #
 on:
-  #push:
+  push:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
@@ -56,6 +56,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
+          ref: ${{ matrix.config.id != 1 && 'gh-source' || '' }}
+          repository: ${{ matrix.config.id != 1 && env.TARGET_REPOSITORY || '' }}
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v2
