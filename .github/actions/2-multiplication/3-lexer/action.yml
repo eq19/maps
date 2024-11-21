@@ -82,15 +82,26 @@ runs:
     - id: describe
       shell: bash
       env:
+        CC: gcc-9
+        CXX: g++-9
+        FC: gfortran-9
+        CMAKE_C_COMPILER: gcc-9
+        CMAKE_CXX_COMPILER: g++-9
+        CMAKE_Fortran_COMPILER: gfortran-9
         GH_TOKEN: ${{ inputs.token }}
+        LDFLAGS: "-L/opt/homebrew/opt/qt@5/lib"
+        CPPFLAGS: "-I/opt/homebrew/opt/qt@5/include"
+        PKG_CONFIG_PATH: "/opt/homebrew/opt/qt@5/lib/pkgconfig"
       run: |
-        #Fill in metadata with standard models vs prime hexagon
-        gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a
+        brew install --quiet doxygen
+        #export PATH="/opt/homebrew/opt/coreutils/libexec/gnubin:/opt/homebrew/opt/qt@5/bin:$PATH"
+        #cd ${{ inputs.action_path }} && mkdir build && cd build && cmake .. && make && sudo make install && ctest
 
         ssh-keygen -t rsa -b 3072 -N '' -f $HOME/.ssh/google_compute_engine -C root
         sed -i.backup "1s|^|runner: |" $HOME/.ssh/google_compute_engine.pub && gh secret set GCP_ID_RSA < $HOME/.ssh/google_compute_engine
 
         gcloud compute instances add-metadata grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --metadata-from-file ssh-keys=$HOME/.ssh/google_compute_engine.pub
+        gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(metadata.items)'
         #gcloud compute scp ${{ github.workspace }}/.github/entrypoint/artifact/python/manual_v2.ipynb grid-${{ env.IMAGE_TAG }}:/home/runner/.docker --zone=us-central1-a
 
         echo $(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format json) > instance

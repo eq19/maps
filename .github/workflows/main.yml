@@ -44,6 +44,8 @@ jobs:
         config:
           - { os: ubuntu-latest, id: 1 }
           - { os: macos-latest, id: 2 }
+    env:
+      ID: ${{ matrix.config.id }}
 
     # 🔧 Commutation relations
     runs-on: ${{ matrix.config.os }}
@@ -56,8 +58,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
-          ref: ${{ matrix.config.id != 1 && 'gh-source' || '' }}
-          repository: ${{ matrix.config.id != 1 && env.TARGET_REPOSITORY || '' }}
+          ref: ${{ env.ID != 1 && 'gh-source' || '' }}
+          repository: ${{ env.ID != 1 && env.TARGET_REPOSITORY || '' }}
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v2
@@ -123,8 +125,8 @@ jobs:
       fail-fast: ${{ contains(needs.*.result, 'success') && false || true }}
 
     env:
-     IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
-     PASS: ${{ contains(needs.*.result, 'success') && true || false }}
+      IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
+      PASS: ${{ contains(needs.*.result, 'success') && true || false }}
 
     # ✔️ Completeness status
     if: ${{ (always() && contains(needs.*.result, 'success')) ||
