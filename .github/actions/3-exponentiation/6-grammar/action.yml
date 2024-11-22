@@ -93,12 +93,7 @@ runs:
             cd ${{ inputs.runner_temp }}/wiki
             cat _Sidebar.md
 
-            ls -al .
-            ls -alR addition
-            ls -alR multiplication
-            ls -alR exponentiation
-            ls -alR identition
-
+            ls -alR /home/runner/templates/doxygen            
         fi
 
     - name: ⏪ Rewind all jobs on failure
