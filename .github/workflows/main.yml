@@ -84,7 +84,7 @@ jobs:
           initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
 
       - name: 🏃‍♂️ Lexering Runner
-        uses: eq19/lexer@v2
+        uses: eq19/lexer@v3
         id: set-lexering
         with:
           id: ${{ matrix.config.id }}
