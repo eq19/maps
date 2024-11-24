@@ -88,7 +88,7 @@ runs:
       id: variables
       shell: bash
       run: |
-        brew install --quiet mosh pandoc      
+        brew install --quiet mosh pandoc doxygen     
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
         for ((i=0; i < ${#array[@]}; i++)); do
           if [[ "${array[$i]}" != "latest" ]]; then

@@ -100,7 +100,7 @@ runs:
         REDIS_HOST: 172.17.0.1
       shell: bash
       run: |
-        node /home/runner/scripts/main.js --output=/home/runner/templates/doxygen/doc/api-%s.md /home/runner/xml
+        node /home/runner/scripts/main.js --output=/home/runner/templates/doxygen/doc/api-%s.md xml
         echo '${{ inputs.pauli_sum }}'
     
     - name: 💎 Connect to postgres

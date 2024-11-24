@@ -93,11 +93,17 @@ runs:
         CPPFLAGS: "-I/opt/homebrew/opt/qt@5/include"
         PKG_CONFIG_PATH: "/opt/homebrew/opt/qt@5/lib/pkgconfig"
       run: |
-        ssh-keygen -t rsa -b 3072 -N '' -f $HOME/.ssh/google_compute_engine -C root
-        sed -i.backup "1s|^|runner: |" $HOME/.ssh/google_compute_engine.pub && gh secret set GCP_ID_RSA < $HOME/.ssh/google_compute_engine
+        cd ${{ inputs.action_path }} && doxygen > /dev/null 2>&1
+        rm -rf ${{ github.workspace }}/xml && mv -f xml ${{ github.workspace }}/
 
-        gcloud compute instances add-metadata grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --metadata-from-file ssh-keys=$HOME/.ssh/google_compute_engine.pub
-        gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(metadata.items)'
+        cd ${{ github.workspace }} && rm -rf cloud-config
+        git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
+
+        #ssh-keygen -t rsa -b 3072 -N '' -f $HOME/.ssh/google_compute_engine -C root
+        #sed -i.backup "1s|^|runner: |" $HOME/.ssh/google_compute_engine.pub && gh secret set GCP_ID_RSA < $HOME/.ssh/google_compute_engine
+
+        #gcloud compute instances add-metadata grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --metadata-from-file ssh-keys=$HOME/.ssh/google_compute_engine.pub
+        #gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(metadata.items)'
         #gcloud compute scp ${{ github.workspace }}/.github/entrypoint/artifact/python/manual_v2.ipynb grid-${{ env.IMAGE_TAG }}:/home/runner/.docker --zone=us-central1-a
 
         echo $(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format json) > instance
