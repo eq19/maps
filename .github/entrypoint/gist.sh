@@ -2,15 +2,6 @@
 
 rm -rf ${RUNNER_TEMP}/*dir
 
-WIKI=https://github.com/$1.wiki.git
-BASE=https://github.com/eq19/eq19.github.io.wiki.git
-
-#git ls-remote ${WIKI} > /dev/null 2>&1
-#if [[ $? == 0 ]]; then git clone $WIKI ${RUNNER_TEMP}/workdir;
-#else git clone $BASE ${RUNNER_TEMP}/workdir && rm -rf ${RUNNER_TEMP}/workdir/Home.md; fi
-#gh release view --json name,body,tagName --jq '.body' -R eq19/feed
-#mv -f ${RUNNER_TEMP}/workdir/virtual /maps/_includes/virtual && mkdir ${RUNNER_TEMP}/gistdir
-
 gh gist clone 0ce5848f7ad62dc46dedfaa430069857 ${RUNNER_TEMP}/gistdir/identition/span1
 gh gist clone b32915925d9d365e2e9351f0c4ed786e ${RUNNER_TEMP}/gistdir/identition/span2
 gh gist clone 88d09204b2e5986237bd66d062406fde ${RUNNER_TEMP}/gistdir/identition/span3
@@ -34,12 +25,6 @@ gh gist clone e9832026b5b78f694e4ad22c3eb6c3ef ${RUNNER_TEMP}/gistdir/exponentia
 rm -rf ${RUNNER_TEMP}/spin.txt && touch ${RUNNER_TEMP}/spin.txt
 find ${RUNNER_TEMP}/gistdir -type f -name "README.md" -exec rm -rf {} \;
 
-git clone $BASE ${RUNNER_TEMP}/workdir
+git clone ${BASE} ${RUNNER_TEMP}/workdir
 mv -f ${RUNNER_TEMP}/workdir/Home.md ${RUNNER_TEMP}/workdir/README.md
 find ${RUNNER_TEMP}/gistdir -type f -name 'spin_*.txt' | sort -n -t _ -k 2  | while ((i++)); IFS= read -r f; do sort.sh $f $i; done
-
-if [[ "${WIKI}" != "${BASE}" ]]; then
-  git clone $WIKI ${RUNNER_TEMP}/wikidir
-  mv -f ${RUNNER_TEMP}/wikidir/Home.md ${RUNNER_TEMP}/wikidir/README.md
-  find ${RUNNER_TEMP}/gistdir -type d -name "$2" -prune -exec sh -c 'wiki.sh "$1"' sh {} \;
-fi

@@ -57,6 +57,13 @@ if [[ "${JOB_ID}" == "3" ]]; then
 
   echo -e "\n$hr\nWORKSPACE\n$hr"
   gist.sh ${TARGET_REPOSITORY} ${FOLDER}
+
+  if [[ "${WIKI}" != "${BASE}" ]]; then
+    git clone $WIKI ${RUNNER_TEMP}/wikidir
+    mv -f ${RUNNER_TEMP}/wikidir/Home.md ${RUNNER_TEMP}/wikidir/README.md
+    find ${RUNNER_TEMP}/gistdir -type d -name "${FOLDER}" -prune -exec sh -c 'wiki.sh "$1"' sh {} \;
+  fi
+
   find ${RUNNER_TEMP}/gistdir -type d -name .git -prune -exec rm -rf {} \;
   
   mv -f ${RUNNER_TEMP}/workdir/* /home/runner/_site/
@@ -66,6 +73,10 @@ if [[ "${JOB_ID}" == "3" ]]; then
   cd /home/runner/_site && cp -R ${RUNNER_TEMP}/gistdir/* .
   find . -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'
   find . -type d -name "${FOLDER}" -prune -exec sh -c 'cat ${RUNNER_TEMP}/README.md >> $1/README.md' sh {} \;
+
+elif [[ "${JOB_ID}" == "4" ]]; then
+
+  echo -e "\n$hr\nWORKSPACE\n$hr"
 
 fi
 

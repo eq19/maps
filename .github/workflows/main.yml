@@ -111,9 +111,6 @@ jobs:
       function: ${{ steps.set-lexering.outputs.function }}
 
   parsering:
-    needs: lexering
-    continue-on-error: false
-    runs-on: ${{ matrix.config.os }}
     strategy:
       matrix:
         config:
@@ -129,9 +126,12 @@ jobs:
       PASS: ${{ contains(needs.*.result, 'success') && true || false }}
 
     # ✔️ Completeness status
+    needs: lexering
+    runs-on: ${{ matrix.config.os }}
     if: ${{ (always() && contains(needs.*.result, 'success')) ||
             (failure() && contains(needs.*.result, 'failure')) }}
-      
+    continue-on-error: ${{ matrix.config.id == 3 && true || false }}
+     
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v4
