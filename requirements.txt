@@ -8,7 +8,7 @@ lxml
 iree-compiler
 iree-runtime
 iree-tools-tf
-iree.tools.tflite
+iree-tools-tflite
 matplotlib
 numpy
 opencv-python
