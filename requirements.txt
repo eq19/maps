@@ -7,8 +7,9 @@ keras
 lxml
 iree-compiler
 iree-runtime
-iree-tools-tf
-iree-tools-tflite
+#iree-tools-tf
+#iree-tools-tflite
+jax
 lit
 matplotlib
 numpy
