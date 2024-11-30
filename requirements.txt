@@ -9,6 +9,7 @@ iree-compiler
 iree-runtime
 iree-tools-tf
 iree-tools-tflite
+lit
 matplotlib
 numpy
 opencv-python
