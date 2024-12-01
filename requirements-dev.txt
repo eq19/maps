@@ -6,4 +6,5 @@ psycopg
 coverage
 pre-commit
 pytest-cov
+pytest-xdist
 -r requirements.txt
