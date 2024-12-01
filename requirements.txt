@@ -5,7 +5,7 @@ flavio[sampling,plotting]
 imageio
 keras
 lxml
-#iree-compiler
+iree-compiler
 iree-runtime
 #iree-tools-tf
 #iree-tools-tflite
