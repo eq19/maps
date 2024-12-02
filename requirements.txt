@@ -24,6 +24,7 @@ rich
 robyn
 # scikit-fuzzy  # uncomment once fuzzy_logic/fuzzy_operations.py is fixed
 scikit-learn
+scipy
 sparse
 statsmodels
 sympy
