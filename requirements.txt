@@ -17,7 +17,6 @@ opencv-python
 pandas
 pillow
 # projectq  # uncomment once quantum/quantum_random.py is fixed
-pprint
 pylab
 qiskit
 qiskit-aer
