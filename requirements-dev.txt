@@ -3,6 +3,7 @@ ruff
 black
 pytest
 psycopg
+psycopg2
 coverage
 pre-commit
 pytest-cov
