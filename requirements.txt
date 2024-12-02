@@ -28,7 +28,7 @@ scipy
 sparse
 statsmodels
 sympy
-tensorflow
+#tensorflow
 tweepy
 # yulewalker  # uncomment once audio_filters/equal_loudness_filter.py is fixed
 typing_extensions
