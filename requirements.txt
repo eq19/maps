@@ -1,36 +1,11 @@
-algorithms
-beautifulsoup4
-fake_useragent
-flavio[sampling,plotting]
-imageio
-keras
-lxml
-iree-base-compiler
-iree-base-runtime
-#iree-tools-tf
-#iree-tools-tflite
-jax
-lit
-matplotlib
-numpy
-opencv-python
-pandas
-pillow
-# projectq  # uncomment once quantum/quantum_random.py is fixed
-#pysme
-qiskit
-qiskit-aer
-requests
-rich
-robyn
-# scikit-fuzzy  # uncomment once fuzzy_logic/fuzzy_operations.py is fixed
-scikit-learn
-scipy
-sparse
-statsmodels
-sympy
-#tensorflow
-tweepy
-# yulewalker  # uncomment once audio_filters/equal_loudness_filter.py is fixed
-typing_extensions
-xgboost
+furl
+ruff
+black
+pytest
+psycopg
+psycopg2
+coverage
+pre-commit
+pytest-cov
+pytest-xdist
+-r requirements-dev.txt
