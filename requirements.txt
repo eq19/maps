@@ -8,4 +8,4 @@ coverage
 pre-commit
 pytest-cov
 pytest-xdist
--r requirements-dev.txt
+-r requirements-iree.txt
