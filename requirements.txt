@@ -1,11 +1,11 @@
-furl
-ruff
-black
+#furl
+#ruff
+#black
 pytest
 psycopg
 psycopg2
-coverage
-pre-commit
+#coverage
+#pre-commit
 pytest-cov
 pytest-xdist
 -r requirements-pypi.txt
