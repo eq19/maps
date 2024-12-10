@@ -54,7 +54,7 @@ if __name__ == "__main__":
     
     # Marker to indicate if calculating the first element
     first = 1
-    
+    print(args.finish)
     # TODO: CHECK THIS STATEMENT!
     for path in range (int((args.start/(10**(goal_dec-path_dec)))),int(args.finish/(10**(goal_dec-path_dec)))):
         currentPath = str(path).zfill(path_dec)
