@@ -13,8 +13,8 @@ import argparse
 #import configparser
 from time import time
 
-import hexWrapper
-import functions
+import hexScripts.hexWrapper
+import hexScripts.functions
 
 if __name__ == "__main__":
 
