@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument('--file',        default = "./",          type=str,               help='File to read data from.')
     args = parser.parse_args()
 
-    with np.load(args.file, mmap_mode='r') as data:
+    with np.load(args.file, mmap_mode='r', allow_pickle=True) as data:
             prime = data['prime'][0]
             pos = data['pos'][0]
             spin = data['spin'][0]
