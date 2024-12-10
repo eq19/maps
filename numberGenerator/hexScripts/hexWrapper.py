@@ -5,7 +5,7 @@ import os
 from time import time
 import random
 
-from functions import fileLineColor
+from hexScripts.functions import fileLineColor
 
 """
     runHex is a function that wraps over the hex executable file to run the program
