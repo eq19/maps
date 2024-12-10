@@ -1,18 +1,18 @@
 # IREE Python API
 # Use nightly releases instead of PyPi
 -f https://iree.dev/pip-release-links.html
-iree-compiler
-iree-runtime
-iree-tools-tflite
-iree-tools-xla
-iree-tools-tf
+#iree-compiler
+#iree-runtime
+#iree-tools-tflite
+#iree-tools-xla
+#iree-tools-tf
 
 # TensorFlow and JAX.
-gin-config
-tf-nightly
-tf-models-nightly
-tensorflow-text-nightly
-transformers
+#gin-config
+#tf-nightly
+#tf-models-nightly
+#tensorflow-text-nightly
+#transformers
 jax[cpu]
 
 
