@@ -1,6 +1,6 @@
 # prime-hexagon
-The Prime Hexagon
-![alt text](https://github.com/kaustubhcs/prime-hexagon/blob/master/poster/RISE%20Poster%20Prime%20Hexagon%202078.jpg)
+
+![The Prime Hexagon](https://github.com/user-attachments/assets/c3f850bb-8ca9-4448-92de-5dd4ff657e56)
 
 [![Build and deploy eQuantum site](https://github.com/eq19/eq19.github.io/actions/workflows/main.yml/badge.svg)](https://github.com/eq19/eq19.github.io/actions/workflows/main.yml)
 
