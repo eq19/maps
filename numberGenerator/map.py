@@ -13,8 +13,8 @@ import argparse
 #import configparser
 from time import time
 
-import hexScripts.hexWrapper import runHex
-import hexScripts.functions import fileLen
+import hexScripts.hexWrapper
+import hexScripts.functions
 
 if __name__ == "__main__":
 
@@ -70,7 +70,7 @@ if __name__ == "__main__":
             size = 0
         else:
             print ("File %s exists, checking last entry." % (currentDir+currentFile))
-            size,color = fileLen(currentDir+currentFile)
+            size,color = hexScripts.functions.fileLen(currentDir+currentFile)
         
         if size == 10**run_dec:
             # This path file is done, lets move on to the next
@@ -88,11 +88,11 @@ if __name__ == "__main__":
                     else:    
                         output = "0"
                 else:
-                    output = runHex(str(path-1)+str(10**file_dec-1)+''.zfill(run_dec),
+                    output = hexScripts.hexWrapper.runHex(str(path-1)+str(10**file_dec-1)+''.zfill(run_dec),
                             str(color),
                             str(path)+str(run).zfill(file_dec)+''.zfill(run_dec))
             else:
-                output = runHex(str(path)+str(run-1).zfill(file_dec)+''.zfill(run_dec),
+                output = hexScripts.hexWrapper.runHex(str(path)+str(run-1).zfill(file_dec)+''.zfill(run_dec),
                             str(color),
                             str(path)+str(run).zfill(file_dec)+''.zfill(run_dec))
             print (" - Done")
