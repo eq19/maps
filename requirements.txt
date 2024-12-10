@@ -1,4 +1,4 @@
-#furl
+furl
 #ruff
 #black
 pytest
