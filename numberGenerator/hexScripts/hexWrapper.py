@@ -11,7 +11,7 @@ import hexScripts.functions
     with the specified startpoint->color and with a specific endpoint.
 """
 def runHex(startpoint, startpointColor, endpoint, gpuNum=0):
-    args = ("./python/results", str(startpoint), str(startpointColor), str(endpoint), str(gpuNum))
+    args = ("./hex", str(startpoint), str(startpointColor), str(endpoint), str(gpuNum))
     print ("Running ", startpoint, endpoint)
     popen = subprocess.Popen(args, stdout=subprocess.PIPE)
     popen.wait()
