@@ -21,4 +21,4 @@ if __name__ == "__main__":
             pos = data['pos'][0]
             spin = data['spin'][0]
             rot = data['rot'][0]
-            print prime, pos, spin, rot
+            print(prime, pos, spin, rot)
