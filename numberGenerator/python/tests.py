@@ -9,7 +9,7 @@ class testHexFunctions(unittest.TestCase):
         #hnum of value 5, 2 powers, and precision 20
         self.prec = 15
         self.hnum = Hexnum(5, 2, self.prec)
-        self.plist = open('prime_lists/5.txt')
+        self.plist = open('./prime_lists/5.txt')
 
     def test_power_list(self):
         self.assertEqual(power_list(2,1, self.prec), [2.00000])
