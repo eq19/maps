@@ -4,8 +4,7 @@ import os
 #import configparser
 from time import time
 import random
-
-from hexScripts.functions import fileLineColor
+import hexScripts.functions
 
 """
     runHex is a function that wraps over the hex executable file to run the program
@@ -44,7 +43,7 @@ def hexSeek(head_dir,endpoint):
     if not os.path.exists(dir_str):
         return "ERROR File input required not found!"
         
-    start_color = fileLineColor(file_line,dir_str)
+    start_color = hexScripts.function.fileLineColor(file_line,dir_str)
     
     if start_color == -1:
         print ("Mistake")
