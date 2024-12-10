@@ -48,7 +48,7 @@ while (current.val <= upper_bound):
 
         #get the color that corresponds to that multiplication
         color = spin.get(mult, None)
-        print color
+        print(color)
         current.add_color(color) #add on the power and its associated color
         current.set_roll_double() # set_roll_double(current)
         #see if there were any doubles and set the roll_double field
