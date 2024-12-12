@@ -79,4 +79,4 @@ for num in finished:
 results.close()
 
 # Print how long it took
-print(datetime.now() - start_time)
+#print(datetime.now() - start_time)
