@@ -61,6 +61,7 @@ def get_spin_nums(num, pfile):
     n_nums = [Decimal(i) for i in n_line]
 
     #print (pfile.name)
+    print(num)
 
     if(c_nums[0] > num):
         return (1, 1)
