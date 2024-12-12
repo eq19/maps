@@ -33,9 +33,10 @@ finished = []
 current = Hexnum(lower_bound, power_limit, precision)
 
 while (current.val <= upper_bound):
-    print(current.val)
+
     for num in current.powers:
 
+        print(current.val,num)
         #figure out which file to use
         file_index = find_plist(num)
         if file_index is not None:
