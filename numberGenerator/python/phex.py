@@ -31,9 +31,9 @@ finished = []
 
 # Begin looping through the range, starting with lower_bound
 current = Hexnum(lower_bound, power_limit, precision)
-print(current)
-while (current.val <= upper_bound):
 
+while (current.val <= upper_bound):
+    print(current.val)
     for num in current.powers:
 
         #figure out which file to use
