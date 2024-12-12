@@ -31,7 +31,7 @@ finished = []
 
 # Begin looping through the range, starting with lower_bound
 current = Hexnum(lower_bound, power_limit, precision)
-
+print(current)
 while (current.val <= upper_bound):
 
     for num in current.powers:
