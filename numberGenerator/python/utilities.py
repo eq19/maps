@@ -69,7 +69,6 @@ def get_spin_nums(num, pfile):
         if(n_nums == []):
             break
         elif(num >= c_nums[0] and num < n_nums[0]):
-            print(num)
             return (int(c_nums[1]), int(c_nums[2]))
 
         c_nums = n_nums
