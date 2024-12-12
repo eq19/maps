@@ -18,11 +18,11 @@ print ("************************************")
 print ("")
 
 # Number parameters for the range of numbers to be tested
-lower_bound = Decimal( str(input("What is the lower bound? ")) )
-upper_bound = Decimal( str(input("What is the upper bound? ")) )
-range_slice = Decimal( str(input("How fine a slice?        ")) )
-precision   = int(     input("How many dec places?     ") )
-power_limit = int(     input("How many powers?         ") )
+lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
+upper_bound = 10#Decimal( str(input("What is the upper bound? ")) )
+range_slice = 1#Decimal( str(input("How fine a slice?        ")) )
+precision   = 2#int(     input("How many dec places?     ") )
+power_limit = 3#int(     input("How many powers?         ") )
 
 # Start the time
 start_time = datetime.now()
