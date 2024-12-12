@@ -36,7 +36,7 @@ while (current.val <= upper_bound):
 
     for num in current.powers:
 
-        print(current.val,current.powers)
+        #print(current.val,current.powers)
         #figure out which file to use
         file_index = find_plist(num)
         if file_index is not None:
