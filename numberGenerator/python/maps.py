@@ -22,7 +22,7 @@ lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
 upper_bound = 10#Decimal( str(input("What is the upper bound? ")) )
 range_slice = 1#Decimal( str(input("How fine a slice?        ")) )
 precision   = 3#int(     input("How many dec places?     ") )
-power_limit = 2#int(     input("How many powers?         ") )
+power_limit = 3#int(     input("How many powers?         ") )
 
 # Start the time
 start_time = datetime.now()
