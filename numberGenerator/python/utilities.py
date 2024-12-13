@@ -43,7 +43,7 @@ def power_list(num, power, precision):
     getcontext().prec = precision
     pows = []
     for p in range(1,power+1):
-        print( Decimal(Decimal(num) ** p) )
+        #print( Decimal(Decimal(num) ** p) )
         pows.append( Decimal(Decimal(num) ** p) )
     return pows
 
