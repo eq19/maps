@@ -1,12 +1,15 @@
+six
 furl
 #ruff
 #black
+wheel
 pytest
+pytest-cov
+pytest-xdist
 psycopg
 psycopg2
 #coverage
 #pre-commit
-pytest-cov
-pytest-xdist
+setuptools
 -r requirements-pypi.txt
 -r requirements-iree.txt
