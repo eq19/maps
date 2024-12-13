@@ -38,19 +38,19 @@ while (current.val <= upper_bound):
 
         print('num:',num)
         #figure out which file to use
-        #file_index = find_plist(num)
-        #if file_index is not None:
-            #pfile = open(plists[find_plist(num)], 'r')
+        file_index = find_plist(num)
+        if file_index is not None:
+            pfile = open(plists[find_plist(num)], 'r')
             #determine spin color
-            #mult = get_spin_nums(num, pfile)
-            #pfile.close()
-        #else:
-            #mult = (5, 5)
+            mult = get_spin_nums(num, pfile)
+            pfile.close()
+        else:
+            mult = (5, 5)
 
         #get the color that corresponds to that multiplication
-        #color = spin.get(mult, None)
-        #print(color)
-        #current.add_color(color) #add on the power and its associated color
+        color = spin.get(mult, None)
+        print(color)
+        current.add_color(color) #add on the power and its associated color
         #current.set_roll_double() # set_roll_double(current)
         #see if there were any doubles and set the roll_double field
         #if(current.roll_double or None in current.colors):
