@@ -19,7 +19,7 @@ print ("")
 
 # Number parameters for the range of numbers to be tested
 lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
-upper_bound = 10#Decimal( str(input("What is the upper bound? ")) )
+upper_bound = 17#Decimal( str(input("What is the upper bound? ")) )
 range_slice = 1#Decimal( str(input("How fine a slice?        ")) )
 precision   = 4#int(     input("How many dec places?     ") )
 power_limit = 3#int(     input("How many powers?         ") )
