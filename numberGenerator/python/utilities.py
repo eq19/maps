@@ -44,6 +44,7 @@ def power_list(num, power, precision):
     pows = []
     for p in range(1,power+1):
         pows.append( Decimal(Decimal(num) ** p) )
+        print( Decimal(Decimal(num) ** p) )
     return pows
 
 
