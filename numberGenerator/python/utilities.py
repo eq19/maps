@@ -83,18 +83,18 @@ def get_spin_nums(num, pfile):
 
 
 # mapping numbers to spin color
-spin = {  (1,  1) : "blue_2",
-          (2, -1) : "blue_3",
-          (2,  1) : "purple_2",
-          (3, -1) : "purple_3",
-          (3,  1) : "red_2",
-          (4, -1) : "red_3",
-          (4,  1) : "yellow_2",
-          (5, -1) : "yellow_3",
-          (5,  1) : "green_2",
-          (0, -1) : "green_3",
-          (0,  1) : "cyan_2",
-          (1, -1) : "cyan2"
+spin = {  (1,  1) : "blue",
+          (2, -1) : "blue",
+          (2,  1) : "purple",
+          (3, -1) : "purple",
+          (3,  1) : "red",
+          (4, -1) : "red",
+          (4,  1) : "yellow",
+          (5, -1) : "yellow",
+          (5,  1) : "green",
+          (0, -1) : "green",
+          (0,  1) : "cyan",
+          (1, -1) : "cyan_3"
         }
 
 
