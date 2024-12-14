@@ -1,6 +1,6 @@
 # Prime-Hexagon
 
-The Prime-Hexagon project can calculate powers of given slices of numbers and their spin in the prime hexagon.
+[The Prime-Hexagon project](https://github.com/tsgallion/prime-hexagon) can calculate powers of given slices of numbers and their spin in the prime hexagon.
 
 Run phex.py and follow the prompts for range, slice, power-limit and the precision of the numbers.
 
