@@ -1,5 +1,5 @@
-#JVM in Python
-#Ref: JVM in Python
+#Run JVM in Python
+#Ref: https://github.com/tsoding/JelloVM
 
 import pprint
 import sys
