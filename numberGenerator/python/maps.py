@@ -36,7 +36,6 @@ while (current.val <= upper_bound):
 
     for num in current.powers:
 
-        print('num:',num)
         #figure out which file to use
         file_index = find_plist(num)
         if file_index is not None:
@@ -49,7 +48,7 @@ while (current.val <= upper_bound):
 
         #get the color that corresponds to that multiplication
         color = spin.get(mult, None)
-        print(mult,color)
+        print(num,mult,color)
         current.add_color(color) #add on the power and its associated color
         current.set_roll_double() # set_roll_double(current)
         #see if there were any doubles and set the roll_double field
