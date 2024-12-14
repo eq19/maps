@@ -33,7 +33,7 @@ finished = []
 current = Hexnum(lower_bound, power_limit, precision)
 
 while (current.val <= upper_bound):
-    print('current.val: ',current.val)
+
     for num in current.powers:
 
         print('num:',num)
