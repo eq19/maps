@@ -47,7 +47,7 @@ while (current.val <= upper_bound):
             mult = (5, 5)
 
         #get the color that corresponds to that multiplication
-        color = spin.get(mult, None) + "_"
+        color = spin.get(mult, None) + "_" + num
         print(num,mult,color)
         current.add_color(color) #add on the power and its associated color
         current.set_roll_double() # set_roll_double(current)
