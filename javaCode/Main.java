@@ -8,6 +8,6 @@ public abstract class Main {
         System.out.println("  by eQuantum Project");
         System.out.println("************************************");
         System.out.println(""); 
-        System.out.println(34 + 35);
+        System.out.println(13**2);
     }
 }
