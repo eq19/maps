@@ -99,10 +99,10 @@ spin = {  (1,  1) : "blue",
 
 
 # list of paths to prime-list files
-plists = glob.glob('pythonCode/prime_lists/*.txt')
+plists = glob.glob('dataFile/prime_lists/*.txt')
 
 # lowest primes in each file
-lowest_primes = [int(p[12:-4]) for p in plists]
+lowest_primes = [int(p[21:-4]) for p in plists]
 
 # Maximum of the numbers
 # Will change later to be dynamic
