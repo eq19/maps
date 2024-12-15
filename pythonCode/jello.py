@@ -2,8 +2,6 @@
 #Ref: https://github.com/tsoding/JelloVM
 
 import pprint
-import sys
-import io
 
 pp = pprint.PrettyPrinter()
 
