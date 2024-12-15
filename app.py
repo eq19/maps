@@ -1,5 +1,4 @@
-import sys
-
+from sys import argv
 from pythonCode import *
 
 if __name__ == '__main__':
