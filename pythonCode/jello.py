@@ -1,6 +1,7 @@
 #Run JVM in Python
 #Ref: https://github.com/tsoding/JelloVM
 
+import io
 import pprint
 
 pp = pprint.PrettyPrinter()
