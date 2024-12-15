@@ -48,10 +48,10 @@ while (current.val <= upper_bound):
         #get the color that corresponds to that multiplication
         color = utilities.spin.get(mult, None) + "_" + str(num % 6)
         print(num,mult,color)
-        current.utilities.add_color(color) #add on the power and its associated color
-        current.utilities.set_roll_double() # set_roll_double(current)
+        current.add_color(color) #add on the power and its associated color
+        current.set_roll_double() # set_roll_double(current)
         #see if there were any doubles and set the roll_double field
-        if(current.utilities.roll_double or None in current.colors):
+        if(current.roll_double or None in current.colors):
             break
 
 
@@ -64,7 +64,7 @@ while (current.val <= upper_bound):
 # end of while loop
 
 # write contents to file/process etc.
-output_path = 'dataFile/{}'.format(output)
+output_path = 'dataFile/results/{}'.format(output)
 results = open(output_path, 'w')
 results.truncate()
 
