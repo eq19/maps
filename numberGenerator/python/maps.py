@@ -11,12 +11,6 @@ import csv
 
 script, output = argv
 
-print ("************************************")
-print ("  Prime Hexagon Near Pi")
-print ("  by Daniel Goldstein")
-print ("************************************")
-print ("")
-
 # Number parameters for the range of numbers to be tested
 lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
 upper_bound = 169#Decimal( str(input("What is the upper bound? ")) )
