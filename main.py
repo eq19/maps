@@ -1,4 +1,4 @@
-import jello
+from pythonCode import jello
 
 if __name__ == '__main__':
     program, *args = sys.argv
