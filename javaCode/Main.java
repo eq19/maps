@@ -7,7 +7,6 @@ public abstract class Main {
         System.out.println("  Prime Hexagon Near Pi");
         System.out.println("  by eQuantum Project");
         System.out.println("************************************");
-        System.out.println(""); 
-        System.out.println(102 + 66);
+        System.out.println("");
     }
 }
