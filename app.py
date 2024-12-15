@@ -11,7 +11,7 @@ from sys import argv
 from decimal import *
 from datetime import datetime
 from pythonCode import jello
-from pythonCode.utilities import *
+from pythonCode import utilities
 
 
 script, output = argv
@@ -29,29 +29,29 @@ start_time = datetime.now()
 finished = []
 
 # Begin looping through the range, starting with lower_bound
-current = Hexnum(lower_bound, power_limit, precision)
+current = utilities.Hexnum(lower_bound, power_limit, precision)
 
 while (current.val <= upper_bound):
 
     for num in current.powers:
 
         #figure out which file to use
-        file_index = find_plist(num)
+        file_index = utilities.find_plist(num)
         if file_index is not None:
-            pfile = open(plists[find_plist(num)], 'r')
+            pfile = open(plists[file_index], 'r')
             #determine spin color
-            mult = get_spin_nums(num, pfile)
+            mult = utilities.get_spin_nums(num, pfile)
             pfile.close()
         else:
             mult = (5, 5)
 
         #get the color that corresponds to that multiplication
-        color = spin.get(mult, None) + "_" + str(num % 6)
+        color = utilities.spin.get(mult, None) + "_" + str(num % 6)
         print(num,mult,color)
-        current.add_color(color) #add on the power and its associated color
-        current.set_roll_double() # set_roll_double(current)
+        current.utilities.add_color(color) #add on the power and its associated color
+        current.utilities.set_roll_double() # set_roll_double(current)
         #see if there were any doubles and set the roll_double field
-        if(current.roll_double or None in current.colors):
+        if(current.utilities.roll_double or None in current.colors):
             break
 
 
@@ -59,12 +59,12 @@ while (current.val <= upper_bound):
     finished.append(current)
 
     #reset the current to the next Hexnum
-    current = Hexnum(current.val + range_slice, power_limit, precision)
+    current = utilities.Hexnum(current.val + range_slice, power_limit, precision)
 
 # end of while loop
 
 # write contents to file/process etc.
-output_path = 'results/{}'.format(output)
+output_path = 'dataFile/{}'.format(output)
 results = open(output_path, 'w')
 results.truncate()
 
