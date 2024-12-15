@@ -1,5 +1,5 @@
 import sys
-from pythonCode import *
+from pythonCode import jello
 
 if __name__ == '__main__':
     program, *args = sys.argv
