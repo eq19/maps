@@ -38,7 +38,7 @@ while (current.val <= upper_bound):
         #figure out which file to use
         file_index = utilities.find_plist(num)
         if file_index is not None:
-            pfile = open(plists[file_index], 'r')
+            pfile = open(utilities.plists[file_index], 'r')
             #determine spin color
             mult = utilities.get_spin_nums(num, pfile)
             pfile.close()
