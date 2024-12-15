@@ -10,8 +10,7 @@ import csv
 from sys import argv
 from decimal import *
 from datetime import datetime
-from pythonCode import jello
-from pythonCode import utilities
+from pythonCode import *
 
 
 script, output = argv
