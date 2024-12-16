@@ -1,6 +1,32 @@
 #Construct particles in JVM
 #Ref: https://github.com/tsoding/JelloVM
 #Ref: https://github.com/Arc676/The-Standard-Model
+/**
+ * Particle classification stored in 8 bits
+ * gggg fftt
+ * The two least significant bits (tt) indicate whether the particle is a boson (01) or fermion (10).
+ * The next two bits (ff) indicate the subdivisions of fermions: leptons (01) and quarks (10).
+ * The four most significant bits (gggg) uniquely identify each particle within its own family. The information stored in these bits
+ * depends on the particle type.
+ *
+ * Leptons:
+ * ntme fftt
+ * The four bits store
+ * n - whether the particle is a neutrino
+ * t, m, or e - the generation of the particle (tau, muon, or electron)
+ *
+ * Quarks:
+ * 32du fftt
+ * The four bits store
+ * 3 or 2 - whether the particle is in the third or second generation of quarks (ordered by increasing mass)
+ * d or u - whether the particle is a down- or up-type quark
+ *
+ * Bosons:
+ * whpg fftt
+ * The four bits store
+ * w, h, p, or g - whether the particle is a weak force mediator, the Higgs boson, a photon, or a gluon (a unique value is assigned
+ * 			to each boson, except the W and Z bosons)
+ */
 
 import io
 import pprint
