@@ -1,5 +1,5 @@
 '''
-Construct SM Particles in JVM
+Construct Standard Model in JVM
 Ref: https://github.com/tsoding/JelloVM
 Ref: https://github.com/Arc676/The-Standard-Model
 
