@@ -1,7 +1,8 @@
-#Construct particles in JVM
-#Ref: https://github.com/tsoding/JelloVM
-#Ref: https://github.com/Arc676/The-Standard-Model
-/**
+'''
+Construct particles in JVM
+Ref: https://github.com/tsoding/JelloVM
+Ref: https://github.com/Arc676/The-Standard-Model
+
  * Particle classification stored in 8 bits
  * gggg fftt
  * The two least significant bits (tt) indicate whether the particle is a boson (01) or fermion (10).
@@ -26,7 +27,7 @@
  * The four bits store
  * w, h, p, or g - whether the particle is a weak force mediator, the Higgs boson, a photon, or a gluon (a unique value is assigned
  * 			to each boson, except the W and Z bosons)
- */
+'''
 
 import io
 import pprint
