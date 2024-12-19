@@ -11,5 +11,6 @@ psycopg2
 #coverage
 #pre-commit
 setuptools
+cryptography
 -r requirements_iree.txt
 -r requirements_pypi.txt
