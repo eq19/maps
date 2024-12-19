@@ -1,5 +1,6 @@
 #algorithms
 #beautifulsoup4
+ccxt
 #fake_useragent
 #flavio[sampling,plotting]
 #imageio
