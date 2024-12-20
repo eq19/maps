@@ -18,7 +18,7 @@ numpy
 #pysme
 #qiskit
 #qiskit-aer
-#requests
+requests
 #rich
 #robyn
 # scikit-fuzzy  # uncomment once fuzzy_logic/fuzzy_operations.py is fixed
@@ -28,6 +28,7 @@ numpy
 #statsmodels
 #sympy
 #tensorflow
+torch
 #tweepy
 # yulewalker  # uncomment once audio_filters/equal_loudness_filter.py is fixed
 #typing_extensions
