@@ -1,8 +1,9 @@
 #algorithms
 #beautifulsoup4
-ccxt
+#ccxt  # included in freqtrade
 #fake_useragent
 #flavio[sampling,plotting]
+#freqtrade
 #imageio
 #keras
 #lxml
