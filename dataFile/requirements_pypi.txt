@@ -13,7 +13,7 @@ ccxt
 #matplotlib
 numpy
 #opencv-python
-#pandas
+pandas
 # projectq  # uncomment once quantum/quantum_random.py is fixed
 #pysme
 #qiskit
