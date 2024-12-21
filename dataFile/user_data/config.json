@@ -203,7 +203,7 @@
     },
     "disable_dataframe_checks": false,
     "strategy": "SampleStrategy",
-    "strategy_path": "user_data/strategies/",
+    "strategy_path": "/user_data/strategies/",
     "recursive_strategy_search": false,
     "add_config_files": [],
     "reduce_df_footprint": false,
