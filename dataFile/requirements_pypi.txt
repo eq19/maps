@@ -24,6 +24,7 @@ requests
 #robyn
 # scikit-fuzzy  # uncomment once fuzzy_logic/fuzzy_operations.py is fixed
 #scikit-learn
+sklearn
 #scipy
 #sparse
 #statsmodels
