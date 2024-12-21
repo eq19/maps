@@ -11,7 +11,7 @@
 #iree-base-runtime
 #iree-tools-tf
 #iree-tools-tflite
-#matplotlib
+matplotlib
 numpy
 #opencv-python
 pandas
@@ -23,9 +23,8 @@ requests
 #rich
 #robyn
 # scikit-fuzzy  # uncomment once fuzzy_logic/fuzzy_operations.py is fixed
-#scikit-learn
-sklearn
-#scipy
+scikit-learn
+scipy
 #sparse
 #statsmodels
 #sympy
