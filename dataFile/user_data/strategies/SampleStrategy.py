@@ -99,3 +99,45 @@ class SampleStrategy(IStrategy):
                             ]
         """
         return []
+
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        Adds several different TA indicators to the given DataFrame
+
+        Performance Note: For the best performance be frugal on the number of indicators
+        you are using. Let uncomment only the indicator you are using in your strategies
+        or your hyperopt configuration, otherwise you will waste your memory and CPU usage.
+        """
+
+        # MACD
+        macd = ta.MACD(dataframe)
+        dataframe['macd'] = macd['macd']
+        dataframe['macdsignal'] = macd['macdsignal']
+
+        # Minus Directional Indicator / Movement
+        dataframe['minus_di'] = ta.MINUS_DI(dataframe)
+
+        # RSI
+        dataframe['rsi'] = ta.RSI(dataframe)
+
+        # Inverse Fisher transform on RSI, values [-1.0, 1.0] (https://goo.gl/2JGGoy)
+        rsi = 0.1 * (dataframe['rsi'] - 50)
+        dataframe['fisher_rsi'] = (numpy.exp(2 * rsi) - 1) / (numpy.exp(2 * rsi) + 1)
+        # Inverse Fisher transform on RSI normalized, value [0.0, 100.0] (https://goo.gl/2JGGoy)
+        dataframe['fisher_rsi_norma'] = 50 * (dataframe['fisher_rsi'] + 1)
+
+        # Stoch fast
+        stoch_fast = ta.STOCHF(dataframe)
+        dataframe['fastd'] = stoch_fast['fastd']
+        dataframe['fastk'] = stoch_fast['fastk']
+
+        # Overlap Studies
+        # ------------------------------------
+
+        # SAR Parabol
+        dataframe['sar'] = ta.SAR(dataframe)
+
+        # SMA - Simple Moving Average
+        dataframe['sma'] = ta.SMA(dataframe, timeperiod=40)
+
+        return dataframe
