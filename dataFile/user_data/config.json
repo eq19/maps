@@ -61,6 +61,12 @@
         "token": "your_telegram_token",
         "chat_id": "your_telegram_chat_id"
     },
+    "notifications": {
+        "enabled": true,
+        "telegram": {
+            "enabled": true
+        }
+    },
     "api_server": {
         "enabled": false,
         "listen_ip_address": "127.0.0.1",
