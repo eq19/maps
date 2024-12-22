@@ -5,7 +5,8 @@ FROM freqtradeorg/freqtrade:develop
 # USER root
 
 # The below dependency - pyti - serves as an example. Please use whatever you need!
-#ADD dataFile/user_data /user_data
+ADD dataFile/user_data /home/runner/user_data
+WORKDIR /home/runner/user_data
 
 # Switch back to user (only if you required root above)
 USER ftuser
