@@ -66,8 +66,8 @@
         "stoploss_on_exchange_limit_ratio": 0.99
     },
     "order_time_in_force": {
-        "entry": "GTC",
-        "exit": "GTC"
+        "entry": "UTC",
+        "exit": "UTC"
     },
     "pairlists": [
         {"method": "StaticPairList"},
@@ -201,7 +201,7 @@
         "process_throttle_secs": 5,
         "heartbeat_interval": 60
     },
-    "disable_dataframe_checks": true,
+    "disable_dataframe_checks": false,
     "strategy": "Heracles",
     "strategy_path": "user_data/strategies/",
     "recursive_strategy_search": false,
