@@ -21,7 +21,7 @@ import pandas as pd
 from freqtrade.strategy import IStrategy
 from numpy.lib import math
 from pandas import DataFrame
-# import talib.abstract as ta
+import talib.abstract as ta
 from ta import add_all_ta_features
 from ta.utils import dropna
 
