@@ -3,6 +3,8 @@
     "max_open_trades": 3,
     "stake_currency": "IDR",
     "stake_amount": 100000,
+    "timeframe": "1h",
+    "dry_run": true,
     "exchange": {
         "name": "indodax",
         "key": "your_exchange_key",
