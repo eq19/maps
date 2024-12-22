@@ -16,5 +16,10 @@
         "pair_blacklist": [
             "^.*ETH/BTC$"
         ]
+    },
+    "telegram": {
+        "enabled": true,
+        "token": "your_telegram_token",
+        "chat_id": "your_telegram_chat_id"
     }
 }
