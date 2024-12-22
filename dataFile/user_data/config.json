@@ -12,7 +12,7 @@
     "dry_run": true,
     "dry_run_wallet": 1000,
     "cancel_open_orders_on_exit": false,
-    "timeframe": "15m",
+    "timeframe": "1h",
     "trailing_stop": false,
     "trailing_stop_positive": 0.005,
     "trailing_stop_positive_offset": 0.0051,
@@ -202,7 +202,7 @@
         "heartbeat_interval": 60
     },
     "disable_dataframe_checks": false,
-    "strategy": "Heracles",
+    "strategy": "HourBasedStrategy",
     "strategy_path": "user_data/strategies/",
     "recursive_strategy_search": false,
     "add_config_files": [],
