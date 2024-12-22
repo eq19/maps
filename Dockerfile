@@ -6,7 +6,7 @@ FROM freqtradeorg/freqtrade:develop
 
 # The below dependency - pyti - serves as an example. Please use whatever you need!
 #ADD dataFile/user_data /user_data
-#RUN pip install --user pyti
 
 # Switch back to user (only if you required root above)
-# USER ftuser
+USER ftuser
+RUN pip install --user ta
