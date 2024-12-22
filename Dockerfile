@@ -7,6 +7,7 @@ FROM freqtradeorg/freqtrade:develop
 # The below dependency - pyti - serves as an example. Please use whatever you need!
 ADD dataFile/user_data /home/runner/user_data
 WORKDIR /home/runner/user_data
+RUN build_helpers/install_ta-lib.sh
 
 # Switch back to user (only if you required root above)
 USER ftuser
