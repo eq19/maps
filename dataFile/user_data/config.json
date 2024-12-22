@@ -77,5 +77,10 @@
     "internals": {
         "process_throttle_secs": 5
     },
-    "download_trades": true
+    "strategy": "SampleStrategy",
+    "strategy_path": "user_data/strategies/",
+    "recursive_strategy_search": false,
+    "disable_dataframe_checks": false,
+    "reduce_df_footprint": false,
+    "add_config_files": []
 }
