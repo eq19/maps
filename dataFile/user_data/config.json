@@ -66,8 +66,8 @@
         "stoploss_on_exchange_limit_ratio": 0.99
     },
     "order_time_in_force": {
-        "entry": "UTC",
-        "exit": "UTC"
+        "entry": "GTC",
+        "exit": "GTC"
     },
     "pairlists": [
         {"method": "StaticPairList"},
