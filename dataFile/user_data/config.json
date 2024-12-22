@@ -5,7 +5,7 @@
     "stake_amount": 100000,
     "tradable_balance_ratio": 0.99,
     "fiat_display_currency": "IDR",
-    "timeframe": "15m",
+    "timeframe": "1h",
     "dry_run": true,
     "cancel_open_orders_on_exit": false,
     "unfilledtimeout": {
@@ -44,7 +44,17 @@
         ]
     },
     "pairlists": [
-        {"method": "StaticPairList"}
+        {
+            "method": "StaticPairList",
+            "pairs": [
+                "BTC/IDR",
+                "ETH/IDR"
+            ]
+        },
+        {
+            "method": "AgeFilter",
+            "min_days_listed": 30
+        }
     ],
     "telegram": {
         "enabled": true,
