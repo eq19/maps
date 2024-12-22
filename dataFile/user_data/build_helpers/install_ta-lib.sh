@@ -5,7 +5,9 @@ else
 fi
 echo "Installing to ${INSTALL_LOC}"
 if [ -n "$2" ] || [ ! -f "${INSTALL_LOC}/lib/libta_lib.a" ]; then
+  ls -al
   tar zxvf ta-lib-0.4.0-src.tar.gz
+  ls -al
   cd ta-lib \
   && sed -i.bak "s|0.00000001|0.000000000000000001 |g" src/ta_func/ta_utility.h \
   && echo "Downloading gcc config.guess and config.sub" \
