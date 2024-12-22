@@ -4,7 +4,7 @@
     "stake_currency": "BTC",
     "stake_amount": 0.05,
     "tradable_balance_ratio": 0.99,
-    "fiat_display_currency": "USD",
+    "fiat_display_currency": "IDR",
     "amount_reserve_percent": 0.05,
     "available_capital": 1000,
     "amend_last_stake_amount": false,
