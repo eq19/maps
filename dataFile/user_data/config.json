@@ -1,11 +1,11 @@
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
     "max_open_trades": 5,
-    "stake_currency": "EUR",
-    "stake_amount": 10,
+    "stake_currency": "IDR",
+    "stake_amount": 100000,
     "tradable_balance_ratio": 0.99,
-    "fiat_display_currency": "EUR",
-    "timeframe": "5m",
+    "fiat_display_currency": "IDR",
+    "timeframe": "1h",
     "dry_run": true,
     "cancel_open_orders_on_exit": false,
     "unfilledtimeout": {
@@ -30,43 +30,34 @@
         "order_book_top": 1
     },
     "exchange": {
-        "name": "kraken",
+        "name": "indodax",
         "key": "your_exchange_key",
-        "secret": "your_exchange_key",
+        "secret": "your_exchange_secret",
         "ccxt_config": {},
-        "ccxt_async_config": {
-        },
+        "ccxt_async_config": {},
         "pair_whitelist": [
-            "ADA/EUR",
-            "ATOM/EUR",
-            "BAT/EUR",
-            "BCH/EUR",
-            "BTC/EUR",
-            "DAI/EUR",
-            "DASH/EUR",
-            "EOS/EUR",
-            "ETC/EUR",
-            "ETH/EUR",
-            "LINK/EUR",
-            "LTC/EUR",
-            "QTUM/EUR",
-            "REP/EUR",
-            "WAVES/EUR",
-            "XLM/EUR",
-            "XMR/EUR",
-            "XRP/EUR",
-            "XTZ/EUR",
-            "ZEC/EUR"
+            "BTC/IDR",
+            "ETH/IDR"
         ],
         "pair_blacklist": [
-
+            "^.*ETH/BTC$"
         ]
     },
     "pairlists": [
-        {"method": "StaticPairList"}
+        {
+            "method": "StaticPairList",
+            "pairs": [
+                "BTC/IDR",
+                "ETH/IDR"
+            ]
+        },
+        {
+            "method": "AgeFilter",
+            "min_days_listed": 30
+        }
     ],
     "telegram": {
-        "enabled": false,
+        "enabled": true,
         "token": "your_telegram_token",
         "chat_id": "your_telegram_chat_id"
     },
@@ -86,13 +77,5 @@
     "internals": {
         "process_throttle_secs": 5
     },
-    "download_trades": true,
-    "disable_dataframe_checks": false,
-    "strategy": "SampleStrategy",
-    "strategy_path": "user_data/strategies/",
-    "recursive_strategy_search": false,
-    "add_config_files": [],
-    "reduce_df_footprint": false,
-    "dataformat_ohlcv": "feather",
-    "dataformat_trades": "feather"
+    "download_trades": true
 }
