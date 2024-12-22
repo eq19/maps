@@ -16,9 +16,9 @@ from freqtrade.strategy import IntParameter, DecimalParameter, IStrategy
 from pandas import DataFrame
 # --------------------------------
 # Add your lib to import here
-# import talib.abstract as ta
+import talib.abstract as ta
 import pandas as pd
-import ta
+#import ta
 from ta.utils import dropna
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
