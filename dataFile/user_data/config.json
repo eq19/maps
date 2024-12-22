@@ -11,6 +11,6 @@
         ],
         "pair_blacklist": [
             "^.*ETH/BTC$"
-        ],
+        ]
     }
 }
