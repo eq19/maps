@@ -38,5 +38,6 @@
 	//"remoteUser": "vscode",
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "freqtrade list-exchanges"
+	//"postCreateCommand": "freqtrade list-exchanges"
+	"postCreateCommand": "ls -al /data"
 }
