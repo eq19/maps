@@ -1,7 +1,11 @@
-from freqtrade.resolvers import ExchangeResolver
+from freqtrade.exchange import ExchangeManager
+from freqtrade.configuration import Configuration
 
-# Initialize exchange
-exchange = ExchangeResolver.load_exchange_from_config("user_data/config.json")
+# Load configuration
+config = Configuration.from_files(["config.json"])
+
+# Initialize the exchange
+exchange = ExchangeManager(exchange_config=config["exchange"], config=config)
 
 # Fetch ticker for a specific pair
 ticker = exchange.fetch_ticker('BTC/IDR')
