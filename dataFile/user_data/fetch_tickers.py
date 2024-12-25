@@ -12,6 +12,6 @@ ticker = exchange.fetch_ticker('BTC/IDR')
 print(ticker)
 
 # Fetch tickers for all pairs
-#tickers = exchange.fetch_tickers()
-#for pair, ticker in tickers.items():
-#    print(f"{pair}: {ticker}")
+tickers = exchange.fetch_tickers()
+for pair, ticker in tickers.items():
+    print(f"{pair}: {ticker}")
