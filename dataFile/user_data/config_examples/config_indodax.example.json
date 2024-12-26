@@ -44,24 +44,14 @@
         ]
     },
     "pairlists": [
-        {"method": "StaticPairList"},
-        {"method": "AgeFilter", "min_days_listed": 30},
-        {"method": "FullTradesFilter"},
         {
-            "method": "VolumePairList",
-            "number_assets": 20,
-            "sort_key": "quoteVolume",
-            "refresh_period": 1800
+            "method": "StaticPairList",
+            "pairs": ["BTC/IDT", "ETH/IDR"]
         },
-        {"method": "PrecisionFilter"},
-        {"method": "PriceFilter", "low_price_ratio": 0.01, "min_price": 0.00000010},
-        {"method": "SpreadFilter", "max_spread_ratio": 0.005},
         {
-            "method": "RangeStabilityFilter",
-            "lookback_days": 10,
-            "min_rate_of_change": 0.01,
-            "refresh_period": 1440
-        }
+            "method": "AgeFilter",
+            "min_days_listed": 30
+        },
     ],
     "telegram": {
         "enabled": false,
