@@ -52,7 +52,7 @@
             "sort_key": "quoteVolume",
             "refresh_period": 1800
         },
-        {"method": "AgeFilter", "min_days_listed": 10},
+        {"method": "AgeFilter", "min_days_listed": 30},
         {"method": "PrecisionFilter"},
         {"method": "PriceFilter", "low_price_ratio": 0.01, "min_price": 0.00000010},
         {"method": "SpreadFilter", "max_spread_ratio": 0.005},
@@ -69,9 +69,9 @@
         "chat_id": "your_telegram_chat_id"
     },
     "notifications": {
-        "enabled": true,
+        "enabled": false,
         "telegram": {
-            "enabled": true
+            "enabled": false
         }
     },
     "api_server": {
@@ -93,7 +93,7 @@
     "strategy": "SampleStrategy",
     "strategy_path": "user_data/strategies/",
     "recursive_strategy_search": false,
-    "disable_dataframe_checks": false,
-    "reduce_df_footprint": false,
+    "disable_dataframe_checks": true,
+    "reduce_df_footprint": true,
     "add_config_files": []
 }
