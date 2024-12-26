@@ -45,6 +45,7 @@
     },
     "pairlists": [
         {"method": "StaticPairList"},
+        {"method": "AgeFilter", "min_days_listed": 30},
         {"method": "FullTradesFilter"},
         {
             "method": "VolumePairList",
@@ -52,7 +53,6 @@
             "sort_key": "quoteVolume",
             "refresh_period": 1800
         },
-        {"method": "AgeFilter", "min_days_listed": 30},
         {"method": "PrecisionFilter"},
         {"method": "PriceFilter", "low_price_ratio": 0.01, "min_price": 0.00000010},
         {"method": "SpreadFilter", "max_spread_ratio": 0.005},
