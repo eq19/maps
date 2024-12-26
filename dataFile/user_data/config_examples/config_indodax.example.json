@@ -5,7 +5,7 @@
     "stake_amount": 100000,
     "tradable_balance_ratio": 0.99,
     "fiat_display_currency": "IDR",
-    "timeframe": "1h",
+    "timeframe": "1m",
     "dry_run": true,
     "cancel_open_orders_on_exit": false,
     "unfilledtimeout": {
@@ -61,6 +61,12 @@
         "token": "your_telegram_token",
         "chat_id": "your_telegram_chat_id"
     },
+    "notifications": {
+        "enabled": true,
+        "telegram": {
+            "enabled": true
+        }
+    },
     "api_server": {
         "enabled": false,
         "listen_ip_address": "127.0.0.1",
@@ -77,5 +83,10 @@
     "internals": {
         "process_throttle_secs": 5
     },
-    "download_trades": true
+    "strategy": "SampleStrategy",
+    "strategy_path": "user_data/strategies/",
+    "recursive_strategy_search": false,
+    "disable_dataframe_checks": false,
+    "reduce_df_footprint": false,
+    "add_config_files": []
 }
