@@ -1,4 +1,4 @@
-import ccxt
+#import ccxt
 
 from freqtrade.resolvers import ExchangeResolver
 from freqtrade.configuration import Configuration
