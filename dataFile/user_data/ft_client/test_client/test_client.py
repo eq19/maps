@@ -1,25 +1,25 @@
-#import ccxt
+import ccxt
 
-from freqtrade.resolvers import ExchangeResolver
-from freqtrade.configuration import Configuration
+#from freqtrade.resolvers import ExchangeResolver
+#from freqtrade.configuration import Configuration
 
 # Load configuration
-config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
+#config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
 
 # Initialize the exchange using the resolver
-exchange = ExchangeResolver.load_exchange(config)
+#exchange = ExchangeResolver.load_exchange(config)
 
 # Fetch ticker for a specific pair
-ticker = exchange.fetch_ticker('BTC/IDR')
-print(ticker)
+#ticker = exchange.fetch_ticker('BTC/IDR')
+#print(ticker)
 
 # Fetch tickers for all pairs
-tickers = exchange.fetch_tickers()
-for pair, ticker in tickers.items():
-    print(f"{pair}: {ticker}")
+#tickers = exchange.fetch_tickers()
+#for pair, ticker in tickers.items():
+    #print(f"{pair}: {ticker}")
 
-#exchange = ccxt.indodax()
-#try:
-    #print(exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
-#except Exception as e:
-    #print(f"Error: {e}")
+exchange = ccxt.indodax()
+try:
+    print(exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
+except Exception as e:
+    print(f"Error: {e}")
