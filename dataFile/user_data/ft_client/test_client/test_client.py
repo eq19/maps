@@ -14,12 +14,12 @@ ticker = exchange.fetch_ticker('BTC/IDR')
 print(ticker)
 
 # Fetch tickers for all pairs
-#tickers = exchange.fetch_tickers()
-#for pair, ticker in tickers.items():
-    #print(f"{pair}: {ticker}")
+tickers = exchange.fetch_tickers()
+for pair, ticker in tickers.items():
+    print(f"{pair}: {ticker}")
 
-exchange = ccxt.indodax()
-try:
-    print(exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
-except Exception as e:
-    print(f"Error: {e}")
+#exchange = ccxt.indodax()
+#try:
+    #print(exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
+#except Exception as e:
+    #print(f"Error: {e}")
