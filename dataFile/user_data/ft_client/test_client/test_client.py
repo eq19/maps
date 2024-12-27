@@ -4,7 +4,7 @@ from freqtrade.resolvers import ExchangeResolver
 from freqtrade.configuration import Configuration
 
 # Load configuration
-config = Configuration.from_files(["user_data/config.json"])
+config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
 
 # Initialize the exchange using the resolver
 exchange = ExchangeResolver.load_exchange(config)
