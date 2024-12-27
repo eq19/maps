@@ -1,7 +1,7 @@
 import ccxt
 
-#from freqtrade.resolvers import ExchangeResolver
-#from freqtrade.configuration import Configuration
+from freqtrade.resolvers import ExchangeResolver
+from freqtrade.configuration import Configuration
 
 # Test ccxt
 exchange = ccxt.indodax()
