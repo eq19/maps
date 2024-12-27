@@ -10,8 +10,8 @@ try:
 except Exception as e:
     print(f"Error: {e}")
 
-# Load configuration
-#config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
+# Test freqtrade
+config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
 
 # Initialize the exchange using the resolver
 #exchange = ExchangeResolver.load_exchange(config)
