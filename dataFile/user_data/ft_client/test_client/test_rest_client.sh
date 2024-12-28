@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+# Structure: Cell Types – Modulo 6
+
 cd ${{ github.workspace }}
 python user_data/ft_client/test_client/test_client.py
         
