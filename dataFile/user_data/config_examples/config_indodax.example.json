@@ -30,7 +30,7 @@
         "order_book_top": 1
     },
     "exchange": {
-        "name": "idex",
+        "name": "indodax",
         "key": "your_exchange_key",
         "secret": "your_exchange_secret",
         "ccxt_config": {},
