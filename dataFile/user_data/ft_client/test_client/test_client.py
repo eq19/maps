@@ -14,21 +14,12 @@ except Exception as e:
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
 print(config)
 
-api_server_config = config.get("api_server")
-if api_server_config:
-    ip_address = api_server_config.get("listen_ip_address")
-    print("IP from config is", ip_address)
+telegram_config = config.get("telegram")
+if telegram_config:
+    telegram_id = telegram_config.get(".chat_id")
+    print("Notification ID from config is", telegram_id)
 else:
-    print("API server config not found.")
-
-# Retrieve the value of "chat_id" under the "telegram" section
-chat_id = config.get("api_server.listen_ip_address")
-print("API Server from config is", chat_id)
-
-
-# Retrieve the value of "chat_id" under the "telegram" section
-ip_address = config.get("api_server.listen_ip_address")
-print("API Server from config is", ip_address)
+    print("Notification ID is not found.")
 
 exchange = ExchangeResolver.load_exchange(config)
 ticker = exchange.fetch_ticker('BTC/IDR')
