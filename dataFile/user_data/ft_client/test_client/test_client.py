@@ -5,7 +5,7 @@ from freqtrade.resolvers import ExchangeResolver
 
 # Test ccxt
 exchange = ccxt.indodax()
-print(exchange.fetch_ticker('BTC/IDR'))x
+print(exchange.fetch_ticker('BTC/IDR'))
 
 # Test freqtrade
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
