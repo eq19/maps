@@ -16,7 +16,7 @@ print(config)
 
 telegram_config = config.get("telegram")
 if telegram_config:
-    telegram_id = telegram_config.get(".chat_id")
+    telegram_id = telegram_config.get("chat_id")
     print("Notification ID from config is", telegram_id)
 else:
     print("Notification ID is not found.")
