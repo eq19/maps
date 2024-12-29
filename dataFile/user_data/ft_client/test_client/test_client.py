@@ -12,7 +12,11 @@ except Exception as e:
 
 # Test freqtrade
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
-print("Notification id from config is", config.get("telegram[chat_id]"))
+
+# Retrieve the value of "chat_id" under the "telegram" section
+chat_id = config.get("telegram.chat_id")
+print("Notification ID from config is", chat_id)
+
 exchange = ExchangeResolver.load_exchange(config)
 ticker = exchange.fetch_ticker('BTC/IDR')
 print(ticker)
