@@ -12,6 +12,7 @@ except Exception as e:
 
 # Test freqtrade
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
+print(config)
 
 # Retrieve the value of "chat_id" under the "telegram" section
 chat_id = config.get("telegram.chat_id")
