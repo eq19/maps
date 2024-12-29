@@ -22,6 +22,7 @@ else:
     print("Notification ID is not found.")
 
 exchange = ExchangeResolver.load_exchange(config)
+print(exchange)
 ticker = exchange.fetch_ticker('BTC/IDR')
 print(ticker)
 
