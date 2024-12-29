@@ -12,7 +12,6 @@ except Exception as e:
 
 # Test freqtrade
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
-print(config)
 
 telegram_config = config.get("telegram")
 if telegram_config:
@@ -21,8 +20,8 @@ if telegram_config:
 else:
     print("Notification ID is not found.")
 
-exchange = ExchangeResolver.load_exchange(config)
-print(exchange)
+#exchange = ExchangeResolver.load_exchange(config)
+#print(exchange)
 ticker = exchange.fetch_ticker('BTC/IDR')
 print(ticker)
 
