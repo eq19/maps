@@ -12,7 +12,7 @@ except Exception as e:
 
 # Test freqtrade
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
-print("timeframe from config is", config.get("timeframe"))
+print("id from config is", config.get("timeframe"))
 exchange = ExchangeResolver.load_exchange(config)
 ticker = exchange.fetch_ticker('BTC/IDR')
 print(ticker)
