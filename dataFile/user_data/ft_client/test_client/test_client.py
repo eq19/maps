@@ -14,8 +14,8 @@ except Exception as e:
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
 
 # Retrieve the value of "chat_id" under the "telegram" section
-chat_id = config.get("api_server.listen_ip_address")
-print("API Server from config is", chat_id)
+ip_address = config.get("api_server.listen_ip_address")
+print("API Server from config is", ip_address)
 
 exchange = ExchangeResolver.load_exchange(config)
 ticker = exchange.fetch_ticker('BTC/IDR')
