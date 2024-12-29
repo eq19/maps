@@ -9,5 +9,5 @@ print(exchange.fetch_ticker('BTC/IDR'))
 
 # Test freqtrade
 config = Configuration.from_files(["user_data/config_examples/config_indodax.example.json"])
-#exchange = ExchangeResolver.load_exchange(config)
+exchange = ExchangeResolver.load_exchange(config)
 print(exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
