@@ -44,8 +44,10 @@
                 "1d": "1D",
                 "3d": "3D",
                 "1w": "1W"
-            },     
-            "has": {
+            }
+        },
+        "ccxt_async_config": {
+           "has": {
                 "CORS": null,
                 "spot": true,
                 "margin": false,
@@ -123,7 +125,6 @@
                 "withdraw": true
             }
         },
-        "ccxt_async_config": {},
         "pair_whitelist": [
             "BTC/IDR",
             "ETH/IDR",
