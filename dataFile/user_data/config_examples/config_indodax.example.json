@@ -123,7 +123,7 @@
                 "withdraw": true
             }
         },
-        "ccxt_async_config": {}
+        "ccxt_async_config": {},
         "pair_whitelist": [
             "BTC/IDR",
             "ETH/IDR"
