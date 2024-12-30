@@ -13,7 +13,6 @@ echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
 CONFIG=user_data/config_examples/config_indodax.example.json
 
-#freqtrade trade --config $CONFIG
 #freqtrade download-data --config $CONFIG
 #freqtrade list-data --config $CONFIG
 freqtrade backtesting --config $CONFIG
@@ -38,3 +37,4 @@ freqtrade backtesting --config $CONFIG
 #freqtrade strategy-updater --config $CONFIG
 #freqtrade lookahead-analysis --config $CONFIG
 #freqtrade recursive-analysis --config $CONFIG
+#freqtrade trade --config $CONFIG
