@@ -126,7 +126,8 @@
         "ccxt_async_config": {},
         "pair_whitelist": [
             "BTC/IDR",
-            "ETH/IDR"
+            "ETH/IDR",
+            "USD/IDR"
         ],
         "pair_blacklist": [
             "^.*ETH/BTC$"
