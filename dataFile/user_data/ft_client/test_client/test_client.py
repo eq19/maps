@@ -8,6 +8,12 @@ config = Configuration.from_files(["user_data/config_examples/config_indodax.exa
 # Test ccxt
 exchange = ccxt.indodax()
 
+# Initialize the exchange
+exchange = ccxt.indodax()
+
+# Load the markets to ensure the exchange's metadata is fetched
+exchange.load_markets()
+
 # Uncomment fot test freqtrade
 # exchange = ExchangeResolver.load_exchange(config)
 
