@@ -13,7 +13,7 @@ echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
 CONFIG=user_data/config_examples/config_indodax.example.json
 
-freqtrade download-data --config $CONFIG --timeframes 1m 15m 1h 1d 1W 1M
+freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d 1w
 freqtrade list-data --config $CONFIG
 freqtrade backtesting --config $CONFIG
 freqtrade backtesting-show --config $CONFIG
