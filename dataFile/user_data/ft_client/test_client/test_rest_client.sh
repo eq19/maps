@@ -14,10 +14,10 @@ echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 CONFIG=user_data/config_examples/config_indodax.example.json
 
 #freqtrade trade --config $CONFIG
-freqtrade download-data --config $CONFIG
-freqtrade list-data --config $CONFIG
+#freqtrade download-data --config $CONFIG
+#freqtrade list-data --config $CONFIG
 freqtrade backtesting --config $CONFIG
-freqtrade backtesting-show --config $CONFIG
+#freqtrade backtesting-show --config $CONFIG
 #freqtrade backtesting-analysis --config $CONFIG
 #freqtrade edge --config $CONFIG
 #freqtrade hyperopt --config $CONFIG
