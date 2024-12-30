@@ -11,5 +11,5 @@ python user_data/ft_client/test_client/test_client.py
         
 echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-#freqtrade trade --config user_data/config_examples/config_indodax.example.json
-freqtrade list-pairs --config user_data/config_examples/config_indodax.example.json
+freqtrade trade --config user_data/config_examples/config_indodax.example.json
+#freqtrade list-pairs --config user_data/config_examples/config_indodax.example.json
