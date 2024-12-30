@@ -17,7 +17,7 @@ exchange.load_markets()
 # Uncomment fot test freqtrade
 # exchange = ExchangeResolver.load_exchange(config)
 
-print("test timeframes", exchange.timeframes)
+print("test timeframes", exchange.options['timeframes'])
 print("test fetch_ticker", exchange.fetch_ticker('BTC/IDR'))
 print("test fetch_ohlcv", exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
 
