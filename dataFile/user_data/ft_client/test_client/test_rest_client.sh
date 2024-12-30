@@ -18,7 +18,7 @@ freqtrade download-data --config $CONFIG
 freqtrade list-data --config $CONFIG
 freqtrade backtesting --config $CONFIG
 freqtrade backtesting-show --config $CONFIG
-freqtrade backtesting-analysis --config $CONFIG
+#freqtrade backtesting-analysis --config $CONFIG
 #freqtrade edge --config $CONFIG
 #freqtrade hyperopt --config $CONFIG
 #freqtrade hyperopt-list --config $CONFIG
