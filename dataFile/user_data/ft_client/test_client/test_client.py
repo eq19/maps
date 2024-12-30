@@ -11,6 +11,7 @@ exchange = ccxt.indodax()
 # Uncomment fot test freqtrade
 # exchange = ExchangeResolver.load_exchange(config)
 
+print("test timeframes", exchange.timeframes)
 print("test fetch_ticker", exchange.fetch_ticker('BTC/IDR'))
 print("test fetch_ohlcv", exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
 
