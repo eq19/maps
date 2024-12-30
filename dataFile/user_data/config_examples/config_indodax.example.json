@@ -7,6 +7,7 @@
     "fiat_display_currency": "IDR",
     "timeframe": "1m",
     "dry_run": true,
+    "dry_run_wallet": 400000,
     "cancel_open_orders_on_exit": false,
     "unfilledtimeout": {
         "entry": 10,
