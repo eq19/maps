@@ -134,8 +134,14 @@
         ]
     },
     "pairlists": [
-        {"method": "StaticPairList"},
-        {"method": "VolumePairList", "number_assets": 20, "sort_key": "quoteVolume"}
+        {
+            "method": "StaticPairList",
+            "pairs": [
+                "BTC/IDR",
+                "ETH/IDR",
+                "USD/IDR"
+            ]
+        }
     ],
     "telegram": {
         "enabled": true,
