@@ -35,4 +35,4 @@ echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #freqtrade webserver           Webserver module.
 #freqtrade strategy-updater    updates outdated strategy files to the current version
 #freqtrade lookahead-analysis  Check for potential look ahead bias.
-#freqtrade recursive-analysis  Check
+#freqtrade recursive-analysis  Check for potential recursive formula issue
