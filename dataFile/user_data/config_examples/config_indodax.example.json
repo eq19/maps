@@ -128,7 +128,7 @@
         "pair_whitelist": [
             "BTC/IDR",
             "ETH/IDR",
-            "USD/IDR"
+            "USDT/IDR"
         ],
         "pair_blacklist": [
             "^.*ETH/BTC$"
@@ -140,7 +140,7 @@
             "pairs": [
                 "BTC/IDR",
                 "ETH/IDR",
-                "USD/IDR"
+                "USDT/IDR"
             ]
         }
     ],
