@@ -33,7 +33,18 @@
         "name": "indodax",
         "key": "your_exchange_key",
         "secret": "your_exchange_secret",
-        "ccxt_config": {},
+        "ccxt_config": {
+            "timeframes": {
+                "1m": "1",
+                "15m": "15",
+                "30m": "30",
+                "1h": "60",
+                "4h": "240",
+                "1d": "1D",
+                "3d": "3D",
+                "1w": "1W"
+            }
+        },
         "ccxt_async_config": {},
         "pair_whitelist": [
             "BTC/IDR",
