@@ -130,12 +130,12 @@
         "process_throttle_secs": 5,
         "heartbeat_interval": 60
     },
-    "disable_dataframe_checks": true,
     "strategy": "SampleStrategy",
     "strategy_path": "user_data/strategies/",
     "recursive_strategy_search": false,
-    "add_config_files": [],
+    "disable_dataframe_checks": false,
     "reduce_df_footprint": false,
     "dataformat_ohlcv": "feather",
-    "dataformat_trades": "feather"
+    "dataformat_trades": "feather",
+    "add_config_files": []
 }
