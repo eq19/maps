@@ -7,7 +7,7 @@ class SampleStrategy(IStrategy):
         "0": 0.1  # 10% profit
     }
     stoploss = -0.2  # 20% stop loss
-    timeframe = '1h'
+    timeframe = '1m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Add SMA indicators
