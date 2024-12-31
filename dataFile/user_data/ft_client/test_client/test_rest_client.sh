@@ -4,8 +4,10 @@
 
 hr='------------------------------------------------------------------------------------'
 
-echo -e "\n$hr\nTEST CLIENT\n$hr"
+echo -e "\n$hr\nTEST ENV\n$hr"
+pwd && printenv
 
+echo -e "\n$hr\nTEST CLIENT\n$hr"
 #cd ${{ github.workspace }}/user_data/build_helpers && ./install_ta-lib.sh > /dev/null 2>&1
 python user_data/ft_client/test_client/test_client.py
         
