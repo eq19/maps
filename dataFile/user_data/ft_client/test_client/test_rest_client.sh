@@ -7,11 +7,11 @@ hr='----------------------------------------------------------------------------
 echo -e "\n$hr\nTEST CLIENT\n$hr"
 
 #cd ${{ github.workspace }}/user_data/build_helpers && ./install_ta-lib.sh > /dev/null 2>&1
-python /home/runner/user_data/ft_client/test_client/test_client.py
+python user_data/ft_client/test_client/test_client.py
         
 echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-CONFIG=/home/runner/user_data/config_examples/config_indodax.example.json
+CONFIG=user_data/config_examples/config_indodax.example.json
 
 sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
 sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
