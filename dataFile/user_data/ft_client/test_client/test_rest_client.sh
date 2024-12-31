@@ -11,7 +11,7 @@ python user_data/ft_client/test_client/test_client.py
         
 echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-CONFIG=user_data/config_examples/config_indodax.example.json
+CONFIG=/home/runner/user_data/config_examples/config_indodax.example.json
 
 sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
 sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
