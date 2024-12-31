@@ -41,4 +41,4 @@ freqtrade backtesting --config $CONFIG
 #freqtrade recursive-analysis --config $CONFIG
 #freqtrade trade --config $CONFIG
 
-cp $CONFIG ${{ github.workspace }}/config.json
+cp $CONFIG config.json
