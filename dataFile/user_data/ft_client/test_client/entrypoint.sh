@@ -4,4 +4,4 @@
 docker-entrypoint.sh postgres &
 
 # Run freqtrade application
-freqtrade trade
+#freqtrade trade
