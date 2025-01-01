@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Start PostgreSQL in the background
-docker-entrypoint.sh postgres &
+# Run in the background
+freqtrade trade &
 
-# Run freqtrade application
-#freqtrade trade
+# Start PostgreSQL
+docker-entrypoint.sh postgres
