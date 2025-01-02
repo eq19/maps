@@ -40,5 +40,3 @@ freqtrade backtesting --config $CONFIG
 #freqtrade lookahead-analysis --config $CONFIG
 #freqtrade recursive-analysis --config $CONFIG
 #freqtrade trade --config $CONFIG
-
-cp $CONFIG config.json
