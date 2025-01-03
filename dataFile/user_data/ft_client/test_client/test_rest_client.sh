@@ -5,7 +5,7 @@
 hr='------------------------------------------------------------------------------------'
 
 echo -e "\n$hr\nTEST ENV\n$hr"
-export CONFIG=config.json
+export CONFIG=secrets.json
 printenv
 
 echo -e "\n$hr\nTEST CLIENT\n$hr"
