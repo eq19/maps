@@ -5,6 +5,7 @@
 hr='------------------------------------------------------------------------------------'
 
 echo -e "\n$hr\nTEST ENV\n$hr"
+export CONFIG=config.json
 printenv
 
 echo -e "\n$hr\nTEST CLIENT\n$hr"
@@ -13,7 +14,6 @@ python /home/runner/user_data/ft_client/test_client/test_client.py
         
 echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-CONFIG=/home/runner/config.json
 
 freqtrade download-data --config $CONFIG --timeframes 1m 15m
 freqtrade list-data --config $CONFIG
