@@ -4,20 +4,22 @@
 
 hr='------------------------------------------------------------------------------------'
 
-echo -e "\n$hr\nTEST CLIENT\n$hr"
+echo -e "\n$hr\nTEST ENV\n$hr"
+printenv
 
+echo -e "\n$hr\nTEST CLIENT\n$hr"
 #cd ${{ github.workspace }}/user_data/build_helpers && ./install_ta-lib.sh > /dev/null 2>&1
-python user_data/ft_client/test_client/test_client.py
+python /home/runner/user_data/ft_client/test_client/test_client.py
         
 echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-CONFIG=user_data/config_examples/config_indodax.example.json
+CONFIG=/home/runner/user_data/config_examples/config_indodax.example.json
 
-freqtrade download-data --config $CONFIG
+freqtrade download-data --config $CONFIG --timeframes 1m 15m
 freqtrade list-data --config $CONFIG
 freqtrade backtesting --config $CONFIG
-freqtrade backtesting-show --config $CONFIG
-freqtrade backtesting-analysis --config $CONFIG
+#freqtrade backtesting-show --config $CONFIG
+#freqtrade backtesting-analysis --config $CONFIG
 #freqtrade edge --config $CONFIG
 #freqtrade hyperopt --config $CONFIG
 #freqtrade hyperopt-list --config $CONFIG
@@ -38,3 +40,5 @@ freqtrade backtesting-analysis --config $CONFIG
 #freqtrade lookahead-analysis --config $CONFIG
 #freqtrade recursive-analysis --config $CONFIG
 #freqtrade trade --config $CONFIG
+
+cp $CONFIG config.json
