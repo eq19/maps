@@ -8,12 +8,11 @@ echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
 
 echo -e "\n$hr\nTEST CLIENT\n$hr"
-#cd ${{ github.workspace }}/user_data/build_helpers && ./install_ta-lib.sh > /dev/null 2>&1
-python /home/runner/user_data/ft_client/test_client/test_client.py
+python user_data/ft_client/test_client/test_client.py
         
 echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-CONFIG=/home/runner/user_data/config_examples/config_indodax.example.json
+CONFIG=user_data/config_examples/config_indodax.example.json
 
 freqtrade download-data --config $CONFIG --timeframes 1m 15m
 freqtrade list-data --config $CONFIG
