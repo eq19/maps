@@ -6,7 +6,7 @@ hr='----------------------------------------------------------------------------
 
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
-
+echo "++++TARGET_REPOSITORY=$TARGET_REPOSITORY"
 echo -e "\n$hr\nTEST CLIENT\n$hr"
 python user_data/ft_client/test_client/test_client.py
         
