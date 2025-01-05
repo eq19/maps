@@ -38,13 +38,12 @@ freqtrade backtesting --config $CONFIG
 #freqtrade strategy-updater --config $CONFIG
 #freqtrade lookahead-analysis --config $CONFIG
 #freqtrade recursive-analysis --config $CONFIG
-#freqtrade trade --config $CONFIG
 
-cd /home/runner
-cp $CONFIG config.json
-sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
-sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
-sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
-sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
-gh secret set CONFIG_JSON < config.json
-freqtrade trade
+#cd /home/runner
+#cp $CONFIG config.json
+#sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
+#sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
+#sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
+#sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
+#gh secret set CONFIG_JSON < config.json
+#freqtrade trade
