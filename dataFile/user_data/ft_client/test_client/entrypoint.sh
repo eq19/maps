@@ -9,8 +9,7 @@ if [ -d /mnt/disks/deeplearning ]; then
     "https://secretmanager.googleapis.com/v1/projects/feedmapping/secrets/freqtrade-config/versions/latest:access" | \
     jq -r '.payload.data' | base64 --decode > /home/runner/config.json
   rm -rf /tmp/*
-  freqtrade trade &
-  docker-entrypoint.sh postgres
+  freqtrade trade
 else
   # Start only PostgreSQL
   docker-entrypoint.sh postgres
