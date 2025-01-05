@@ -12,7 +12,6 @@ if [ -d /mnt/disks/deeplearning ]; then
   freqtrade trade &
 else
   echo "Deeplearning image not found";
-  exit 1;
 fi
 
 # Start PostgreSQL
