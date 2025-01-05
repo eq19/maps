@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Run in the background
 if [ -d /mnt/disks/deeplearning ]; then
@@ -11,7 +11,7 @@ if [ -d /mnt/disks/deeplearning ]; then
   rm -rf /tmp/*
   freqtrade trade &
 else
-  echo "Image not found";
+  echo "Deeplearning image not found";
   exit 1;
 fi
 
