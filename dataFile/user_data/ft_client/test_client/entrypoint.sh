@@ -10,9 +10,8 @@ if [ -d /mnt/disks/deeplearning ]; then
     jq -r '.payload.data' | base64 --decode > /home/runner/config.json
   rm -rf /tmp/*
   freqtrade trade &
+  docker-entrypoint.sh postgres
 else
-  echo "Deeplearning image not found";
+  # Start only PostgreSQL
+  docker-entrypoint.sh postgres
 fi
-
-# Start PostgreSQL
-docker-entrypoint.sh postgres
