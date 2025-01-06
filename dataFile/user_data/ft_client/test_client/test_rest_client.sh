@@ -14,13 +14,9 @@ echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
 CONFIG=user_data/config_examples/config_indodax.example.json
 
-sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
-sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
-sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
-sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
-
 echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
 freqtrade download-data --config $CONFIG --timeframes 1m 15m
+echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
 freqtrade list-data --config $CONFIG
 
 echo -e "\n$hr\nTEST BACKTEST\n$hr"
@@ -52,5 +48,10 @@ freqtrade backtesting-analysis --config $CONFIG
 #freqtrade lookahead-analysis --config $CONFIG
 #freqtrade recursive-analysis --config $CONFIG
 
+#sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
+#sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
+#sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
+#sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
+
 #gh secret set CONFIG_JSON < $CONFIG
-rm -rf $CONFIG
+#rm -rf $CONFIG
