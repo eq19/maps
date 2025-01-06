@@ -26,7 +26,7 @@ ls -alR user_data/backtest_results
 echo -e "\n$hr\nSHOW BACKTEST\n$hr"
 freqtrade backtesting-show --config $CONFIG
 echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
-freqtrade backtesting-analysis --config $CONFIG
+freqtrade backtesting-analysis --config $CONFIG --indicator-list
 
 #freqtrade edge --config $CONFIG
 #freqtrade hyperopt --config $CONFIG
