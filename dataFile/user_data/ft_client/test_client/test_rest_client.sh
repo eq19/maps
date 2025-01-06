@@ -21,7 +21,7 @@ freqtrade list-data --config $CONFIG
 echo -e "\n$hr\nTEST BACKTEST\n$hr"
 freqtrade backtesting --config $CONFIG
 echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
-ls -alR user_data
+ls -alR user_data/backtest_results
 echo -e "\n$hr\nSHOW BACKTEST\n$hr"
 freqtrade backtesting-show --config $CONFIG
 echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
