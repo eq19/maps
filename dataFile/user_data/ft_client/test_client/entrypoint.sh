@@ -17,3 +17,4 @@ fi
 
 # Start PostgreSQL in the foreground
 exec docker-entrypoint.sh postgres
+#exec supervisord -c /etc/supervisor/supervisord.conf
