@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Run in the background
+# Start Freqtrade in the background
 if [ -d /mnt/disks/deeplearning ]; then
   echo "Deeplearning exists. Proceeding...";
   /mnt/disks/deeplearning/usr/bin/gcloud auth application-default print-access-token > /tmp/token || { echo "Failed to get token"; exit 1; };
@@ -11,6 +11,9 @@ if [ -d /mnt/disks/deeplearning ]; then
   freqtrade trade &
   docker-entrypoint.sh postgres
 else
-  # Start only PostgreSQL
+  "Deeplearning is not found.";
   docker-entrypoint.sh postgres
 fi
+
+# Start PostgreSQL in the foreground
+exec docker-entrypoint.sh postgres
