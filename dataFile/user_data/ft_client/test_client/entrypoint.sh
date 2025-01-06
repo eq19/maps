@@ -8,13 +8,13 @@ if [ -d /mnt/disks/deeplearning ]; then
   curl -H "Authorization: Bearer $TOKEN" \
     "https://secretmanager.googleapis.com/v1/projects/feedmapping/secrets/freqtrade-config/versions/latest:access" | \
     jq -r '.payload.data' | base64 --decode > /home/runner/config.json
-  freqtrade trade &
-  docker-entrypoint.sh postgres
+  #freqtrade trade &
+  #docker-entrypoint.sh postgres
 else
   "Deeplearning is not found.";
-  docker-entrypoint.sh postgres
+  #docker-entrypoint.sh postgres
 fi
 
 # Start PostgreSQL in the foreground
-exec docker-entrypoint.sh postgres
-#exec supervisord -c /etc/supervisor/supervisord.conf
+#exec docker-entrypoint.sh postgres
+exec supervisord -c /etc/supervisor/supervisord.conf
