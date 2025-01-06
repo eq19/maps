@@ -14,11 +14,19 @@ echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 #Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
 CONFIG=user_data/config_examples/config_indodax.example.json
 
+echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
 freqtrade download-data --config $CONFIG --timeframes 1m 15m
 freqtrade list-data --config $CONFIG
+
+echo -e "\n$hr\nTEST BACKTEST\n$hr"
 freqtrade backtesting --config $CONFIG
+echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
+ls -alR user_data
+echo -e "\n$hr\nSHOW BACKTEST\n$hr"
 freqtrade backtesting-show --config $CONFIG
+echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
 freqtrade backtesting-analysis --config $CONFIG
+
 #freqtrade edge --config $CONFIG
 #freqtrade hyperopt --config $CONFIG
 #freqtrade hyperopt-list --config $CONFIG
