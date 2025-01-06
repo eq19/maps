@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Structure: Cell Types – Modulo 6
 # Ref: https://github.com/ccxt/ccxt/blob/4.4.40/python/ccxt/async_support/indodax.py#L195
+# Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
 
 hr='------------------------------------------------------------------------------------'
+CONFIG=user_data/config_examples/config_indodax.example.json
 
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
@@ -10,13 +12,18 @@ printenv
 echo -e "\n$hr\nTEST CLIENT\n$hr"
 python user_data/ft_client/test_client/test_client.py
         
-echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
-#Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-CONFIG=user_data/config_examples/config_indodax.example.json
+echo -e "\n$hr\nTEST TIME FRAME\n$hr"
+freqtrade list-timeframes --help
+freqtrade list-timeframes --config $CONFIG
+
+echo -e "\n$hr\nTEST PAIR LIST\n$hr"
+freqtrade test-pairlist --help
+freqtrade test-pairlist --config $CONFIG
 
 echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
 freqtrade download-data --help
 freqtrade download-data --config $CONFIG --timeframes 1m 15m
+
 echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
 freqtrade list-data --help
 freqtrade list-data --config $CONFIG
@@ -24,11 +31,14 @@ freqtrade list-data --config $CONFIG
 echo -e "\n$hr\nTEST BACKTEST\n$hr"
 freqtrade backtesting --help
 freqtrade backtesting --config $CONFIG --export signals
+
 echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
 ls -alR user_data/backtest_results
+
 echo -e "\n$hr\nSHOW BACKTEST\n$hr"
 freqtrade backtesting-show --help
 freqtrade backtesting-show --config $CONFIG
+
 echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
 freqtrade backtesting-analysis --help
 freqtrade backtesting-analysis --config $CONFIG --indicator-list all
@@ -41,9 +51,7 @@ freqtrade backtesting-analysis --config $CONFIG --indicator-list all
 #freqtrade list-pairs --config $CONFIG
 #freqtrade list-strategies --config $CONFIG
 #freqtrade list-freqaimodels --config $CONFIG
-#freqtrade list-timeframes --config $CONFIG
 #freqtrade show-trades --config $CONFIG
-#freqtrade test-pairlist --config $CONFIG
 #freqtrade convert-db --config $CONFIG
 #freqtrade install-ui --config $CONFIG
 #freqtrade plot-dataframe --config $CONFIG
