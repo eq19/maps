@@ -15,18 +15,23 @@ echo -e "\n$hr\nTEST NOTIFICATION\n$hr"
 CONFIG=user_data/config_examples/config_indodax.example.json
 
 echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
+freqtrade download-data --help
 freqtrade download-data --config $CONFIG --timeframes 1m 15m
 echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
+freqtrade list-data --help
 freqtrade list-data --config $CONFIG
 
 echo -e "\n$hr\nTEST BACKTEST\n$hr"
+freqtrade backtesting --help
 freqtrade backtesting --config $CONFIG --export signals
 echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
 ls -alR user_data/backtest_results
 echo -e "\n$hr\nSHOW BACKTEST\n$hr"
+freqtrade backtesting-show --help
 freqtrade backtesting-show --config $CONFIG
 echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
-freqtrade backtesting-analysis --config $CONFIG --indicator-list
+freqtrade backtesting-analysis --help
+freqtrade backtesting-analysis --config $CONFIG --indicator-list all
 
 #freqtrade edge --config $CONFIG
 #freqtrade hyperopt --config $CONFIG
