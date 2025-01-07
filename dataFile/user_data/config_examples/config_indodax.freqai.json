@@ -18,12 +18,7 @@
     "entry_pricing": {
         "price_side": "same",
         "use_order_book": true,
-        "order_book_top": 1,
-        "price_last_balance": 0.0,
-        "check_depth_of_market": {
-            "enabled": false,
-            "bids_to_ask_delta": 1
-        }
+        "order_book_top": 1
     },
     "exit_pricing": {
         "price_side": "same",
@@ -41,35 +36,9 @@
                 "30m": "30",
                 "1h": "60",
                 "4h": "240",
-                "1d": "1D",
-                "3d": "3D",
-                "1w": "1W"
+                "1d": "1D"
             }
-        },
-        "ccxt_async_config": {
-            "has": {
-                "spot": true,
-                "createOrder": true,
-                "fetchBalance": true,
-                "fetchClosedOrders": true,
-                "fetchMarkets": true,
-                "fetchOpenOrders": true,
-                "fetchOrderBook": true,
-                "fetchTicker": true,
-                "fetchTickers": true,
-                "fetchTime": true,
-                "fetchTrades": true,
-                "withdraw": true
-            }
-        },
-        "pair_whitelist": [
-            "BTC/IDR",
-            "ETH/IDR",
-            "USDT/IDR"
-        ],
-        "pair_blacklist": [
-            "^.*ETH/BTC$"
-        ]
+        }
     },
     "pairlists": [
         {
@@ -84,56 +53,17 @@
     "telegram": {
         "enabled": false,
         "token": "your_telegram_token",
-        "chat_id": "your_telegram_chat_id",
-        "notification_settings": {
-            "status": "on",
-            "warning": "on",
-            "startup": "on",
-            "entry": "on",
-            "entry_fill": "on",
-            "exit": {
-                "roi": "off",
-                "emergency_exit": "off",
-                "force_exit": "off",
-                "exit_signal": "off",
-                "trailing_stop_loss": "off",
-                "stop_loss": "off",
-                "stoploss_on_exchange": "off",
-                "custom_exit": "off"
-            },
-            "exit_fill": "on",
-            "entry_cancel": "on",
-            "exit_cancel": "on",
-            "protection_trigger": "off",
-            "protection_trigger_global": "on",
-            "show_candle": "off"
-        },
-        "reload": true,
-        "balance_dust_level": 0.01
+        "chat_id": "your_telegram_chat_id"
     },
     "api_server": {
         "enabled": false,
         "listen_ip_address": "127.0.0.1",
-        "listen_port": 8080,
-        "verbosity": "error",
-        "enable_openapi": false,
-        "jwt_secret_key": "somethingrandom",
-        "CORS_origins": [],
-        "username": "freqtrader",
-        "password": "SuperSecurePassword",
-        "ws_token": "secret_ws_t0ken."
+        "listen_port": 8080
     },
     "bot_name": "freqtrade",
     "db_url": "sqlite:///tradesv3.sqlite",
     "initial_state": "running",
     "strategy": "FreqaiExampleStrategy",
-    "strategy_path": "user_data/strategies/freqai",
-    "recursive_strategy_search": false,
-    "disable_dataframe_checks": true,
-    "reduce_df_footprint": false,
-    "dataformat_ohlcv": "feather",
-    "dataformat_trades": "feather",
-    "download_trades": true,
     "freqai": {
         "enabled": true,
         "models": {
@@ -166,17 +96,19 @@
                 "BTC/IDR",
                 "ETH/IDR"
             ],
-            "include_shifted_candles": 0
+            "indicator_periods_candles": {
+                "sma": 20,
+                "ema": 50,
+                "rsi": 14
+            }
         },
         "data_split_parameters": {
             "training_size": 0.8,
-            "shuffle": true,
             "validation_size": 0.2
         },
         "feature_generation_parameters": {
             "rolling_windows": [
-                {"feature": "close", "window_size": 14},
-                {"feature": "volume", "window_size": 7}
+                {"feature": "close", "window_size": 14}
             ]
         },
         "prediction_parameters": {
@@ -187,4 +119,4 @@
             }
         }
     }
-            }
+}
