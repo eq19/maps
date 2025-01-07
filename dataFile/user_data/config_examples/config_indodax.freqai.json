@@ -64,6 +64,8 @@
     "db_url": "sqlite:///tradesv3.sqlite",
     "initial_state": "running",
     "strategy": "FreqaiExampleStrategy",
+    "strategy_path": "/home/runner/user_data/strategies/freqai",
+    "recursive_strategy_search": true,
     "freqai": {
         "enabled": true,
         "models": {
