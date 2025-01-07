@@ -9,57 +9,63 @@ CONFIG=user_data/config_examples/config_indodax.example.json
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
 
-echo -e "\n$hr\nTEST CLIENT\n$hr"
-python user_data/ft_client/test_client/test_client.py
+if [[ "$1" -eq "listing" ]]; then
+
+  #freqtrade edge --config $CONFIG
+  #freqtrade hyperopt --config $CONFIG
+  #freqtrade hyperopt-list --config $CONFIG
+  #freqtrade hyperopt-show --config $CONFIG
+  freqtrade list-markets --config $CONFIG
+  #freqtrade list-pairs --config $CONFIG
+  #freqtrade list-strategies --config $CONFIG
+  #freqtrade list-freqaimodels --config $CONFIG
+  #freqtrade show-trades --config $CONFIG
+  #freqtrade convert-db --config $CONFIG
+  #freqtrade install-ui --config $CONFIG
+  #freqtrade plot-dataframe --config $CONFIG
+  #freqtrade plot-profit --config $CONFIG
+  #freqtrade webserver --config $CONFIG
+  #freqtrade strategy-updater --config $CONFIG
+  #freqtrade lookahead-analysis --config $CONFIG
+  #freqtrade recursive-analysis --config $CONFIG
+
+else
+
+  echo -e "\n$hr\nTEST CLIENT\n$hr"
+  python user_data/ft_client/test_client/test_client.py
         
-echo -e "\n$hr\nTEST TIME FRAME\n$hr"
-freqtrade list-timeframes --help
-freqtrade list-timeframes --config $CONFIG
+  echo -e "\n$hr\nTEST TIME FRAME\n$hr"
+  freqtrade list-timeframes --help
+  freqtrade list-timeframes --config $CONFIG
 
-echo -e "\n$hr\nTEST PAIR LIST\n$hr"
-freqtrade test-pairlist --help
-freqtrade test-pairlist --config $CONFIG
+  echo -e "\n$hr\nTEST PAIR LIST\n$hr"
+  freqtrade test-pairlist --help
+  freqtrade test-pairlist --config $CONFIG
 
-echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
-freqtrade download-data --help
-freqtrade download-data --config $CONFIG --timeframes 1m 15m
+  echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
+  freqtrade download-data --help
+  freqtrade download-data --config $CONFIG --timeframes 1m 15m
 
-echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
-freqtrade list-data --help
-freqtrade list-data --config $CONFIG
+  echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
+  freqtrade list-data --help
+  freqtrade list-data --config $CONFIG
 
-echo -e "\n$hr\nTEST BACKTEST\n$hr"
-freqtrade backtesting --help
-freqtrade backtesting --config $CONFIG --export signals
+  echo -e "\n$hr\nTEST BACKTEST\n$hr"
+  freqtrade backtesting --help
+  freqtrade backtesting --config $CONFIG --export signals
 
-echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
-ls -alR user_data/backtest_results
+  echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
+  ls -alR user_data/backtest_results
 
-echo -e "\n$hr\nSHOW BACKTEST\n$hr"
-freqtrade backtesting-show --help
-freqtrade backtesting-show --config $CONFIG
+  echo -e "\n$hr\nSHOW BACKTEST\n$hr"
+  freqtrade backtesting-show --help
+  freqtrade backtesting-show --config $CONFIG
 
-echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
-freqtrade backtesting-analysis --help
-freqtrade backtesting-analysis --config $CONFIG --indicator-list all
+  echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
+  freqtrade backtesting-analysis --help
+  freqtrade backtesting-analysis --config $CONFIG --indicator-list all
 
-#freqtrade edge --config $CONFIG
-#freqtrade hyperopt --config $CONFIG
-#freqtrade hyperopt-list --config $CONFIG
-#freqtrade hyperopt-show --config $CONFIG
-#freqtrade list-markets --config $CONFIG
-#freqtrade list-pairs --config $CONFIG
-#freqtrade list-strategies --config $CONFIG
-#freqtrade list-freqaimodels --config $CONFIG
-#freqtrade show-trades --config $CONFIG
-#freqtrade convert-db --config $CONFIG
-#freqtrade install-ui --config $CONFIG
-#freqtrade plot-dataframe --config $CONFIG
-#freqtrade plot-profit --config $CONFIG
-#freqtrade webserver --config $CONFIG
-#freqtrade strategy-updater --config $CONFIG
-#freqtrade lookahead-analysis --config $CONFIG
-#freqtrade recursive-analysis --config $CONFIG
+fi
 
 #sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
 #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
