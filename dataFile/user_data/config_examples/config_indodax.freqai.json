@@ -205,12 +205,12 @@
     "external_message_consumer": {
         "enabled": false,
         "producers": [
-          {
-            "name": "default",
-            "host": "127.0.0.2",
-            "port": 8080,
-            "ws_token": "secret_ws_t0ken."
-          }
+            {
+                "name": "default",
+                "host": "127.0.0.2",
+                "port": 8080,
+                "ws_token": "secret_ws_t0ken."
+            }
         ],
         "wait_timeout": 300,
         "ping_timeout": 10,
@@ -227,6 +227,7 @@
     "freqai": {
         "enabled": true,
         "model": "LightGBMRegressor",
+        "freqaimodel": "FreqaiLightGBMModel",
         "train_interval": "1h",
         "model_save_interval": "1d",
         "train_period": "90d",
@@ -268,5 +269,5 @@
                 "sell": 0.5
             }
         }
-    }
+    }        
 }
