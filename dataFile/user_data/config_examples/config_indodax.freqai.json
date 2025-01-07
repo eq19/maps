@@ -223,7 +223,9 @@
         "models": {
             "default": {
                 "class": "FreqaiExampleStrategy",
-                "config": {}
+                "config": {
+                    "freqaimodel": "LightGBMRegressor"
+                }
             }
         },
         "train_period": "90d",
@@ -254,8 +256,7 @@
             "use_SVM_to_remove_outliers": false,
             "plot_feature_importances": 0,
             "shuffle_after_split": false,
-            "buffer_train_data_candles": 0,
-            "indicator_periods_candles": 50
+            "buffer_train_data_candles": 0
         },
         "data_split_parameters": {
             "training_size": 0.8,
