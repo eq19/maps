@@ -15,25 +15,6 @@
         "train_interval": "1h",
         "model_save_interval": "1d"
     },
-    "stake_currency": "IDR",
-    "stake_amount": 100000,
-    "tradable_balance_ratio": 0.99,
-    "timeframe": "5m",
-    "timerange": "20220101-",
-    "enable_protections": false,
-    "use_exit_signal": true,
-    "exit_profit_only": false,
-    "trailing_stop": true,
-    "trailing_stop_positive": 0.05,
-    "trailing_stop_positive_offset": 0.1,
-    "trailing_only_offset_is_reached": true,
-    "order_types": {
-        "buy": "limit",
-        "sell": "limit",
-        "stoploss": "limit",
-        "stoploss_on_exchange": false
-    },
-
 
 
 
@@ -53,6 +34,20 @@
     "dry_run": true,
     "dry_run_wallet": 400000,
     "cancel_open_orders_on_exit": false,
+    "timerange": "20220101-",
+    "enable_protections": false,
+    "use_exit_signal": true,
+    "exit_profit_only": false,
+    "trailing_stop": true,
+    "trailing_stop_positive": 0.05,
+    "trailing_stop_positive_offset": 0.1,
+    "trailing_only_offset_is_reached": true,
+    "order_types": {
+        "buy": "limit",
+        "sell": "limit",
+        "stoploss": "limit",
+        "stoploss_on_exchange": false
+    },
     "unfilledtimeout": {
         "entry": 10,
         "exit": 10,
