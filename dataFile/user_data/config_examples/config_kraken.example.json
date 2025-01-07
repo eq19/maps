@@ -8,7 +8,6 @@
     "timeframe": "5m",
     "dry_run": true,
     "cancel_open_orders_on_exit": false,
-    "trading_mode": "spot",
     "unfilledtimeout": {
         "entry": 10,
         "exit": 10,
@@ -19,13 +18,13 @@
         "price_side": "same",
         "use_order_book": true,
         "order_book_top": 1,
-        "price_last_balance": 0.0,
+        "price_last_balance": 0,
         "check_depth_of_market": {
             "enabled": false,
             "bids_to_ask_delta": 1
         }
     },
-    "exit_pricing":{
+    "exit_pricing": {
         "price_side": "same",
         "use_order_book": true,
         "order_book_top": 1
@@ -35,8 +34,7 @@
         "key": "your_exchange_key",
         "secret": "your_exchange_key",
         "ccxt_config": {},
-        "ccxt_async_config": {
-        },
+        "ccxt_async_config": {},
         "pair_whitelist": [
             "ADA/EUR",
             "ATOM/EUR",
@@ -59,19 +57,35 @@
             "XTZ/EUR",
             "ZEC/EUR"
         ],
-        "pair_blacklist": [
-
-        ]
+        "pair_blacklist": []
     },
     "pairlists": [
         {
-            "method": "StaticPairList",
-            "pairs": [
-                "BTC/USDT",
-                "ETH/USDT"
-            ]
+            "method": "StaticPairList"
         }
     ],
+    "telegram": {
+        "enabled": false,
+        "token": "your_telegram_token",
+        "chat_id": "your_telegram_chat_id"
+    },
+    "api_server": {
+        "enabled": false,
+        "listen_ip_address": "127.0.0.1",
+        "listen_port": 8080,
+        "verbosity": "error",
+        "jwt_secret_key": "somethingrandom",
+        "CORS_origins": [],
+        "username": "freqtrader",
+        "password": "SuperSecurePassword"
+    },
+    "bot_name": "freqtrade",
+    "initial_state": "running",
+    "force_entry_enable": false,
+    "internals": {
+        "process_throttle_secs": 5
+    },
+    "download_trades": true,
     "freqai": {
         "enabled": true,
         "models": {
@@ -102,28 +116,25 @@
             "training_size": 0.8,
             "shuffle": true,
             "validation_size": 0.2
+        },
+        "feature_generation_parameters": {
+            "rolling_windows": [
+                {
+                    "feature": "close",
+                    "window_size": 14
+                },
+                {
+                    "feature": "volume",
+                    "window_size": 7
+                }
+            ]
+        },
+        "prediction_parameters": {
+            "method": "regression",
+            "thresholds": {
+                "buy": 0.5,
+                "sell": 0.5
+            }
         }
-    },
-    "telegram": {
-        "enabled": false,
-        "token": "your_telegram_token",
-        "chat_id": "your_telegram_chat_id"
-    },
-    "api_server": {
-        "enabled": false,
-        "listen_ip_address": "127.0.0.1",
-        "listen_port": 8080,
-        "verbosity": "error",
-        "jwt_secret_key": "somethingrandom",
-        "CORS_origins": [],
-        "username": "freqtrader",
-        "password": "SuperSecurePassword"
-    },
-    "bot_name": "freqtrade",
-    "initial_state": "running",
-    "force_entry_enable": false,
-    "internals": {
-        "process_throttle_secs": 5
-    },
-    "download_trades": true
+    }
 }
