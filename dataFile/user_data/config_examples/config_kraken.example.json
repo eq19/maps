@@ -18,7 +18,7 @@
         "price_side": "same",
         "use_order_book": true,
         "order_book_top": 1,
-        "price_last_balance": 0,
+        "price_last_balance": 0.0,
         "check_depth_of_market": {
             "enabled": false,
             "bids_to_ask_delta": 1
@@ -60,9 +60,7 @@
         "pair_blacklist": []
     },
     "pairlists": [
-        {
-            "method": "StaticPairList"
-        }
+        {"method": "StaticPairList"}
     ],
     "telegram": {
         "enabled": false,
@@ -109,9 +107,21 @@
                 "low",
                 "volume"
             ],
-            "normalize": true
+            "normalize": true,
+            "include_timeframes": ["5m"],
+            "include_corr_pairlist": [
+                "ADA/EUR",
+                "BTC/EUR"
+            ],
+            "include_shifted_candles": 0,
+            "DI_threshold": 0,
+            "weight_factor": 0,
+            "principal_component_analysis": false,
+            "use_SVM_to_remove_outliers": false,
+            "plot_feature_importances": 0,
+            "shuffle_after_split": false,
+            "buffer_train_data_candles": 0
         },
-        "include_corr_pairlist": false,
         "data_split_parameters": {
             "training_size": 0.8,
             "shuffle": true,
@@ -119,14 +129,8 @@
         },
         "feature_generation_parameters": {
             "rolling_windows": [
-                {
-                    "feature": "close",
-                    "window_size": 14
-                },
-                {
-                    "feature": "volume",
-                    "window_size": 7
-                }
+                {"feature": "close", "window_size": 14},
+                {"feature": "volume", "window_size": 7}
             ]
         },
         "prediction_parameters": {
