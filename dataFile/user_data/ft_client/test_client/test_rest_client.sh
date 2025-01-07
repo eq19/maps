@@ -57,12 +57,12 @@ else
   freqtrade backtesting --help
   freqtrade backtesting --config $CONFIG --export signals
 
-  echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
-  ls -alR user_data/backtest_results
+  #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
+  #ls -alR user_data/backtest_results
 
-  echo -e "\n$hr\nSHOW BACKTEST\n$hr"
-  freqtrade backtesting-show --help
-  freqtrade backtesting-show --config $CONFIG
+  #echo -e "\n$hr\nSHOW BACKTEST\n$hr"
+  #freqtrade backtesting-show --help
+  #freqtrade backtesting-show --config $CONFIG
 
   echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
   freqtrade backtesting-analysis --help
