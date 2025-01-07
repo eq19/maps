@@ -96,6 +96,12 @@
                 "volume"
             ],
             "normalize": true
+        },
+        "include_corr_pairlist": false,
+        "data_split_parameters": {
+            "training_size": 0.8,
+            "shuffle": true,
+            "validation_size": 0.2
         }
     },
     "telegram": {
