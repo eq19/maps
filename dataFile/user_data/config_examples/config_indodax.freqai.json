@@ -217,7 +217,6 @@
     "reduce_df_footprint": false,
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
-    "add_config_files": []
     "download_trades": true,
     "freqai": {
         "enabled": true,
@@ -275,5 +274,6 @@
                 "sell": 0.5
             }
         }
-    }
+    },
+    "add_config_files": []
 }
