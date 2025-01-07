@@ -72,7 +72,7 @@ else
   freqtrade trade --help
   freqtrade trade --config user_data/config_examples/config_freqai.example.json \
     --freqaimodel LightGBMRegressor --strategy FreqaiExampleStrategy \
-    --strategy-path user_data/strategies/freqai/templates
+    --strategy-path user_data/strategies/freqai
  
 fi
 
