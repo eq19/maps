@@ -48,80 +48,17 @@
         },
         "ccxt_async_config": {
             "has": {
-                "CORS": null,
                 "spot": true,
-                "margin": false,
-                "swap": false,
-                "future": false,
-                "option": false,
-                "addMargin": false,
-                "cancelAllOrders": false,
-                "cancelOrder": true,
-                "cancelOrders": false,
-                "closeAllPositions": false,
-                "closePosition": false,
-                "createDepositAddress": false,
                 "createOrder": true,
-                "createReduceOnlyOrder": false,
-                "createStopLimitOrder": false,
-                "createStopMarketOrder": false,
-                "createStopOrder": false,
                 "fetchBalance": true,
-                "fetchBorrowRateHistories": false,
-                "fetchBorrowRateHistory": false,
                 "fetchClosedOrders": true,
-                "fetchCrossBorrowRate": false,
-                "fetchCrossBorrowRates": false,
-                "fetchDeposit": false,
-                "fetchDepositAddress": "emulated",
-                "fetchDepositAddresses": true,
-                "fetchDepositAddressesByNetwork": false,
-                "fetchDeposits": false,
-                "fetchDepositsWithdrawals": true,
-                "fetchFundingHistory": false,
-                "fetchFundingRate": false,
-                "fetchFundingRateHistory": false,
-                "fetchFundingRates": false,
-                "fetchIndexOHLCV": false,
-                "fetchIsolatedBorrowRate": false,
-                "fetchIsolatedBorrowRates": false,
-                "fetchLeverage": false,
-                "fetchLeverageTiers": false,
-                "fetchMarginMode": false,
                 "fetchMarkets": true,
-                "fetchMarkOHLCV": false,
-                "fetchOpenInterestHistory": false,
                 "fetchOpenOrders": true,
-                "fetchOrder": true,
                 "fetchOrderBook": true,
-                "fetchOrders": false,
-                "fetchPosition": false,
-                "fetchPositionHistory": false,
-                "fetchPositionMode": false,
-                "fetchPositions": false,
-                "fetchPositionsForSymbol": false,
-                "fetchPositionsHistory": false,
-                "fetchPositionsRisk": false,
-                "fetchPremiumIndexOHLCV": false,
                 "fetchTicker": true,
                 "fetchTickers": true,
                 "fetchTime": true,
                 "fetchTrades": true,
-                "fetchTradingFee": false,
-                "fetchTradingFees": false,
-                "fetchTransactionFee": true,
-                "fetchTransactionFees": false,
-                "fetchTransactions": "emulated",
-                "fetchTransfer": false,
-                "fetchTransfers": false,
-                "fetchWithdrawal": false,
-                "fetchWithdrawals": false,
-                "reduceMargin": false,
-                "setLeverage": false,
-                "setMargin": false,
-                "setMarginMode": false,
-                "setPositionMode": false,
-                "transfer": false,
                 "withdraw": true
             }
         },
@@ -186,45 +123,18 @@
         "password": "SuperSecurePassword",
         "ws_token": "secret_ws_t0ken."
     },
-    "external_message_consumer": {
-        "enabled": false,
-        "producers": [
-            {
-                "name": "default",
-                "host": "127.0.0.2",
-                "port": 8080,
-                "ws_token": "secret_ws_t0ken."
-            }
-        ],
-        "wait_timeout": 300,
-        "ping_timeout": 10,
-        "sleep_time": 10,
-        "remove_entry_exit_signals": false,
-        "message_size_limit": 8
-    },
     "bot_name": "freqtrade",
     "db_url": "sqlite:///tradesv3.sqlite",
     "initial_state": "running",
-    "force_entry_enable": false,
-    "internals": {
-        "process_throttle_secs": 5,
-        "heartbeat_interval": 60
-    },
-    "strategy": "FreqaiExampleStrategy",
-    "strategy_path": "user_data/strategies/freqai",
-    "recursive_strategy_search": false,
-    "disable_dataframe_checks": true,
-    "reduce_df_footprint": false,
-    "dataformat_ohlcv": "feather",
-    "dataformat_trades": "feather",
-    "download_trades": true,
     "freqai": {
         "enabled": true,
         "models": {
             "default": {
-                "class": "FreqaiExampleStrategy",
+                "class": "LightGBMRegressor",
                 "config": {
-                    "freqaimodel": "LightGBMRegressor"
+                    "num_leaves": 31,
+                    "learning_rate": 0.05,
+                    "n_estimators": 100
                 }
             }
         },
@@ -233,7 +143,6 @@
         "retrain_interval": "7d",
         "lookahead_period": "1d",
         "prediction_length": "3d",
-        "max_data_rows": 10000,
         "feature_parameters": {
             "target": "close",
             "features": [
@@ -249,14 +158,7 @@
                 "BTC/IDR",
                 "ETH/IDR"
             ],
-            "include_shifted_candles": 0,
-            "DI_threshold": 0,
-            "weight_factor": 0,
-            "principal_component_analysis": false,
-            "use_SVM_to_remove_outliers": false,
-            "plot_feature_importances": 0,
-            "shuffle_after_split": false,
-            "buffer_train_data_candles": 0
+            "include_shifted_candles": 0
         },
         "data_split_parameters": {
             "training_size": 0.8,
@@ -276,6 +178,5 @@
                 "sell": 0.5
             }
         }
-    },
-    "add_config_files": []
+    }
 }
