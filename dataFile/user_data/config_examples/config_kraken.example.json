@@ -63,6 +63,15 @@
 
         ]
     },
+    "pairlists": [
+        {
+            "method": "StaticPairList",
+            "pairs": [
+                "BTC/USDT",
+                "ETH/USDT"
+            ]
+        }
+    ],
     "freqai": {
         "enabled": true,
         "models": {
@@ -76,11 +85,19 @@
         "retrain_interval": "7d",
         "lookahead_period": "1d",
         "prediction_length": "3d",
-        "max_data_rows": 10000
+        "max_data_rows": 10000,
+        "feature_parameters": {
+            "target": "close",
+            "features": [
+                "close",
+                "open",
+                "high",
+                "low",
+                "volume"
+            ],
+            "normalize": true
+        }
     },
-    "pairlists": [
-        {"method": "StaticPairList"}
-    ],
     "telegram": {
         "enabled": false,
         "token": "your_telegram_token",
