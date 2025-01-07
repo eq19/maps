@@ -1,6 +1,6 @@
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
-    "dataformat_ohlcv": "ticker",
+    "dataformat_ohlcv": "json",
     "max_open_trades": 5,
     "stake_currency": "IDR",
     "stake_amount": 100000,
@@ -19,8 +19,8 @@
     "trailing_stop_positive_offset": 0.1,
     "trailing_only_offset_is_reached": true,
     "order_types": {
-        "buy": "limit",
-        "sell": "limit",
+        "entry": "limit",
+        "exit": "limit",
         "stoploss": "limit",
         "stoploss_on_exchange": false
     },
@@ -57,7 +57,7 @@
             }
         },
         "ccxt_async_config": {
-           "has": {
+            "has": {
                 "CORS": null,
                 "spot": true,
                 "margin": false,
