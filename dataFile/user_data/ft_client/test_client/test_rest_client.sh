@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Structure: Cell Types – Modulo 6
-# Ref: https://github.com/ccxt/ccxt/blob/4.4.40/python/ccxt/async_support/indodax.py#L195
+# Ref: https://www.freqtrade.io/en/stable/utils/#list-freqai-models
 # Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
+# Ref: https://github.com/ccxt/ccxt/blob/4.4.40/python/ccxt/async_support/indodax.py#L195
 
 hr='------------------------------------------------------------------------------------'
 CONFIG=user_data/config_examples/config_indodax.example.json
