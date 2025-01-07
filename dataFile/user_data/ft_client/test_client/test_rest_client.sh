@@ -12,6 +12,7 @@ printenv
 
 if [[ "$1" -eq "listing" ]]; then
 
+  #freqtrade list-exchanges
   #freqtrade edge --config $CONFIG
   #freqtrade hyperopt --config $CONFIG
   #freqtrade hyperopt-list --config $CONFIG
