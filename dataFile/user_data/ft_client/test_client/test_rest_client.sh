@@ -70,8 +70,8 @@ else
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
-  CONFIG=user_data/config_examples/config_kraken.example.json
-  freqtrade trade --config  $CONFIG
+  CONFIG=user_data/config_examples/config_indodax.freqai.json
+  freqtrade trade --config $CONFIG
  
 fi
 
