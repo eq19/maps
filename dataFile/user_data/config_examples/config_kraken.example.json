@@ -8,6 +8,7 @@
     "timeframe": "5m",
     "dry_run": true,
     "cancel_open_orders_on_exit": false,
+    "trading_mode": "spot",
     "unfilledtimeout": {
         "entry": 10,
         "exit": 10,
