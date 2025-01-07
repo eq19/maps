@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+uhh#!/usr/bin/env bash
 #
 # Structure: Cell Types – Modulo 6
 # Ref: https://www.freqtrade.io/en/stable/utils/#list-freqai-models
@@ -71,7 +71,8 @@ else
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
   CONFIG=user_data/config_examples/config_indodax.freqai.json
-  freqtrade trade --config $CONFIG --freqaimodel LightGBMRegressor 
+  #freqtrade trade --config $CONFIG --freqaimodel LightGBMRegressor
+  freqtrade trade --config $CONFIG
  
 fi
 
