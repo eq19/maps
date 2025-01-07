@@ -47,7 +47,7 @@
             }
         },
         "ccxt_async_config": {
-           "has": {
+            "has": {
                 "CORS": null,
                 "spot": true,
                 "margin": false,
@@ -189,12 +189,12 @@
     "external_message_consumer": {
         "enabled": false,
         "producers": [
-          {
-            "name": "default",
-            "host": "127.0.0.2",
-            "port": 8080,
-            "ws_token": "secret_ws_t0ken."
-          }
+            {
+                "name": "default",
+                "host": "127.0.0.2",
+                "port": 8080,
+                "ws_token": "secret_ws_t0ken."
+            }
         ],
         "wait_timeout": 300,
         "ping_timeout": 10,
@@ -254,7 +254,8 @@
             "use_SVM_to_remove_outliers": false,
             "plot_feature_importances": 0,
             "shuffle_after_split": false,
-            "buffer_train_data_candles": 0
+            "buffer_train_data_candles": 0,
+            "indicator_periods_candles": 50
         },
         "data_split_parameters": {
             "training_size": 0.8,
