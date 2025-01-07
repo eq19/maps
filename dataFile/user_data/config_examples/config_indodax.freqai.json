@@ -1,3 +1,47 @@
+
+{
+    "version": 3,
+    "dataformat_ohlcv": "ticker",
+    "dry_run": true,
+    "strategy": "YourStrategyName",
+    "freqai": {
+        "enabled": true,
+        "timeframe": "5m",
+        "model": "LightGBMRegressor",
+        "feature_parameters": {
+            "indicator_periods_candles": [14, 50, 200],
+            "target_period_candles": 12
+        },
+        "train_interval": "1h",
+        "model_save_interval": "1d"
+    },
+    "stake_currency": "IDR",
+    "stake_amount": 100000,
+    "tradable_balance_ratio": 0.99,
+    "timeframe": "5m",
+    "timerange": "20220101-",
+    "enable_protections": false,
+    "use_exit_signal": true,
+    "exit_profit_only": false,
+    "trailing_stop": true,
+    "trailing_stop_positive": 0.05,
+    "trailing_stop_positive_offset": 0.1,
+    "trailing_only_offset_is_reached": true,
+    "order_types": {
+        "buy": "limit",
+        "sell": "limit",
+        "stoploss": "limit",
+        "stoploss_on_exchange": false
+    },
+
+
+
+
+
+
+
+
+
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
     "max_open_trades": 5,
@@ -180,6 +224,12 @@
         "username": "freqtrader",
         "password": "SuperSecurePassword",
         "ws_token": "secret_ws_t0ken."
+    },
+    "logging": {
+        "loglevel": "info",
+        "disable_colors": false,
+        "logfile": "freqtrade.log",
+        "stdout": true
     },
     "external_message_consumer": {
         "enabled": false,
