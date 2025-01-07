@@ -70,9 +70,8 @@ else
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
-  freqtrade trade --config user_data/config_examples/config_indodax.freqai.json \
-    --freqaimodel LightGBMRegressor --strategy FreqaiExampleStrategy \
-    --strategy-path user_data/strategies/freqai
+  CONFIG=user_data/config_examples/config_kraken.example.json
+  freqtrade trade --config  $CONFIG
  
 fi
 
