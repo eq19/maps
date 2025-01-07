@@ -126,6 +126,14 @@
     "bot_name": "freqtrade",
     "db_url": "sqlite:///tradesv3.sqlite",
     "initial_state": "running",
+    "strategy": "FreqaiExampleStrategy",
+    "strategy_path": "user_data/strategies/freqai",
+    "recursive_strategy_search": false,
+    "disable_dataframe_checks": true,
+    "reduce_df_footprint": false,
+    "dataformat_ohlcv": "feather",
+    "dataformat_trades": "feather",
+    "download_trades": true,
     "freqai": {
         "enabled": true,
         "models": {
@@ -179,4 +187,4 @@
             }
         }
     }
-}
+            }
