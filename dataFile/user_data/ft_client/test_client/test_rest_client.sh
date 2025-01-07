@@ -65,6 +65,10 @@ else
   freqtrade backtesting-analysis --help
   freqtrade backtesting-analysis --config $CONFIG --indicator-list all
 
+  echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
+  freqtrade trade --help
+  freqtrade trade --config user_data/config_examples/config_freqai.example.json --strategy FreqaiExampleStrategy --freqaimodel LightGBMRegressor --strategy-path freqtrade/templates
+  
 fi
 
 #sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
