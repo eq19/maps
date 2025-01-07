@@ -71,7 +71,7 @@ else
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
   CONFIG=user_data/config_examples/config_indodax.freqai.json
-  freqtrade trade --config $CONFIG
+  freqtrade trade --config $CONFIG --freqaimodel 
  
 fi
 
