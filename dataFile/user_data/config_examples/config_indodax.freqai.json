@@ -1,0 +1,221 @@
+{
+    "$schema": "https://schema.freqtrade.io/schema.json",
+    "max_open_trades": 5,
+    "stake_currency": "IDR",
+    "stake_amount": 100000,
+    "tradable_balance_ratio": 0.25,
+    "fiat_display_currency": "IDR",
+    "timeframe": "1m",
+    "dry_run": true,
+    "dry_run_wallet": 400000,
+    "cancel_open_orders_on_exit": false,
+    "unfilledtimeout": {
+        "entry": 10,
+        "exit": 10,
+        "exit_timeout_count": 0,
+        "unit": "minutes"
+    },
+    "entry_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1,
+        "price_last_balance": 0.0,
+        "check_depth_of_market": {
+            "enabled": false,
+            "bids_to_ask_delta": 1
+        }
+    },
+    "exit_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1
+    },
+    "exchange": {
+        "name": "indodax",
+        "key": "your_exchange_key",
+        "secret": "your_exchange_secret",
+        "ccxt_config": {
+            "timeframes": {
+                "1m": "1",
+                "15m": "15",
+                "30m": "30",
+                "1h": "60",
+                "4h": "240",
+                "1d": "1D",
+                "3d": "3D",
+                "1w": "1W"
+            }
+        },
+        "ccxt_async_config": {
+           "has": {
+                "CORS": null,
+                "spot": true,
+                "margin": false,
+                "swap": false,
+                "future": false,
+                "option": false,
+                "addMargin": false,
+                "cancelAllOrders": false,
+                "cancelOrder": true,
+                "cancelOrders": false,
+                "closeAllPositions": false,
+                "closePosition": false,
+                "createDepositAddress": false,
+                "createOrder": true,
+                "createReduceOnlyOrder": false,
+                "createStopLimitOrder": false,
+                "createStopMarketOrder": false,
+                "createStopOrder": false,
+                "fetchBalance": true,
+                "fetchBorrowRateHistories": false,
+                "fetchBorrowRateHistory": false,
+                "fetchClosedOrders": true,
+                "fetchCrossBorrowRate": false,
+                "fetchCrossBorrowRates": false,
+                "fetchDeposit": false,
+                "fetchDepositAddress": "emulated",
+                "fetchDepositAddresses": true,
+                "fetchDepositAddressesByNetwork": false,
+                "fetchDeposits": false,
+                "fetchDepositsWithdrawals": true,
+                "fetchFundingHistory": false,
+                "fetchFundingRate": false,
+                "fetchFundingRateHistory": false,
+                "fetchFundingRates": false,
+                "fetchIndexOHLCV": false,
+                "fetchIsolatedBorrowRate": false,
+                "fetchIsolatedBorrowRates": false,
+                "fetchLeverage": false,
+                "fetchLeverageTiers": false,
+                "fetchMarginMode": false,
+                "fetchMarkets": true,
+                "fetchMarkOHLCV": false,
+                "fetchOpenInterestHistory": false,
+                "fetchOpenOrders": true,
+                "fetchOrder": true,
+                "fetchOrderBook": true,
+                "fetchOrders": false,
+                "fetchPosition": false,
+                "fetchPositionHistory": false,
+                "fetchPositionMode": false,
+                "fetchPositions": false,
+                "fetchPositionsForSymbol": false,
+                "fetchPositionsHistory": false,
+                "fetchPositionsRisk": false,
+                "fetchPremiumIndexOHLCV": false,
+                "fetchTicker": true,
+                "fetchTickers": true,
+                "fetchTime": true,
+                "fetchTrades": true,
+                "fetchTradingFee": false,
+                "fetchTradingFees": false,
+                "fetchTransactionFee": true,
+                "fetchTransactionFees": false,
+                "fetchTransactions": "emulated",
+                "fetchTransfer": false,
+                "fetchTransfers": false,
+                "fetchWithdrawal": false,
+                "fetchWithdrawals": false,
+                "reduceMargin": false,
+                "setLeverage": false,
+                "setMargin": false,
+                "setMarginMode": false,
+                "setPositionMode": false,
+                "transfer": false,
+                "withdraw": true
+            }
+        },
+        "pair_whitelist": [
+            "BTC/IDR",
+            "ETH/IDR",
+            "USDT/IDR"
+        ],
+        "pair_blacklist": [
+            "^.*ETH/BTC$"
+        ]
+    },
+    "pairlists": [
+        {
+            "method": "StaticPairList",
+            "pairs": [
+                "BTC/IDR",
+                "ETH/IDR",
+                "USDT/IDR"
+            ]
+        }
+    ],
+    "telegram": {
+        "enabled": true,
+        "token": "your_telegram_token",
+        "chat_id": "your_telegram_chat_id",
+        "notification_settings": {
+            "status": "on",
+            "warning": "on",
+            "startup": "on",
+            "entry": "on",
+            "entry_fill": "on",
+            "exit": {
+                "roi": "off",
+                "emergency_exit": "off",
+                "force_exit": "off",
+                "exit_signal": "off",
+                "trailing_stop_loss": "off",
+                "stop_loss": "off",
+                "stoploss_on_exchange": "off",
+                "custom_exit": "off"
+            },
+            "exit_fill": "on",
+            "entry_cancel": "on",
+            "exit_cancel": "on",
+            "protection_trigger": "off",
+            "protection_trigger_global": "on",
+            "show_candle": "off"
+        },
+        "reload": true,
+        "balance_dust_level": 0.01
+    },
+    "api_server": {
+        "enabled": false,
+        "listen_ip_address": "127.0.0.1",
+        "listen_port": 8080,
+        "verbosity": "error",
+        "enable_openapi": false,
+        "jwt_secret_key": "somethingrandom",
+        "CORS_origins": [],
+        "username": "freqtrader",
+        "password": "SuperSecurePassword",
+        "ws_token": "secret_ws_t0ken."
+    },
+    "external_message_consumer": {
+        "enabled": false,
+        "producers": [
+          {
+            "name": "default",
+            "host": "127.0.0.2",
+            "port": 8080,
+            "ws_token": "secret_ws_t0ken."
+          }
+        ],
+        "wait_timeout": 300,
+        "ping_timeout": 10,
+        "sleep_time": 10,
+        "remove_entry_exit_signals": false,
+        "message_size_limit": 8
+    },
+    "bot_name": "freqtrade",
+    "db_url": "sqlite:///tradesv3.sqlite",
+    "initial_state": "running",
+    "force_entry_enable": false,
+    "internals": {
+        "process_throttle_secs": 5,
+        "heartbeat_interval": 60
+    },
+    "strategy": "SampleStrategy",
+    "strategy_path": "/home/runner/user_data/strategies",
+    "recursive_strategy_search": false,
+    "disable_dataframe_checks": true,
+    "reduce_df_footprint": false,
+    "dataformat_ohlcv": "feather",
+    "dataformat_trades": "feather",
+    "add_config_files": []
+}
