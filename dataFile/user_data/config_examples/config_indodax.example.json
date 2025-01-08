@@ -210,8 +210,8 @@
         "process_throttle_secs": 5,
         "heartbeat_interval": 60
     },
-    "strategy": "SampleStrategy",
-    "strategy_path": "/home/runner/user_data/strategies",
+    "strategy": "FreqaiExampleStrategy",
+    "strategy_path": "/home/runner/user_data/strategies/freqai",
     "recursive_strategy_search": false,
     "disable_dataframe_checks": true,
     "reduce_df_footprint": false,
