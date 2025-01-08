@@ -211,13 +211,13 @@
         "heartbeat_interval": 60
     },
     "strategy": "ichiV1",
-    "strategy_path": "/home/runner/user_data/strategies/collection",
+    "strategy_path": "/home/runner/user_data/strategies",
     "recursive_strategy_search": false,
     "disable_dataframe_checks": true,
     "reduce_df_footprint": false,
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
     "add_config_files": [
-        "config_freqai.example.json"
+        "/home/runner/config_examples/config_freqai.example.json"
     ]
 }
