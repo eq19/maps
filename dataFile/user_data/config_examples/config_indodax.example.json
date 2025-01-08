@@ -217,5 +217,7 @@
     "reduce_df_footprint": false,
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
-    "add_config_files": [config_indodax.freqai.json]
+    "add_config_files": [
+        "config_indodax.freqai.json"
+    ]
 }
