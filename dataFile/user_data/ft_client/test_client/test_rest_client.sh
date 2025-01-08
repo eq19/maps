@@ -6,8 +6,8 @@ uhh#!/usr/bin/env bash
 # Ref: https://github.com/ccxt/ccxt/blob/4.4.40/python/ccxt/async_support/indodax.py#L195
 #
 hr='------------------------------------------------------------------------------------'
-#CONFIG=user_data/config_examples/config_indodax.example.json
-CONFIG=user_data/config_examples/config_indodax.freqai.json
+CONFIG=user_data/config_examples/config_indodax.example.json
+#CONFIG=user_data/config_examples/config_indodax.freqai.json
 
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
@@ -48,8 +48,8 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
   freqtrade download-data --help
-  freqtrade download-data --config $CONFIG
-  #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h
+  #freqtrade download-data --config $CONFIG
+  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h
 
   echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   freqtrade list-data --help
