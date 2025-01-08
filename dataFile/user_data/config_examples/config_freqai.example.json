@@ -33,5 +33,5 @@
             "random_state": 1
         },
         "model_training_parameters": {}
-    },
+    }
 }
