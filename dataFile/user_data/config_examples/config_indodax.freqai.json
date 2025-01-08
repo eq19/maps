@@ -1,6 +1,5 @@
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
-    "dataformat_ohlcv": "json",
     "max_open_trades": 5,
     "stake_currency": "IDR",
     "stake_amount": 100000,
@@ -310,7 +309,11 @@
     "initial_state": "running",
     "strategy": "FreqaiExampleStrategy",
     "strategy_path": "/home/runner/user_data/strategies/freqai",
-    "recursive_strategy_search": true,
+    "recursive_strategy_search": false,
+    "disable_dataframe_checks": true,
+    "reduce_df_footprint": false,
+    "dataformat_ohlcv": "feather",
+    "dataformat_trades": "feather",
     "freqai": {
         "enabled": true,
         "model": "LightGBMRegressor",
