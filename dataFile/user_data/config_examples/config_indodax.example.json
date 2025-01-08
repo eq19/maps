@@ -218,6 +218,6 @@
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
     "add_config_files": [
-        "config_indodax.freqai.json"
+        "config_freqai.example.json"
     ]
 }
