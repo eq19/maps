@@ -12,14 +12,14 @@ CONFIG=user_data/config_examples/config_indodax.example.json
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=14  # Adjust as per your strategy
 
-# Today's date
-TODAY=$(date -u +%Y-%m-%d)
+# Today's date in the required format (YYYYMMDD)
+TODAY=$(date -u +%Y%m%d)
 
-# 30 days ago (earliest available data from the exchange)
-EARLIEST_DATE=$(date -u -d "30 days ago" +%Y-%m-%d)
+# 30 days ago in the required format
+EARLIEST_DATE=$(date -u -d "30 days ago" +%Y%m%d)
 
-# Backtesting start date (earliest_date + sliding window)
-BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y-%m-%d)
+# Backtesting start date in the required format (earliest_date + sliding window)
+BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
 
 # Time range for downloading data
 TD="$EARLIEST_DATE-$TODAY"
