@@ -9,6 +9,15 @@ hr='----------------------------------------------------------------------------
 CONFIG=user_data/config_examples/config_indodax.example.json
 #CONFIG=user_data/config_examples/config_indodax.freqai.json
 
+# Get today's date
+today=$(date +"%Y%m%d")
+
+# Get the date 30 days earlier
+thirty_days_earlier=$(date -d "-30 days" +"%Y%m%d")
+
+echo "Today: $today"
+echo "30 days earlier: $thirty_days_earlier"
+
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
 
