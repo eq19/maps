@@ -16,7 +16,7 @@ BACKTESTING_DURATION=7  # Adjust as per your strategy
 TODAY=$(date -u +%Y%m%d)
 
 # 30 days ago in the required format
-EARLIEST_DATE=$(date -u -d "30 days ago" +%Y%m%d)
+EARLIEST_DATE=$(date -u -d "90 days ago" +%Y%m%d)
 
 # Backtesting start date in the required format (earliest_date + sliding window)
 BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
