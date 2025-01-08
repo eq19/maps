@@ -82,7 +82,7 @@ else
     --freqaimodel CatboostClassifier \
     --timerange="$TB" \
     --export signals \
-    --fee
+    --fee 0.0023
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
   #ls -alR user_data/backtest_results
