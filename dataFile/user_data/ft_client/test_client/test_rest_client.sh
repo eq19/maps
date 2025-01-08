@@ -60,27 +60,25 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
-  #echo -e "\n$hr\nSHOW CONFIG\n$hr"
-  #freqtrade show-config --help
-  #freqtrade show-config --config $CONFIG
-
-  #echo -e "\n$hr\nTEST PAIR LIST\n$hr"
-  #freqtrade test-pairlist --help
-  #freqtrade test-pairlist --config $CONFIG
-
   echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
   freqtrade download-data --help
-  #freqtrade download-data --config $CONFIG
-  #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h
-  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h --timerange="$TD"
+  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d --timerange="$TD"
 
   echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   freqtrade list-data --help
   freqtrade list-data --config $CONFIG
 
-  echo -e "\n$hr\nTEST BACKTEST\n$hr"
+  echo -e "\n$hr\nTEST HYPEROPT\n$hr"
+  freqtrade hyperopt --help
+  freqtrade hyperopt --config $CONFIG
+
+  echo -e "\n$hr\nTEST EDGE\n$hr"
+  freqtrade edge --help
+  freqtrade edge --config $CONFIG
+
+  echo -e "\n$hr\nBACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
+  freqtrade backtesting --config $CONFIG --freqaimodel CatboostClassifier --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
   #ls -alR user_data/backtest_results
@@ -89,12 +87,13 @@ else
   #freqtrade backtesting-show --help
   #freqtrade backtesting-show --config $CONFIG
 
-  echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
-  freqtrade backtesting-analysis --help
-  freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
+  #echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
+  #freqtrade backtesting-analysis --help
+  #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
 
-  echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
+  #echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   #freqtrade trade --help
+  #freqtrade trade --freqaimodel CatboostClassifier
 
   #sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
   #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
