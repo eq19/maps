@@ -32,16 +32,15 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade strategy-updater --config $CONFIG
   #freqtrade lookahead-analysis --config $CONFIG
   #freqtrade recursive-analysis --config $CONFIG
-  freqtrade show-config --config $CONFIG
 
 else
 
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
-  #echo -e "\n$hr\nTEST TIME FRAME\n$hr"
-  #freqtrade list-timeframes --help
-  #freqtrade list-timeframes --config $CONFIG
+  echo -e "\n$hr\nSHOW CONFIG\n$hr"
+  freqtrade show-config --help
+  freqtrade show-config --config $CONFIG
 
   #echo -e "\n$hr\nTEST PAIR LIST\n$hr"
   #freqtrade test-pairlist --help
@@ -84,5 +83,3 @@ else
   #rm -rf $CONFIG
  
 fi
-
-
