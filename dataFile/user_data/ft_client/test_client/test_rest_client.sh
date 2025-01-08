@@ -31,6 +31,9 @@ TB="$BACKTESTING_START-$TODAY"
 echo "Download Timerange: $TD"
 echo "Backtesting Timerange: $TB"
 
+# TRADING FEE
+FEE=0.003322
+
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
 
@@ -70,8 +73,8 @@ else
 
   echo -e "\n$hr\nTEST HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt --config $CONFIG
-
+  freqtrade hyperopt --config $CONFIG --fee $FEE
+  
   echo -e "\n$hr\nTEST EDGE\n$hr"
   freqtrade edge --help
   freqtrade edge --config $CONFIG
@@ -82,7 +85,7 @@ else
     --freqaimodel CatboostClassifier \
     --timerange="$TB" \
     --export signals \
-    --fee 0.0023
+    --fee $FEE
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
   #ls -alR user_data/backtest_results
