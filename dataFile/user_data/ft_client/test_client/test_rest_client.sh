@@ -78,7 +78,11 @@ else
 
   echo -e "\n$hr\nBACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --freqaimodel CatboostClassifier --timerange="$TB" --export signals
+  freqtrade backtesting --config $CONFIG \
+    --freqaimodel CatboostClassifier \
+    --timerange="$TB" \
+    --export signals \
+    --fee
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
   #ls -alR user_data/backtest_results
