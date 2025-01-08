@@ -9,14 +9,27 @@ hr='----------------------------------------------------------------------------
 CONFIG=user_data/config_examples/config_indodax.example.json
 #CONFIG=user_data/config_examples/config_indodax.freqai.json
 
-# Get today's date
-today=$(date +"%Y%m%d")
+# Define the backtesting duration (in days)
+BACKTESTING_DURATION=14  # Adjust as per your strategy
 
-# Get the date 30 days earlier
-thirty_days_earlier=$(date -d "-30 days" +"%Y%m%d")
+# Today's date
+TODAY=$(date -u +%Y-%m-%d)
 
-echo "Today: $today"
-echo "30 days earlier: $thirty_days_earlier"
+# 30 days ago (earliest available data from the exchange)
+EARLIEST_DATE=$(date -u -d "30 days ago" +%Y-%m-%d)
+
+# Backtesting start date (earliest_date + sliding window)
+BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y-%m-%d)
+
+# Time range for downloading data
+TD="$EARLIEST_DATE-$TODAY"
+
+# Time range for backtesting
+TB="$BACKTESTING_START-$TODAY"
+
+# Print the timeranges
+echo "Download Timerange: $TD"
+echo "Backtesting Timerange: $TB"
 
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
@@ -59,7 +72,7 @@ else
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
-  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d --timerange=20241208-
+  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d --timerange="$TD"
 
   echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   freqtrade list-data --help
@@ -67,7 +80,7 @@ else
 
   echo -e "\n$hr\nTEST BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange=20241208-20250107 --export signals
+  freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
   #ls -alR user_data/backtest_results
@@ -78,7 +91,7 @@ else
 
   echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
   freqtrade backtesting-analysis --help
-  freqtrade backtesting-analysis --config $CONFIG --timerange=20241208- --indicator-list all
+  freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   #freqtrade trade --help
