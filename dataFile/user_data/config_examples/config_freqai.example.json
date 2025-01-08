@@ -13,8 +13,8 @@
                 "1h"
             ],
             "include_corr_pairlist": [
-                "BTC/IDR:IDR",
-                "ETH/IDR:IDR"
+                "BTC/IDR",
+                "ETH/IDR"
             ],
             "label_period_candles": 20,
             "include_shifted_candles": 2,
