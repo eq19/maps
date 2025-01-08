@@ -48,7 +48,7 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
   freqtrade download-data --help
-  freqtrade download-data --config $CONFIG --timeframes 1m 15m
+  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h
 
   echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   freqtrade list-data --help
