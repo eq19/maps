@@ -10,7 +10,7 @@ CONFIG=user_data/config_examples/config_indodax.example.json
 #CONFIG=user_data/config_examples/config_indodax.freqai.json
 
 # Define the backtesting duration (in days)
-BACKTESTING_DURATION=14  # Adjust as per your strategy
+BACKTESTING_DURATION=7  # Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
@@ -71,8 +71,8 @@ else
   echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
-  #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
-  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d --timerange="$TD"
+  #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h
+  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h --timerange="$TD"
 
   echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   freqtrade list-data --help
