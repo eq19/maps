@@ -332,7 +332,7 @@
                 "volume"
             ],
             "normalize": true,
-            "include_timeframes": ["5m"],
+            "include_timeframes": ["15m"],
             "include_corr_pairlist": [
                 "BTC/IDR",
                 "ETH/IDR"
