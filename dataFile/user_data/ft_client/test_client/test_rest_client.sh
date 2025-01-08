@@ -58,7 +58,7 @@ else
 
   echo -e "\n$hr\nTEST BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --timerange 20240101-20241231 --export signals
+  freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange 20240101-20241231 --export signals
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
   #ls -alR user_data/backtest_results
@@ -69,7 +69,7 @@ else
 
   echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
   freqtrade backtesting-analysis --help
-  freqtrade backtesting-analysis --config $CONFIG --indicator-list all
+  freqtrade backtesting-analysis --config $CONFIG --timerange 20240101-20241231 --indicator-list all
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   #freqtrade trade --help
