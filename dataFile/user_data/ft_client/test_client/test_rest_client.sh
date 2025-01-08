@@ -32,6 +32,7 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade strategy-updater --config $CONFIG
   #freqtrade lookahead-analysis --config $CONFIG
   #freqtrade recursive-analysis --config $CONFIG
+  freqtrade show-config --config $CONFIG
 
 else
 
