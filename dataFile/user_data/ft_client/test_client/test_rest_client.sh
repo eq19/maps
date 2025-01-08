@@ -6,8 +6,8 @@ uhh#!/usr/bin/env bash
 # Ref: https://github.com/ccxt/ccxt/blob/4.4.40/python/ccxt/async_support/indodax.py#L195
 #
 hr='------------------------------------------------------------------------------------'
-#CONFIG=user_data/config_examples/config_indodax.example.json
-CONFIG=user_data/config_examples/config_indodax.freqai.json
+CONFIG=user_data/config_examples/config_indodax.example.json
+#CONFIG=user_data/config_examples/config_indodax.freqai.json
 
 echo -e "\n$hr\nTEST ENV\n$hr"
 printenv
@@ -38,13 +38,13 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
-  echo -e "\n$hr\nTEST TIME FRAME\n$hr"
-  freqtrade list-timeframes --help
-  freqtrade list-timeframes --config $CONFIG
+  #echo -e "\n$hr\nTEST TIME FRAME\n$hr"
+  #freqtrade list-timeframes --help
+  #freqtrade list-timeframes --config $CONFIG
 
-  echo -e "\n$hr\nTEST PAIR LIST\n$hr"
-  freqtrade test-pairlist --help
-  freqtrade test-pairlist --config $CONFIG
+  #echo -e "\n$hr\nTEST PAIR LIST\n$hr"
+  #freqtrade test-pairlist --help
+  #freqtrade test-pairlist --config $CONFIG
 
   echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
   freqtrade download-data --help
@@ -70,16 +70,16 @@ else
   freqtrade backtesting-analysis --config $CONFIG --indicator-list all
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
-  freqtrade trade --help
+  #freqtrade trade --help
 
-  sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
-  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
-  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
-  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
+  #sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
+  #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
+  #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
+  #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
-  freqtrade trade --config $CONFIG --freqaimodel LightGBMRegressor
+  #freqtrade trade --config $CONFIG --freqaimodel LightGBMRegressor
   #gh secret set CONFIG_JSON < $CONFIG
-  rm -rf $CONFIG
+  #rm -rf $CONFIG
  
 fi
 
