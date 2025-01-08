@@ -1,4 +1,4 @@
-uhh#!/usr/bin/env bash
+#!/usr/bin/env bash
 #
 # Structure: Cell Types – Modulo 6
 # Ref: https://www.freqtrade.io/en/stable/utils/#list-freqai-models
