@@ -55,12 +55,12 @@
             "WAVES/IDR",
             "XRP/IDR",
  
-            "DASH/IDR",
+            "IDRX/IDR",
             "LTC/IDR",
-            "QTUM/IDR",
-            "XLM/IDR",
-            "XMR/IDR",
-            "XTZ/IDR",
+            "BNB/IDR",
+            "SOL/IDR",
+            "DOT/IDR",
+            "POT/IDR",
             "ZEC/IDR"
         ],
         "pair_blacklist": [
