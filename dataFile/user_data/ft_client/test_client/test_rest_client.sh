@@ -109,6 +109,6 @@ else
   #gh secret set CONFIG_JSON < /home/runner/config.json
   #freqtrade trade --freqaimodel LightGBMRegressor
   #rm -rf /home/runner/config.json
-  #freqtrade trade
+  #freqtrade trade --fee=$FEE
  
 fi
