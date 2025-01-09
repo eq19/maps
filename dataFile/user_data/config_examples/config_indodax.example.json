@@ -251,6 +251,7 @@
     "recursive_strategy_search": false,
     "strategy_path": "/home/runner/user_data/strategies",
     "add_config_files": [
-        "/home/runner/user_data/config_examples/config_freqai.example.json"
+        "/home/runner/user_data/config_examples/config_freqai.example.json",
+        "/home/runner/user_data/config_examples/config_hyperopt.example.json"
     ]
 }
