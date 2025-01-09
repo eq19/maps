@@ -3,11 +3,11 @@
     "max_open_trades": 5,
     "stake_currency": "IDR",
     "stake_amount": 100000,
-    "tradable_balance_ratio": 0.25,
+    "tradable_balance_ratio": 0.99,
     "fiat_display_currency": "IDR",
     "timeframe": "1m",
     "dry_run": true,
-    "dry_run_wallet": 400000,
+    "dry_run_wallet": 1000000,
     "cancel_open_orders_on_exit": false,
     "unfilledtimeout": {
         "entry": 10,
