@@ -74,14 +74,7 @@ else
 
   echo -e "\n$hr\n TEST HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
-  #--hyperopt-loss to specify the Hyperopt-Loss class to use.
-  #Built-in Hyperopt-loss-functions are: ShortTradeDurHyperOptLoss, 
-  #OnlyProfitHyperOptLoss, SharpeHyperOptLoss, SharpeHyperOptLossDaily, 
-  #SortinoHyperOptLoss, SortinoHyperOptLossDaily, CalmarHyperOptLoss, 
-  #MaxDrawDownHyperOptLoss, MaxDrawDownRelativeHyperOptLoss, 
-  #ProfitDrawDownHyperOptLoss, MultiMetricHyperOptLoss
-
+  freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily -e 500 --spaces all
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
