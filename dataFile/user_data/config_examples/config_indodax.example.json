@@ -218,6 +218,6 @@
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
     "add_config_files": [
-        "/home/runner/config_examples/config_freqai.example.json"
+        "/home/runner/user_data/config_examples/config_freqai.example.json"
     ]
 }
