@@ -10,7 +10,7 @@ FEE=0.003322
 CONFIG=user_data/config_examples/config_indodax.example.json
 
 # Define the backtesting duration (in days)
-BACKTESTING_DURATION=7  # Adjust as per your strategy
+BACKTESTING_DURATION=30  # Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
