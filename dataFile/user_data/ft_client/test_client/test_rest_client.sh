@@ -72,7 +72,7 @@ else
 
   #echo -e "\n$hr\n TEST HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt --config $CONFIG
+  freqtrade hyperopt --config $CONFIG --fee 0.003322
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
