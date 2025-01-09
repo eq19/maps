@@ -30,10 +30,40 @@
         "use_order_book": true,
         "order_book_top": 1
     },
+    "pairlists": [
+        {"method": "StaticPairList"}
+    ],
     "exchange": {
         "name": "indodax",
         "key": "your_exchange_key",
         "secret": "your_exchange_secret",
+        "pair_whitelist": [
+            "ADA/IDR",
+            "ATOM/IDR",
+            "BAT/IDR",
+            "BCH/IDR",
+            "BTC/IDR",
+            "DAI/IDR",
+            "DASH/IDR",
+            "EOS/IDR",
+            "ETC/IDR",
+            "ETH/IDR",
+            "LINK/IDR",
+            "LTC/EUR",
+            "QTUM/IDR",
+            "REP/IDR",
+            "SKY/IDR",
+            "USDT/IDR",
+            "WAVES/IDR",
+            "XLM/IDR",
+            "XMR/IDR",
+            "XRP/IDR",
+            "XTZ/IDR",
+            "ZEC/IDR"
+        ],
+        "pair_blacklist": [
+            "^.*ETH/BTC$"
+        ],
         "ccxt_config": {
             "timeframes": {
                 "1m": "1",
@@ -124,38 +154,8 @@
                 "transfer": false,
                 "withdraw": true
             }
-        },
-        "pair_whitelist": [
-            "ADA/IDR",
-            "ATOM/IDR",
-            "BAT/IDR",
-            "BCH/IDR",
-            "BTC/IDR",
-            "DAI/IDR",
-            "DASH/IDR",
-            "EOS/IDR",
-            "ETC/IDR",
-            "ETH/IDR",
-            "LINK/IDR",
-            "LTC/EUR",
-            "QTUM/IDR",
-            "REP/IDR",
-            "SKY/IDR",
-            "USDT/IDR",
-            "WAVES/IDR",
-            "XLM/IDR",
-            "XMR/IDR",
-            "XRP/IDR",
-            "XTZ/IDR",
-            "ZEC/IDR"
-        ],
-        "pair_blacklist": [
-            "^.*ETH/BTC$"
-        ]
+        }
     },
-    "pairlists": [
-        {"method": "StaticPairList"}
-    ],
     "telegram": {
         "enabled": true,
         "token": "your_telegram_token",
