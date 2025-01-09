@@ -111,7 +111,8 @@ else
   #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
   #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' -i $CONFIG
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' \
+    $CONFIG > tmp_config.json && mv tmp_config.json $CONFIG
   #freqtrade trade --config $CONFIG --freqaimodel LightGBMRegressor
   #gh secret set CONFIG_JSON < $CONFIG
   cat $CONFIG
