@@ -136,11 +136,11 @@
     },
     "pairlists": [
         {
-        "method": "MarketCapPairList",
-        "number_assets": 10,
-        "max_rank": 50,
-        "refresh_period": 86400,
-        "categories": ["layer-1"]
+            "method": "MarketCapPairList",
+            "number_assets": 10,
+            "max_rank": 50,
+            "refresh_period": 86400,
+            "categories": ["layer-1"]
         },
         {
             "method": "AgeFilter",
