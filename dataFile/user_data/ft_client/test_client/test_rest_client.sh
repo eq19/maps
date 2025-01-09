@@ -74,6 +74,7 @@ else
 
   echo -e "\n$hr\n TEST HYPEROPT\n$hr"
   freqtrade hyperopt --help
+  #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily -e 500 --spaces all
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
