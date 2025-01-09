@@ -126,7 +126,6 @@
             }
         },
         "pair_whitelist": [
-            "ETH/IDR",
             "ADA/IDR",
             "ATOM/IDR",
             "BAT/IDR",
