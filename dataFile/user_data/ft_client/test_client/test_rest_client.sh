@@ -60,14 +60,6 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
-  #echo -e "\n$hr\nSHOW CONFIG\n$hr"
-  #freqtrade show-config --help
-  #freqtrade show-config --config $CONFIG
-
-  #echo -e "\n$hr\nTEST PAIR LIST\n$hr"
-  #freqtrade test-pairlist --help
-  #freqtrade test-pairlist --config $CONFIG
-
   echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
@@ -77,6 +69,14 @@ else
   echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   freqtrade list-data --help
   freqtrade list-data --config $CONFIG
+
+  #echo -e "\n$hr\n TEST HYPEROPT\n$hr"
+  freqtrade hyperopt --help
+  freqtrade hyperopt --config $CONFIG
+
+  #echo -e "\n$hr\nSHOW EDGE\n$hr"
+  freqtrade edge --help
+  freqtrade edge --config $CONFIG
 
   echo -e "\n$hr\nTEST BACKTEST\n$hr"
   freqtrade backtesting --help
