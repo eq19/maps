@@ -136,15 +136,12 @@
     },
     "pairlists": [
         {
-            "method": "MarketCapPairList",
-            "number_assets": 10,
-            "max_rank": 50,
-            "refresh_period": 86400,
-            "categories": ["layer-1"]
-        },
-        {
-            "method": "AgeFilter",
-            "min_days_listed": 30
+            "method": "StaticPairList",
+            "pairs": [
+                "BTC/IDR",
+                "ETH/IDR",
+                "USDT/IDR"
+            ]
         }
     ],
     "telegram": {
