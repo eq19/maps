@@ -6,8 +6,8 @@ uhh#!/usr/bin/env bash
 # Ref: https://github.com/ccxt/ccxt/blob/4.4.40/python/ccxt/async_support/indodax.py#L195
 #
 hr='------------------------------------------------------------------------------------'
+FEE=0.003322
 CONFIG=user_data/config_examples/config_indodax.example.json
-#CONFIG=user_data/config_examples/config_indodax.freqai.json
 
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=7  # Adjust as per your strategy
@@ -70,9 +70,9 @@ else
   freqtrade list-data --help
   freqtrade list-data --config $CONFIG
 
-  #echo -e "\n$hr\n TEST HYPEROPT\n$hr"
+  echo -e "\n$hr\n TEST HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt --config $CONFIG --fee 0.003322--hyperopt-loss SharpeHyperOptLossDaily
+  freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
   #--hyperopt-loss to specify the Hyperopt-Loss class to use.
   #Built-in Hyperopt-loss-functions are: ShortTradeDurHyperOptLoss, 
   #OnlyProfitHyperOptLoss, SharpeHyperOptLoss, SharpeHyperOptLossDaily, 
@@ -81,13 +81,13 @@ else
   #ProfitDrawDownHyperOptLoss, MultiMetricHyperOptLoss
 
 
-  #echo -e "\n$hr\nSHOW EDGE\n$hr"
+  echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
-  freqtrade edge --config $CONFIG
+  freqtrade edge --config $CONFIG --fee=$FEE
 
   echo -e "\n$hr\nTEST BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --fee 0.003322 --timerange="$TB" --export signals
+  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
@@ -99,7 +99,7 @@ else
 
   echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
   freqtrade backtesting-analysis --help
-  freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
+  freqtrade backtesting-analysis --config $CONFIG --fee=$FEE --timerange="$TB" --indicator-list all
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   #freqtrade trade --help
