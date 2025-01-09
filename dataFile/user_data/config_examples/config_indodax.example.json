@@ -139,7 +139,7 @@
             "method": {
                 "StaticPairList",
                 "AgeFilter": {
-	                "min_days_listed": 30
+	            "min_days_listed": 30
                 }             
             },
             "pairs": [
