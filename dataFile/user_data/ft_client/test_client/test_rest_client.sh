@@ -106,9 +106,8 @@ else
   #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > /home/runner/config.json
-  #gh secret set CONFIG_JSON < /home/runner/config.json
-  #freqtrade trade --freqaimodel LightGBMRegressor
-  #rm -rf /home/runner/config.json
-  #freqtrade trade --fee=$FEE
+  cd /home/runner && freqtrade trade --fee=$FEE #--freqaimodel LightGBMRegressor
+  gh secret set CONFIG_JSON < /home/runner/config.json
+  rm -rf /home/runner/config.json
  
 fi
