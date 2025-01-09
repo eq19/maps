@@ -8,6 +8,7 @@ uhh#!/usr/bin/env bash
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
 CONFIG=user_data/config_examples/config_indodax.example.json
+PAIRFILE=user_data/config_examples/config_pairlist.example.json
 
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=30  # Adjust as per your strategy
@@ -110,6 +111,7 @@ else
   #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
   #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' -i $CONFIG
   #freqtrade trade --config $CONFIG --freqaimodel LightGBMRegressor
   #gh secret set CONFIG_JSON < $CONFIG
   #rm -rf $CONFIG
