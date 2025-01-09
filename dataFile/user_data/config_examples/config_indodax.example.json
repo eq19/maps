@@ -54,14 +54,14 @@
             "ETH/IDR",
             "IDRX/IDR",
             "LINK/IDR",
+            "KRD/IDR",
             "LTC/IDR",
+            "POL/IDR",
             "REP/IDR",
             "SKYA/IDR",
             "SOL/IDR",
             "WAVES/IDR",
-            "XRP/IDR",
-            "POL/IDR",
-            "KRD/IDR"
+            "XRP/IDR"     
         ],
         "pair_blacklist": [
             "USDT/IDR",
