@@ -126,23 +126,36 @@
             }
         },
         "pair_whitelist": [
-            "BTC/IDR",
             "ETH/IDR",
-            "USDT/IDR"
+            "ADA/IDR",
+            "ATOM/IDR",
+            "BAT/IDR",
+            "BCH/IDR",
+            "BTC/IDR",
+            "DAI/IDR",
+            "DASH/IDR",
+            "EOS/IDR",
+            "ETC/IDR",
+            "ETH/IDR",
+            "LINK/IDR",
+            "LTC/EUR",
+            "QTUM/IDR",
+            "REP/IDR",
+            "SKY/IDR",
+            "USDT/IDR",
+            "WAVES/IDR",
+            "XLM/IDR",
+            "XMR/IDR",
+            "XRP/IDR",
+            "XTZ/IDR",
+            "ZEC/IDR"
         ],
         "pair_blacklist": [
             "^.*ETH/BTC$"
         ]
     },
     "pairlists": [
-        {
-            "method": "StaticPairList",
-            "pairs": [
-                "BTC/IDR",
-                "ETH/IDR",
-                "USDT/IDR"
-            ]
-        }
+        {"method": "StaticPairList"}
     ],
     "telegram": {
         "enabled": true,
