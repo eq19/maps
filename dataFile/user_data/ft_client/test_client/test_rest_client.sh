@@ -1,4 +1,4 @@
-uhh#!/usr/bin/env bash
+#!/usr/bin/env bash
 #
 # Structure: Cell Types – Modulo 6
 # Ref: https://www.freqtrade.io/en/stable/utils/#list-freqai-models
@@ -109,6 +109,6 @@ else
   #gh secret set CONFIG_JSON < /home/runner/config.json
   #freqtrade trade --freqaimodel LightGBMRegressor
   #rm -rf /home/runner/config.json
-  freqtrade trade
+  #freqtrade trade
  
 fi
