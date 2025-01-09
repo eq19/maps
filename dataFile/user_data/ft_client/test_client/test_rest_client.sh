@@ -64,7 +64,7 @@ else
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
-  freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d --timerange="$TD"
+  freqtrade download-data --config $CONFIG --timeframes 30m 1h 4h 1d --timerange="$TD"
 
   echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   freqtrade list-data --help
