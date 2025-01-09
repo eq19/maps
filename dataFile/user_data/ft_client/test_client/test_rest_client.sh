@@ -114,6 +114,6 @@ else
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' -i $CONFIG
   #freqtrade trade --config $CONFIG --freqaimodel LightGBMRegressor
   #gh secret set CONFIG_JSON < $CONFIG
-  #rm -rf $CONFIG
+  cat $CONFIG
  
 fi
