@@ -46,7 +46,6 @@
             "BCH/IDR",
             "BTC/IDR",
             "DAI/IDR",
-            "DASH/IDR",
             "EOS/IDR",
             "ETC/IDR",
             "ETH/IDR",
@@ -56,7 +55,8 @@
             "WAVES/IDR",
             "XRP/IDR",
  
-            "LTC/EUR",
+            "DASH/IDR",
+            "LTC/IDR",
             "QTUM/IDR",
             "XLM/IDR",
             "XMR/IDR",
