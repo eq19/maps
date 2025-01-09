@@ -136,15 +136,15 @@
     },
     "pairlists": [
         {
-            "method": "VolumePairList",
-            "number_assets": 10,
-            "sort_key": "quoteVolume",
-            "min_value": 0,
-            "refresh_period": 86400
+        "method": "MarketCapPairList",
+        "number_assets": 10,
+        "max_rank": 50,
+        "refresh_period": 86400,
+        "categories": ["layer-1"]
         },
         {
             "method": "AgeFilter",
-            "min_days_listed": 365
+            "min_days_listed": 30
         }
     ],
     "telegram": {
