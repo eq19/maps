@@ -52,8 +52,7 @@
             "LTC/EUR",
             "QTUM/IDR",
             "REP/IDR",
-            "SKY/IDR",
-            "USDT/IDR",
+            "SKYA/IDR",
             "WAVES/IDR",
             "XLM/IDR",
             "XMR/IDR",
@@ -62,6 +61,7 @@
             "ZEC/IDR"
         ],
         "pair_blacklist": [
+            "USDT/IDR",
             "^.*ETH/BTC$"
         ],
         "ccxt_config": {
