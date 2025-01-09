@@ -41,8 +41,9 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade hyperopt --config $CONFIG
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
+  freqtrade list-pairs --config $CONFIG
+  freqtrade list-markets --help
   freqtrade list-markets --config $CONFIG
-  #freqtrade list-pairs --config $CONFIG
   #freqtrade list-strategies --config $CONFIG
   #freqtrade list-freqaimodels --config $CONFIG
   #freqtrade show-trades --config $CONFIG
