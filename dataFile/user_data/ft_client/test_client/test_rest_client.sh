@@ -95,7 +95,7 @@ else
 
   echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
   freqtrade backtesting-analysis --help
-  freqtrade backtesting-analysis --config $CONFIG --fee=$FEE --timerange="$TB" --indicator-list all
+  freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
