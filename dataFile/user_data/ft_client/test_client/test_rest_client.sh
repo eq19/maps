@@ -10,11 +10,6 @@ FEE=0.003322
 CONFIG=user_data/config_examples/config_indodax.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 
-sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
-sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
-sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
-sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
-
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=30  # Adjust as per your strategy
 
@@ -105,9 +100,14 @@ else
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
 
+  sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
+  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
+  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
+  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
+
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > /home/runner/config.json
-  cd /home/runner && freqtrade trade --fee=$FEE #--freqaimodel LightGBMRegressor
-  gh secret set CONFIG_JSON < /home/runner/config.json
+  #cd /home/runner && freqtrade trade --fee=$FEE --freqaimodel LightGBMRegressor
+  #gh secret set CONFIG_JSON < /home/runner/config.json
   rm -rf /home/runner/config.json
  
 fi
