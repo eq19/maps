@@ -69,7 +69,7 @@ else
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > /home/runner/download.json
-  freqtrade download-data --config /home/runner/download.json --timeframes 5m 30m 1h 4h 1d --timerange="$TD"
+  freqtrade download-data --config /home/runner/download.json --timeframes 30m 1h 4h 1d --timerange="$TD"
 
   #echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   #freqtrade list-data --help
