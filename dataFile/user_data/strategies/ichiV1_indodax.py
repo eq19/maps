@@ -13,7 +13,7 @@ import numpy as np
 from freqtrade.strategy import stoploss_from_open
 
 
-class ichiV1(IStrategy):
+class ichiV1_indodax(IStrategy):
 
     # NOTE: settings as of the 25th july 21
     # Buy hyperspace params:
