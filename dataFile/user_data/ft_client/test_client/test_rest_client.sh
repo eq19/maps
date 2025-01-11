@@ -42,9 +42,7 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade hyperopt --config $CONFIG
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
-  freqtrade list-pairs --config $CONFIG
-  freqtrade list-markets --help
-  freqtrade list-markets --config $CONFIG
+  #freqtrade list-pairs --config $CONFIG
   #freqtrade list-strategies --config $CONFIG
   #freqtrade list-freqaimodels --config $CONFIG
   #freqtrade show-trades --config $CONFIG
@@ -62,6 +60,10 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
+  echo -e "\n$hr\nSHOW PAIRS\n$hr"
+  freqtrade list-pairs --help
+  freqtrade list-pairs --config $CONFIG
+
   #echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
   #freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
@@ -97,18 +99,18 @@ else
   #freqtrade backtesting-analysis --help
   #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
 
-  echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
-  freqtrade trade --help
+  #echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
+  #freqtrade trade --help
 
-  sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
-  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
-  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
-  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
+  #sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
+  #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
+  #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
+  #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > /home/runner/config.json
+  #jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > /home/runner/config.json
   #cd /home/runner && freqtrade trade --dry-run --fee=$FEE --freqaimodel LightGBMRegressor
   #gh secret set CONFIG_JSON < /home/runner/config.json
-  cd /home/runner && freqtrade trade
-  rm -rf /home/runner/config.json
+  #cd /home/runner && freqtrade trade
+  #rm -rf /home/runner/config.json
 
 fi
