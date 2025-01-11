@@ -84,9 +84,9 @@ else
   #freqtrade edge --help
   #freqtrade edge --config $CONFIG --fee=$FEE
 
-  #echo -e "\n$hr\nTEST BACKTEST\n$hr"
-  #freqtrade backtesting --help
-  #freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
+  echo -e "\n$hr\nTEST BACKTEST\n$hr"
+  freqtrade backtesting --help
+  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
