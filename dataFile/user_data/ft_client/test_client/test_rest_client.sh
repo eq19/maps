@@ -112,8 +112,8 @@ else
   sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
   sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
 
-  #freqtrade trade --dry-run --fee=$FEE --freqaimodel LightGBMRegressor
-  freqtrade trade
+  #freqtrade trade --freqaimodel LightGBMRegressor
+  freqtrade trade --dry-run --fee=$FEE
   rm -rf *.json
 
 fi
