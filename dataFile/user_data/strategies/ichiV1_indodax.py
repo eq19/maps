@@ -15,7 +15,7 @@ from freqtrade.strategy import stoploss_from_open
 
 class ichiV1_indodax(IStrategy):
 
-    # NOTE: settings as of the 25th july 21
+    # NOTE: settings as of the 12th jan 2025
     # Buy hyperspace params:
     buy_params = {
         "buy_trend_above_senkou_level": 1,
