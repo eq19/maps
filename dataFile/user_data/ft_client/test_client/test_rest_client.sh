@@ -62,28 +62,28 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
-  echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
-  freqtrade download-data --help
+  #echo -e "\n$hr\nTEST DOWNLOAD DATA\n$hr"
+  #freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
-  freqtrade download-data --config $CONFIG --timeframes 30m 1h 4h 1d --timerange="$TD"
+  #freqtrade download-data --config $CONFIG --timeframes 30m 1h 4h 1d --timerange="$TD"
 
-  echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
-  freqtrade list-data --help
-  freqtrade list-data --config $CONFIG
+  #echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
+  #freqtrade list-data --help
+  #freqtrade list-data --config $CONFIG
 
-  echo -e "\n$hr\n TEST HYPEROPT\n$hr"
-  freqtrade hyperopt --help
+  #echo -e "\n$hr\n TEST HYPEROPT\n$hr"
+  #freqtrade hyperopt --help
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  #freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
-  echo -e "\n$hr\nSHOW EDGE\n$hr"
-  freqtrade edge --help
-  freqtrade edge --config $CONFIG --fee=$FEE
+  #echo -e "\n$hr\nSHOW EDGE\n$hr"
+  #freqtrade edge --help
+  #freqtrade edge --config $CONFIG --fee=$FEE
 
-  echo -e "\n$hr\nTEST BACKTEST\n$hr"
-  freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
+  #echo -e "\n$hr\nTEST BACKTEST\n$hr"
+  #freqtrade backtesting --help
+  #freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
@@ -93,9 +93,9 @@ else
   #freqtrade backtesting-show --help
   #freqtrade backtesting-show --config $CONFIG
 
-  echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
-  freqtrade backtesting-analysis --help
-  freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
+  #echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
+  #freqtrade backtesting-analysis --help
+  #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
