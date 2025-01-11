@@ -9,7 +9,7 @@
         },
         {
             "method": "AgeFilter",
-            "min_days_listed": 365
+            "min_days_listed": 30
         }
     ]
 }
