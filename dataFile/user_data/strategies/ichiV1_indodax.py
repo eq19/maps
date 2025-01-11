@@ -43,7 +43,7 @@ class ichiV1_indodax(IStrategy):
     stoploss = -0.275
 
     # Optimal timeframe for the strategy
-    timeframe = '30m'
+    timeframe = '15m'
 
     startup_candle_count = 96
     process_only_new_candles = False
