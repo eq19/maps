@@ -233,12 +233,6 @@
             }
         }
     },
-    "spaces": {
-        "sell": true,
-        "roi": true,
-        "stoploss": true,
-        "trailing": true
-    },
     "edge": {
         "enabled": false,
         "process_throttle_secs": 604800,
