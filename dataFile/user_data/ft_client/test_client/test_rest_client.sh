@@ -110,5 +110,5 @@ else
   #gh secret set CONFIG_JSON < /home/runner/config.json
   cd /home/runner && freqtrade trade
   rm -rf /home/runner/config.json
- //
-fi0
+
+fi
