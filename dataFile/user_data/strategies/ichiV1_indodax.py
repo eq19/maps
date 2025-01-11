@@ -43,7 +43,7 @@ class ichiV1(IStrategy):
     stoploss = -0.275
 
     # Optimal timeframe for the strategy
-    timeframe = '5m'
+    timeframe = '30m'
 
     startup_candle_count = 96
     process_only_new_candles = False
