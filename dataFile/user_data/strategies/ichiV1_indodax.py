@@ -45,6 +45,8 @@ class ichiV1_indodax(IStrategy):
     # Optimal timeframe for the strategy
     timeframe = '15m'
 
+    # Why 96?
+    # On a 15m timeframe, there are 96 candles in 24 hours (24 hours * 60 minutes / 15 minutes).
     startup_candle_count = 96
     process_only_new_candles = False
 
