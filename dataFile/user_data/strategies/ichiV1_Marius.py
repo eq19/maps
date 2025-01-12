@@ -492,8 +492,8 @@ class ichiV1_Marius(IStrategy):
         # Pump strength
         dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
-        dataframe['zema_30'] = ftt.zema(dataframe, period=30)
-        dataframe['zema_200'] = ftt.zema(dataframe, period=200)
+        dataframe['zema_30'] = ftt.dema(dataframe, period=30)
+        dataframe['zema_200'] = ftt.dema(dataframe, period=200)
         dataframe['pump_strength'] = (dataframe['zema_30'] - dataframe['zema_200']) / dataframe['zema_30']
         dataframe['pump_strength_2'] = (dataframe['ema_50'] - dataframe['ema_200']) / dataframe['ema_50']
 
