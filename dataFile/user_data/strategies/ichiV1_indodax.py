@@ -93,7 +93,7 @@ class ichiV1_indodax(IStrategy):
 
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['open'] = heikinashi['open']
-        #dataframe['close'] = heikinashi['close']
+        dataframe['close'] = heikinashi['close']
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
 
