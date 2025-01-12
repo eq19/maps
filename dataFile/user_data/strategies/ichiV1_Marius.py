@@ -393,9 +393,9 @@ class ichiV1_Marius(IStrategy):
         informative_pairs = [(pair, '15m') for pair in pairs]
         informative_pairs.extend([(pair, self.informative_timeframe) for pair in pairs])
 
-        informative_pairs += [("BTC/USDT", "1m")]
-        informative_pairs += [("BTC/USDT", "5m")]
-        informative_pairs += [("BTC/USDT", "1d")]
+        informative_pairs += [("BTC/IDR", "15m")]
+        informative_pairs += [("BTC/IDR", "1h")]
+        informative_pairs += [("BTC/IDR", "1d")]
 
         return informative_pairs
 
@@ -451,18 +451,18 @@ class ichiV1_Marius(IStrategy):
         if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            btc_info_pair = "BTC/IDR"
 
         btc_df = self.dp.get_pair_dataframe(pair=btc_info_pair, timeframe=self.timeframe)
         dataframe['btc_rsi'] = normalize(ta.RSI(btc_df, timeperiod=14), 0, 100)
 
         ### BTC protection
-        dataframe['btc_5m']= self.dp.get_pair_dataframe('BTC/USDT', timeframe='5m')['close']
-        btc_1d = self.dp.get_pair_dataframe('BTC/USDT', timeframe='1d')[['date', 'close']].rename(columns={"close": "btc"}).shift(1)
+        dataframe['btc_5m']= self.dp.get_pair_dataframe('BTC/IDR', timeframe='5m')['close']
+        btc_1d = self.dp.get_pair_dataframe('BTC/IDR', timeframe='1d')[['date', 'close']].rename(columns={"close": "btc"}).shift(1)
         dataframe = merge_informative_pair(dataframe, btc_1d, '5m', '1d', ffill=True)
 
         # BTC info
-        informative = self.dp.get_pair_dataframe(pair="BTC/USDT", timeframe="5m")
+        informative = self.dp.get_pair_dataframe(pair="BTC/IDR", timeframe="5m")
         informative_past = informative.copy().shift(1)  
 
         # BTC 5m dump protection
