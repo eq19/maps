@@ -30,7 +30,7 @@ from skopt.space import Dimension, Integer
 import time
 from warnings import simplefilter
 
-from technical.indicators import zema
+from technical.indicators import dema
 
 logger = logging.getLogger(__name__)
 
