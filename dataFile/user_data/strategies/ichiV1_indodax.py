@@ -107,7 +107,7 @@ class ichiV1_indodax(IStrategy):
         dataframe['trend_close_1d'] = ta.EMA(dataframe['close'], timeperiod=96)
         dataframe['trend_close_1w'] = ta.EMA(dataframe['close'], timeperiod=672)
 
-        dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_8h'])
+        dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_1d'])
         dataframe['fan_magnitude_gain'] = dataframe['fan_magnitude'] / dataframe['fan_magnitude'].shift(1)
 
         ichimoku = ftt.ichimoku(dataframe, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
