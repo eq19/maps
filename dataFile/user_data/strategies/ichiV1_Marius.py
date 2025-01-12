@@ -499,10 +499,12 @@ class ichiV1_Marius(IStrategy):
 
         heikinashi = qtpylib.heikinashi(dataframe)
         heikinashi["volume"] = dataframe["volume"]
-        dataframe['open'] = heikinashi['open']
-        #dataframe['close'] = heikinashi['close']
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
+        dataframe['open'] = heikinashi['open']
+        #dataframe['close'] = heikinashi['close']
+        if 'close' not in dataframe.columns:
+            dataframe['close'] = heikinashi['close']
 
         dataframe['trend_close_15m'] = dataframe['close']
         dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=2)
