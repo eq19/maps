@@ -152,14 +152,25 @@ class ichiV1_indodax(IStrategy):
 
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[
+            (
+                # Price below key trends
+                (dataframe['close'] < dataframe['trend_close_1h']) &
+                (dataframe['close'] < dataframe['trend_close_1d']) &
 
-        conditions = []
+                # Trends are misaligned (downward trend confirmation)
+                (dataframe['trend_close_15m'] < dataframe['trend_close_1h']) &
+                (dataframe['trend_close_1h'] < dataframe['trend_close_1d']) &
 
-        conditions.append(qtpylib.crossed_below(dataframe['trend_close_5m'], dataframe[self.sell_params['sell_trend_indicator']]))
+                # Negative 24-hour price prediction
+                (dataframe['price_change_24h'] < -2) &
 
-        if conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'sell'] = 1
+                # RSI overbought
+                (dataframe['rsi'] > 70) &
 
+                # Declining volume
+                (dataframe['volume'] < dataframe['volume'].rolling(window=10).mean())
+            ),
+            'sell'
+        ] = 1
         return dataframe
