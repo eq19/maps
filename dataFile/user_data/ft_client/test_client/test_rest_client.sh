@@ -113,7 +113,7 @@ else
   sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
 
   #freqtrade trade --freqaimodel LightGBMRegressor
-  freqtrade trade --dry-run --fee=$FEE
+  #freqtrade trade --dry-run --fee=$FEE
   rm -rf *.json
 
 fi
