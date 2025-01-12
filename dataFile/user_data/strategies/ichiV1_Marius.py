@@ -83,6 +83,7 @@ def to_minutes(**timdelta_kwargs):
 
 #########################################################
 #######################  ichiV1_Mod #####################
+"""
 Here are some potential logical issues in the provided strategy file:
 
 1. **Exception Handling in `adjust_trade_position`**:
@@ -95,21 +96,33 @@ Here are some potential logical issues in the provided strategy file:
    optimized correctly for your trading environment. Ensure the values 
    for `pump_period`, `pump_limit`, `pump_recorver_price`, `pump_pause_duration`, 
    `max_slip`, `buy_btc_safe`, `buy_btc_safe_1d`, `antipump_threshold`, 
-    and `antipump_threshold_2` are suitable for your strategy.
+   and `antipump_threshold_2` are suitable for your strategy.
 
 3. **Trailing Stop Parameters**: 
-   The trailing stop parameters are defined but commented out. Ensure you are using them if needed.
+   The trailing stop parameters are defined but commented out.
+   Ensure you are using them if needed.
 
-4. **ROI Table and Stoploss Values**: The `minimal_roi` and `stoploss` values should be reviewed to ensure they align with your risk management and profit-taking strategy.
+4. **ROI Table and Stoploss Values**:
+   The `minimal_roi` and `stoploss` values should be reviewed to ensure
+   they align with your risk management and profit-taking strategy.
 
-5. **Custom Stoploss Calculation**: The `custom_stoploss` method uses a complex calculation for `sl_profit`, which may not work as intended. Ensure the logic is correct and revisited.
+5. **Custom Stoploss Calculation**:
+   The `custom_stoploss` method uses a complex calculation for `sl_profit`,
+   which may not work as intended. Ensure the logic is correct and revisited.
 
-6. **Confirm Trade Exit Conditions**: The `confirm_trade_exit` method has multiple checks that might result in unintended behavior. Review the conditions to ensure they correctly implement your exit strategy.
+6. **Confirm Trade Exit Conditions**:
+   The `confirm_trade_exit` method has multiple checks that might
+   result in unintended behavior. Review the conditions to ensure they 
+   correctly implement your exit strategy.
 
-7. **Use of Heikin Ashi Candles**: The comment `#dataframe['close'] = heikinashi['close']` might indicate an issue with using Heikin Ashi close prices. Ensure you are using the correct close prices for your calculations.
+7. **Use of Heikin Ashi Candles**:
+   The comment `#dataframe['close'] = heikinashi['close']` might
+   indicate an issue with using Heikin Ashi close prices. 
+   Ensure you are using the correct close prices for your calculations.
 
 Review and optimize these aspects of your strategy to improve performance.
-#############################################
+"""
+#########################################################
 class ichiV1_Marius(IStrategy):
 
     class HyperOpt:
