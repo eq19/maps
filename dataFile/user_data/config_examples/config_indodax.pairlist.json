@@ -10,7 +10,7 @@
     "tradable_balance_ratio": 0.99,
     "reduce_df_footprint": false,
     "disable_dataframe_checks": false,
-    "cancel_open_orders_on_exit": true,
+    "cancel_open_orders_on_exit": true,7
     "unfilledtimeout": {
         "entry": 10,
         "exit": 10,
@@ -314,7 +314,7 @@
         "process_throttle_secs": 5,
         "heartbeat_interval": 60
     },
-    "strategy": "ichiV1_indodax",
+    "strategy": "ichiV1_Marius",
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
     "recursive_strategy_search": false,
