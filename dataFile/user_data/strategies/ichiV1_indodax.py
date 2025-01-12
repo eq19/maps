@@ -97,31 +97,15 @@ class ichiV1_indodax(IStrategy):
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
 
-        dataframe['trend_open_15m'] = dataframe['open']
-        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=4)
-        dataframe['trend_open_1d'] = ta.EMA(dataframe['open'], timeperiod=96)
-        dataframe['trend_open_1w'] = ta.EMA(dataframe['open'], timeperiod=672)
+        # Ensure to calculate 'price_change_24h'
+        dataframe['price_change_24h'] = ((dataframe['close'] - dataframe['close'].shift(96)) / dataframe['close'].shift(96)) * 100
 
-        dataframe['trend_close_15m'] = dataframe['close']
-        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=4)
+        # Add other indicators here (RSI, trends, etc.)
+        dataframe['rsi'] = ta.RSI(dataframe['close'], timeperiod=14)
+
+        # Ensure trends are calculated (example for 1h and 1d)
+        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=12)
         dataframe['trend_close_1d'] = ta.EMA(dataframe['close'], timeperiod=96)
-        dataframe['trend_close_1w'] = ta.EMA(dataframe['close'], timeperiod=672)
-
-        dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_1d'])
-        dataframe['fan_magnitude_gain'] = dataframe['fan_magnitude'] / dataframe['fan_magnitude'].shift(1)
-
-        ichimoku = ftt.ichimoku(dataframe, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
-        dataframe['chikou_span'] = ichimoku['chikou_span']
-        dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
-        dataframe['kijun_sen'] = ichimoku['kijun_sen']
-        dataframe['senkou_a'] = ichimoku['senkou_span_a']
-        dataframe['senkou_b'] = ichimoku['senkou_span_b']
-        dataframe['leading_senkou_span_a'] = ichimoku['leading_senkou_span_a']
-        dataframe['leading_senkou_span_b'] = ichimoku['leading_senkou_span_b']
-        dataframe['cloud_green'] = ichimoku['cloud_green']
-        dataframe['cloud_red'] = ichimoku['cloud_red']
-
-        dataframe['atr'] = ta.ATR(dataframe)
 
         return dataframe
 
