@@ -127,79 +127,27 @@ class ichiV1_indodax(IStrategy):
 
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[
+            (
+                # Price above key trends
+                (dataframe['close'] > dataframe['trend_close_1h']) &
+                (dataframe['close'] > dataframe['trend_close_1d']) &
 
-        conditions = []
+                # Trends are aligned
+                (dataframe['trend_close_15m'] > dataframe['trend_close_1h']) &
+                (dataframe['trend_close_1h'] > dataframe['trend_close_1d']) &
 
-        # Trending market
-        if self.buy_params['buy_trend_above_senkou_level'] >= 1:
-            conditions.append(dataframe['trend_close_5m'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_5m'] > dataframe['senkou_b'])
+                # Positive 24-hour price prediction
+                (dataframe['price_change_24h'] > 2) &
 
-        if self.buy_params['buy_trend_above_senkou_level'] >= 2:
-            conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_b'])
+                # RSI oversold
+                (dataframe['rsi'] < 30) &
 
-        if self.buy_params['buy_trend_above_senkou_level'] >= 3:
-            conditions.append(dataframe['trend_close_30m'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_30m'] > dataframe['senkou_b'])
-
-        if self.buy_params['buy_trend_above_senkou_level'] >= 4:
-            conditions.append(dataframe['trend_close_1h'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_1h'] > dataframe['senkou_b'])
-
-        if self.buy_params['buy_trend_above_senkou_level'] >= 5:
-            conditions.append(dataframe['trend_close_2h'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_2h'] > dataframe['senkou_b'])
-
-        if self.buy_params['buy_trend_above_senkou_level'] >= 6:
-            conditions.append(dataframe['trend_close_4h'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_4h'] > dataframe['senkou_b'])
-
-        if self.buy_params['buy_trend_above_senkou_level'] >= 7:
-            conditions.append(dataframe['trend_close_6h'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_6h'] > dataframe['senkou_b'])
-
-        if self.buy_params['buy_trend_above_senkou_level'] >= 8:
-            conditions.append(dataframe['trend_close_8h'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_8h'] > dataframe['senkou_b'])
-
-        # Trends bullish
-        if self.buy_params['buy_trend_bullish_level'] >= 1:
-            conditions.append(dataframe['trend_close_5m'] > dataframe['trend_open_5m'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 2:
-            conditions.append(dataframe['trend_close_15m'] > dataframe['trend_open_15m'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 3:
-            conditions.append(dataframe['trend_close_30m'] > dataframe['trend_open_30m'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 4:
-            conditions.append(dataframe['trend_close_1h'] > dataframe['trend_open_1h'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 5:
-            conditions.append(dataframe['trend_close_2h'] > dataframe['trend_open_2h'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 6:
-            conditions.append(dataframe['trend_close_4h'] > dataframe['trend_open_4h'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 7:
-            conditions.append(dataframe['trend_close_6h'] > dataframe['trend_open_6h'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 8:
-            conditions.append(dataframe['trend_close_8h'] > dataframe['trend_open_8h'])
-
-        # Trends magnitude
-        conditions.append(dataframe['fan_magnitude_gain'] >= self.buy_params['buy_min_fan_magnitude_gain'])
-        conditions.append(dataframe['fan_magnitude'] > 1)
-
-        for x in range(self.buy_params['buy_fan_magnitude_shift_value']):
-            conditions.append(dataframe['fan_magnitude'].shift(x+1) < dataframe['fan_magnitude'])
-
-        if conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'buy'] = 1
-
+                # Sufficient volume
+                (dataframe['volume'] > dataframe['volume'].rolling(window=10).mean())
+            ),
+            'buy'
+        ] = 1
         return dataframe
 
 
