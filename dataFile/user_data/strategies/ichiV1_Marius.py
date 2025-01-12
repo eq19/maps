@@ -608,7 +608,7 @@ class ichiV1_Marius(IStrategy):
                 (dataframe['rsi'] > dataframe['rsi_1h']) &
                 (dataframe['trend_close_8h'] > dataframe['trend_close_6h'])&
                 (dataframe['trend_close_15m'] > dataframe['trend_close_30m'])&
-                (dataframe['trend_open_5m'] > dataframe['trend_open_15m'])&
+                (dataframe['trend_open_15m'] > dataframe['trend_open_30m'])&
                 (dataframe['trend_close_1h']> dataframe['ema55'])&
                 (dataframe['ema21']> dataframe['trend_close_4h'])&
                 (dataframe['trend_open_1h'] > dataframe['trend_open_2h'])&
