@@ -27,6 +27,7 @@
             "bids_to_ask_delta": 1
         }
     },
+    "use_exit_signal": true,
     "exit_pricing": {
         "price_side": "same",
         "use_order_book": true,
