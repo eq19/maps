@@ -448,7 +448,7 @@ class ichiV1_Marius(IStrategy):
     def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         ### BTC protection
-        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP','IDR']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
             btc_info_pair = "BTC/IDR"
@@ -459,7 +459,7 @@ class ichiV1_Marius(IStrategy):
         ### BTC protection
         dataframe['btc_5m']= self.dp.get_pair_dataframe('BTC/IDR', timeframe='5m')['close']
         btc_1d = self.dp.get_pair_dataframe('BTC/IDR', timeframe='1d')[['date', 'close']].rename(columns={"close": "btc"}).shift(1)
-        dataframe = merge_informative_pair(dataframe, btc_1d, '5m', '1d', ffill=True)
+        dataframe = merge_informative_pair(dataframe, btc_1d, '15m', '1d', ffill=True)
 
         # BTC info
         informative = self.dp.get_pair_dataframe(pair="BTC/IDR", timeframe="5m")
@@ -596,7 +596,7 @@ class ichiV1_Marius(IStrategy):
         dataframe.loc[:, 'buy_tag'] = ''
 
         is_protection = (
-            (pct_change(dataframe['btc_1d'], dataframe['btc_5m']).fillna(0) > self.buy_btc_safe_1d.value) &
+            (pct_change(dataframe['btc_1d'], dataframe['btc_15m']).fillna(0) > self.buy_btc_safe_1d.value) &
             (dataframe['pump_strength_2'] < self.antipump_threshold_2.value)&
             (dataframe['buy_ok'])&
             (dataframe['volume'] > 0)
