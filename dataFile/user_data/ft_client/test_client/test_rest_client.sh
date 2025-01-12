@@ -16,6 +16,7 @@ BACKTESTING_DURATION=30  # Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
+YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
 # 30 days ago in the required format
 EARLIEST_DATE=$(date -u -d "90 days ago" +%Y%m%d)
@@ -24,10 +25,10 @@ EARLIEST_DATE=$(date -u -d "90 days ago" +%Y%m%d)
 BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
 
 # Time range for downloading data
-TD="$EARLIEST_DATE-$TODAY"
+TD="$EARLIEST_DATE-$YESTERDAY"
 
 # Time range for backtesting
-TB="$BACKTESTING_START-$TODAY"
+TB="$BACKTESTING_START-$YESTERDAY"
 
 # Print the timeranges
 echo "Download Timerange: $TD"
