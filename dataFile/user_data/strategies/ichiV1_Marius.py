@@ -259,7 +259,7 @@ class ichiV1_Marius(IStrategy):
 
     use_custom_stoploss = True
     # Optimal timeframe for the strategy
-    timeframe = '5m'
+    timeframe = '15m'
     informative_timeframe = '1h'
     inf_15m = '15m' #use for pump detection
     timeframe_minutes = timeframe_to_minutes(timeframe)
@@ -457,12 +457,12 @@ class ichiV1_Marius(IStrategy):
         dataframe['btc_rsi'] = normalize(ta.RSI(btc_df, timeperiod=14), 0, 100)
 
         ### BTC protection
-        dataframe['btc_5m']= self.dp.get_pair_dataframe('BTC/IDR', timeframe='5m')['close']
+        dataframe['btc_15m']= self.dp.get_pair_dataframe('BTC/IDR', timeframe='15m')['close']
         btc_1d = self.dp.get_pair_dataframe('BTC/IDR', timeframe='1d')[['date', 'close']].rename(columns={"close": "btc"}).shift(1)
         dataframe = merge_informative_pair(dataframe, btc_1d, '15m', '1d', ffill=True)
 
         # BTC info
-        informative = self.dp.get_pair_dataframe(pair="BTC/IDR", timeframe="5m")
+        informative = self.dp.get_pair_dataframe(pair="BTC/IDR", timeframe="15m")
         informative_past = informative.copy().shift(1)  
 
         # BTC 5m dump protection
