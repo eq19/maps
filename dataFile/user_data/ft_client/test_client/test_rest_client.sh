@@ -25,10 +25,10 @@ EARLIEST_DATE=$(date -u -d "90 days ago" +%Y%m%d)
 BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
 
 # Time range for downloading data
-TD="$EARLIEST_DATE-$YESTERDAY"
+TD="$EARLIEST_DATE-$TODAY"
 
 # Time range for backtesting
-TB="$BACKTESTING_START-$YESTERDAY"
+TB="$BACKTESTING_START-$TODAY"
 
 # Print the timeranges
 echo "Download Timerange: $TD"
@@ -72,14 +72,14 @@ else
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
   freqtrade download-data --config $CONFIGS --timeframes 15m 1h 1d 1w --timerange="$TD"
 
-  #echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
-  #freqtrade list-data --help
-  #freqtrade list-data --config $CONFIG
+  echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
+  freqtrade list-data --help
+  freqtrade list-data --config $CONFIG
 
   echo -e "\n$hr\n TEST HYPEROPT\n$hr"
   freqtrade hyperopt --help
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  #freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
