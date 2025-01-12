@@ -69,8 +69,7 @@ else
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > /home/runner/download.json
-  freqtrade download-data --config /home/runner/download.json --timeframes 15m 1h 1d 1w --timerange="$TD"
+  freqtrade download-data --config $CONFIGS --timeframes 15m 1h 1d 1w --timerange="$TD"
 
   #echo -e "\n$hr\nLIST DOWNLOAD DATA\n$hr"
   #freqtrade list-data --help
@@ -87,7 +86,7 @@ else
 
   echo -e "\n$hr\nTEST BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
+  freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
