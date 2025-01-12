@@ -504,23 +504,23 @@ class ichiV1_Marius(IStrategy):
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
 
-        dataframe['trend_close_5m'] = dataframe['close']
-        dataframe['trend_close_15m'] = ta.EMA(dataframe['close'], timeperiod=3)
-        dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=6)
-        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=12)
-        dataframe['trend_close_2h'] = ta.EMA(dataframe['close'], timeperiod=24)
-        dataframe['trend_close_4h'] = ta.EMA(dataframe['close'], timeperiod=48)
-        dataframe['trend_close_6h'] = ta.EMA(dataframe['close'], timeperiod=72)
-        dataframe['trend_close_8h'] = ta.EMA(dataframe['close'], timeperiod=96)
+        dataframe['trend_close_15m'] = dataframe['close']
+        dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=2)
+        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=4)
+        dataframe['trend_close_2h'] = ta.EMA(dataframe['close'], timeperiod=8)
+        dataframe['trend_close_4h'] = ta.EMA(dataframe['close'], timeperiod=16)
+        dataframe['trend_close_6h'] = ta.EMA(dataframe['close'], timeperiod=24)
+        dataframe['trend_close_8h'] = ta.EMA(dataframe['close'], timeperiod=32)
+        dataframe['trend_close_1d'] = ta.EMA(dataframe['close'], timeperiod=96)
 
-        dataframe['trend_open_5m'] = dataframe['open']
-        dataframe['trend_open_15m'] = ta.EMA(dataframe['open'], timeperiod=3)
-        dataframe['trend_open_30m'] = ta.EMA(dataframe['open'], timeperiod=6)
-        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=12)
-        dataframe['trend_open_2h'] = ta.EMA(dataframe['open'], timeperiod=24)
-        dataframe['trend_open_4h'] = ta.EMA(dataframe['open'], timeperiod=48)
-        dataframe['trend_open_6h'] = ta.EMA(dataframe['open'], timeperiod=72)
-        dataframe['trend_open_8h'] = ta.EMA(dataframe['open'], timeperiod=96)
+        dataframe['trend_open_15m'] = dataframe['open']
+        dataframe['trend_open_30m'] = ta.EMA(dataframe['open'], timeperiod=2)
+        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=4)
+        dataframe['trend_open_2h'] = ta.EMA(dataframe['open'], timeperiod=8)
+        dataframe['trend_open_4h'] = ta.EMA(dataframe['open'], timeperiod=16)
+        dataframe['trend_open_6h'] = ta.EMA(dataframe['open'], timeperiod=24)
+        dataframe['trend_open_8h'] = ta.EMA(dataframe['open'], timeperiod=32)
+        dataframe['trend_open_1d'] = ta.EMA(dataframe['open'], timeperiod=96)
 
         dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_8h'])
         dataframe['fan_magnitude_gain'] = dataframe['fan_magnitude'] / dataframe['fan_magnitude'].shift(1)
