@@ -235,7 +235,7 @@
         }
     },
     "edge": {
-        "enabled": false,
+        "enabled": true,
         "process_throttle_secs": 604800,
         "calculate_since_number_of_days": 150,
         "allowed_risk": 0.005,
