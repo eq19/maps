@@ -9,6 +9,7 @@ hr='----------------------------------------------------------------------------
 FEE=0.003322
 CONFIG=user_data/config_examples/config_indodax.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
+CONFIGS=user_data/config_examples/config_indodax.example.json@v0.0.5
 
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=30  # Adjust as per your strategy
