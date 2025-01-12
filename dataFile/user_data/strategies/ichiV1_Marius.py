@@ -465,7 +465,7 @@ class ichiV1_Marius(IStrategy):
         informative = self.dp.get_pair_dataframe(pair="BTC/IDR", timeframe="15m")
         informative_past = informative.copy().shift(1)  
 
-        # BTC 5m dump protection
+        # BTC 15m dump protection
         informative_past_source = (informative_past['open'] + informative_past['close'] + informative_past['high'] + informative_past['low']) / 4        # Get BTC price
         informative_threshold = informative_past_source * self.buy_threshold.value                                                                       # BTC dump n% in 5 min
         informative_past_delta = informative_past['close'].shift(1) - informative_past['close']                                                          # should be positive if dump
@@ -476,7 +476,7 @@ class ichiV1_Marius(IStrategy):
         # BTC 1d dump protection
         informative_past_1d = informative.copy().shift(288)
         informative_past_source_1d = (informative_past_1d['open'] + informative_past_1d['close'] + informative_past_1d['high'] + informative_past_1d['low']) / 4
-        dataframe['btc_5m'] = informative_past_source
+        dataframe['btc_15m'] = informative_past_source
         dataframe['btc_1d'] = informative_past_source_1d 
 
 
