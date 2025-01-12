@@ -76,19 +76,19 @@ else
   freqtrade list-data --help
   freqtrade list-data --config $CONFIG
 
-  echo -e "\n$hr\n TEST HYPEROPT\n$hr"
-  freqtrade hyperopt --help
-  #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  #freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
-
-  echo -e "\n$hr\nSHOW EDGE\n$hr"
-  freqtrade edge --help
-  freqtrade edge --config $CONFIGS --fee=$FEE
-
   echo -e "\n$hr\nTEST BACKTEST\n$hr"
   freqtrade backtesting --help
   freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
+
+  echo -e "\n$hr\n TEST HYPEROPT\n$hr"
+  freqtrade hyperopt --help
+  #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
+  freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+
+  echo -e "\n$hr\nSHOW EDGE\n$hr"
+  freqtrade edge --help
+  freqtrade edge --config $CONFIGS --fee=$FEE
 
   #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
   #ls -alR user_data/backtest_results
