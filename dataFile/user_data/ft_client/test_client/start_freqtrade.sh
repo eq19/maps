@@ -2,7 +2,7 @@
 
 # Instance details
 PROJECT_ID="feedmapping"
-ZONE="[YOUR_INSTANCE_ZONE]" # e.g., us-central1-a
+ZONE="us-central1-a"
 INSTANCE_NAME="spin-1"
 
 # Function to get CPU utilization using gcloud monitoring
