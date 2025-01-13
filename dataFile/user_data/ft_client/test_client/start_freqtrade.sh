@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Instance details
-PROJECT_ID="[YOUR_PROJECT_ID]"
+PROJECT_ID="feedmapping"
 ZONE="[YOUR_INSTANCE_ZONE]" # e.g., us-central1-a
 INSTANCE_NAME="spin-1"
 
