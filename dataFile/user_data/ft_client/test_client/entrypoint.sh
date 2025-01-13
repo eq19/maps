@@ -9,8 +9,8 @@ if [ -d /mnt/disks/deeplearning ]; then
     jq -r '.payload.data' | base64 --decode > /home/runner/config.json
 
   # Run PostgreSQL (autostart) and Freqtrade (cpu low)
-  sudo service supervisor start
-  #exec supervisord -c /etc/supervisor/supervisord.conf
+  #sudo service supervisor start
+  sudo exec supervisord -c /etc/supervisor/supervisord.conf
 else
   "Deeplearning is not found.";
 fi
