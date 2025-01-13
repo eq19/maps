@@ -11,5 +11,5 @@ else
   "Deeplearning is not found.";
 fi
 
-# Start both of PostgreSQL and Freqtrade
+# Run PostgreSQL (autostart) and Freqtrade (cpu low)
 exec supervisord -c /etc/supervisor/supervisord.conf
