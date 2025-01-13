@@ -7,9 +7,9 @@ if [ -d /mnt/disks/deeplearning ]; then
   curl -H "Authorization: Bearer $TOKEN" \
     "https://secretmanager.googleapis.com/v1/projects/feedmapping/secrets/freqtrade-config/versions/latest:access" | \
     jq -r '.payload.data' | base64 --decode > /home/runner/config.json
+
+  # Run PostgreSQL (autostart) and Freqtrade (cpu low)
+  exec supervisord -c /etc/supervisor/supervisord.conf
 else
   "Deeplearning is not found.";
 fi
-
-# Run PostgreSQL (autostart) and Freqtrade (cpu low)
-exec supervisord -c /etc/supervisor/supervisord.conf
