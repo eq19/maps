@@ -34,7 +34,13 @@
         "order_book_top": 1
     },
     "pairlists": [
-        {"method": "StaticPairList"}
+        {
+            "method": "StaticPairList"
+        },
+        {
+            "method": "AgeFilter",
+            "min_days_listed": 30
+        }      
     ],
     "exchange": {
         "name": "indodax",
