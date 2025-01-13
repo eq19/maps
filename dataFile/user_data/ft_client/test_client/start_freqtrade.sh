@@ -8,7 +8,7 @@ INSTANCE_NAME="spin-1"
 # Function to get CPU utilization using gcloud monitoring
 get_cpu_usage() {
   # Query the CPU utilization for the last minute
-  CPU_USAGE=$(gcloud monitoring metrics read \
+  CPU_USAGE=$(/mnt/disks/deeplearning/usr/bin/gcloud monitoring metrics read \
     "compute.googleapis.com/instance/cpu/utilization" \
     --project="$PROJECT_ID" \
     --filter="metric.labels.instance_name=\"$INSTANCE_NAME\"" \
