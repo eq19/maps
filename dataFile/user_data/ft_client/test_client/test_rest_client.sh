@@ -115,6 +115,7 @@ else
 
   #freqtrade trade --freqaimodel LightGBMRegressor
   #freqtrade trade --dry-run --fee=$FEE
+  freqtrade trade
   rm -rf *.json
 
 fi
