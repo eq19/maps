@@ -10,7 +10,7 @@ if [ -d /mnt/disks/deeplearning ]; then
 
   # Run PostgreSQL (autostart) and Freqtrade (cpu low)
   #sudo service supervisor start
-  sudo exec supervisord -c /etc/supervisor/supervisord.conf
+  exec supervisord -c /etc/supervisor/supervisord.conf
 else
   "Deeplearning is not found.";
 fi
