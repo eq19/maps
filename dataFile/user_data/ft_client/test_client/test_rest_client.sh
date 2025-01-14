@@ -118,8 +118,8 @@ else
   #freqtrade trade
   rm -rf *.json
 
-  echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
-  freqtrade plot-dataframe --config $CONFIG
-  freqtrade plot-profit --config $CONFIG
+  #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
+  #freqtrade plot-dataframe --config $CONFIG
+  #freqtrade plot-profit --config $CONFIG
 
 fi
