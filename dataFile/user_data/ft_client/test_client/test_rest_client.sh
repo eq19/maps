@@ -57,9 +57,9 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-strategies --config $CONFIG
   #freqtrade strategy-updater --config $CONFIG
 
-  echo -e "\n$hr\nAI MODELS\n$hr"
-  freqtrade list-freqaimodels --help
-  freqtrade list-freqaimodels --config $CONFIG
+  #echo -e "\n$hr\nAI MODELS\n$hr"
+  #freqtrade list-freqaimodels --help
+  #freqtrade list-freqaimodels --config $CONFIG
 
 else
 
