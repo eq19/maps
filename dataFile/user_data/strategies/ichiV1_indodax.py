@@ -123,7 +123,7 @@ Here are some potential logical issues in the provided strategy file:
 Review and optimize these aspects of your strategy to improve performance.
 """
 #########################################################
-class ichiV1_Marius(IStrategy):
+class ichiV1_indodax(IStrategy):
 
     class HyperOpt:
         @staticmethod
