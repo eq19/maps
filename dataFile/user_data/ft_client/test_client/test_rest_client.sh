@@ -39,27 +39,27 @@ printenv
 
 if [[ "$1" == "listing" ]]; then
 
+  echo -e "\n$hr\nLIST EXCHANGES\n$hr"
+  freqtrade list-exchanges -- help
   freqtrade list-exchanges
-  #freqtrade edge --config $CONFIG
-  #freqtrade hyperopt --config $CONFIG
-  #freqtrade hyperopt-list --config $CONFIG
-  #freqtrade hyperopt-show --config $CONFIG
-  #freqtrade list-pairs --config $CONFIG
-  #freqtrade list-strategies --config $CONFIG
-  #freqtrade list-freqaimodels --config $CONFIG
+
   #freqtrade show-trades --config $CONFIG
   #freqtrade convert-db --config $CONFIG
   #freqtrade install-ui --config $CONFIG
-  #freqtrade plot-dataframe --config $CONFIG
-  #freqtrade plot-profit --config $CONFIG
   #freqtrade webserver --config $CONFIG
-  #freqtrade strategy-updater --config $CONFIG
-  #freqtrade lookahead-analysis --config $CONFIG
-  #freqtrade recursive-analysis --config $CONFIG
 
   echo -e "\n$hr\nSHOW PAIRS\n$hr"
   freqtrade list-pairs --help
   freqtrade list-pairs --config $CONFIG
+
+  echo -e "\n$hr\nSTRATEGIES\n$hr"
+  freqtrade list-strategies --help
+  freqtrade list-strategies --config $CONFIG
+  #freqtrade strategy-updater --config $CONFIG
+
+  echo -e "\n$hr\nAI MODELS\n$hr"
+  freqtrade list-freqaimodels --help
+  freqtrade list-freqaimodels --config $CONFIG
 
 else
 
@@ -83,6 +83,8 @@ else
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
+  freqtrade hyperopt-list --config $CONFIGS
+  freqtrade hyperopt-show --config $CONFIGS
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
@@ -90,16 +92,19 @@ else
   freqtrade edge --help
   freqtrade edge --config $CONFIGS --fee=$FEE
 
-  #echo -e "\n$hr\nBACKTEST RESULTS\n$hr"
-  #ls -alR user_data/backtest_results
+  echo -e "\n$hr\nSHOW BACKTEST\n$hr"
+  freqtrade backtesting-show --help
+  freqtrade backtesting-show --config $CONFIG
 
-  #echo -e "\n$hr\nSHOW BACKTEST\n$hr"
-  #freqtrade backtesting-show --help
-  #freqtrade backtesting-show --config $CONFIG
-
-  #echo -e "\n$hr\nBACKTEST ANALYSIS\n$hr"
+  #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
+  #freqtrade lookahead-analysis --config $CONFIG
+  #freqtrade recursive-analysis --config $CONFIG
   #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
+
+  echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
+  freqtrade plot-dataframe --config $CONFIG
+  freqtrade plot-profit --config $CONFIG
 
   echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
   freqtrade trade --help
