@@ -36,11 +36,7 @@
     "pairlists": [
         {
             "method": "StaticPairList"
-        },
-        {
-            "method": "AgeFilter",
-            "min_days_listed": 30
-        }      
+        }   
     ],
     "exchange": {
         "name": "indodax",
