@@ -120,6 +120,6 @@ else
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
-  #freqtrade plot-profit --config $CONFIG
+  freqtrade plot-profit --config $CONFIG --timerange="$TB"
 
 fi
