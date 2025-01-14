@@ -67,10 +67,6 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-strategies --config $CONFIG
   #freqtrade strategy-updater --config $CONFIG
 
-  #echo -e "\n$hr\nAI MODELS\n$hr"
-  #freqtrade list-freqaimodels --help
-  #freqtrade list-freqaimodels --config $CONFIG
-
 else
 
   echo -e "\n$hr\nTEST CLIENT\n$hr"
@@ -102,13 +98,12 @@ else
   #freqtrade recursive-analysis --config $CONFIG
   #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
 
-  echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
-  freqtrade plot-dataframe --config $CONFIG
-  freqtrade plot-profit --config $CONFIG
+  echo -e "\n$hr\nAI MODELS\n$hr"
+  freqtrade list-freqaimodels --help
+  #freqtrade list-freqaimodels --config $CONFIG
 
-  echo -e "\n$hr\nBACKTEST AI TRADES\n$hr"
+  echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
-
   cd /home/runner
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
 
@@ -122,5 +117,9 @@ else
   #freqtrade trade --dry-run --fee=$FEE
   #freqtrade trade
   rm -rf *.json
+
+  echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
+  freqtrade plot-dataframe --config $CONFIG
+  freqtrade plot-profit --config $CONFIG
 
 fi
