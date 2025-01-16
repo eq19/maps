@@ -45,7 +45,7 @@ class ichiV1(IStrategy):
     # Optimal timeframe for the strategy
     timeframe = '15m'
 
-    startup_candle_count = 96
+    startup_candle_count = 32
     process_only_new_candles = False
 
     trailing_stop = False
@@ -142,59 +142,59 @@ class ichiV1(IStrategy):
             conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_b'])
 
         if self.buy_params['buy_trend_above_senkou_level'] >= 2:
-            conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_b'])
-
-        if self.buy_params['buy_trend_above_senkou_level'] >= 3:
             conditions.append(dataframe['trend_close_30m'] > dataframe['senkou_a'])
             conditions.append(dataframe['trend_close_30m'] > dataframe['senkou_b'])
 
-        if self.buy_params['buy_trend_above_senkou_level'] >= 4:
+        if self.buy_params['buy_trend_above_senkou_level'] >= 3:
             conditions.append(dataframe['trend_close_1h'] > dataframe['senkou_a'])
             conditions.append(dataframe['trend_close_1h'] > dataframe['senkou_b'])
 
-        if self.buy_params['buy_trend_above_senkou_level'] >= 5:
+        if self.buy_params['buy_trend_above_senkou_level'] >= 4:
             conditions.append(dataframe['trend_close_2h'] > dataframe['senkou_a'])
             conditions.append(dataframe['trend_close_2h'] > dataframe['senkou_b'])
 
-        if self.buy_params['buy_trend_above_senkou_level'] >= 6:
+        if self.buy_params['buy_trend_above_senkou_level'] >= 5:
             conditions.append(dataframe['trend_close_4h'] > dataframe['senkou_a'])
             conditions.append(dataframe['trend_close_4h'] > dataframe['senkou_b'])
 
-        if self.buy_params['buy_trend_above_senkou_level'] >= 7:
+        if self.buy_params['buy_trend_above_senkou_level'] >= 6:
             conditions.append(dataframe['trend_close_6h'] > dataframe['senkou_a'])
             conditions.append(dataframe['trend_close_6h'] > dataframe['senkou_b'])
 
-        if self.buy_params['buy_trend_above_senkou_level'] >= 8:
+        if self.buy_params['buy_trend_above_senkou_level'] >= 7:
             conditions.append(dataframe['trend_close_8h'] > dataframe['senkou_a'])
             conditions.append(dataframe['trend_close_8h'] > dataframe['senkou_b'])
 
+        if self.buy_params['buy_trend_above_senkou_level'] >= 8:
+            conditions.append(dataframe['trend_close_1d'] > dataframe['senkou_a'])
+            conditions.append(dataframe['trend_close_1d'] > dataframe['senkou_b'])
+
         # Trends bullish
         if self.buy_params['buy_trend_bullish_level'] >= 1:
-            conditions.append(dataframe['trend_close_5m'] > dataframe['trend_open_5m'])
+            conditions.append(dataframe['trend_close_15m'] > dataframe['trend_open_5m'])
 
         if self.buy_params['buy_trend_bullish_level'] >= 2:
-            conditions.append(dataframe['trend_close_15m'] > dataframe['trend_open_15m'])
-
-        if self.buy_params['buy_trend_bullish_level'] >= 3:
             conditions.append(dataframe['trend_close_30m'] > dataframe['trend_open_30m'])
 
-        if self.buy_params['buy_trend_bullish_level'] >= 4:
+        if self.buy_params['buy_trend_bullish_level'] >= 3:
             conditions.append(dataframe['trend_close_1h'] > dataframe['trend_open_1h'])
 
-        if self.buy_params['buy_trend_bullish_level'] >= 5:
+        if self.buy_params['buy_trend_bullish_level'] >= 4:
             conditions.append(dataframe['trend_close_2h'] > dataframe['trend_open_2h'])
 
-        if self.buy_params['buy_trend_bullish_level'] >= 6:
+        if self.buy_params['buy_trend_bullish_level'] >= 5:
             conditions.append(dataframe['trend_close_4h'] > dataframe['trend_open_4h'])
 
-        if self.buy_params['buy_trend_bullish_level'] >= 7:
+        if self.buy_params['buy_trend_bullish_level'] >= 6:
             conditions.append(dataframe['trend_close_6h'] > dataframe['trend_open_6h'])
 
-        if self.buy_params['buy_trend_bullish_level'] >= 8:
+        if self.buy_params['buy_trend_bullish_level'] >= 7:
             conditions.append(dataframe['trend_close_8h'] > dataframe['trend_open_8h'])
 
-        # Trends magnitude
+        if self.buy_params['buy_trend_bullish_level'] >= 8:
+            conditions.append(dataframe['trend_close_1d'] > dataframe['trend_open_1d'])
+
+# Trends magnitude
         conditions.append(dataframe['fan_magnitude_gain'] >= self.buy_params['buy_min_fan_magnitude_gain'])
         conditions.append(dataframe['fan_magnitude'] > 1)
 
@@ -213,7 +213,7 @@ class ichiV1(IStrategy):
 
         conditions = []
 
-        conditions.append(qtpylib.crossed_below(dataframe['trend_close_5m'], dataframe[self.sell_params['sell_trend_indicator']]))
+        conditions.append(qtpylib.crossed_below(dataframe['trend_close_15m'], dataframe[self.sell_params['sell_trend_indicator']]))
 
         if conditions:
             dataframe.loc[
