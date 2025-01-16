@@ -43,7 +43,7 @@ class ichiV1(IStrategy):
     stoploss = -0.275
 
     # Optimal timeframe for the strategy
-    timeframe = '5m'
+    timeframe = '15m'
 
     startup_candle_count = 96
     process_only_new_candles = False
@@ -68,14 +68,14 @@ class ichiV1(IStrategy):
             },
             # plot senkou_b, too. Not only the area to it.
             'senkou_b': {},
-            'trend_close_5m': {'color': '#FF5733'},
-            'trend_close_15m': {'color': '#FF8333'},
-            'trend_close_30m': {'color': '#FFB533'},
-            'trend_close_1h': {'color': '#FFE633'},
-            'trend_close_2h': {'color': '#E3FF33'},
-            'trend_close_4h': {'color': '#C4FF33'},
-            'trend_close_6h': {'color': '#61FF33'},
-            'trend_close_8h': {'color': '#33FF7D'}
+            'trend_close_15m': {'color': '#FF5733'},
+            'trend_close_30m': {'color': '#FF8333'},
+            'trend_close_1h': {'color': '#FFB533'},
+            'trend_close_2h': {'color': '#FFE633'},
+            'trend_close_4h': {'color': '#E3FF33'},
+            'trend_close_6h': {'color': '#C4FF33'},
+            'trend_close_8h': {'color': '#61FF33'},
+            'trend_close_1d': {'color': '#33FF7D'}
         },
         'subplots': {
             'fan_magnitude': {
@@ -95,23 +95,23 @@ class ichiV1(IStrategy):
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
 
-        dataframe['trend_close_5m'] = dataframe['close']
-        dataframe['trend_close_15m'] = ta.EMA(dataframe['close'], timeperiod=3)
-        dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=6)
-        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=12)
-        dataframe['trend_close_2h'] = ta.EMA(dataframe['close'], timeperiod=24)
-        dataframe['trend_close_4h'] = ta.EMA(dataframe['close'], timeperiod=48)
-        dataframe['trend_close_6h'] = ta.EMA(dataframe['close'], timeperiod=72)
-        dataframe['trend_close_8h'] = ta.EMA(dataframe['close'], timeperiod=96)
+        dataframe['trend_close_15m'] = dataframe['close']
+        dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=2)
+        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=4)
+        dataframe['trend_close_2h'] = ta.EMA(dataframe['close'], timeperiod=8)
+        dataframe['trend_close_4h'] = ta.EMA(dataframe['close'], timeperiod=16)
+        dataframe['trend_close_6h'] = ta.EMA(dataframe['close'], timeperiod=24)
+        dataframe['trend_close_8h'] = ta.EMA(dataframe['close'], timeperiod=32)
+        dataframe['trend_close_1d'] = ta.EMA(dataframe['close'], timeperiod=96)
 
-        dataframe['trend_open_5m'] = dataframe['open']
-        dataframe['trend_open_15m'] = ta.EMA(dataframe['open'], timeperiod=3)
-        dataframe['trend_open_30m'] = ta.EMA(dataframe['open'], timeperiod=6)
-        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=12)
-        dataframe['trend_open_2h'] = ta.EMA(dataframe['open'], timeperiod=24)
-        dataframe['trend_open_4h'] = ta.EMA(dataframe['open'], timeperiod=48)
-        dataframe['trend_open_6h'] = ta.EMA(dataframe['open'], timeperiod=72)
-        dataframe['trend_open_8h'] = ta.EMA(dataframe['open'], timeperiod=96)
+        dataframe['trend_open_15m'] = dataframe['open']
+        dataframe['trend_open_30m'] = ta.EMA(dataframe['open'], timeperiod=2)
+        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=4)
+        dataframe['trend_open_2h'] = ta.EMA(dataframe['open'], timeperiod=8)
+        dataframe['trend_open_4h'] = ta.EMA(dataframe['open'], timeperiod=16)
+        dataframe['trend_open_6h'] = ta.EMA(dataframe['open'], timeperiod=24)
+        dataframe['trend_open_8h'] = ta.EMA(dataframe['open'], timeperiod=32)
+        dataframe['trend_open_1d'] = ta.EMA(dataframe['open'], timeperiod=96)
 
         dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_8h'])
         dataframe['fan_magnitude_gain'] = dataframe['fan_magnitude'] / dataframe['fan_magnitude'].shift(1)
@@ -138,8 +138,8 @@ class ichiV1(IStrategy):
 
         # Trending market
         if self.buy_params['buy_trend_above_senkou_level'] >= 1:
-            conditions.append(dataframe['trend_close_5m'] > dataframe['senkou_a'])
-            conditions.append(dataframe['trend_close_5m'] > dataframe['senkou_b'])
+            conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_a'])
+            conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_b'])
 
         if self.buy_params['buy_trend_above_senkou_level'] >= 2:
             conditions.append(dataframe['trend_close_15m'] > dataframe['senkou_a'])
