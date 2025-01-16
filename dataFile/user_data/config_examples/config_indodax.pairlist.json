@@ -1,7 +1,7 @@
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
     "dry_run": false,
-    "timeframe": "15m",
+    "timeframe": "1h",
     "max_open_trades": -1,
     "stake_amount": 100000,
     "stake_currency": "IDR",
