@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 #
-# Structure: Cell Types – Modulo 6
-# Ref: https://www.freqtrade.io/en/stable/utils/#list-freqai-models
-# Ref: https://medium.com/@shanejones/how-i-set-up-freqtrade-a287db8966f
-# Ref: https://github.com/ccxt/ccxt/blob/4.4.40/python/ccxt/async_support/indodax.py#L195
+# Structure: Cell Types
+# Ref: https://www.freqtrade.io/
+# Ref: https://strat.ninja/ranking.php
 #
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
