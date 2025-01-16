@@ -77,16 +77,18 @@ else
   freqtrade backtesting --config $CONFIGS --strategy ichiV1 --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
+  sed -i "s|ichiV1|ichiV1_Marius|g" $CONFIGS
+
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt-list --config $CONFIGS --strategy ichiV1_Marius
-  freqtrade hyperopt-show --config $CONFIGS --strategy ichiV1_Marius
+  freqtrade hyperopt-list --config $CONFIGS
+  freqtrade hyperopt-show --config $CONFIGS
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIGS --strategy ichiV1_Marius --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  freqtrade hyperopt --config $CONFIGS--fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
-  freqtrade edge --config $CONFIGS --strategy ichiV1_Marius --fee=$FEE
+  freqtrade edge --config $CONFIGS --fee=$FEE
 
   echo -e "\n$hr\nSHOW BACKTEST\n$hr"
   freqtrade backtesting-show --help
@@ -120,6 +122,6 @@ else
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
-  #freqtrade plot-profit --config $CONFIGS --strategy ichiV1_Marius --timerange="$TB"
+  #freqtrade plot-profit --config $CONFIGS --timerange="$TB"
 
 fi
