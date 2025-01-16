@@ -92,6 +92,8 @@ class ichiV1(IStrategy):
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['open'] = heikinashi['open']
         #dataframe['close'] = heikinashi['close']
+        if 'close' not in dataframe.columns:
+            dataframe['close'] = heikinashi['close']
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
 
