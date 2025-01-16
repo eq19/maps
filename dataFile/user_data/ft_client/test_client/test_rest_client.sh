@@ -62,6 +62,8 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
+  sed -i "s|ichi|ichiV1|g" $CONFIGS
+  
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
@@ -77,7 +79,7 @@ else
   freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
-  sed -i "s|ichi|ichiV1_Marius|g" $CONFIGS
+  sed -i "s|ichiV1|ichiV1_Marius|g" $CONFIGS
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
