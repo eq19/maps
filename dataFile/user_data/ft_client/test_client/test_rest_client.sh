@@ -90,9 +90,9 @@ else
   freqtrade edge --help
   freqtrade edge --config $CONFIGS --fee=$FEE
 
-  echo -e "\n$hr\nSHOW BACKTEST\n$hr"
-  freqtrade backtesting-show --help
-  freqtrade backtesting-show --config $CONFIGS --fee=$FEE
+  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
+  freqtrade backtesting --help
+  freqtrade backtesting --config $CONFIGS --fee=$FEE
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
