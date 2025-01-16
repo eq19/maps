@@ -304,8 +304,7 @@ class ichiV1_indodax(IStrategy):
     # storage dict for custom info
     custom_info = {}
 
-    startup_candle_count: int = 499
-   # startup_candle_count = 96
+    startup_candle_count: int = 96
     process_only_new_candles = True
 
     timeperiods = [
