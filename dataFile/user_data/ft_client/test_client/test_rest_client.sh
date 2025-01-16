@@ -7,6 +7,7 @@
 #
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
+STRATEGY=ichiV1
 CONFIG=user_data/config_examples/config_indodax.example.json
 CONFIGS=user_data/config_examples/config_indodax.pairlist.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
@@ -62,7 +63,7 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
-  sed -i "s|ichi|ichiV1|g" $CONFIGS
+  sed -i "s|ichi|$STRATEGY|g" $CONFIGS
   
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
@@ -79,7 +80,7 @@ else
   freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
-  sed -i "s|ichiV1|ichiV1_Marius|g" $CONFIGS
+  sed -i "s|$STRATEGY|ichiV1_Marius|g" $CONFIGS
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
