@@ -77,7 +77,7 @@ else
   freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
-  sed -i "s|ichiV1|ichiV1_Marius|g" $CONFIGS
+  sed -i "s|ichi|ichiV1_Marius|g" $CONFIGS
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
