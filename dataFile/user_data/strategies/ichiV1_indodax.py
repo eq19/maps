@@ -588,7 +588,7 @@ class ichiV1_indodax(IStrategy):
         informative_1h = self.informative_1h_indicators(dataframe, metadata)
         dataframe = merge_informative_pair(dataframe, informative_1h, self.timeframe, self.informative_timeframe, ffill=True)
 
-        # The indicators for the normal (5m) timeframe
+        # The indicators for the normal (15m) timeframe
         dataframe = self.normal_tf_indicators(dataframe, metadata)
 
         #Import 15m indicators    
