@@ -74,7 +74,7 @@ else
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIGS --strategy ichiV1 --fee=$FEE --timerange="$TB" --export signals
+  freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
   sed -i "s|ichiV1|ichiV1_Marius|g" $CONFIGS
@@ -84,7 +84,7 @@ else
   freqtrade hyperopt-list --config $CONFIGS
   freqtrade hyperopt-show --config $CONFIGS
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIGS--fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
@@ -92,7 +92,7 @@ else
 
   echo -e "\n$hr\nSHOW BACKTEST\n$hr"
   freqtrade backtesting-show --help
-  freqtrade backtesting-show --config $CONFIGS
+  freqtrade backtesting-show --config $CONFIGS --fee=$FEE
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
