@@ -66,31 +66,31 @@ else
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
-  freqtrade download-data --config $CONFIGS --timeframes 15m 1h 1d 1w --timerange="$TD"
+  freqtrade download-data --config $CONFIGS --strategy ichiV1 --timeframes 15m 1h 1d 1w --timerange="$TD"
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
-  freqtrade list-data --config $CONFIG
+  freqtrade list-data --config $CONFIGS --strategy ichiV1
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
+  freqtrade backtesting --config $CONFIGS --strategy ichiV1 --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt-list --config $CONFIGS
-  freqtrade hyperopt-show --config $CONFIGS
+  freqtrade hyperopt-list --config $CONFIGS --strategy ichiV1_Marius
+  freqtrade hyperopt-show --config $CONFIGS --strategy ichiV1_Marius
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  freqtrade hyperopt --config $CONFIGS --strategy ichiV1_Marius --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
-  freqtrade edge --config $CONFIGS --fee=$FEE
+  freqtrade edge --config $CONFIGS --strategy ichiV1_Marius --fee=$FEE
 
   echo -e "\n$hr\nSHOW BACKTEST\n$hr"
   freqtrade backtesting-show --help
-  freqtrade backtesting-show --config $CONFIG
+  freqtrade backtesting-show --config $CONFIGS --strategy ichiV1_Marius
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
@@ -120,6 +120,6 @@ else
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
-  freqtrade plot-profit --config $CONFIGS --timerange="$TB"
+  freqtrade plot-profit --config $CONFIGS --strategy ichiV1_Marius --timerange="$TB"
 
 fi
