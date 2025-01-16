@@ -90,7 +90,7 @@ else
 
   echo -e "\n$hr\nSHOW BACKTEST\n$hr"
   freqtrade backtesting-show --help
-  freqtrade backtesting-show --config $CONFIGS --strategy ichiV1_Marius
+  freqtrade backtesting-show --config $CONFIGS
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
@@ -98,8 +98,8 @@ else
   #freqtrade recursive-analysis --config $CONFIG
   #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
 
-  echo -e "\n$hr\nAI MODELS\n$hr"
-  freqtrade list-freqaimodels --help
+  #echo -e "\n$hr\nAI MODELS\n$hr"
+  #freqtrade list-freqaimodels --help
   #freqtrade list-freqaimodels --config $CONFIG
 
   echo -e "\n$hr\nAI TRADES\n$hr"
@@ -120,6 +120,6 @@ else
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
-  freqtrade plot-profit --config $CONFIGS --strategy ichiV1_Marius --timerange="$TB"
+  #freqtrade plot-profit --config $CONFIGS --strategy ichiV1_Marius --timerange="$TB"
 
 fi
