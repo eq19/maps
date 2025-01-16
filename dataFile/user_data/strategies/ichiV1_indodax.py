@@ -308,12 +308,13 @@ class ichiV1_indodax(IStrategy):
     process_only_new_candles = True
 
     timeperiods = [
-        # 50 // timeframe_minutes,
-        # 85 // timeframe_minutes,
-        180 // timeframe_minutes,
-        360 // timeframe_minutes,
-        420 // timeframe_minutes,
-        560 // timeframe_minutes,
+        4, # Equivalent to 1h
+        8, # Equivalent to 2h
+        16, # Equivalent to 4h
+        24, # Equivalent to 6h
+        32, # Equivalent to 8h
+        96, # Equivalent to 1d
+        672, # Equivalent to 1w
     ]
 
     use_sell_signal = False
