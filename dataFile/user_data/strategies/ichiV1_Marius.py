@@ -30,7 +30,7 @@ from skopt.space import Dimension, Integer
 import time
 from warnings import simplefilter
 
-from technical.indicators import zema
+from technical.indicators import dema
 
 logger = logging.getLogger(__name__)
 
@@ -83,9 +83,47 @@ def to_minutes(**timdelta_kwargs):
 
 #########################################################
 #######################  ichiV1_Mod #####################
+"""
+Here are some potential logical issues in the provided strategy file:
+
+1. **Exception Handling in `adjust_trade_position`**:
+   The method catches all exceptions but does not log the exception or 
+   provide any feedback. It returns `None` in all cases, which may hide 
+   underlying issues.
+
+2. **Pump Protection and Slippage Parameters**:
+   The pump protection and slippage parameters are set but may not be 
+   optimized correctly for your trading environment. Ensure the values 
+   for `pump_period`, `pump_limit`, `pump_recorver_price`, `pump_pause_duration`, 
+   `max_slip`, `buy_btc_safe`, `buy_btc_safe_1d`, `antipump_threshold`, 
+   and `antipump_threshold_2` are suitable for your strategy.
+
+3. **Trailing Stop Parameters**: 
+   The trailing stop parameters are defined but commented out.
+   Ensure you are using them if needed.
+
+4. **ROI Table and Stoploss Values**:
+   The `minimal_roi` and `stoploss` values should be reviewed to ensure
+   they align with your risk management and profit-taking strategy.
+
+5. **Custom Stoploss Calculation**:
+   The `custom_stoploss` method uses a complex calculation for `sl_profit`,
+   which may not work as intended. Ensure the logic is correct and revisited.
+
+6. **Confirm Trade Exit Conditions**:
+   The `confirm_trade_exit` method has multiple checks that might
+   result in unintended behavior. Review the conditions to ensure they 
+   correctly implement your exit strategy.
+
+7. **Use of Heikin Ashi Candles**:
+   The comment `#dataframe['close'] = heikinashi['close']` might
+   indicate an issue with using Heikin Ashi close prices. 
+   Ensure you are using the correct close prices for your calculations.
+
+Review and optimize these aspects of your strategy to improve performance.
+"""
 #########################################################
-      #############################################
-class ichiV1_Marius(IStrategy):
+class ichiV1_indodax(IStrategy):
 
     class HyperOpt:
         @staticmethod
@@ -259,24 +297,24 @@ class ichiV1_Marius(IStrategy):
 
     use_custom_stoploss = True
     # Optimal timeframe for the strategy
-    timeframe = '5m'
+    timeframe = '15m'
     informative_timeframe = '1h'
     inf_15m = '15m' #use for pump detection
     timeframe_minutes = timeframe_to_minutes(timeframe)
     # storage dict for custom info
     custom_info = {}
 
-    startup_candle_count: int = 499
-   # startup_candle_count = 96
+    startup_candle_count: int = 96
     process_only_new_candles = True
 
     timeperiods = [
-        # 50 // timeframe_minutes,
-        # 85 // timeframe_minutes,
-        180 // timeframe_minutes,
-        360 // timeframe_minutes,
-        420 // timeframe_minutes,
-        560 // timeframe_minutes,
+        4, # Equivalent to 1h
+        8, # Equivalent to 2h
+        16, # Equivalent to 4h
+        24, # Equivalent to 6h
+        32, # Equivalent to 8h
+        96, # Equivalent to 1d
+        672, # Equivalent to 1w
     ]
 
     use_sell_signal = False
@@ -393,9 +431,9 @@ class ichiV1_Marius(IStrategy):
         informative_pairs = [(pair, '15m') for pair in pairs]
         informative_pairs.extend([(pair, self.informative_timeframe) for pair in pairs])
 
-        informative_pairs += [("BTC/USDT", "1m")]
-        informative_pairs += [("BTC/USDT", "5m")]
-        informative_pairs += [("BTC/USDT", "1d")]
+        informative_pairs += [("BTC/IDR", "15m")]
+        informative_pairs += [("BTC/IDR", "1h")]
+        informative_pairs += [("BTC/IDR", "1d")]
 
         return informative_pairs
 
@@ -448,24 +486,24 @@ class ichiV1_Marius(IStrategy):
     def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         ### BTC protection
-        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP']:
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP','IDR']:
             btc_info_pair = f"BTC/{self.config['stake_currency']}"
         else:
-            btc_info_pair = "BTC/USDT"
+            btc_info_pair = "BTC/IDR"
 
         btc_df = self.dp.get_pair_dataframe(pair=btc_info_pair, timeframe=self.timeframe)
         dataframe['btc_rsi'] = normalize(ta.RSI(btc_df, timeperiod=14), 0, 100)
 
         ### BTC protection
-        dataframe['btc_5m']= self.dp.get_pair_dataframe('BTC/USDT', timeframe='5m')['close']
-        btc_1d = self.dp.get_pair_dataframe('BTC/USDT', timeframe='1d')[['date', 'close']].rename(columns={"close": "btc"}).shift(1)
-        dataframe = merge_informative_pair(dataframe, btc_1d, '5m', '1d', ffill=True)
+        dataframe['btc_15m']= self.dp.get_pair_dataframe('BTC/IDR', timeframe='15m')['close']
+        btc_1d = self.dp.get_pair_dataframe('BTC/IDR', timeframe='1d')[['date', 'close']].rename(columns={"close": "btc"}).shift(1)
+        dataframe = merge_informative_pair(dataframe, btc_1d, '15m', '1d', ffill=True)
 
         # BTC info
-        informative = self.dp.get_pair_dataframe(pair="BTC/USDT", timeframe="5m")
+        informative = self.dp.get_pair_dataframe(pair="BTC/IDR", timeframe="15m")
         informative_past = informative.copy().shift(1)  
 
-        # BTC 5m dump protection
+        # BTC 15m dump protection
         informative_past_source = (informative_past['open'] + informative_past['close'] + informative_past['high'] + informative_past['low']) / 4        # Get BTC price
         informative_threshold = informative_past_source * self.buy_threshold.value                                                                       # BTC dump n% in 5 min
         informative_past_delta = informative_past['close'].shift(1) - informative_past['close']                                                          # should be positive if dump
@@ -476,7 +514,7 @@ class ichiV1_Marius(IStrategy):
         # BTC 1d dump protection
         informative_past_1d = informative.copy().shift(288)
         informative_past_source_1d = (informative_past_1d['open'] + informative_past_1d['close'] + informative_past_1d['high'] + informative_past_1d['low']) / 4
-        dataframe['btc_5m'] = informative_past_source
+        dataframe['btc_15m'] = informative_past_source
         dataframe['btc_1d'] = informative_past_source_1d 
 
 
@@ -492,35 +530,37 @@ class ichiV1_Marius(IStrategy):
         # Pump strength
         dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
-        dataframe['zema_30'] = ftt.zema(dataframe, period=30)
-        dataframe['zema_200'] = ftt.zema(dataframe, period=200)
+        dataframe['zema_30'] = ftt.dema(dataframe, period=30)
+        dataframe['zema_200'] = ftt.dema(dataframe, period=200)
         dataframe['pump_strength'] = (dataframe['zema_30'] - dataframe['zema_200']) / dataframe['zema_30']
         dataframe['pump_strength_2'] = (dataframe['ema_50'] - dataframe['ema_200']) / dataframe['ema_50']
 
         heikinashi = qtpylib.heikinashi(dataframe)
         heikinashi["volume"] = dataframe["volume"]
-        dataframe['open'] = heikinashi['open']
-        #dataframe['close'] = heikinashi['close']
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
+        dataframe['open'] = heikinashi['open']
+        #dataframe['close'] = heikinashi['close']
+        if 'close' not in dataframe.columns:
+            dataframe['close'] = heikinashi['close']
 
-        dataframe['trend_close_5m'] = dataframe['close']
-        dataframe['trend_close_15m'] = ta.EMA(dataframe['close'], timeperiod=3)
-        dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=6)
-        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=12)
-        dataframe['trend_close_2h'] = ta.EMA(dataframe['close'], timeperiod=24)
-        dataframe['trend_close_4h'] = ta.EMA(dataframe['close'], timeperiod=48)
-        dataframe['trend_close_6h'] = ta.EMA(dataframe['close'], timeperiod=72)
-        dataframe['trend_close_8h'] = ta.EMA(dataframe['close'], timeperiod=96)
+        dataframe['trend_close_15m'] = dataframe['close']
+        dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=2)
+        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=4)
+        dataframe['trend_close_2h'] = ta.EMA(dataframe['close'], timeperiod=8)
+        dataframe['trend_close_4h'] = ta.EMA(dataframe['close'], timeperiod=16)
+        dataframe['trend_close_6h'] = ta.EMA(dataframe['close'], timeperiod=24)
+        dataframe['trend_close_8h'] = ta.EMA(dataframe['close'], timeperiod=32)
+        dataframe['trend_close_1d'] = ta.EMA(dataframe['close'], timeperiod=96)
 
-        dataframe['trend_open_5m'] = dataframe['open']
-        dataframe['trend_open_15m'] = ta.EMA(dataframe['open'], timeperiod=3)
-        dataframe['trend_open_30m'] = ta.EMA(dataframe['open'], timeperiod=6)
-        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=12)
-        dataframe['trend_open_2h'] = ta.EMA(dataframe['open'], timeperiod=24)
-        dataframe['trend_open_4h'] = ta.EMA(dataframe['open'], timeperiod=48)
-        dataframe['trend_open_6h'] = ta.EMA(dataframe['open'], timeperiod=72)
-        dataframe['trend_open_8h'] = ta.EMA(dataframe['open'], timeperiod=96)
+        dataframe['trend_open_15m'] = dataframe['open']
+        dataframe['trend_open_30m'] = ta.EMA(dataframe['open'], timeperiod=2)
+        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=4)
+        dataframe['trend_open_2h'] = ta.EMA(dataframe['open'], timeperiod=8)
+        dataframe['trend_open_4h'] = ta.EMA(dataframe['open'], timeperiod=16)
+        dataframe['trend_open_6h'] = ta.EMA(dataframe['open'], timeperiod=24)
+        dataframe['trend_open_8h'] = ta.EMA(dataframe['open'], timeperiod=32)
+        dataframe['trend_open_1d'] = ta.EMA(dataframe['open'], timeperiod=96)
 
         dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_8h'])
         dataframe['fan_magnitude_gain'] = dataframe['fan_magnitude'] / dataframe['fan_magnitude'].shift(1)
@@ -548,7 +588,7 @@ class ichiV1_Marius(IStrategy):
         informative_1h = self.informative_1h_indicators(dataframe, metadata)
         dataframe = merge_informative_pair(dataframe, informative_1h, self.timeframe, self.informative_timeframe, ffill=True)
 
-        # The indicators for the normal (5m) timeframe
+        # The indicators for the normal (15m) timeframe
         dataframe = self.normal_tf_indicators(dataframe, metadata)
 
         #Import 15m indicators    
@@ -596,7 +636,7 @@ class ichiV1_Marius(IStrategy):
         dataframe.loc[:, 'buy_tag'] = ''
 
         is_protection = (
-            (pct_change(dataframe['btc_1d'], dataframe['btc_5m']).fillna(0) > self.buy_btc_safe_1d.value) &
+            (pct_change(dataframe['btc_1d'], dataframe['btc_15m']).fillna(0) > self.buy_btc_safe_1d.value) &
             (dataframe['pump_strength_2'] < self.antipump_threshold_2.value)&
             (dataframe['buy_ok'])&
             (dataframe['volume'] > 0)
@@ -607,8 +647,8 @@ class ichiV1_Marius(IStrategy):
 
                 (dataframe['rsi'] > dataframe['rsi_1h']) &
                 (dataframe['trend_close_8h'] > dataframe['trend_close_6h'])&
-                (dataframe['trend_close_15m'] > dataframe['trend_close_30m'])&
-                (dataframe['trend_open_5m'] > dataframe['trend_open_15m'])&
+                (dataframe['trend_close_15m'] > dataframe['trend_close_1h'])&
+                (dataframe['trend_open_15m'] > dataframe['trend_open_1h'])&
                 (dataframe['trend_close_1h']> dataframe['ema55'])&
                 (dataframe['ema21']> dataframe['trend_close_4h'])&
                 (dataframe['trend_open_1h'] > dataframe['trend_open_2h'])&
@@ -632,7 +672,7 @@ class ichiV1_Marius(IStrategy):
 
         conditions = []
 
-        conditions.append(qtpylib.crossed_below(dataframe['trend_close_5m'], dataframe[self.sell_params['sell_trend_indicator']]))
+        conditions.append(qtpylib.crossed_below(dataframe['trend_close_15m'], dataframe[self.sell_params['sell_trend_indicator']]))
 
         if conditions:
             dataframe.loc[
