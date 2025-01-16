@@ -70,7 +70,7 @@ else
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
-  freqtrade list-data --config $CONFIGS --strategy ichiV1
+  freqtrade list-data --config $CONFIGS
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
