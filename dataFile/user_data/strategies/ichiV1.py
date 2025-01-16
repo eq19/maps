@@ -173,7 +173,7 @@ class ichiV1(IStrategy):
 
         # Trends bullish
         if self.buy_params['buy_trend_bullish_level'] >= 1:
-            conditions.append(dataframe['trend_close_15m'] > dataframe['trend_open_5m'])
+            conditions.append(dataframe['trend_close_15m'] > dataframe['trend_open_15m'])
 
         if self.buy_params['buy_trend_bullish_level'] >= 2:
             conditions.append(dataframe['trend_close_30m'] > dataframe['trend_open_30m'])
