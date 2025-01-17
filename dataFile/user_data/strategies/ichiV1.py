@@ -25,7 +25,7 @@ class ichiV1(IStrategy):
 
     # Optimal
     timeframe = '15m'
-    startup_candle_count = 32
+    startup_candle_count = 120
     ignore_roi_if_buy_signal = False
     process_only_new_candles = False
 
