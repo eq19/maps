@@ -30,7 +30,7 @@ class ichiV1(IStrategy):
     process_only_new_candles = False
 
     # Stoploss:
-    stoploss = -0.04
+    stoploss = -0.275
     trailing_stop = False
     use_sell_signal = True
     sell_profit_only = False
