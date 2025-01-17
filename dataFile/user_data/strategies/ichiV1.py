@@ -15,30 +15,29 @@ from freqtrade.strategy import stoploss_from_open
 
 class ichiV1(IStrategy):
 
-    # Optimal
-    timeframe = '1h'
-    startup_candle_count = 120
-    process_only_new_candles = True
-
-    # no ROI
+    # ROI table:
     minimal_roi = {
-        "0": 0.05,
-        "30": 0.04,
-        "60": 0.03,
-        "90": 0.025
+        "0": 0.059,
+        "10": 0.037,
+        "41": 0.012,
+        "114": 0
     }
 
-    # Stoploss:
-    stoploss = -0.04
-    trailing_stop = True
-    trailing_stop_positive = 0.002
-    trailing_stop_positive_offset = 0.015
-    trailing_only_offset_is_reached = True
+    # Optimal
+    timeframe = '15m'
+    startup_candle_count = 32
+    ignore_roi_if_buy_signal = False
+    process_only_new_candles = False
 
+    # Stoploss:
+    stoploss = -0.275
+    trailing_stop = False
     use_sell_signal = True
     sell_profit_only = False
-    ignore_roi_if_buy_signal = True
-    
+    #trailing_stop_positive = 0.002
+    #trailing_stop_positive_offset = 0.025
+    #trailing_only_offset_is_reached = True
+
     # Buy hyperspace params:
     buy_params = {
         "buy_trend_above_senkou_level": 1,
@@ -89,8 +88,6 @@ class ichiV1(IStrategy):
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['open'] = heikinashi['open']
         #dataframe['close'] = heikinashi['close']
-        if 'close' not in dataframe.columns:
-            dataframe['close'] = heikinashi['close']
         dataframe['high'] = heikinashi['high']
         dataframe['low'] = heikinashi['low']
 
@@ -115,13 +112,8 @@ class ichiV1(IStrategy):
         dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_8h'])
         dataframe['fan_magnitude_gain'] = dataframe['fan_magnitude'] / dataframe['fan_magnitude'].shift(1)
 
-        displacement = 30
-        ichimoku = ftt.ichimoku(dataframe, 
-            conversion_line_period=20, 
-            base_line_periods=60,
-            laggin_span=120, 
-            displacement=displacement
-            )
+        #ichimoku = ftt.ichimoku(dataframe, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
+        ichimoku = ftt.ichimoku(dataframe, conversion_line_period=7, base_line_periods=20, laggin_span=40, displacement=10)
         
         dataframe['chikou_span'] = ichimoku['chikou_span']
         dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
