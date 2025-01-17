@@ -44,13 +44,32 @@
             "ETH/IDR"
         ],
         "pair_blacklist": [
-            "USDT/IDR",
             ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
-            "(ACM|AERGO|ALPHA|AFA|ALA|ALL|APL|ASR|ATM|AUD|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/IDR",
-            "(BAR|BEL|BNB|BTCST|BRZ|BUSD|PAX|PAXG|SUSD|TUSD|USDC|USDT|VAI)/IDR",
-            "(CAI|CHZ|COTI|CRV|CITY|CUSDT|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/IDR",
-            "(DASH|DAI|DEGO|DOGE|FIO|FIS|FRONT|ICX|IOST|IOTA|IOTX|KAVA|LINA|LRC|MASK|MIR|NANO|OM|ONE|PERP|QNT|RAMP|SC|SHIB|SKL|SOL|SUSHI|UNFI|XVS)/IDR",   
-            "(FIO|FIS|FRONT|ICX|IOST|IOTA|IOTX|KAVA|LINA|LRC|MASK|MIR|NANO|OM|ONE|PERP|QNT|RAMP|SC|SHIB|SKL|SOL|SUSHI|UNFI|XVS)/IDR"
+            "(AFA|ALA|ALL|ALPHA|APL|ASR|ATM|AUD|ACM|AERGO)/IDR",  
+            "(BAR|BEL|BNB|BTCST|BRZ|BUSD)/IDR",  
+            "(CAI|CAD|CHF|CHZ|CITY|COTI|CRV|CUSDT)/IDR",  
+            "(DASH|DAI|DEGO|DOGE)/IDR",  
+            "(EUR)/IDR",  
+            "(FIO|FIS|FOR|FRONT)/IDR",  
+            "(GAL|GBP|GOZ)/IDR",  
+            "(HKD)/IDR",  
+            "(IBFK|ICX|IDRT|IOST|IOTA|IOTX)/IDR",  
+            "(JPY|JUV)/IDR",  
+            "(KAVA)/IDR",  
+            "(LEG|LINA|LOCK-1|LRC)/IDR",  
+            "(MASK|MIR)/IDR",  
+            "(NANO|NAVI|NGN|NMR|NOV)/IDR",  
+            "(OM|ONE|OG)/IDR",  
+            "(PAX|PAXG|PERP|PFL|PSG)/IDR",  
+            "(QNT)/IDR",  
+            "(RAMP|ROUSH|RUB)/IDR",  
+            "(SC|SGD|SHIB|SKL|SOL|STV|SUSD|SUSHI)/IDR",  
+            "(TH|TRA|TRY|TUSD)/IDR",  
+            "(UAH|UCH|UFC|UNFI|USD|USDC|USDT)/IDR",  
+            "(VAI)/IDR",  
+            "(XVS)/IDR",  
+            "(YBO)/IDR",  
+            "(ZAR)/IDR"
         ],     
         "ccxt_config": {
             "timeframes": {
