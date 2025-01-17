@@ -15,7 +15,30 @@ from freqtrade.strategy import stoploss_from_open
 
 class ichiV1(IStrategy):
 
-    # NOTE: settings as of the 25th july 21
+    # Optimal
+    timeframe = '1h'
+    startup_candle_count = 120
+    process_only_new_candles = True
+
+    # no ROI
+    minimal_roi = {
+        "0": 0.05,
+        "30": 0.04,
+        "60": 0.03,
+        "90": 0.025
+    }
+
+    # Stoploss:
+    stoploss = -0.04
+    trailing_stop = True
+    trailing_stop_positive = 0.002
+    trailing_stop_positive_offset = 0.015
+    trailing_only_offset_is_reached = True
+
+    use_sell_signal = True
+    sell_profit_only = False
+    ignore_roi_if_buy_signal = True
+    
     # Buy hyperspace params:
     buy_params = {
         "buy_trend_above_senkou_level": 1,
@@ -30,32 +53,6 @@ class ichiV1(IStrategy):
     sell_params = {
         "sell_trend_indicator": "trend_close_2h",
     }
-
-    # ROI table:
-    minimal_roi = {
-        "0": 0.059,
-        "10": 0.037,
-        "41": 0.012,
-        "114": 0
-    }
-
-    # Stoploss:
-    stoploss = -0.04
-
-    # Optimal timeframe for the strategy
-    timeframe = '1h'
-
-    startup_candle_count = 96
-    process_only_new_candles = False
-
-    trailing_stop = False
-    #trailing_stop_positive = 0.002
-    #trailing_stop_positive_offset = 0.025
-    #trailing_only_offset_is_reached = True
-
-    use_sell_signal = True
-    sell_profit_only = False
-    ignore_roi_if_buy_signal = False
 
     plot_config = {
         'main_plot': {
