@@ -6,7 +6,7 @@
 #
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
-STRATEGY=Strategy005
+STRATEGY=ichiV1
 CONFIG=user_data/config_examples/config_indodax.example.json
 CONFIGS=user_data/config_examples/config_indodax.pairlist.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
