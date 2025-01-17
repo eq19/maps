@@ -140,6 +140,19 @@
             }
         }
     },
+    "protections": [
+        {
+            "method": "MaxDrawdown",
+            "lookback_period_candles": 400,
+            "trade_limit": 1,
+            "stop_duration_candles": 220,
+            "max_allowed_drawdown": 0.2
+        },
+        {
+            "method": "CooldownPeriod",
+            "stop_duration_candles": 3
+        }
+    ],
     "edge": {
         "enabled": false,
         "process_throttle_secs": 604800,
