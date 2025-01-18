@@ -109,7 +109,6 @@
             "UNI/IDR",
             "VCG/IDR",
             "VELO/IDR",
-            "VELODROME/IDR",
             "VANRY/IDR",
             "VBG/IDR",
             "VET/IDR",
@@ -143,7 +142,7 @@
             "(SC|SGD|SHIB|SKL|SOL|SOLVE|STV|SUSD|SUSHI)/IDR",  
             "(TH|TON|TRA|TRY|TUSD)/IDR",  
             "(UAH|UCH|UFC|UNFI|UNMD|USD|USDC|USDT)/IDR",  
-            "(VAI)/IDR",  
+            "(VAI|VELODROME)/IDR",  
             "(XVS)/IDR",  
             "(YBO)/IDR",  
             "(ZAR)/IDR"
