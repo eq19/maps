@@ -91,6 +91,13 @@ class ichiV1(IStrategy):
         }
     }
 
+    # trailing stoploss hyperopt parameters
+    pHSL = DecimalParameter(-0.15, -0.08, default=sell_params['pHSL'], decimals=3, space='sell', optimize=True)
+    ProfitMargin1 = DecimalParameter(0.009, 0.019, default=sell_params['ProfitMargin1'], decimals=3, space='sell', optimize=True)
+    ProfitLoss1 = DecimalParameter(0.005, 0.012, default=sell_params['ProfitLoss1'], decimals=3, space='sell', optimize=True)
+    ProfitMargin2 = DecimalParameter(0.033, 0.099, default=sell_params['ProfitMargin2'], decimals=3, space='sell', optimize=True)
+    ProfitLoss2 = DecimalParameter(0.010, 0.025, default=sell_params['ProfitLoss2'], decimals=3, space='sell', optimize=True)
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         heikinashi = qtpylib.heikinashi(dataframe)
@@ -207,7 +214,7 @@ class ichiV1(IStrategy):
         if self.buy_params['buy_trend_bullish_level'] >= 8:
             conditions.append(dataframe['trend_close_1d'] > dataframe['trend_open_1d'])
 
-# Trends magnitude
+        # Trends magnitude
         conditions.append(dataframe['fan_magnitude_gain'] >= self.buy_params['buy_min_fan_magnitude_gain'])
         conditions.append(dataframe['fan_magnitude'] > 1)
 
