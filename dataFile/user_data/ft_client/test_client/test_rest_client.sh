@@ -120,20 +120,19 @@ else
 
   echo "Starting freqtrade trade..."
   #freqtrade trade --freqaimodel LightGBMRegressor
-  nohup freqtrade trade --dry-run --fee=$FEE --config $CONFIG > freqtrade.log &
+  nohup freqtrade trade --dry-run --fee=$FEE --config $CONFIG > freqtrade.log 2>&1 &
   echo $! > freqtrade_pid.txt
-
-  echo "Monitoring freqtrade log..."
-  while true; do
-    if grep -q "*- freqtrade.worker - INFO - Bot heartbeat. PID=*state='RUNNING'" freqtrade.log; then
+  tail -f freqtrade.log | while read LOGLINE
+  do
+    echo "$LOGLINE"
+    if [[ "${LOGLINE}" == *"freqtrade.worker"* && "${LOGLINE}" == *"Bot heartbeat"* && "${LOGLINE}" == *"state='RUNNING'"* ]]; then
       echo "Stopping freqtrade trade..."
       PID=$(cat freqtrade_pid.txt)
       kill -SIGTERM $PID
       echo "freqtrade trade stopped."
       break
     fi
-    sleep 5
-  done
+  done  
   rm -rf *.json freqtrade_pid.txt freqtrade.log
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
