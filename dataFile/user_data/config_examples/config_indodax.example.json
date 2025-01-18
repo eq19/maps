@@ -248,9 +248,7 @@
             }
         }
     },
-    "edge": {
-        "enabled": false
-    },
+    "edge": {},
     "telegram": {
         "enabled": false,
         "token": "your_telegram_token",
