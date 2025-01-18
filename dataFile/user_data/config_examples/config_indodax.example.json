@@ -257,7 +257,7 @@
         "remove_pumps": false
     },
     "telegram": {
-        "enabled": false,
+        "enabled": true,
         "token": "your_telegram_token",
         "chat_id": "your_telegram_chat_id",
         "notification_settings": {
@@ -287,7 +287,7 @@
         "balance_dust_level": 0.01
     },
     "api_server": {
-        "enabled": false,
+        "enabled": true,
         "listen_ip_address": "127.0.0.1",
         "listen_port": 8080,
         "verbosity": "error",
@@ -299,7 +299,7 @@
         "ws_token": "secret_ws_t0ken."
     },
     "external_message_consumer": {
-        "enabled": false,
+        "enabled": true,
         "producers": [
           {
             "name": "default",
@@ -315,7 +315,6 @@
         "message_size_limit": 8
     },
     "bot_name": "freqtrade",
-    "db_url": "sqlite:///tradesv3.sqlite",
     "initial_state": "running",
     "force_entry_enable": false,
     "internals": {
@@ -327,6 +326,7 @@
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
     "recursive_strategy_search": false,
+    "db_url": "sqlite:///tradesv3.sqlite",
     "strategy_path": "/home/runner/user_data/strategies",
     "add_config_files": [
         "/home/runner/user_data/config_examples/config_freqai.example.json",
