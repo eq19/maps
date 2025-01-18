@@ -150,7 +150,8 @@
             "(YBO)/IDR",  
             "(ZAR)/IDR"
         ],     
-        "ccxt_config": {
+        "ccxt_config": {},
+        "ccxt_async_config": {
             "timeframes": {
                 "1m": "1",
                 "5m": "5",
@@ -161,10 +162,8 @@
                 "1d": "1D",
                 "3d": "3D",
                 "1w": "1W"
-            }
-        },
-        "ccxt_async_config": {
-           "has": {
+             },
+            "has": {
                 "CORS": null,
                 "spot": true,
                 "margin": false,
