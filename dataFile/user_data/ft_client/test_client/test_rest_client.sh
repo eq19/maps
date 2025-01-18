@@ -9,6 +9,7 @@ FEE=0.003322
 STRATEGY=ichiV1
 TIMEFRAME='15m 1h 1d'
 CONFIG=user_data/config_examples/config_indodax.example.json
+EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 
 # Define the backtesting duration (in days)
@@ -79,22 +80,23 @@ else
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
-  sed -i "s|$STRATEGY|ichiV1_Marius|g" $CONFIG
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
   freqtrade hyperopt-list --config $CONFIG
   freqtrade hyperopt-show --config $CONFIG
+  sed -i "s|$STRATEGY|ichiV1_Marius|g" $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
-  freqtrade edge --config $CONFIG --fee=$FEE
+  jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
+  freqtrade edge --fee=$FEE
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --fee=$FEE
+  freqtrade backtesting --fee=$FEE
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
@@ -109,13 +111,14 @@ else
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
   cd /home/runner
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
+  sed -i "s|ichiV1_Marius|$STRATEGY|g" $CONFIG
+  sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
+  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
+  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
+  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   #gh secret set CONFIG_JSON < config.json
-  sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
-  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
-  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
-  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
 
   #freqtrade trade --freqaimodel LightGBMRegressor
   freqtrade trade --dry-run --fee=$FEE
