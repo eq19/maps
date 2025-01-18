@@ -53,7 +53,12 @@ class ichiV1(IStrategy):
     # Sell hyperspace params:
     # NOTE: was 15m but kept bailing out in dryrun
     sell_params = {
-        "sell_trend_indicator": "trend_close_2h",
+        "pHSL": -0.08,
+        "ProfitLoss1": 0.005,
+        "ProfitLoss2": 0.021,
+        "ProfitMargin1": 0.018,
+        "ProfitMargin2": 0.051,
+        "sell_trend_indicator": "trend_close_2h"
     }
 
     plot_config = {
