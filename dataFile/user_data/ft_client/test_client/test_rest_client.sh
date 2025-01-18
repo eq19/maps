@@ -108,40 +108,36 @@ else
 
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
-  cd /home/runner
   sed -i "s|ichiV1_Marius|$STRATEGY|g" $CONFIG
   sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
   sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
   sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
   sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
+  cd /home/runner
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   #gh secret set CONFIG_JSON < config.json
 
-  #freqtrade trade --freqaimodel LightGBMRegressor
-  freqtrade trade --dry-run --fee=$FEE
-  #freqtrade trade
-  rm -rf *.json
-
-  #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
-  #freqtrade plot-dataframe --config $CONFIG
-  #freqtrade plot-profit --config $CONFIG --timerange="$TB"
-
   echo "Starting freqtrade trade..."
+  #freqtrade trade --freqaimodel LightGBMRegressor
   nohup freqtrade trade --dry-run --fee=$FEE --config $CONFIG > freqtrade.log 2>&1 &
   echo $! > freqtrade_pid.txt
 
   echo "Monitoring freqtrade log..."
   while true; do
-    if grep -q "freqtrade.worker - INFO - Bot heartbeat. state='RUNNING'" freqtrade.log; then
-       echo "Stopping freqtrade trade..."
-       PID=$(cat freqtrade_pid.txt)
-       kill -SIGTERM $PID
-       echo "freqtrade trade stopped."
-       break
-     fi
-       sleep 5
-     done
-       rm -rf *.json freqtrade_pid.txt freqtrade.log
+    if grep -q "freqtrade.worker*Bot heartbeat*state='RUNNING'" freqtrade.log; then
+      echo "Stopping freqtrade trade..."
+      PID=$(cat freqtrade_pid.txt)
+      kill -SIGTERM $PID
+      echo "freqtrade trade stopped."
+      break
+    fi
+    sleep 5
+  done
+  rm -rf *.json freqtrade_pid.txt freqtrade.log
+
+  #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
+  #freqtrade plot-dataframe --config $CONFIG
+  #freqtrade plot-profit --config $CONFIG --timerange="$TB"
 
 fi
