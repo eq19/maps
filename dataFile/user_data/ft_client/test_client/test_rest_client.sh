@@ -120,7 +120,7 @@ else
 
   echo "Starting freqtrade trade..."
   #freqtrade trade --freqaimodel LightGBMRegressor
-  nohup freqtrade trade --dry-run --fee=$FEE --config $CONFIG > freqtrade.log 2>&1 &
+  nohup freqtrade trade --dry-run --fee=$FEE --config $CONFIG > freqtrade.log &
   echo $! > freqtrade_pid.txt
 
   echo "Monitoring freqtrade log..."
