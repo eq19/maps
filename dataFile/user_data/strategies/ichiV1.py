@@ -1,18 +1,128 @@
 # --- Do not remove these libs ---
+from sqlalchemy import true
 from freqtrade.strategy.interface import IStrategy
-from pandas import DataFrame
+from pandas import DataFrame, Series
+import copy
+import logging
+import pathlib
+import rapidjson
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import pandas as pd  # noqa
 pd.options.mode.chained_assignment = None  # default='warn'
 import technical.indicators as ftt
+from freqtrade.exchange import timeframe_to_prev_date
 from functools import reduce
-from datetime import datetime, timedelta
-from freqtrade.strategy import merge_informative_pair
+from datetime import datetime, timedelta, timezone
 import numpy as np
+from technical.util import resample_to_interval, resampled_merge
+from freqtrade.strategy import informative
 from freqtrade.strategy import stoploss_from_open
+from freqtrade.strategy import (BooleanParameter,timeframe_to_minutes, merge_informative_pair,
+                                DecimalParameter, IntParameter, CategoricalParameter)
+from freqtrade.persistence import Trade
+from typing import Dict
+import numpy # noqa
+import math
+import pandas_ta as pta
+from typing import List
+from skopt.space import Dimension, Integer
+import time
+from warnings import simplefilter
 
+from technical.indicators import dema
 
+logger = logging.getLogger(__name__)
+
+simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
+
+##### SETINGS #####
+# It hyperopt just one set of params for all buy and sell strategies if true.
+DUALFIT = False
+COUNT = 10
+GAP = 3
+### END SETINGS ###
+
+def max_pump_detect_price_15m(dataframe, period=14, pause = 288 ):
+    df = dataframe.copy()
+    df['size'] = df['high'] - df['low']
+    cumulativeup = 0
+    countup = 0
+    cumulativedown = 0
+    countdown = 0
+    for i in range(period):
+
+        cumulativeup = cumulativeup + df['volume'].shift(i) * df['size'].shift(i) * np.where(df['close'].shift(i) > df['open'].shift(i), 1, 0)
+        cumulativedown = cumulativedown + df['volume'].shift(i) * df['size'].shift(i) * np.where(df['close'].shift(i) > df['open'].shift(i), 0, 1)
+            
+    flow_price = cumulativeup - cumulativedown
+    flow_price_normalized = flow_price / (df['volume'].rolling(499).mean() * (df['high']-df['low']).rolling(499).mean())
+    max_flow_price = flow_price_normalized.rolling(pause).max()
+    
+    return max_flow_price
+
+def flow_price_15m(dataframe, period=14, pause = 288 ):
+    df = dataframe.copy()
+    df['size'] = df['high'] - df['low']
+    cumulativeup = 0
+    countup = 0
+    cumulativedown = 0
+    countdown = 0
+    for i in range(period):
+
+        cumulativeup = cumulativeup + df['volume'].shift(i) * df['size'].shift(i) * np.where(df['close'].shift(i) > df['open'].shift(i), 1, 0)
+        cumulativedown = cumulativedown + df['volume'].shift(i) * df['size'].shift(i) * np.where(df['close'].shift(i) > df['open'].shift(i), 0, 1)
+            
+    flow_price = cumulativeup - cumulativedown
+    flow_price_normalized = flow_price / (df['volume'].rolling(499).mean() * (df['high']-df['low']).rolling(499).mean())
+    
+    return flow_price_normalized
+
+def to_minutes(**timdelta_kwargs):
+    return int(timedelta(**timdelta_kwargs).total_seconds() / 60)
+
+#########################################################
+#######################  ichiV1_Mod #####################
+"""
+Here are some potential logical issues in the provided strategy file:
+
+1. **Exception Handling in `adjust_trade_position`**:
+   The method catches all exceptions but does not log the exception or 
+   provide any feedback. It returns `None` in all cases, which may hide 
+   underlying issues.
+
+2. **Pump Protection and Slippage Parameters**:
+   The pump protection and slippage parameters are set but may not be 
+   optimized correctly for your trading environment. Ensure the values 
+   for `pump_period`, `pump_limit`, `pump_recorver_price`, `pump_pause_duration`, 
+   `max_slip`, `buy_btc_safe`, `buy_btc_safe_1d`, `antipump_threshold`, 
+   and `antipump_threshold_2` are suitable for your strategy.
+
+3. **Trailing Stop Parameters**: 
+   The trailing stop parameters are defined but commented out.
+   Ensure you are using them if needed.
+
+4. **ROI Table and Stoploss Values**:
+   The `minimal_roi` and `stoploss` values should be reviewed to ensure
+   they align with your risk management and profit-taking strategy.
+
+5. **Custom Stoploss Calculation**:
+   The `custom_stoploss` method uses a complex calculation for `sl_profit`,
+   which may not work as intended. Ensure the logic is correct and revisited.
+
+6. **Confirm Trade Exit Conditions**:
+   The `confirm_trade_exit` method has multiple checks that might
+   result in unintended behavior. Review the conditions to ensure they 
+   correctly implement your exit strategy.
+
+7. **Use of Heikin Ashi Candles**:
+   The comment `#dataframe['close'] = heikinashi['close']` might
+   indicate an issue with using Heikin Ashi close prices. 
+   Ensure you are using the correct close prices for your calculations.
+
+Review and optimize these aspects of your strategy to improve performance.
+"""
+#########################################################
 class ichiV1(IStrategy):
 
     # ROI table:
