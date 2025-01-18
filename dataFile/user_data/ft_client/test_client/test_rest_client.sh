@@ -9,7 +9,6 @@ FEE=0.003322
 STRATEGY=ichiV1
 TIMEFRAME='15m 1h 1d'
 CONFIG=user_data/config_examples/config_indodax.example.json
-CONFIGS=user_data/config_examples/config_indodax.pairlist.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 
 # Define the backtesting duration (in days)
@@ -63,39 +62,39 @@ else
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
         
-  sed -i "s|ichi|$STRATEGY|g" $CONFIGS
+  sed -i "s|ichi|$STRATEGY|g" $CONFIG
   
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
-  freqtrade download-data --config $CONFIGS --timeframes $TIMEFRAME --timerange="$TD"
+  freqtrade download-data --config $CONFIG --timeframes $TIMEFRAME --timerange="$TD"
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
-  freqtrade list-data --config $CONFIGS
+  freqtrade list-data --config $CONFIG
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIGS --fee=$FEE --timerange="$TB" --export signals
+  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
-  sed -i "s|$STRATEGY|ichiV1_Marius|g" $CONFIGS
+  sed -i "s|$STRATEGY|ichiV1_Marius|g" $CONFIG
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt-list --config $CONFIGS
-  freqtrade hyperopt-show --config $CONFIGS
+  freqtrade hyperopt-list --config $CONFIG
+  freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIGS --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
-  freqtrade edge --config $CONFIGS --fee=$FEE
+  freqtrade edge --config $CONFIG --fee=$FEE
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIGS --fee=$FEE
+  freqtrade backtesting --config $CONFIG --fee=$FEE
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
@@ -119,12 +118,12 @@ else
   sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
 
   #freqtrade trade --freqaimodel LightGBMRegressor
-  #freqtrade trade --dry-run --fee=$FEE
+  freqtrade trade --dry-run --fee=$FEE
   #freqtrade trade
   rm -rf *.json
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
-  #freqtrade plot-profit --config $CONFIGS --timerange="$TB"
+  #freqtrade plot-profit --config $CONFIG --timerange="$TB"
 
 fi
