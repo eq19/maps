@@ -145,7 +145,7 @@
             "(RAMP|ROUSH|RUB)/IDR",  
             "(SC|SGD|SHIB|SKL|SOL|SOLVE|STV|SUSD|SUSHI)/IDR",  
             "(TH|TON|TRA|TRY|TUSD)/IDR",  
-            "(UAH|UCH|UFC|UNFI|USD|USDC|USDT)/IDR",  
+            "(UAH|UCH|UFC|UNFI|UNMD|USD|USDC|USDT)/IDR",  
             "(VAI)/IDR",  
             "(XVS)/IDR",  
             "(YBO)/IDR",  
