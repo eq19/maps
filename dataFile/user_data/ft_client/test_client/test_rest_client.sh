@@ -62,11 +62,10 @@ else
 
   echo -e "\n$hr\nTEST CLIENT\n$hr"
   python user_data/ft_client/test_client/test_client.py
-        
-  sed -i "s|ichi|$STRATEGY|g" $CONFIG
-  
+
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
+  sed -i "s|ichi|$STRATEGY|g" $CONFIG
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
   freqtrade download-data --config $CONFIG --timeframes $TIMEFRAME --timerange="$TD"
