@@ -125,7 +125,7 @@ else
   tail -f freqtrade.log | while read LOGLINE
   do
     echo "$LOGLINE"
-    if [[ "${LOGLINE}" == *"freqtrade.worker"* && "${LOGLINE}" == *"Bot heartbeat"* && "${LOGLINE}" == *"state='RUNNING'"* ]]; then
+    if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
       echo "Stopping freqtrade trade..."
       PID=$(cat freqtrade_pid.txt)
       kill -SIGTERM $PID
