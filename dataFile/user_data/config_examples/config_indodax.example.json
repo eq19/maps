@@ -325,6 +325,7 @@
         "heartbeat_interval": 60
     },
     "strategy": "ichi",
+    "use_exit_signal": true,
     "dataformat_ohlcv": "feather",
     "dataformat_trades": "feather",
     "recursive_strategy_search": false,
