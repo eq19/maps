@@ -119,7 +119,7 @@ else
   #gh secret set CONFIG_JSON < config.json
 
   #freqtrade trade --freqaimodel LightGBMRegressor
-  #freqtrade trade --dry-run --fee=$FEE
+  freqtrade trade --dry-run --fee=$FEE
   #freqtrade trade
   rm -rf *.json
 
