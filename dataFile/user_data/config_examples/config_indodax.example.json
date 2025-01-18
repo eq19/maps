@@ -5,7 +5,7 @@
     "max_open_trades": -1,
     "stake_amount": 100000,
     "stake_currency": "IDR",
-    "dry_run_wallet": 10000000,
+    "dry_run_wallet": 1000000,
     "fiat_display_currency": "IDR",
     "tradable_balance_ratio": 0.99,
     "reduce_df_footprint": false,
