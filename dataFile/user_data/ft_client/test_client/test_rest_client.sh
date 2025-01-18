@@ -125,7 +125,7 @@ else
 
   echo "Monitoring freqtrade log..."
   while true; do
-    if grep -q "freqtrade.worker*Bot heartbeat*state='RUNNING'" freqtrade.log; then
+    if grep -q "*- freqtrade.worker - INFO - Bot heartbeat. PID=*state='RUNNING'" freqtrade.log; then
       echo "Stopping freqtrade trade..."
       PID=$(cat freqtrade_pid.txt)
       kill -SIGTERM $PID
