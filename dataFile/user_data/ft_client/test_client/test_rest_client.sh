@@ -127,4 +127,21 @@ else
   #freqtrade plot-dataframe --config $CONFIG
   #freqtrade plot-profit --config $CONFIG --timerange="$TB"
 
+  echo "Starting freqtrade trade..."
+  nohup freqtrade trade --dry-run --fee=$FEE --config $CONFIG > freqtrade.log 2>&1 &
+  echo $! > freqtrade_pid.txt
+
+  echo "Monitoring freqtrade log..."
+  while true; do
+    if grep -q "freqtrade.worker - INFO - Bot heartbeat. state='RUNNING'" freqtrade.log; then
+       echo "Stopping freqtrade trade..."
+       PID=$(cat freqtrade_pid.txt)
+       kill -SIGTERM $PID
+       echo "freqtrade trade stopped."
+       break
+     fi
+       sleep 5
+     done
+       rm -rf *.json freqtrade_pid.txt freqtrade.log
+
 fi
