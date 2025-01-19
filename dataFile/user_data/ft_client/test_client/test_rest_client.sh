@@ -35,7 +35,7 @@ TB="$BACKTESTING_START-$TODAY"
 echo "Download Timerange: $TD"
 echo "Backtesting Timerange: $TB"
 
-echo -e "\n$hr\nTEST ENV\n$hr"
+echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 printenv
 
 if [[ "$1" == "listing" ]]; then
@@ -60,7 +60,7 @@ if [[ "$1" == "listing" ]]; then
 
 else
 
-  echo -e "\n$hr\nTEST CLIENT\n$hr"
+  echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
