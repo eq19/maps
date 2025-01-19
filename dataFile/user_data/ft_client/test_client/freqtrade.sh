@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# Set your Telegram bot token and chat ID
-TELEGRAM_BOT_TOKEN="YOUR_TELEGRAM_BOT_API_TOKEN"
-TELEGRAM_CHAT_ID="YOUR_CHAT_ID"
+# Path to your config.json
+CONFIG_FILE="/home/runner/config.json"
+
+# Extract Telegram bot token and chat ID from config.json
+TELEGRAM_BOT_TOKEN=$(jq -r '.telegram.token' "$CONFIG_FILE")
+TELEGRAM_CHAT_ID=$(jq -r '.telegram.chat_id' "$CONFIG_FILE")
 
 # Function to send a message to Telegram
 send_telegram_message() {
