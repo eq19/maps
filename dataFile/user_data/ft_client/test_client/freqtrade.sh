@@ -36,9 +36,12 @@ tail -f /var/log/freqtrade.log | while read line; do
         send_telegram_message "$logs"
         logs=""
     fi
+done &  # Run the monitoring loop in the background
+
+# Keep the script running
+while true; do
+    sleep 3600
 done
 
 # Handle graceful termination
 trap "echo 'Terminating...'; exit" SIGINT SIGTERM
-
-wait
