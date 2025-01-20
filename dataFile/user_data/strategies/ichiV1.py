@@ -260,12 +260,13 @@ class ichiV1(IStrategy):
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         heikinashi = qtpylib.heikinashi(dataframe)
+
+        dataframe['low'] = heikinashi['low']
+        dataframe['high'] = heikinashi['high']
         dataframe['open'] = heikinashi['open']
         #dataframe['close'] = heikinashi['close']
         if 'close' not in dataframe.columns:
             dataframe['close'] = heikinashi['close']
-        dataframe['high'] = heikinashi['high']
-        dataframe['low'] = heikinashi['low']
 
         dataframe['trend_close_15m'] = dataframe['close']
         dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=2)
