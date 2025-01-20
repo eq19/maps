@@ -9,13 +9,20 @@ TELEGRAM_CHAT_ID=$(jq -r '.telegram.chat_id' "$CONFIG_FILE")
 
 # Function to send a message to Telegram
 send_telegram_message() {
-    local message=$1
+    local log_type=$1
+    local message=$2
     curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
     -d chat_id="${TELEGRAM_CHAT_ID}" \
-    -d text="${message}" > /dev/null
+    -d text="[$log_type] $message" > /dev/null
 }
 
-# Monitor the log file and send updates to Telegram
-tail -f /var/log/freqtrade.out.log /var/log/freqtrade.error.log | while read line; do
-    send_telegram_message "$line"
+# Monitor the log files and send updates to Telegram
+tail -f /var/log/freqtrade.out.log | while read line; do
+    send_telegram_message "OUT" "$line"
+done &
+
+tail -f /var/log/freqtrade.error.log | while read line; do
+    send_telegram_message "ERROR" "$line"
 done
+
+wait
