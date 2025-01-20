@@ -225,7 +225,7 @@ class ichiV1(IStrategy):
     ProfitLoss2 = DecimalParameter(0.010, 0.025, default=sell_params['ProfitLoss2'], decimals=3, space='sell', optimize=True)
     ProfitMargin1 = DecimalParameter(0.009, 0.019, default=sell_params['ProfitMargin1'], decimals=3, space='sell', optimize=True)
     ProfitMargin2 = DecimalParameter(0.033, 0.099, default=sell_params['ProfitMargin2'], decimals=3, space='sell', optimize=True)
-    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default=sell_params['ExitTrendIndicator']', space='sell')
+    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default=sell_params['ExitTrendIndicator'], space='sell')
 
     plot_config = {
         'main_plot': {
