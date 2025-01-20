@@ -125,6 +125,9 @@ Review and optimize these aspects of your strategy to improve performance.
 #########################################################
 class ichiV1(IStrategy):
 
+    DATESTAMP = 0
+    SELLMA = 1
+
     # ROI table:
     minimal_roi = {
         "0": 0.05,
@@ -135,6 +138,46 @@ class ichiV1(IStrategy):
         "233": 0.0001,
         "528": -10
     }
+
+    class HyperOpt:
+        @staticmethod
+        def generate_roi_table(params: dict):
+            """
+            Generate the ROI table that will be used by Hyperopt
+            This implementation generates the default legacy Freqtrade ROI tables.
+            Change it if you need different number of steps in the generated
+            ROI tables or other structure of the ROI tables.
+            Please keep it aligned with parameters in the 'roi' optimization
+            hyperspace defined by the roi_space method.
+            """
+            roi_table = {}
+            roi_table[0] = 0.05
+            roi_table[params['roi_t6']] = 0.04
+            roi_table[params['roi_t5']] = 0.03
+            roi_table[params['roi_t4']] = 0.02
+            roi_table[params['roi_t3']] = 0.01
+            roi_table[params['roi_t2']] = 0.0001
+            roi_table[params['roi_t1']] = -10
+
+            return roi_table
+
+        @staticmethod
+        def roi_space() -> List[Dimension]:
+            """
+            Values to search for each ROI steps
+            Override it if you need some different ranges for the parameters in the
+            'roi' optimization hyperspace.
+            Please keep it aligned with the implementation of the
+            generate_roi_table method.
+            """
+            return [
+                Integer(240, 720, name='roi_t1'),
+                Integer(120, 240, name='roi_t2'),
+                Integer(90, 120, name='roi_t3'),
+                Integer(60, 90, name='roi_t4'),
+                Integer(30, 60, name='roi_t5'),
+                Integer(1, 30, name='roi_t6'),
+            ]
 
     # Optimal
     timeframe = '15m'
@@ -171,6 +214,14 @@ class ichiV1(IStrategy):
         "ExitTrendIndicator": "trend_close_2h"
     }
 
+    # trailing stoploss hyperopt parameters
+    pHSL = DecimalParameter(-0.15, -0.08, default=sell_params['pHSL'], decimals=3, space='sell', optimize=True)
+    ProfitLoss1 = DecimalParameter(0.005, 0.012, default=sell_params['ProfitLoss1'], decimals=3, space='sell', optimize=True)
+    ProfitLoss2 = DecimalParameter(0.010, 0.025, default=sell_params['ProfitLoss2'], decimals=3, space='sell', optimize=True)
+    ProfitMargin1 = DecimalParameter(0.009, 0.019, default=sell_params['ProfitMargin1'], decimals=3, space='sell', optimize=True)
+    ProfitMargin2 = DecimalParameter(0.033, 0.099, default=sell_params['ProfitMargin2'], decimals=3, space='sell', optimize=True)
+    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default='trend_close_2h', space='sell')
+
     plot_config = {
         'main_plot': {
             # fill area between senkou_a and senkou_b
@@ -200,14 +251,6 @@ class ichiV1(IStrategy):
             }
         }
     }
-
-    # trailing stoploss hyperopt parameters
-    pHSL = DecimalParameter(-0.15, -0.08, default=sell_params['pHSL'], decimals=3, space='sell', optimize=True)
-    ProfitLoss1 = DecimalParameter(0.005, 0.012, default=sell_params['ProfitLoss1'], decimals=3, space='sell', optimize=True)
-    ProfitLoss2 = DecimalParameter(0.010, 0.025, default=sell_params['ProfitLoss2'], decimals=3, space='sell', optimize=True)
-    ProfitMargin1 = DecimalParameter(0.009, 0.019, default=sell_params['ProfitMargin1'], decimals=3, space='sell', optimize=True)
-    ProfitMargin2 = DecimalParameter(0.033, 0.099, default=sell_params['ProfitMargin2'], decimals=3, space='sell', optimize=True)
-    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default='trend_close_2h', space='sell')
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
