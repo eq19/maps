@@ -203,6 +203,11 @@ class ichiV1(IStrategy):
         #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
     }
 
+    buy_trend_above_senkou_level = IntParameter(1, 8, default=buy_params['buy_trend_above_senkou_level'], space="buy")
+    buy_trend_bullish_level = IntParameter(1, 8, default=buy_params['buy_trend_bullish_level'], space="buy")
+    buy_fan_magnitude_shift_value = IntParameter(1, 10, default=buy_params['buy_fan_magnitude_shift_value'], space="buy")
+    buy_min_fan_magnitude_gain = DecimalParameter(1.001, 1.02, default=buy_params['buy_min_fan_magnitude_gain'], space="buy")
+
     # Sell hyperspace params:
     # NOTE: was 15m but kept bailing out in dryrun
     sell_params = {
@@ -220,7 +225,7 @@ class ichiV1(IStrategy):
     ProfitLoss2 = DecimalParameter(0.010, 0.025, default=sell_params['ProfitLoss2'], decimals=3, space='sell', optimize=True)
     ProfitMargin1 = DecimalParameter(0.009, 0.019, default=sell_params['ProfitMargin1'], decimals=3, space='sell', optimize=True)
     ProfitMargin2 = DecimalParameter(0.033, 0.099, default=sell_params['ProfitMargin2'], decimals=3, space='sell', optimize=True)
-    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default='trend_close_2h', space='sell')
+    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default=sell_params['ExitTrendIndicator']', space='sell')
 
     plot_config = {
         'main_plot': {
