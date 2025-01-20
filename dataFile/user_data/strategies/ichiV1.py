@@ -371,33 +371,38 @@ class ichiV1(IStrategy):
         if self.buy_params['buy_trend_bullish_level'] >= 7:
             conditions.append(dataframe['trend_close_8h'] > dataframe['trend_open_8h'])
 
-        if self.buy_params['buy_trend_bullish_level'] >= 8:
-            conditions.append(dataframe['trend_close_1d'] > dataframe['trend_open_1d'])
+        if self.buy_params["buy_trend_bullish_level"] >= 8:
+            conditions.append(dataframe["trend_close_1d"] > dataframe["trend_open_1d"])
 
         # Trends magnitude
-        conditions.append(dataframe['fan_magnitude_gain'] >= self.buy_params['buy_min_fan_magnitude_gain'])
-        conditions.append(dataframe['fan_magnitude'] > 1)
+        conditions.append(
+            dataframe["fan_magnitude_gain"]
+            >= self.buy_params["buy_min_fan_magnitude_gain"]
+        )
+        conditions.append(dataframe["fan_magnitude"] > 1)
 
-        for x in range(self.buy_params['buy_fan_magnitude_shift_value']):
-            conditions.append(dataframe['fan_magnitude'].shift(x+1) < dataframe['fan_magnitude'])
+        for x in range(self.buy_params["buy_fan_magnitude_shift_value"]):
+            conditions.append(
+                dataframe["fan_magnitude"].shift(x + 1) < dataframe["fan_magnitude"]
+            )
 
         if conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'buy'] = 1
+            dataframe.loc[reduce(lambda x, y: x & y, conditions), "buy"] = 1
 
         return dataframe
 
-
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-
+    def populate_sell_trend(self, dataframe: DataFrame) -> DataFrame:
         conditions = []
+        self.condition_early_close_seconds(dataframe, conditions)
 
-        conditions.append(qtpylib.crossed_below(dataframe['trend_close_15m'], dataframe[self.sell_params['ExitTrendIndicator']]))
+        conditions.append(
+            qtpylib.crossed_below(
+                dataframe["trend_close_15m"],
+                dataframe[self.sell_params["ExitTrendIndicator"]],
+            )
+        )
 
         if conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, conditions),
-                'sell'] = 1
+            dataframe.loc[reduce(lambda x, y: x & y, conditions), "sell"] = 1
 
         return dataframe
