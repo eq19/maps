@@ -387,7 +387,7 @@ class ichiV1(IStrategy):
 
         conditions = []
 
-        conditions.append(qtpylib.crossed_below(dataframe['trend_close_15m'], dataframe[self.sell_params['sell_trend_indicator']]))
+        conditions.append(qtpylib.crossed_below(dataframe['trend_close_15m'], dataframe[self.sell_params['ExitTrendIndicator']]))
 
         if conditions:
             dataframe.loc[
