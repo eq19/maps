@@ -151,6 +151,26 @@ class ichiV1(IStrategy):
     #trailing_stop_positive_offset = 0.025
     #trailing_only_offset_is_reached = True
 
+    # Buy hyperspace params:
+    buy_params = {
+        "buy_trend_above_senkou_level": 1,
+        "buy_trend_bullish_level": 6,
+        "buy_fan_magnitude_shift_value": 3,
+        "buy_min_fan_magnitude_gain": 1.002 # NOTE: Good value (Win% ~70%), alot of trades
+        #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
+    }
+
+    # Sell hyperspace params:
+    # NOTE: was 15m but kept bailing out in dryrun
+    sell_params = {
+        "pHSL": -0.08,
+        "ProfitLoss1": 0.005,
+        "ProfitLoss2": 0.021,
+        "ProfitMargin1": 0.018,
+        "ProfitMargin2": 0.051,
+        "ExitTrendIndicator": "trend_close_2h"
+    }
+
     plot_config = {
         'main_plot': {
             # fill area between senkou_a and senkou_b
@@ -179,26 +199,6 @@ class ichiV1(IStrategy):
                 'fan_magnitude_gain': {}
             }
         }
-    }
-
-    # Buy hyperspace params:
-    buy_params = {
-        "buy_trend_above_senkou_level": 1,
-        "buy_trend_bullish_level": 6,
-        "buy_fan_magnitude_shift_value": 3,
-        "buy_min_fan_magnitude_gain": 1.002 # NOTE: Good value (Win% ~70%), alot of trades
-        #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
-    }
-
-    # Sell hyperspace params:
-    # NOTE: was 15m but kept bailing out in dryrun
-    sell_params = {
-        "pHSL": -0.08,
-        "ProfitLoss1": 0.005,
-        "ProfitLoss2": 0.021,
-        "ProfitMargin1": 0.018,
-        "ProfitMargin2": 0.051,
-        "ExitTrendIndicator": "trend_close_2h"
     }
 
     # trailing stoploss hyperopt parameters
