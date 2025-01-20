@@ -16,6 +16,6 @@ send_telegram_message() {
 }
 
 # Monitor the log file and send updates to Telegram
-tail -f /var/log/freqtrade.out.log | while read line; do
+tail -f /var/log/freqtrade.out.log /var/log/freqtrade.error.log | while read line; do
     send_telegram_message "$line"
 done
