@@ -22,7 +22,7 @@ tail -f /var/log/freqtrade.log | while read line; do
         send_telegram_message "LOGS" "$logs"
         logs=""
     fi
-done &  # Run the monitoring loop in the background
+done
 
 # Keep the script running
 while true; do
