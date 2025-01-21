@@ -12,7 +12,7 @@ send_telegram_message() {
 # Monitor the log files and send updates to Telegram
 tail -f /var/log/freqtrade.log | while read line; do
     send_telegram_message "CONF" "$line"
-done
+done &
 
 # Keep the script running
 while true; do
