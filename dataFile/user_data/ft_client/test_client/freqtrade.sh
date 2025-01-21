@@ -10,6 +10,7 @@ send_telegram_message() {
 }
 
 # Monitor the log files and send updates to Telegram
+# https://www.freqtrade.io/en/2023.11/advanced-setup/#logging-to-syslog
 tail -f /var/log/freqtrade.log | while read line; do
     send_telegram_message "CONF" "$line"
 done &
