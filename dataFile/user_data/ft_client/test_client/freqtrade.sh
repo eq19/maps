@@ -10,18 +10,8 @@ send_telegram_message() {
 }
 
 # Monitor the log files and send updates to Telegram
-tail -f /home/runner/supervisord.log | while read line; do
-    send_telegram_message "CONF" "$line"
-done
-
-# Send updates to Telegram in batches
-logs=""
 tail -f /var/log/freqtrade.log | while read line; do
-    logs+="$line\n"
-    if [[ $(echo "$logs" | wc -l) -ge 10 ]]; then
-        send_telegram_message "LOGS" "$logs"
-        logs=""
-    fi
+    send_telegram_message "CONF" "$line"
 done
 
 # Keep the script running
