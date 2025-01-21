@@ -9,14 +9,14 @@ send_telegram_message() {
 
 # Monitor the log files and send updates to Telegram
 # https://www.freqtrade.io/en/2023.11/advanced-setup/#logging-to-syslog
-tail -f /var/log/freqtrade.log | while read line; do
+tail -f /var/log/freqtrade.log | grep -iE "WARNING|ERROR" | while read line; do
     send_telegram_message "$line"
 done &
 
 # Keep the script running
-while true; do
-    sleep 3600
-done
+#while true; do
+    #sleep 3600
+#done
 
 # Handle graceful termination
-trap "echo 'Terminating...'; exit" SIGINT SIGTERM
+#trap "echo 'Terminating...'; exit" SIGINT SIGTERM
