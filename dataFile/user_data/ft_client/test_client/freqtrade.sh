@@ -4,6 +4,7 @@
 send_telegram_message() {
     local log_type=$1
     local message=$2
+    # https://www.freqtrade.io/en/stable/faq/#how-do-i-search-the-bot-logs-for-something
     curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
     -d chat_id="${TELEGRAM_CHAT_ID}" \
     -d text="[$log_type] $message" > /dev/null
