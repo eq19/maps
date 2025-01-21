@@ -10,7 +10,7 @@ send_telegram_message() {
 }
 
 # Monitor the log files and send updates to Telegram
-tail -f /var/log/freqtrade.log | while read line; do
+tail -f /home/runner/supervisord.log | while read line; do
     send_telegram_message "OUT" "$line"
 done &
 
