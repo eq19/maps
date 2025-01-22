@@ -14,9 +14,9 @@ tail -f /var/log/freqtrade.log | grep --line-buffered -iE "WARNING|ERROR" | whil
 done &
 
 # Keep the script running
-#while true; do
-    #sleep 3600
-#done
+while true; do
+    sleep 3600
+done
 
 # Handle graceful termination
-#trap "echo 'Terminating...'; exit" SIGINT SIGTERM
+trap "echo 'Terminating...'; exit" SIGINT SIGTERM
