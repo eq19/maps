@@ -182,14 +182,14 @@ class ichiV1(IStrategy):
     # Optimal
     timeframe = '15m'
     startup_candle_count = 120
-    ignore_roi_if_buy_signal = False
+    ignore_roi_if_entry_signal = False
     process_only_new_candles = False
 
     # Stoploss:
     stoploss = -0.275
     trailing_stop = False
-    use_sell_signal = True
-    sell_profit_only = False
+    use_exit_signal = True
+    exit_profit_only = False
     #trailing_stop_positive = 0.002
     #trailing_stop_positive_offset = 0.025
     #trailing_only_offset_is_reached = True
@@ -311,7 +311,7 @@ class ichiV1(IStrategy):
         return dataframe
 
 
-    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         conditions = []
 
@@ -388,7 +388,7 @@ class ichiV1(IStrategy):
         return dataframe
 
 
-    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         conditions = []
 
