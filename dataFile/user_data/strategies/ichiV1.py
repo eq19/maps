@@ -307,6 +307,80 @@ class ichiV1(IStrategy):
         return np.where(df[name + '_nmin'] == df[name + '_nmax'], 0, (2.0*(df[name]-df[name + '_nmin'])/(df[name + '_nmax']-df[name + '_nmin'])-1.0))
 
 
+    @informative('1d')
+    def populate_indicators_1d(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
+        dataframe['age_filter_ok'] = (dataframe['volume'].rolling(window=self.age_filter, min_periods=self.age_filter).min() > 0)
+        return dataframe   
+
+
+    def informative_pairs(self):
+
+        # get access to all pairs available in whitelist.
+        pairs = self.dp.current_whitelist()
+        # Assign tf to each pair so they can be downloaded and cached for strategy.
+        informative_pairs = [(pair, '1h') for pair in pairs]
+        informative_pairs = [(pair, '15m') for pair in pairs]
+        informative_pairs.extend([(pair, self.informative_timeframe) for pair in pairs])
+
+        informative_pairs += [("BTC/IDR", "15m")]
+        informative_pairs += [("BTC/IDR", "1h")]
+        informative_pairs += [("BTC/IDR", "1d")]
+
+        return informative_pairs
+
+
+    def get_informative_indicators(self, metadata: dict):
+
+        dataframe = self.dp.get_pair_dataframe(
+            pair=metadata['pair'], timeframe=self.informative_timeframe)
+
+        return dataframe
+
+
+    def informative_1h_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
+        tik = time.perf_counter()
+        assert self.dp, "DataProvider is required for multiple timeframes."
+        # Get the informative pair
+        informative_1h = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
+        # RSI
+        informative_1h['rsi'] = ta.RSI(informative_1h, timeperiod=14)
+        #Weekly average close price  
+        informative_1h['weekly_close_avg'] = informative_1h['close'].rolling(168).mean()
+
+        return informative_1h
+
+#######################################################################
+    # Informative indicator for pump detection 
+
+    def informative_15m_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+ 
+        assert self.dp, "DataProvider is required for multiple timeframes."
+        # Get the informative pair
+        informative_15m = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.inf_15m)
+        
+        informative_15m['max_flow_price'] = max_pump_detect_price_15m(informative_15m, period=self.pump_period.value, pause=self.pump_pause_duration.value)
+        informative_15m['flow_price'] = flow_price_15m(informative_15m, period=self.pump_period.value, pause=self.pump_pause_duration.value)
+        
+        return informative_15m
+#######################################################################
+
+
+    def top_percent_change(self, dataframe: DataFrame, length: int) -> float:
+        """
+        Percentage change of the current close from the range maximum Open price
+
+        :param dataframe: DataFrame The original OHLC dataframe
+        :param length: int The length to look back
+        """
+        df = dataframe.copy()
+        if length == 0:
+            return ((df['open'] - df['close']) / df['close'])
+        else:
+            return ((df['open'].rolling(length).max() - df['close']) / df['close'])
+
+
     def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         ### BTC protection
