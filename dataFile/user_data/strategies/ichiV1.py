@@ -307,6 +307,77 @@ class ichiV1(IStrategy):
         return np.where(df[name + '_nmin'] == df[name + '_nmax'], 0, (2.0*(df[name]-df[name + '_nmin'])/(df[name + '_nmax']-df[name + '_nmin'])-1.0))
 
 
+    slippage_protection = {
+        'retries': 3,
+        'max_slippage': -0.02
+    }
+
+
+    def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float, current_profit: float, **kwargs):
+        if ((current_time - trade.open_date_utc).seconds / 60 > 1440):
+            return 'unclog'
+
+
+    def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
+                        current_rate: float, current_profit: float, **kwargs) -> float:
+        HSL = self.pHSL.value
+        if (current_profit > self.ProfitMargin2.value):
+            sl_profit = self.ProfitLoss2.value
+        elif (current_profit > self.ProfitMargin1.value):
+            sl_profit = self.ProfitLoss1.value + ((current_profit - self.ProfitMargin1.value) * (self.ProfitLoss2.value - self.ProfitLoss1.value) / (self.ProfitMargin2.value - self.ProfitMargin1.value))
+        else:
+            sl_profit = HSL
+
+        return sl_profit
+
+
+    def confirm_trade_exit(self, pair: str, trade: Trade, order_type: str, amount: float,
+                           rate: float, time_in_force: str, sell_reason: str,
+                           current_time: datetime, **kwargs) -> bool:
+
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        last_candle = dataframe.iloc[-1]
+        current_profit = trade.calc_profit_ratio(rate)
+
+        if 'tesla_' in trade.buy_tag and current_profit > 0.01:
+            return True
+
+        if (trade.buy_tag == 'telsa_'):
+            if (sell_reason in ['sell_signal'])or (sell_reason in ['roi']) or (sell_reason in ['trailing_stop_loss']):
+                        return False 
+
+        if (last_candle is not None):
+            if (sell_reason in ['sell_signal']):
+                if (last_candle['hma_50'] > last_candle['ema_100']) and (last_candle['rsi'] < 45): #*1.2
+                    return False
+
+        if (last_candle is not None):
+            if (sell_reason in ['sell_signal']):
+                if (last_candle['hma_50']*1.149 > last_candle['ema_100']) and (last_candle['close'] < last_candle['ema_100']*0.951): #*1.2
+                    return False
+
+        # slippage
+        try:
+            state = self.slippage_protection['__pair_retries']
+        except KeyError:
+            state = self.slippage_protection['__pair_retries'] = {}
+
+        candle = dataframe.iloc[-1].squeeze()
+
+        slippage = (rate / candle['close']) - 1
+        if slippage < self.slippage_protection['max_slippage']:
+            pair_retries = state.get(pair, 0)
+            if pair_retries < self.slippage_protection['retries']:
+                state[pair] = pair_retries + 1
+                return False
+
+        state[pair] = 0
+
+        return True
+
+    age_filter = 30
+
+
     @informative('1d')
     def populate_indicators_1d(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
