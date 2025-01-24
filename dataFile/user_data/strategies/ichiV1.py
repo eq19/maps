@@ -190,8 +190,14 @@ class ichiV1(IStrategy):
 
     # Optimal
     timeframe = '15m'
+    informative_timeframe = '1h'
     startup_candle_count: int = 120
+    inf_15m = '15m' #use for pump detection
+    timeframe_minutes = timeframe_to_minutes(timeframe)
+
+    use_custom_stoploss = True
     process_only_new_candles = False
+    position_adjustment_enable = True
     ignore_roi_if_entry_signal = False
 
     window_buy = IntParameter(60, 1000, default=500, space='buy', optimize=True)
@@ -204,12 +210,6 @@ class ichiV1(IStrategy):
         'sell': 'gtc'
     }
 
-    use_custom_stoploss = True
-    # Optimal timeframe for the strategy
-    timeframe = '15m'
-    informative_timeframe = '1h'
-    inf_15m = '15m' #use for pump detection
-    timeframe_minutes = timeframe_to_minutes(timeframe)
     # storage dict for custom info
     custom_info = {}
 
@@ -264,7 +264,6 @@ class ichiV1(IStrategy):
         1, 2, default=1, space="buy", optimize=False, load=True
     )
 
-    position_adjustment_enable = True
     max_dca_orders = 2
     max_dca_multiplier = 1.25
     dca_stake_multiplier = 1.25
