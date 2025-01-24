@@ -32,6 +32,7 @@ from warnings import simplefilter
 
 from technical.indicators import dema
 
+
 logger = logging.getLogger(__name__)
 
 simplefilter(action="ignore", category=pd.errors.PerformanceWarning)
@@ -42,6 +43,7 @@ DUALFIT = False
 COUNT = 10
 GAP = 3
 ### END SETINGS ###
+
 
 def max_pump_detect_price_15m(dataframe, period=14, pause = 288 ):
     df = dataframe.copy()
@@ -61,6 +63,7 @@ def max_pump_detect_price_15m(dataframe, period=14, pause = 288 ):
     
     return max_flow_price
 
+
 def flow_price_15m(dataframe, period=14, pause = 288 ):
     df = dataframe.copy()
     df['size'] = df['high'] - df['low']
@@ -78,16 +81,20 @@ def flow_price_15m(dataframe, period=14, pause = 288 ):
     
     return flow_price_normalized
 
+
 def to_minutes(**timdelta_kwargs):
     return int(timedelta(**timdelta_kwargs).total_seconds() / 60)
+
 
 def normalize(data, min_value, max_value):
     return (data - min_value) / (max_value - min_value)
 
+
 def pct_change(a, b):
     return (b - a) / a
 
-    # smoothed Heiken Ashi
+
+# smoothed Heiken Ashi
 def HA(dataframe, smoothing=None):
     df = dataframe.copy()
 
@@ -113,6 +120,7 @@ def HA(dataframe, smoothing=None):
             df['Smooth_HA_L']=ta.EMA(df['HA_Low'], sml)
             
     return df
+
 
 def pump_warning(dataframe, perc=15):
     df = dataframe.copy()    
@@ -237,10 +245,23 @@ class ichiV1(IStrategy):
 
     # Buy hyperspace params:
     buy_params = {
+        "max_slip": 0.668,
+        "antipump_threshold": 0.265,
+        "antipump_threshold_2": 0.133,
+        "buy_btc_safe_1d": -0.236,
+        "buy_btc_safe": -213,
+        "buy_threshold": 0.012,
+        ##
+        "pump_limit": 1000,
+        "pump_pause_duration": 192,
+        "pump_period": 14,
+        "pump_recorver_price": 1.1,
+        ##
         "buy_trend_above_senkou_level": 1,
         "buy_trend_bullish_level": 6,
-        "buy_fan_magnitude_shift_value": 3,
-        "buy_min_fan_magnitude_gain": 1.002 # NOTE: Good value (Win% ~70%), alot of trades
+        "tesla_enabled": True,
+       # "buy_fan_magnitude_shift_value": 3,
+        "buy_min_fan_magnitude_gain": 1.0022, # NOTE: Good value (Win% ~70%), alot of trades
         #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
     }
 
