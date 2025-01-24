@@ -188,6 +188,137 @@ class ichiV1(IStrategy):
         "528": -10
     }
 
+    # Optimal
+    timeframe = '15m'
+    startup_candle_count = 120
+    ignore_roi_if_entry_signal = False
+    process_only_new_candles = False
+
+    # Stoploss:
+    stoploss = -0.275
+    trailing_stop = False
+    use_exit_signal = True
+    exit_profit_only = False
+    #trailing_stop_positive = 0.002
+    #trailing_stop_positive_offset = 0.025
+    #trailing_only_offset_is_reached = True
+
+    # Buy hyperspace params:
+    buy_params = {
+        "max_slip": 0.668,
+        "antipump_threshold": 0.265,
+        "antipump_threshold_2": 0.133,
+        "buy_btc_safe_1d": -0.236,
+        "buy_btc_safe": -213,
+        "buy_threshold": 0.012,
+        ##
+        "pump_limit": 1000,
+        "pump_pause_duration": 192,
+        "pump_period": 14,
+        "pump_recorver_price": 1.1,
+        ##
+        "buy_trend_above_senkou_level": 1,
+        "buy_trend_bullish_level": 6,
+        "tesla_enabled": True,
+        #"buy_fan_magnitude_shift_value": 3,
+        "buy_min_fan_magnitude_gain": 1.0022, # NOTE: Good value (Win% ~70%), alot of trades
+        #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
+    }
+
+    slippage_protection = {
+        'retries': 3,
+        'max_slippage': -0.02
+    }
+
+    # minimum conditions to match in buy
+    buy_minimum_conditions = IntParameter(
+        1, 2, default=1, space="buy", optimize=False, load=True
+    )
+
+    position_adjustment_enable = True
+    max_dca_orders = 2
+    max_dca_multiplier = 1.25
+    dca_stake_multiplier = 1.25
+
+    # Pump protection
+    pump_period = IntParameter(
+        5, 24, default=buy_params['pump_period'], space='buy', optimize=False)
+    pump_limit = IntParameter(
+        100,10000, default=buy_params['pump_limit'], space='buy', optimize=True)
+    pump_recorver_price = DecimalParameter(
+        1.0, 1.3, default=buy_params['pump_recorver_price'], space='buy', optimize=True)
+    pump_pause_duration = IntParameter(
+        6, 500, default=buy_params['pump_pause_duration'], space='buy', optimize=True)
+
+##################################################################    
+    ## Slippage params
+    is_optimize_slip = False
+    max_slip = DecimalParameter(0.33, 0.80, default=0.33, decimals=3, optimize=is_optimize_slip , load=True)
+    buy_btc_safe = IntParameter(-300, 50, default=buy_params['buy_btc_safe'], optimize = True)
+    buy_btc_safe_1d = DecimalParameter(-0.5, -0.015, default=buy_params['buy_btc_safe_1d'], optimize=True)
+    antipump_threshold = DecimalParameter(0, 0.4, default=buy_params['antipump_threshold'], space='buy', optimize=True)
+    antipump_threshold_2 = DecimalParameter(0, 0.4, default=buy_params['antipump_threshold_2'], space='buy', optimize=True)
+
+    buy_trend_above_senkou_level = IntParameter(1, 8, default=buy_params['buy_trend_above_senkou_level'], space="buy")
+    buy_trend_bullish_level = IntParameter(1, 8, default=buy_params['buy_trend_bullish_level'], space="buy")
+    buy_fan_magnitude_shift_value = IntParameter(1, 10, default=buy_params['buy_fan_magnitude_shift_value'], space="buy")
+    buy_min_fan_magnitude_gain = DecimalParameter(1.001, 1.02, default=buy_params['buy_min_fan_magnitude_gain'], space="buy")
+    #buy_min_fan_magnitude_gain = DecimalParameter(70, 90, default=buy_params['buy_min_fan_magnitude_gain'], space='buy', optimize=False, load=True)    # Multi Offset
+    buy_threshold = DecimalParameter(0.003, 0.012, default=buy_params['buy_threshold'], optimize=True)  
+
+#######################################################################
+
+    # Sell hyperspace params:
+    # NOTE: was 15m but kept bailing out in dryrun
+    sell_params = {
+        "pHSL": -0.08,
+        "ProfitLoss1": 0.005,
+        "ProfitLoss2": 0.021,
+        "ProfitMargin1": 0.018,
+        "ProfitMargin2": 0.051,
+        "ExitTrendIndicator": "trend_close_2h"
+    }
+
+    # trailing stoploss hyperopt parameters
+    pHSL = DecimalParameter(-0.15, -0.08, default=sell_params['pHSL'], decimals=3, space='sell', optimize=True)
+    ProfitLoss1 = DecimalParameter(0.005, 0.012, default=sell_params['ProfitLoss1'], decimals=3, space='sell', optimize=True)
+    ProfitLoss2 = DecimalParameter(0.010, 0.025, default=sell_params['ProfitLoss2'], decimals=3, space='sell', optimize=True)
+    ProfitMargin1 = DecimalParameter(0.009, 0.019, default=sell_params['ProfitMargin1'], decimals=3, space='sell', optimize=True)
+    ProfitMargin2 = DecimalParameter(0.033, 0.099, default=sell_params['ProfitMargin2'], decimals=3, space='sell', optimize=True)
+    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default=sell_params['ExitTrendIndicator'], space='sell')
+
+
+    plot_config = {
+        'main_plot': {
+            # fill area between senkou_a and senkou_b
+            'senkou_a': {
+                'color': 'green', #optional
+                'fill_to': 'senkou_b',
+                'fill_label': 'Ichimoku Cloud', #optional
+                'fill_color': 'rgba(255,76,46,0.2)', #optional
+            },
+            # plot senkou_b, too. Not only the area to it.
+            'senkou_b': {},
+            'trend_close_15m': {'color': '#FF5733'},
+            'trend_close_30m': {'color': '#FF8333'},
+            'trend_close_1h': {'color': '#FFB533'},
+            'trend_close_2h': {'color': '#FFE633'},
+            'trend_close_4h': {'color': '#E3FF33'},
+            'trend_close_6h': {'color': '#C4FF33'},
+            'trend_close_8h': {'color': '#61FF33'},
+            'trend_close_1d': {'color': '#33FF7D'}
+        },
+        'subplots': {
+            'fan_magnitude': {
+                'fan_magnitude': {}
+            },
+            'fan_magnitude_gain': {
+                'fan_magnitude_gain': {}
+            }
+        }
+    }
+
+
     class HyperOpt:
         @staticmethod
         def generate_roi_table(params: dict):
@@ -228,121 +359,6 @@ class ichiV1(IStrategy):
                 Integer(1, 30, name='roi_t6'),
             ]
 
-    # Optimal
-    timeframe = '15m'
-    startup_candle_count = 120
-    ignore_roi_if_entry_signal = False
-    process_only_new_candles = False
-
-    # Stoploss:
-    stoploss = -0.275
-    trailing_stop = False
-    use_exit_signal = True
-    exit_profit_only = False
-    #trailing_stop_positive = 0.002
-    #trailing_stop_positive_offset = 0.025
-    #trailing_only_offset_is_reached = True
-
-    # Buy hyperspace params:
-    buy_params = {
-        "max_slip": 0.668,
-        "antipump_threshold": 0.265,
-        "antipump_threshold_2": 0.133,
-        "buy_btc_safe_1d": -0.236,
-        "buy_btc_safe": -213,
-        "buy_threshold": 0.012,
-        ##
-        "pump_limit": 1000,
-        "pump_pause_duration": 192,
-        "pump_period": 14,
-        "pump_recorver_price": 1.1,
-        ##
-        "buy_trend_above_senkou_level": 1,
-        "buy_trend_bullish_level": 6,
-        "tesla_enabled": True,
-        #"buy_fan_magnitude_shift_value": 3,
-        "buy_min_fan_magnitude_gain": 1.0022, # NOTE: Good value (Win% ~70%), alot of trades
-        #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
-    }
-
-    # Pump protection
-    pump_period = IntParameter(
-        5, 24, default=buy_params['pump_period'], space='buy', optimize=False)
-    pump_limit = IntParameter(
-        100,10000, default=buy_params['pump_limit'], space='buy', optimize=True)
-    pump_recorver_price = DecimalParameter(
-        1.0, 1.3, default=buy_params['pump_recorver_price'], space='buy', optimize=True)
-    pump_pause_duration = IntParameter(
-        6, 500, default=buy_params['pump_pause_duration'], space='buy', optimize=True)
-
-##################################################################    
-    ## Slippage params
-    is_optimize_slip = False
-    max_slip = DecimalParameter(0.33, 0.80, default=0.33, decimals=3, optimize=is_optimize_slip , load=True)
-    buy_btc_safe = IntParameter(-300, 50, default=buy_params['buy_btc_safe'], optimize = True)
-    buy_btc_safe_1d = DecimalParameter(-0.5, -0.015, default=buy_params['buy_btc_safe_1d'], optimize=True)
-    antipump_threshold = DecimalParameter(0, 0.4, default=buy_params['antipump_threshold'], space='buy', optimize=True)
-    antipump_threshold_2 = DecimalParameter(0, 0.4, default=buy_params['antipump_threshold_2'], space='buy', optimize=True)
-
-    buy_trend_above_senkou_level = IntParameter(1, 8, default=buy_params['buy_trend_above_senkou_level'], space="buy")
-    buy_trend_bullish_level = IntParameter(1, 8, default=buy_params['buy_trend_bullish_level'], space="buy")
-    buy_fan_magnitude_shift_value = IntParameter(1, 10, default=buy_params['buy_fan_magnitude_shift_value'], space="buy")
-    buy_min_fan_magnitude_gain = DecimalParameter(1.001, 1.02, default=buy_params['buy_min_fan_magnitude_gain'], space="buy")
-    #buy_min_fan_magnitude_gain = DecimalParameter(70, 90, default=buy_params['buy_min_fan_magnitude_gain'], space='buy', optimize=False, load=True)    # Multi Offset
-    buy_threshold = DecimalParameter(0.003, 0.012, default=buy_params['buy_threshold'], optimize=True)  
-
-#######################################################################
-
-
-    # Sell hyperspace params:
-    # NOTE: was 15m but kept bailing out in dryrun
-    sell_params = {
-        "pHSL": -0.08,
-        "ProfitLoss1": 0.005,
-        "ProfitLoss2": 0.021,
-        "ProfitMargin1": 0.018,
-        "ProfitMargin2": 0.051,
-        "ExitTrendIndicator": "trend_close_2h"
-    }
-
-    # trailing stoploss hyperopt parameters
-    pHSL = DecimalParameter(-0.15, -0.08, default=sell_params['pHSL'], decimals=3, space='sell', optimize=True)
-    ProfitLoss1 = DecimalParameter(0.005, 0.012, default=sell_params['ProfitLoss1'], decimals=3, space='sell', optimize=True)
-    ProfitLoss2 = DecimalParameter(0.010, 0.025, default=sell_params['ProfitLoss2'], decimals=3, space='sell', optimize=True)
-    ProfitMargin1 = DecimalParameter(0.009, 0.019, default=sell_params['ProfitMargin1'], decimals=3, space='sell', optimize=True)
-    ProfitMargin2 = DecimalParameter(0.033, 0.099, default=sell_params['ProfitMargin2'], decimals=3, space='sell', optimize=True)
-    ExitTrendIndicator = CategoricalParameter(['trend_close_30m', 'trend_close_1h', 'trend_close_2h', 'trend_close_4h', 'trend_close_6h', 'trend_close_8h'], default=sell_params['ExitTrendIndicator'], space='sell')
-
-    plot_config = {
-        'main_plot': {
-            # fill area between senkou_a and senkou_b
-            'senkou_a': {
-                'color': 'green', #optional
-                'fill_to': 'senkou_b',
-                'fill_label': 'Ichimoku Cloud', #optional
-                'fill_color': 'rgba(255,76,46,0.2)', #optional
-            },
-            # plot senkou_b, too. Not only the area to it.
-            'senkou_b': {},
-            'trend_close_15m': {'color': '#FF5733'},
-            'trend_close_30m': {'color': '#FF8333'},
-            'trend_close_1h': {'color': '#FFB533'},
-            'trend_close_2h': {'color': '#FFE633'},
-            'trend_close_4h': {'color': '#E3FF33'},
-            'trend_close_6h': {'color': '#C4FF33'},
-            'trend_close_8h': {'color': '#61FF33'},
-            'trend_close_1d': {'color': '#33FF7D'}
-        },
-        'subplots': {
-            'fan_magnitude': {
-                'fan_magnitude': {}
-            },
-            'fan_magnitude_gain': {
-                'fan_magnitude_gain': {}
-            }
-        }
-    }
-
 
     def rollingNormalize(self, dataframe, name):
 
@@ -352,23 +368,6 @@ class ichiV1(IStrategy):
         return np.where(df[name + '_nmin'] == df[name + '_nmax'], 0, (2.0*(df[name]-df[name + '_nmin'])/(df[name + '_nmax']-df[name + '_nmin'])-1.0))
 
 
-    slippage_protection = {
-        'retries': 3,
-        'max_slippage': -0.02
-    }
-
-
-    # minimum conditions to match in buy
-    buy_minimum_conditions = IntParameter(
-        1, 2, default=1, space="buy", optimize=False, load=True
-    )
-
-    position_adjustment_enable = True
-    max_dca_orders = 2
-    max_dca_multiplier = 1.25
-    dca_stake_multiplier = 1.25
-
-  
     def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
                             proposed_stake: float, min_stake: float, max_stake: float,
                             **kwargs) -> float:
