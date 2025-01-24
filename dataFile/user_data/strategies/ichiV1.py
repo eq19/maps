@@ -601,7 +601,7 @@ class ichiV1(IStrategy):
         return dataframe
 
 
-  def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['open'] = heikinashi['open']
