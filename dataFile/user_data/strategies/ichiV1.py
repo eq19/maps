@@ -195,14 +195,13 @@ class ichiV1(IStrategy):
     inf_15m = '15m' #use for pump detection
     timeframe_minutes = timeframe_to_minutes(timeframe)
 
+    trailing_stop = False
+    use_exit_signal = True
+    exit_profit_only = False
     use_custom_stoploss = True
     process_only_new_candles = False
     position_adjustment_enable = True
     ignore_roi_if_entry_signal = False
-
-    window_buy = IntParameter(60, 1000, default=500, space='buy', optimize=True)
-    bandwidth_buy = IntParameter(2, 15, default=8, space='buy', optimize=True)
-    mult_buy = DecimalParameter(0.5, 20.0, default=3, space='buy', optimize=True)
 
     # Optional order time in force.
     order_time_in_force = {
@@ -225,9 +224,6 @@ class ichiV1(IStrategy):
 
     # Stoploss:
     stoploss = -0.275
-    trailing_stop = False
-    use_exit_signal = True
-    exit_profit_only = False
     #trailing_stop_positive = 0.002
     #trailing_stop_positive_offset = 0.025
     #trailing_only_offset_is_reached = True
@@ -267,6 +263,10 @@ class ichiV1(IStrategy):
     max_dca_orders = 2
     max_dca_multiplier = 1.25
     dca_stake_multiplier = 1.25
+
+    window_buy = IntParameter(60, 1000, default=500, space='buy', optimize=True)
+    bandwidth_buy = IntParameter(2, 15, default=8, space='buy', optimize=True)
+    mult_buy = DecimalParameter(0.5, 20.0, default=3, space='buy', optimize=True)
 
     # Pump protection
     pump_period = IntParameter(
