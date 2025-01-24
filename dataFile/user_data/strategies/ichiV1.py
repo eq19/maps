@@ -81,6 +81,47 @@ def flow_price_15m(dataframe, period=14, pause = 288 ):
 def to_minutes(**timdelta_kwargs):
     return int(timedelta(**timdelta_kwargs).total_seconds() / 60)
 
+def normalize(data, min_value, max_value):
+    return (data - min_value) / (max_value - min_value)
+
+def pct_change(a, b):
+    return (b - a) / a
+
+    # smoothed Heiken Ashi
+def HA(dataframe, smoothing=None):
+    df = dataframe.copy()
+
+    df['HA_Close']=(df['open'] + df['high'] + df['low'] + df['close'])/4
+
+    df.reset_index(inplace=True)
+
+    ha_open = [ (df['open'][0] + df['close'][0]) / 2 ]
+    [ ha_open.append((ha_open[i] + df['HA_Close'].values[i]) / 2) for i in range(0, len(df)-1) ]
+    df['HA_Open'] = ha_open
+
+    df.set_index('index', inplace=True)
+
+    df['HA_High']=df[['HA_Open','HA_Close','high']].max(axis=1)
+    df['HA_Low']=df[['HA_Open','HA_Close','low']].min(axis=1)
+
+    if smoothing is not None:
+        sml = abs(int(smoothing))
+        if sml > 0:
+            df['Smooth_HA_O']=ta.EMA(df['HA_Open'], sml)
+            df['Smooth_HA_C']=ta.EMA(df['HA_Close'], sml)
+            df['Smooth_HA_H']=ta.EMA(df['HA_High'], sml)
+            df['Smooth_HA_L']=ta.EMA(df['HA_Low'], sml)
+            
+    return df
+
+def pump_warning(dataframe, perc=15):
+    df = dataframe.copy()    
+    df["change"] = df["high"] - df["low"]
+    df["test1"] = (df["close"] > df["open"])
+    df["test2"] = ((df["change"]/df["low"]) > (perc/100))
+    df["result"] = (df["test1"] & df["test2"]).astype('int')
+    return df['result']
+  
 #########################################################
 #######################  ichiV1_Mod #####################
 """
@@ -257,7 +298,16 @@ class ichiV1(IStrategy):
         }
     }
 
-    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
+  def rollingNormalize(self, dataframe, name):
+
+        df = dataframe.copy()
+        df[name + '_nmin'] = df[name].rolling(window=1440 // self.timeframe_minutes).min()
+        df[name + '_nmax'] = df[name].rolling(window=1440 // self.timeframe_minutes).max()
+        return np.where(df[name + '_nmin'] == df[name + '_nmax'], 0, (2.0*(df[name]-df[name + '_nmin'])/(df[name + '_nmax']-df[name + '_nmin'])-1.0))
+
+
+  def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         heikinashi = qtpylib.heikinashi(dataframe)
         dataframe['open'] = heikinashi['open']
