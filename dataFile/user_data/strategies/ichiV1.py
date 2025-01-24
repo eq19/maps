@@ -220,7 +220,7 @@ class ichiV1(IStrategy):
         "buy_trend_above_senkou_level": 1,
         "buy_trend_bullish_level": 6,
         "tesla_enabled": True,
-        #"buy_fan_magnitude_shift_value": 3,
+        "buy_fan_magnitude_shift_value": 3,
         "buy_min_fan_magnitude_gain": 1.0022, # NOTE: Good value (Win% ~70%), alot of trades
         #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
     }
