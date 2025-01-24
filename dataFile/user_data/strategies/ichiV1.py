@@ -307,6 +307,107 @@ class ichiV1(IStrategy):
         return np.where(df[name + '_nmin'] == df[name + '_nmax'], 0, (2.0*(df[name]-df[name + '_nmin'])/(df[name + '_nmax']-df[name + '_nmin'])-1.0))
 
 
+    def normal_tf_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
+        ### BTC protection
+        if self.config['stake_currency'] in ['USDT','BUSD','USDC','DAI','TUSD','PAX','USD','EUR','GBP','IDR']:
+            btc_info_pair = f"BTC/{self.config['stake_currency']}"
+        else:
+            btc_info_pair = "BTC/IDR"
+
+        btc_df = self.dp.get_pair_dataframe(pair=btc_info_pair, timeframe=self.timeframe)
+        dataframe['btc_rsi'] = normalize(ta.RSI(btc_df, timeperiod=14), 0, 100)
+
+        ### BTC protection
+        dataframe['btc_15m']= self.dp.get_pair_dataframe('BTC/IDR', timeframe='15m')['close']
+        btc_1d = self.dp.get_pair_dataframe('BTC/IDR', timeframe='1d')[['date', 'close']].rename(columns={"close": "btc"}).shift(1)
+        dataframe = merge_informative_pair(dataframe, btc_1d, '15m', '1d', ffill=True)
+
+        # BTC info
+        informative = self.dp.get_pair_dataframe(pair="BTC/IDR", timeframe="15m")
+        informative_past = informative.copy().shift(1)  
+
+        # BTC 15m dump protection
+        informative_past_source = (informative_past['open'] + informative_past['close'] + informative_past['high'] + informative_past['low']) / 4        # Get BTC price
+        informative_threshold = informative_past_source * self.buy_threshold.value                                                                       # BTC dump n% in 5 min
+        informative_past_delta = informative_past['close'].shift(1) - informative_past['close']                                                          # should be positive if dump
+        informative_diff = informative_threshold - informative_past_delta                                                                                # Need be larger than 0
+        dataframe['btc_threshold'] = informative_threshold
+        dataframe['btc_diff'] = informative_diff
+
+        # BTC 1d dump protection
+        informative_past_1d = informative.copy().shift(288)
+        informative_past_source_1d = (informative_past_1d['open'] + informative_past_1d['close'] + informative_past_1d['high'] + informative_past_1d['low']) / 4
+        dataframe['btc_15m'] = informative_past_source
+        dataframe['btc_1d'] = informative_past_source_1d 
+
+
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+
+        # strategy ClucMay72018
+        dataframe['ema_slow'] = ta.EMA(dataframe, timeperiod=50)
+        dataframe['volume_mean_slow'] = dataframe['volume'].rolling(window=30).mean()
+        dataframe['hma_50'] = qtpylib.hull_moving_average(dataframe['close'], window=50) 
+        dataframe['ema_100'] = ta.EMA(dataframe, timeperiod=100)
+        dataframe['ema21'] = ta.EMA(dataframe, timeperiod=21)
+        dataframe['ema55'] = ta.EMA(dataframe, timeperiod=55)
+        # Pump strength
+        dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
+        dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
+        dataframe['zema_30'] = ftt.dema(dataframe, period=30)
+        dataframe['zema_200'] = ftt.dema(dataframe, period=200)
+        dataframe['pump_strength'] = (dataframe['zema_30'] - dataframe['zema_200']) / dataframe['zema_30']
+        dataframe['pump_strength_2'] = (dataframe['ema_50'] - dataframe['ema_200']) / dataframe['ema_50']
+
+        heikinashi = qtpylib.heikinashi(dataframe)
+        heikinashi["volume"] = dataframe["volume"]
+        dataframe['high'] = heikinashi['high']
+        dataframe['low'] = heikinashi['low']
+        dataframe['open'] = heikinashi['open']
+        #dataframe['close'] = heikinashi['close']
+        if 'close' not in dataframe.columns:
+            dataframe['close'] = heikinashi['close']
+
+        dataframe['trend_close_15m'] = dataframe['close']
+        dataframe['trend_close_30m'] = ta.EMA(dataframe['close'], timeperiod=2)
+        dataframe['trend_close_1h'] = ta.EMA(dataframe['close'], timeperiod=4)
+        dataframe['trend_close_2h'] = ta.EMA(dataframe['close'], timeperiod=8)
+        dataframe['trend_close_4h'] = ta.EMA(dataframe['close'], timeperiod=16)
+        dataframe['trend_close_6h'] = ta.EMA(dataframe['close'], timeperiod=24)
+        dataframe['trend_close_8h'] = ta.EMA(dataframe['close'], timeperiod=32)
+        dataframe['trend_close_1d'] = ta.EMA(dataframe['close'], timeperiod=96)
+
+        dataframe['trend_open_15m'] = dataframe['open']
+        dataframe['trend_open_30m'] = ta.EMA(dataframe['open'], timeperiod=2)
+        dataframe['trend_open_1h'] = ta.EMA(dataframe['open'], timeperiod=4)
+        dataframe['trend_open_2h'] = ta.EMA(dataframe['open'], timeperiod=8)
+        dataframe['trend_open_4h'] = ta.EMA(dataframe['open'], timeperiod=16)
+        dataframe['trend_open_6h'] = ta.EMA(dataframe['open'], timeperiod=24)
+        dataframe['trend_open_8h'] = ta.EMA(dataframe['open'], timeperiod=32)
+        dataframe['trend_open_1d'] = ta.EMA(dataframe['open'], timeperiod=96)
+
+        dataframe['fan_magnitude'] = (dataframe['trend_close_1h'] / dataframe['trend_close_8h'])
+        dataframe['fan_magnitude_gain'] = dataframe['fan_magnitude'] / dataframe['fan_magnitude'].shift(1)
+
+        ichimoku = ftt.ichimoku(dataframe, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
+        dataframe['chikou_span'] = ichimoku['chikou_span']
+        dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
+        dataframe['kijun_sen'] = ichimoku['kijun_sen']
+        dataframe['senkou_a'] = ichimoku['senkou_span_a']
+        dataframe['senkou_b'] = ichimoku['senkou_span_b']
+        dataframe['leading_senkou_span_a'] = ichimoku['leading_senkou_span_a']
+        dataframe['leading_senkou_span_b'] = ichimoku['leading_senkou_span_b']
+        dataframe['cloud_green'] = ichimoku['cloud_green']
+        dataframe['cloud_red'] = ichimoku['cloud_red']
+
+        dataframe['atr'] = ta.ATR(dataframe)
+
+        # MFI
+        dataframe['mfi'] = ta.MFI(dataframe)
+
+        return dataframe
+
+
   def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         heikinashi = qtpylib.heikinashi(dataframe)
