@@ -313,6 +313,54 @@ class ichiV1(IStrategy):
     }
 
 
+    # minimum conditions to match in buy
+    buy_minimum_conditions = IntParameter(
+        1, 2, default=1, space="buy", optimize=False, load=True
+    )
+
+    position_adjustment_enable = True
+    max_dca_orders = 2
+    max_dca_multiplier = 1.25
+    dca_stake_multiplier = 1.25
+
+  
+    def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
+                            proposed_stake: float, min_stake: float, max_stake: float,
+                            **kwargs) -> float:
+        if (self.config['position_adjustment_enable'] == True) and (self.config['stake_amount'] == 'unlimited'):
+            return self.wallets.get_total_stake_amount() / self.config['max_open_trades'] / self.max_dca_multiplier
+        else:
+            return proposed_stake
+
+  
+    def adjust_trade_position(self, trade: Trade, current_time: datetime,
+                              current_rate: float, current_profit: float, min_stake: float,
+                              max_stake: float, **kwargs):
+        
+        if current_profit > -0.05:
+            return None
+
+        dataframe, _ = self.dp.get_analyzed_dataframe(trade.pair, self.timeframe)
+        last_candle = dataframe.iloc[-1].squeeze()
+        previous_candle = dataframe.iloc[-2].squeeze()
+        if last_candle['close'] < previous_candle['close']:
+            return None
+
+        filled_buys = trade.select_filled_orders('buy')
+        count_of_buys = len(filled_buys)
+
+        if 0 < count_of_buys <= self.max_dca_orders:
+            try:
+                stake_amount = filled_buys[0].cost
+                # This then calculates current safety order size
+                stake_amount = stake_amount * self.dca_stake_multiplier
+                return stake_amount
+            except Exception as exception:
+                return None
+
+        return None
+
+
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float, current_profit: float, **kwargs):
         if ((current_time - trade.open_date_utc).seconds / 60 > 1440):
             return 'unclog'
