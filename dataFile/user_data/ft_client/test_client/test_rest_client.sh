@@ -94,7 +94,7 @@ else
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --fee=$FEE
+  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
