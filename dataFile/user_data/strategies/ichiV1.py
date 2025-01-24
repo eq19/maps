@@ -260,15 +260,39 @@ class ichiV1(IStrategy):
         "buy_trend_above_senkou_level": 1,
         "buy_trend_bullish_level": 6,
         "tesla_enabled": True,
-       # "buy_fan_magnitude_shift_value": 3,
+        #"buy_fan_magnitude_shift_value": 3,
         "buy_min_fan_magnitude_gain": 1.0022, # NOTE: Good value (Win% ~70%), alot of trades
         #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
     }
+
+    # Pump protection
+    pump_period = IntParameter(
+        5, 24, default=buy_params['pump_period'], space='buy', optimize=False)
+    pump_limit = IntParameter(
+        100,10000, default=buy_params['pump_limit'], space='buy', optimize=True)
+    pump_recorver_price = DecimalParameter(
+        1.0, 1.3, default=buy_params['pump_recorver_price'], space='buy', optimize=True)
+    pump_pause_duration = IntParameter(
+        6, 500, default=buy_params['pump_pause_duration'], space='buy', optimize=True)
+
+##################################################################    
+    ## Slippage params
+    is_optimize_slip = False
+    max_slip = DecimalParameter(0.33, 0.80, default=0.33, decimals=3, optimize=is_optimize_slip , load=True)
+    buy_btc_safe = IntParameter(-300, 50, default=buy_params['buy_btc_safe'], optimize = True)
+    buy_btc_safe_1d = DecimalParameter(-0.5, -0.015, default=buy_params['buy_btc_safe_1d'], optimize=True)
+    antipump_threshold = DecimalParameter(0, 0.4, default=buy_params['antipump_threshold'], space='buy', optimize=True)
+    antipump_threshold_2 = DecimalParameter(0, 0.4, default=buy_params['antipump_threshold_2'], space='buy', optimize=True)
 
     buy_trend_above_senkou_level = IntParameter(1, 8, default=buy_params['buy_trend_above_senkou_level'], space="buy")
     buy_trend_bullish_level = IntParameter(1, 8, default=buy_params['buy_trend_bullish_level'], space="buy")
     buy_fan_magnitude_shift_value = IntParameter(1, 10, default=buy_params['buy_fan_magnitude_shift_value'], space="buy")
     buy_min_fan_magnitude_gain = DecimalParameter(1.001, 1.02, default=buy_params['buy_min_fan_magnitude_gain'], space="buy")
+    #buy_min_fan_magnitude_gain = DecimalParameter(70, 90, default=buy_params['buy_min_fan_magnitude_gain'], space='buy', optimize=False, load=True)    # Multi Offset
+    buy_threshold = DecimalParameter(0.003, 0.012, default=buy_params['buy_threshold'], optimize=True)  
+
+#######################################################################
+
 
     # Sell hyperspace params:
     # NOTE: was 15m but kept bailing out in dryrun
