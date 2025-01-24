@@ -81,14 +81,14 @@ else
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  freqtrade hyperopt-list --config $CONFIG
-  freqtrade hyperopt-show --config $CONFIG
-  sed -i "s|$STRATEGY|ichiV1_Marius|g" $CONFIG
+  #freqtrade hyperopt-list --config $CONFIG
+  #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
+  sed -i "s|$STRATEGY|ichiV1_Marius|g" $CONFIG
   jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
   freqtrade edge --fee=$FEE
 
