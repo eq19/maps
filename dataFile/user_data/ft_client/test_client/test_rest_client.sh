@@ -84,7 +84,7 @@ else
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIG --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
 
   echo -e "\n$hr\nSHOW EDGE\n$hr"
   freqtrade edge --help
