@@ -299,7 +299,7 @@ class ichiV1(IStrategy):
     }
 
 
-  def rollingNormalize(self, dataframe, name):
+    def rollingNormalize(self, dataframe, name):
 
         df = dataframe.copy()
         df[name + '_nmin'] = df[name].rolling(window=1440 // self.timeframe_minutes).min()
