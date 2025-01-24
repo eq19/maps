@@ -194,6 +194,38 @@ class ichiV1(IStrategy):
     ignore_roi_if_entry_signal = False
     process_only_new_candles = False
 
+    window_buy = IntParameter(60, 1000, default=500, space='buy', optimize=True)
+    bandwidth_buy = IntParameter(2, 15, default=8, space='buy', optimize=True)
+    mult_buy = DecimalParameter(0.5, 20.0, default=3, space='buy', optimize=True)
+
+    # Optional order time in force.
+    order_time_in_force = {
+        'buy': 'gtc',
+        'sell': 'gtc'
+    }
+
+    use_custom_stoploss = True
+    # Optimal timeframe for the strategy
+    timeframe = '15m'
+    informative_timeframe = '1h'
+    inf_15m = '15m' #use for pump detection
+    timeframe_minutes = timeframe_to_minutes(timeframe)
+    # storage dict for custom info
+    custom_info = {}
+
+    startup_candle_count: int = 96
+    process_only_new_candles = True
+
+    timeperiods = [
+        4, # Equivalent to 1h
+        8, # Equivalent to 2h
+        16, # Equivalent to 4h
+        24, # Equivalent to 6h
+        32, # Equivalent to 8h
+        96, # Equivalent to 1d
+        672, # Equivalent to 1w
+    ]
+
     # Stoploss:
     stoploss = -0.275
     trailing_stop = False
