@@ -190,9 +190,9 @@ class ichiV1(IStrategy):
 
     # Optimal
     timeframe = '15m'
-    startup_candle_count = 120
-    ignore_roi_if_entry_signal = False
+    startup_candle_count: int = 120
     process_only_new_candles = False
+    ignore_roi_if_entry_signal = False
 
     window_buy = IntParameter(60, 1000, default=500, space='buy', optimize=True)
     bandwidth_buy = IntParameter(2, 15, default=8, space='buy', optimize=True)
@@ -212,9 +212,6 @@ class ichiV1(IStrategy):
     timeframe_minutes = timeframe_to_minutes(timeframe)
     # storage dict for custom info
     custom_info = {}
-
-    startup_candle_count: int = 96
-    process_only_new_candles = True
 
     timeperiods = [
         4, # Equivalent to 1h
