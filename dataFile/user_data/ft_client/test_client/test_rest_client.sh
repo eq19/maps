@@ -53,12 +53,6 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-pairs --help
   freqtrade list-pairs --config $CONFIG
 
-  echo -e "\n$hr\nSHOW EDGE\n$hr"
-  freqtrade edge --help
-  sed -i "s|ichi|ichiV1_Marius|g" $CONFIG
-  jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
-  freqtrade edge --fee=$FEE
-
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
   freqtrade list-strategies --config $CONFIG
@@ -71,7 +65,7 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  sed -i "s|ichiV1_Marius|$STRATEGY|g" $CONFIG
+  #sed -i "s|ichi|$STRATEGY|g" $CONFIG
   #freqtrade download-data --config $CONFIG
   #freqtrade download-data --config $CONFIG --timeframes 1m 15m 30m 1h 1d
   freqtrade download-data --config $CONFIG --timeframes $TIMEFRAME --timerange="$TD"
@@ -79,6 +73,12 @@ else
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
   freqtrade list-data --config $CONFIG
+
+  #echo -e "\n$hr\nSHOW EDGE\n$hr"
+  #freqtrade edge --help
+  #sed -i "s|ichi|ichiV1_Marius|g" $CONFIG
+  #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
+  #freqtrade edge --fee=$FEE
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
