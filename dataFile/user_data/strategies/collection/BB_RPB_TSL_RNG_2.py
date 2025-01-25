@@ -26,7 +26,7 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
         of the past N days (for a given N). It was developed by a publisher and promoter of trading materials, Larry Williams.
         Its purpose is to tell whether a stock or commodity market is trading near the high or the low, or somewhere in between,
         of its recent trading range.
-        The oscillator is on a negative scale, from âˆ’100 (lowest) up to 0 (highest).
+        The oscillator is on a negative scale, from −100 (lowest) up to 0 (highest).
     """
 
     highest_high = dataframe["high"].rolling(center=False, window=period).max()
@@ -182,7 +182,7 @@ class BB_RPB_TSL_RNG_2(IStrategy):
 
     def informative_pairs(self):
 
-        informative_pairs = [("BTC/USDT", "5m")]
+        informative_pairs = [("BTC/BUSD", "5m")]
 
         return informative_pairs
 
@@ -237,7 +237,7 @@ class BB_RPB_TSL_RNG_2(IStrategy):
 
         # BTC info
         inf_tf = '5m'
-        informative = self.dp.get_pair_dataframe('BTC/USDT', timeframe=inf_tf)
+        informative = self.dp.get_pair_dataframe('BTC/BUSD', timeframe=inf_tf)
         informative_past = informative.copy().shift(1)                                                                                                   # Get recent BTC info
 
         # BTC 5m dump protection

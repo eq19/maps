@@ -3574,7 +3574,7 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
         of the past N days (for a given N). It was developed by a publisher and promoter of trading materials, Larry Williams.
         Its purpose is to tell whether a stock or commodity market is trading near the high or the low, or somewhere in between,
         of its recent trading range.
-        The oscillator is on a negative scale, from âˆ’100 (lowest) up to 0 (highest).
+        The oscillator is on a negative scale, from −100 (lowest) up to 0 (highest).
     """
 
     highest_high = dataframe["high"].rolling(center=False, window=period).max()

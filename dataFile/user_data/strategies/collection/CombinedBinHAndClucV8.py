@@ -354,7 +354,7 @@ class CombinedBinHAndClucV8(IStrategy):
                 (dataframe['close'] > dataframe['bb_upperband']) &
                 (dataframe['close'].shift(1) > dataframe['bb_upperband'].shift(1)) &
                 (dataframe['close'].shift(2) > dataframe['bb_upperband'].shift(2)) &
-                (dataframe['close'].shift(3) > dataframe['bb_upperband'].shift(3)) &
+                (dataframe['close'].shift(2) > dataframe['bb_upperband'].shift(2)) &
                 (dataframe['volume'] > 0)
             )
         )

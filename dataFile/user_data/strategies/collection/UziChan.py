@@ -444,10 +444,7 @@ class UziChanTB(UziChan):
                     self.trailing_sell_info(pair, rate)
                     self.trailing_sell(pair, reinit=True)
                     logger.info(f'STOP trailing sell for {pair} because I SOLD it')
-
-        if sell_reason != 'sell_signal':
-            val = True
-
+        
         return val
 
 

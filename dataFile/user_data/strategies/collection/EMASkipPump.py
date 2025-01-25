@@ -1,4 +1,4 @@
-from freqtrade.strategy import IStrategy
+from freqtrade.strategy.interface import IStrategy
 from typing import Dict, List
 from functools import reduce
 from pandas import DataFrame
@@ -15,24 +15,26 @@ class EMASkipPump(IStrategy):
         basic strategy, which trys to avoid pump and dump market conditions. Shared from the tradingview
         slack
     """
-    INTERFACE_VERSION: int = 3
-    EMA_SHORT_TERM = 5
+    EMA_SHORT_TERM = 6
     EMA_MEDIUM_TERM = 12
-    EMA_LONG_TERM = 21
+    EMA_LONG_TERM = 22
 
     # Minimal ROI designed for the strategy.
     # we only sell after 100%, unless our sell points are found before
     minimal_roi = {
-        "0": 0.1
+        "40": 2.0,
+        "30": 2.01,
+        "20": 2.02,
+        "0": 2.04
     }
 
     # Optimal stoploss designed for the strategy
     # This attribute will be overridden if the config file contains "stoploss"
     # should be converted to a trailing stop loss
-    stoploss = -0.05
+    stoploss = -0.96
 
-    # Optimal timeframe for the strategy
-    timeframe = '5m'
+    # Optimal ticker interval for the strategy
+    ticker_interval = '4h'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """ Adds several different TA indicators to the given DataFrame
@@ -49,7 +51,7 @@ class EMASkipPump(IStrategy):
         )
 
         bollinger = qtpylib.bollinger_bands(
-            qtpylib.typical_price(dataframe), window=20, stds=2
+            qtpylib.typical_price(dataframe), window=19, stds=2
         )
         dataframe['bb_lowerband'] = bollinger['lower']
         dataframe['bb_middleband'] = bollinger['mid']
@@ -60,7 +62,7 @@ class EMASkipPump(IStrategy):
 
         return dataframe
 
-    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         dataframe.loc[
             (dataframe['volume'] < (dataframe['volume'].rolling(window=30).mean().shift(1) * 20)) &
@@ -68,19 +70,19 @@ class EMASkipPump(IStrategy):
             (dataframe['close'] < dataframe['ema_{}'.format(self.EMA_MEDIUM_TERM)]) &
             (dataframe['close'] == dataframe['min']) &
             (dataframe['close'] <= dataframe['bb_lowerband']),
-            'enter_long'
+            'buy'
         ] = 1
 
         return dataframe
 
-    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         dataframe.loc[
             (dataframe['close'] > dataframe['ema_{}'.format(self.EMA_SHORT_TERM)]) &
             (dataframe['close'] > dataframe['ema_{}'.format(self.EMA_MEDIUM_TERM)]) &
             (dataframe['close'] >= dataframe['max']) &
             (dataframe['close'] >= dataframe['bb_upperband']),
-            'exit_long'
+            'sell'
         ] = 1
 
         return dataframe

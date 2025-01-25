@@ -15,20 +15,7 @@ from freqtrade.persistence import Trade
 from freqtrade.strategy import stoploss_from_open, merge_informative_pair, DecimalParameter, IntParameter, CategoricalParameter
 import technical.indicators as ftt
 
-# Buy hyperspace params:
-buy_params = {
-    "base_nb_candles_buy": 16,
-    "ewo_high": 5.638,
-    "ewo_low": -19.993,
-    "low_offset": 0.978,
-    "rsi_buy": 61,
-}
 
-# Sell hyperspace params:
-sell_params = {
-    "base_nb_candles_sell": 49,
-    "high_offset": 1.006,
-}
 
 def EWO(dataframe, ema_length=5, ema2_length=35):
     df = dataframe.copy()
@@ -41,13 +28,56 @@ def EWO(dataframe, ema_length=5, ema2_length=35):
 class SMAOffsetProtectOptV1(IStrategy):
     INTERFACE_VERSION = 2
 
+    # Buy hyperspace params:
+    buy_params = {
+        "base_nb_candles_buy": 13,
+        "ewo_high": 5.835,
+        "ewo_low": -19.909,
+        "low_offset": 0.978,
+        "rsi_buy": 55,
+    }
+    # Sell hyperspace params:
+    sell_params = {
+        "base_nb_candles_sell": 18,
+        "high_offset": 1.012,
+    }
+
+    # and disable roi:
     # ROI table:
     minimal_roi = {
-        "0": 0.01
+        "0": 100.0
     }
 
     # Stoploss:
-    stoploss = -0.5
+    stoploss = -0.15
+
+    protections = [
+        # 	{
+        # 		"method": "StoplossGuard",
+        # 		"lookback_period_candles": 12,
+        # 		"trade_limit": 1,
+        # 		"stop_duration_candles": 6,
+        # 		"only_per_pair": True
+        # 	},
+        # 	{
+        # 		"method": "StoplossGuard",
+        # 		"lookback_period_candles": 12,
+        # 		"trade_limit": 2,
+        # 		"stop_duration_candles": 6,
+        # 		"only_per_pair": False
+        # 	},
+        {
+            "method": "LowProfitPairs",
+            "lookback_period_candles": 60,
+            "trade_limit": 1,
+            "stop_duration": 60,
+            "required_profit": -0.05
+        },
+        {
+            "method": "CooldownPeriod",
+            "stop_duration_candles": 2
+        }
+    ]
 
     # SMAOffset
     base_nb_candles_buy = IntParameter(
@@ -113,13 +143,13 @@ class SMAOffsetProtectOptV1(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
-        # Calculate all ma_buy values
-        for val in self.base_nb_candles_buy.range:
-            dataframe[f'ma_buy_{val}'] = ta.EMA(dataframe, timeperiod=val)
-
-        # Calculate all ma_sell values
-        for val in self.base_nb_candles_sell.range:
-            dataframe[f'ma_sell_{val}'] = ta.EMA(dataframe, timeperiod=val)
+        if self.config['runmode'].value == 'hyperopt':
+            # Calculate all ma_buy values
+            for val in self.base_nb_candles_buy.range:
+                dataframe[f'ma_{val}'] = ta.EMA(dataframe, timeperiod=val)
+        else:
+            dataframe[f'ma_{self.base_nb_candles_buy.value}'] = ta.EMA(dataframe, timeperiod=self.base_nb_candles_buy.value)
+            dataframe[f'ma_{self.base_nb_candles_sell.value}'] = ta.EMA(dataframe, timeperiod=self.base_nb_candles_sell.value)
 
         # Elliot
         dataframe['EWO'] = EWO(dataframe, self.fast_ewo, self.slow_ewo)
@@ -134,7 +164,7 @@ class SMAOffsetProtectOptV1(IStrategy):
 
         conditions.append(
             (
-                (dataframe['close'] < (dataframe[f'ma_buy_{self.base_nb_candles_buy.value}'] * self.low_offset.value)) &
+                (dataframe['close'] < (dataframe[f'ma_{self.base_nb_candles_buy.value}'] * self.low_offset.value)) &
                 (dataframe['EWO'] > self.ewo_high.value) &
                 (dataframe['rsi'] < self.rsi_buy.value) &
                 (dataframe['volume'] > 0)
@@ -143,7 +173,7 @@ class SMAOffsetProtectOptV1(IStrategy):
 
         conditions.append(
             (
-                (dataframe['close'] < (dataframe[f'ma_buy_{self.base_nb_candles_buy.value}'] * self.low_offset.value)) &
+                (dataframe['close'] < (dataframe[f'ma_{self.base_nb_candles_buy.value}'] * self.low_offset.value)) &
                 (dataframe['EWO'] < self.ewo_low.value) &
                 (dataframe['volume'] > 0)
             )
@@ -162,7 +192,7 @@ class SMAOffsetProtectOptV1(IStrategy):
 
         conditions.append(
             (
-                (dataframe['close'] > (dataframe[f'ma_sell_{self.base_nb_candles_sell.value}'] * self.high_offset.value)) &
+                (dataframe['close'] > (dataframe[f'ma_{self.base_nb_candles_sell.value}'] * self.high_offset.value)) &
                 (dataframe['volume'] > 0)
             )
         )
