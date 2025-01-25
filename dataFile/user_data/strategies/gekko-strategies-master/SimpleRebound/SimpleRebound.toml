@@ -1,0 +1,13 @@
+# Warmup period should egal to rsiTimePeriod
+
+# Entry param
+percentDump = -2
+
+# Exit param
+tpPercentRatio = 0.5
+slRR = 1
+
+# Indicator params
+rsiTimePeriod = 14
+upperLimit = 70
+lowerLimit = 30

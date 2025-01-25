@@ -1,3 +1,9 @@
+### DEZE STRATEGIE GA IK UITEINDELIJK NIET UITPROBEREN WANT WEDEROM EEN SMA CROSSOVER
+### EN GEEN IDEE WAT PRECIES NU DE HYPEROPT EN DE HORIZONTAL EN VERTICAL PUSH VALUES PROBEREN TE BEREIKEN.
+### TEVENS GEEN OF NAUWELIJKS UITLEG...
+
+## Strategy starts with a nice poem
+
 # 𝐼𝓉 𝒾𝓈 𝒟𝒾𝒶𝓂𝑜𝓃𝒹 𝒮𝓉𝓇𝒶𝓉𝑒𝑔𝓎.
 # 𝒯𝒽𝒶𝓉 𝓉𝒶𝓀𝑒𝓈 𝒽𝑒𝓇 𝑜𝓌𝓃 𝓇𝒾𝑔𝒽𝓉𝓈 𝓁𝒾𝓀𝑒 𝒜𝒻𝑔𝒽𝒶𝓃𝒾𝓈𝓉𝒶𝓃 𝓌𝑜𝓂𝑒𝓃
 # 𝒯𝒽𝑜𝓈𝑒 𝓌𝒽𝑜 𝓈𝓉𝒾𝓁𝓁 𝓅𝓇𝑜𝓊𝒹 𝒶𝓃𝒹 𝒽𝑜𝓅𝑒𝒻𝓊𝓁.
@@ -11,6 +17,8 @@
 # 𝒲𝒽𝓎 𝓃𝑜𝓉 𝒽𝑒𝓁𝓅 𝓌𝒽𝑒𝓃 𝓌𝑒 𝒸𝒶𝓃?
 # 𝓁𝑒𝓉𝓈 𝓅𝒾𝓅 𝓊𝓃𝒾𝓃𝓈𝓉𝒶𝓁𝓁 𝓉𝒶-𝓁𝒾𝒷 𝑜𝓃 𝒜𝒻𝑔𝒽𝒶𝓃𝒾𝓈𝓉𝒶𝓃
 
+## Some information about the strategy and, most importantly, it has no indicators configured.
+
 # IMPORTANT: Diamond strategy is designed to be pure and
 # cuz of that it have not any indicator population. idea is that
 # It is just use the pure dataframe ohlcv data for calculation
@@ -22,7 +30,11 @@
 # github: https://github.com/mablue/
 # * freqtrade backtesting --strategy Diamond
 
-# freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces buy sell roi trailing stoploss --strategy Diamond -j 2 -e 10
+## Here some hyperopt command examples, together with some backtest results. 
+## Not completely sure which pairs although I only see BTC so base currency is probably BTC.
+## were trades and oAlso I assume that the default strategy timeframe is used.
+
+# freqtrade hyperopt --hyperopt-loss ShortTradeDurHyperOptLoss --spaces buy sell roi trailing stoploss --strategy Diamond -j 2 -e 10"",
 # *    3/10:     76 trades. 51/18/7 Wins/Draws/Losses. Avg profit   1.92%. Median profit   2.40%. Total profit  0.04808472 BTC (  48.08%). Avg duration 5:06:00 min. Objective: 1.75299
 # freqtrade hyperopt --hyperopt-loss OnlyProfitHyperOptLoss --spaces buy sell roi trailing stoploss --strategy Diamond -j 2 -e 10
 # *   10/10:     76 trades. 39/34/3 Wins/Draws/Losses. Avg profit   0.61%. Median profit   0.05%. Total profit  0.01528359 BTC (  15.28%). Avg duration 17:32:00 min. Objective: -0.01528
@@ -40,7 +52,8 @@
 # *    7/10:    117 trades. 74/41/2 Wins/Draws/Losses. Avg profit   1.91%. Median profit   1.50%. Total profit  0.07370921 BTC (  73.71%). Avg duration 9:26:00 min. Objective: -0.07371
 
 # --- Do not remove these libs ---
-from freqtrade.strategy import CategoricalParameter, DecimalParameter, IntParameter, IStrategy
+from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter, IntParameter
+from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 # --------------------------------
 
@@ -51,15 +64,19 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 
 
 class Diamond(IStrategy):
+
+## Another hyperopt result where I am not sure what the original configuration (pairs/timeframe) is.
+
     # ###################### RESULT PLACE ######################
     #    Config: 5 x UNLIMITED STOCK costume pair list,
     #    hyperopt : 5000 x SortinoHyperOptLossDaily,
     #    34/5000: 297 trades. 136/156/5 Wins/Draws/Losses. Avg profit   0.49%. Median profit   0.00%. Total profit  45.84477237 USDT (  33.96Σ%). Avg duration 11:54:00 min. Objective: -46.50379
-    INTERFACE_VERSION: int = 3
+
+## Here some hyperopt space parameters
 
     # Buy hyperspace params:
     buy_params = {
-        "buy_fast_key": "high",
+        "buy_fast_key": "high", 
         "buy_horizontal_push": 7,
         "buy_slow_key": "volume",
         "buy_vertical_push": 0.942,
@@ -73,6 +90,8 @@ class Diamond(IStrategy):
         "sell_vertical_push": 1.184,
     }
 
+## ROI table where the settings are probably were determined by a hyperopt session from the author.
+
     # ROI table:
     minimal_roi = {
         "0": 0.242,
@@ -81,16 +100,25 @@ class Diamond(IStrategy):
         "170": 0
     }
 
+## Same goes for the stoploss setting. It is too specific to be determined by a person I think.
+
     # Stoploss:
     stoploss = -0.271
+
+
+## Strategy makes use of a trailing stop. If the offset reaches 5.4%, then a retracement of 1.1% in price will set the bot to sell. Also probably set by an earlier Hyperop session because they are very specific.
 
     # Trailing stop:
     trailing_stop = True
     trailing_stop_positive = 0.011
     trailing_stop_positive_offset = 0.054
-    trailing_only_offset_is_reached = False
+    trailing_only_offset_is_reached = False ## However this setting is set to False, so offset is actually not set...
+
+## Timeframe of the strategy
+
     # timeframe
     timeframe = '5m'
+
     # #################### END OF RESULT PLACE ####################
 
     buy_vertical_push = DecimalParameter(0.5, 1.5, decimals=3, default=1, space='buy')
@@ -117,12 +145,12 @@ class Diamond(IStrategy):
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # you can add new indicators and enable them inside
         # hyperoptable categorical params on the top
-        # dataframe['ma_fast'] = ta.SMA(dataframe, timeperiod=9)
-        # dataframe['ma_slow'] = ta.SMA(dataframe, timeperiod=18)
+        dataframe['ma_fast'] = ta.SMA(dataframe, timeperiod=9)
+        dataframe['ma_slow'] = ta.SMA(dataframe, timeperiod=18)
         # dataframe['{...}'] = ta.{...}(dataframe, timeperiod={...})
         return dataframe
 
-    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         conditions.append(
             qtpylib.crossed_above
@@ -131,15 +159,16 @@ class Diamond(IStrategy):
                 dataframe[self.buy_slow_key.value] * self.buy_vertical_push.value
             )
         )
+        print(dataframe) # Let's take a look what this is...
 
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'enter_long']=1
+                'buy']=1
 
         return dataframe
 
-    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
         conditions.append(
             qtpylib.crossed_below
@@ -148,8 +177,11 @@ class Diamond(IStrategy):
                 dataframe[self.sell_slow_key.value] * self.sell_vertical_push.value
             )
         )
+        print(dataframe) # Let's take a look what this is...
+        
         if conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, conditions),
-                'exit_long']=1
+                'sell']=1
         return dataframe
+

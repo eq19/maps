@@ -1,0 +1,32 @@
+[SMA]
+long = 1000.0
+short = 50.0
+
+[BULL]
+high = 85.6
+low = 42.3
+mod_high = 3.2
+mod_low = -9
+rsi = 14.6
+
+[BEAR]
+high = 60.4
+low = 28.2
+mod_high = 1.4
+mod_low = -1.5
+rsi = 10.5
+
+[ADX]
+adx = 3.0
+high = 70.0
+low = 50.0
+
+[BBands]
+NbDevDn = 2.0
+NbDevUp = 2.0
+TimePeriod = 20.0
+
+[BBtrend]
+upperThreshold = 50
+lowerThreshold = 50
+persistence = 15

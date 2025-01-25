@@ -1,0 +1,23 @@
+{
+    "watch": {
+        "exchange": "binance",
+        "currency": "BTC",
+        "asset": "BNB"
+    },
+    "backtest": {
+        "daterange": {
+            "from": "2019-04-30T00:00:00Z",
+            "to": "2019-07-25T00:00:00Z"
+        }
+    },
+    "tradingAdvisor": {
+        "candleSize": 60,
+        "historySize": 10
+    },
+    "paperTrader": {
+        "simulationBalance": {
+            "asset": 0,
+            "currency": 1000
+        }
+    }
+}

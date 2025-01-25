@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Source code beautifier / syntax highlighter &ndash; convert code snippets to HTML &laquo; hilite.me</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Style-Type" content="text/css"/>
+    <style type="text/css">
+      body, html {
+        margin:0;
+        padding:0;
+        color:#333;
+        background:#fff;
+        font-family:Verdana,Helvetica,Arial,sans-serif;
+      }
+      input {
+          margin:.5em 0;
+      }
+      #container {
+          width:750px;
+          margin:1em auto;
+      }
+      #container > div {
+          margin:auto 1em;
+      }
+      #code {
+          float:left;
+          width:50%;
+      }
+      #html {
+          float:right;
+          width:50%;
+      }
+      #code2 {
+          margin-right:1em;
+      }
+      #html2 {
+          margin-left:1em;
+      }
+      #main textarea {
+          width:100%;
+          height:10em;
+      }
+      #html2 textarea {
+          float:right;
+      }
+      #options {
+          clear:both;
+      }
+      #divstyles {
+          width:50%;
+      }
+      #preview {
+          padding-bottom: 3em;
+      }
+      #footer {
+          border-top:1px dotted #000;
+      }
+      #footer p {
+          text-align:center;
+          font-size:75%;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/" method="post">
+      <div id="container">
+        <div id="header">
+          <p>
+            <strong style="color:red">hilite.me</strong> converts your code snippets into pretty-printed HTML format, easily embeddable into blog posts, emails and websites.
+          </p>
+          <p>
+            Just copy the source code to the left pane, select the language and the color scheme, and click &quot;Highlight!&quot;. The HTML from the right pane can now be pasted to your blog or email, no external CSS or Javascript files are required.
+          </p>
+        </div>
+        <div id="main">
+          <div id="code">
+            <div id="code2">
+              <strong>Source code:</strong><br/>
+              <textarea name="code" rows="10" cols="40">{{ code }}</textarea>
+            </div>
+          </div>
+          <div id="html">
+            <div id="html2">
+              <strong>HTML:</strong><br/>
+              <textarea id="html" name="html" rows="10" cols="40" readonly="readonly" onClick="javascript:this.form.html.focus();this.form.html.select();">{{ html }}</textarea>
+            </div>
+          </div>
+        </div>
+        <div id="options">
+          <p>
+            Language:
+            <select name="lexer">
+              {% for item in lexers %}
+              <option {% if item.0 == lexer %}selected="selected" {% endif %}value="{{ item.0 }}">{{ item.1 }}</option>
+              {% endfor %}
+            </select>
+            Style:
+            <select name="style">
+              {% for item in styles %}
+              <option {% if item == style %}selected="selected" {% endif %}value="{{ item }}">{{ item }}</option>
+              {% endfor %}
+            </select>
+            <input name="linenos" id="linenos" type="checkbox" value="1" {% if linenos %}checked="checked"{% endif %} /><label for="linenos">Line numbers</label>
+            <br/>
+            CSS:
+            <input type="text" id="divstyles" name="divstyles" value="{{ divstyles|escape }}"/>
+            <input type="submit" value="Highlight!"/>
+          </p>
+        </div>
+        <div id="preview">
+          <p>
+            <strong>Preview:</strong>
+          </p>
+          {% autoescape false %}
+          {{ html }}
+          {% endautoescape %}
+        </div>
+        <div id="footer">
+          <p>
+            <a href="/api">API</a> &bull; <a href="https://github.com/alexkay/hilite.me">Code</a> &bull; Made by <a href="http://kojevnikov.com">Alexander Kojevnikov</a> &bull; Powered by <a href="http://flask.pocoo.org/">Flask</a> and <a href="http://pygments.org/">Pygments</a>
+          </p>
+        </div>
+      </div>
+    </form>
+  </body>
+</html>

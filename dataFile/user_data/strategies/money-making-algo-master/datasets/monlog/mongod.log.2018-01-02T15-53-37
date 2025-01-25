@@ -1,0 +1,3 @@
+2018-01-01T10:01:36.201-0800 I CONTROL  [main] Trying to install Windows service 'MongoDB'
+2018-01-01T10:01:36.203-0800 I CONTROL  [main] Service 'MongoDB' (MongoDB) installed with command line '"C:\Program Files\MongoDB\Server\3.6\bin\mongod.exe" --config "C:\Users\Yong Zhen Yu\Documents\money-making-algo\mongod.config" --service'
+2018-01-01T10:01:36.203-0800 I CONTROL  [main] Service can be started from the command line with 'net start MongoDB'

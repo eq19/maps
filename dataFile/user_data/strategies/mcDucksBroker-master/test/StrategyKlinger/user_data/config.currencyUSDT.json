@@ -1,0 +1,31 @@
+{
+  "stake_currency": "USDT",
+  "dry_run_wallet" : 1000,
+  "exchange": {
+    "pair_whitelist": [
+      "BTC/USDT",
+      "SOL/USDT",
+      "DOT/USDT",
+      "AAVE/USDT",
+      "MATIC/USDT",
+      "ETH/USDT",
+      "EGLD/USDT",
+      "ADA/USDT",
+      "VET/USDT",
+      "UNI/USDT",
+      "CHZ/USDT",
+      "ZEC/USDT",
+      "ZEN/USDT",
+      "CAKE/USDT",
+      "AVAX/USDT",
+      "NEO/USDT",
+      "IOTA/USDT",
+      "TRX/USDT",
+      "NANO/USDT",
+      "EOS/USDT",
+      "LINK/USDT",
+      "XMR/USDT",
+      "XRP/USDT"
+    ]
+  }
+}

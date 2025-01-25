@@ -1,0 +1,23 @@
+{
+    "watch": {
+        "exchange": "gdax",
+        "currency": "EUR",
+        "asset": "BTC"
+    },
+    "backtest": {
+        "daterange": {
+            "from": "2019-04-02T00:00:00Z",
+            "to": "2019-09-12T00:00:00Z"
+        }
+    },
+    "tradingAdvisor": {
+        "candleSize": 60,
+        "historySize": 300
+    },
+    "paperTrader": {
+        "simulationBalance": {
+            "asset": 0,
+            "currency": 1000
+        }
+    }
+}

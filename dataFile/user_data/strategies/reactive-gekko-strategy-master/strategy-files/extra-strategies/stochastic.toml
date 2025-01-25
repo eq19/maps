@@ -1,0 +1,5 @@
+optInFastK_Period = 5
+optInSlowK_Period = 3
+optInSlowK_MAType = 0
+optInSlowD_Period = 3
+optInSlowD_MAType = 0

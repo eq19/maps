@@ -1,0 +1,51 @@
+{
+  "stoploss_on_exchange": true,
+  "bid_strategy": {
+    "price_side": "ask",
+    "use_order_book": true,
+    "ask_last_balance": 1.0,
+    "order_book_top": 1,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+  "ask_strategy": {
+    "price_side": "bid",
+    "use_order_book": false,
+    "order_book_min": 1,
+    "order_book_max": 9
+  },
+  "order_types": {
+    "buy": "limit",
+    "sell": "market",
+    "emergencysell": "market",
+    "stoploss": "market",
+    "stoploss_on_exchange": true
+  },
+  "exchange": {
+    "name": "binance",
+    "ccxt_config": {
+      "enableRateLimit": true
+    },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 200
+    },
+    "pair_blacklist": [
+      ".*DOWN/BTC",
+      ".*UP/BTC",
+      ".*DOWN/ETH",
+      ".*UP/ETH",
+      ".*DOWN/USDT",
+      ".*UP/USDT",
+      ".*DOWN/BNB",
+      ".*UP/BNB",
+      ".*/BNB",
+      "BNB/.*",
+      ".*_PREMIUM",
+      ".*PERP",
+      "FLOW/BTC"
+    ]
+  }
+}

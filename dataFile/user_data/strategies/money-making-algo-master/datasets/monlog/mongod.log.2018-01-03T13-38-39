@@ -1,0 +1,77 @@
+2018-01-02T15:53:38.148+0000 I CONTROL  [main] Trying to start Windows service 'MongoDB'
+2018-01-02T15:53:38.150+0000 I CONTROL  [initandlisten] MongoDB starting : pid=18988 port=27017 dbpath=C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\mongo 64-bit host=DESKTOP-EF2F8B1
+2018-01-02T15:53:38.150+0000 I CONTROL  [initandlisten] targetMinOS: Windows 7/Windows Server 2008 R2
+2018-01-02T15:53:38.150+0000 I CONTROL  [initandlisten] db version v3.6.1
+2018-01-02T15:53:38.150+0000 I CONTROL  [initandlisten] git version: 025d4f4fe61efd1fb6f0005be20cb45a004093d1
+2018-01-02T15:53:38.150+0000 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.1u-fips  22 Sep 2016
+2018-01-02T15:53:38.150+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+2018-01-02T15:53:38.151+0000 I CONTROL  [initandlisten] modules: none
+2018-01-02T15:53:38.151+0000 I CONTROL  [initandlisten] build environment:
+2018-01-02T15:53:38.151+0000 I CONTROL  [initandlisten]     distmod: 2008plus-ssl
+2018-01-02T15:53:38.151+0000 I CONTROL  [initandlisten]     distarch: x86_64
+2018-01-02T15:53:38.151+0000 I CONTROL  [initandlisten]     target_arch: x86_64
+2018-01-02T15:53:38.152+0000 I CONTROL  [initandlisten] options: { config: "C:\Users\Yong Zhen Yu\Documents\money-making-algo\mongod.config", service: true, storage: { dbPath: "C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\mongo" }, systemLog: { destination: "file", path: "C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\monlog\mongod.log" } }
+2018-01-02T15:53:38.171+0000 I -        [initandlisten] Detected data files in C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\mongo created by the 'wiredTiger' storage engine, so setting the active storage engine to 'wiredTiger'.
+2018-01-02T15:53:38.172+0000 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=3507M,session_max=20000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),statistics_log=(wait=0),verbose=(recovery_progress),
+2018-01-02T15:53:38.410+0000 I STORAGE  [initandlisten] WiredTiger message [1514908418:410214][18988:140710607741264], txn-recover: Main recovery loop: starting at 2/4736
+2018-01-02T15:53:38.627+0000 I STORAGE  [initandlisten] WiredTiger message [1514908418:627810][18988:140710607741264], txn-recover: Recovering log 2 through 3
+2018-01-02T15:53:38.743+0000 I STORAGE  [initandlisten] WiredTiger message [1514908418:742616][18988:140710607741264], txn-recover: Recovering log 3 through 3
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] 
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] 
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] ** WARNING: This server is bound to localhost.
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] **          Remote systems will be unable to connect to this server. 
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] **          Start the server with --bind_ip <address> to specify which IP 
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] **          addresses it should serve responses from, or with --bind_ip_all to
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] **          bind to all interfaces. If this behavior is desired, start the
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] **          server with --bind_ip 127.0.0.1 to disable this warning.
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] 
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] 
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] ** WARNING: The file system cache of this machine is configured to be greater than 40% of the total memory. This can lead to increased memory pressure and poor performance.
+2018-01-02T15:53:38.986+0000 I CONTROL  [initandlisten] See http://dochub.mongodb.org/core/wt-windows-system-file-cache
+2018-01-02T15:53:38.987+0000 I CONTROL  [initandlisten] 
+2018-01-02T15:53:39.332+0000 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory 'C:/Users/Yong Zhen Yu/Documents/money-making-algo/datasets/mongo/diagnostic.data'
+2018-01-02T15:53:39.337+0000 I NETWORK  [initandlisten] waiting for connections on port 27017
+2018-01-02T15:53:39.337+0000 I STORAGE  [initandlisten] Service running
+2018-01-02T15:58:39.352+0000 I STORAGE  [thread1] createCollection: config.system.sessions with generated UUID: 26702d3c-4f0f-4f12-a01e-72b1c0175e6f
+2018-01-02T15:58:39.397+0000 I INDEX    [thread1] build index on: config.system.sessions properties: { v: 2, key: { lastUse: 1 }, name: "lsidTTLIndex", ns: "config.system.sessions", expireAfterSeconds: 1800 }
+2018-01-02T15:58:39.397+0000 I INDEX    [thread1] 	 building index using bulk method; build may temporarily use up to 500 megabytes of RAM
+2018-01-02T15:58:39.404+0000 I INDEX    [thread1] build index done.  scanned 0 total records. 0 secs
+2018-01-02T16:04:03.076+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:51030 #1 (1 connection now open)
+2018-01-02T16:04:03.077+0000 I NETWORK  [conn1] received client metadata from 127.0.0.1:51030 conn: { application: { name: "MongoDB Shell" }, driver: { name: "MongoDB Internal Client", version: "3.6.1" }, os: { type: "Windows", name: "Microsoft Windows 10", architecture: "x86_64", version: "10.0 (build 16299)" } }
+2018-01-02T16:07:02.499+0000 I NETWORK  [conn1] end connection 127.0.0.1:51030 (0 connections now open)
+2018-01-02T16:08:08.969+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:51049 #2 (1 connection now open)
+2018-01-02T16:08:08.970+0000 I NETWORK  [conn2] received client metadata from 127.0.0.1:51049 conn: { driver: { name: "PyMongo", version: "3.4.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T16:29:36.199+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:51180 #3 (2 connections now open)
+2018-01-02T16:29:36.200+0000 I NETWORK  [conn3] received client metadata from 127.0.0.1:51180 conn: { driver: { name: "PyMongo", version: "3.4.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T16:29:36.216+0000 I STORAGE  [conn3] createCollection: test.test_collection with generated UUID: ac2642fe-a13f-4c28-aefe-f5d938709c15
+2018-01-02T17:03:00.802+0000 I NETWORK  [conn2] end connection 127.0.0.1:51049 (1 connection now open)
+2018-01-02T17:03:00.802+0000 I NETWORK  [conn3] end connection 127.0.0.1:51180 (0 connections now open)
+2018-01-02T18:34:54.566+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:52045 #4 (1 connection now open)
+2018-01-02T18:34:54.571+0000 I NETWORK  [conn4] received client metadata from 127.0.0.1:52045 conn: { driver: { name: "PyMongo", version: "3.6.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T18:34:54.572+0000 I NETWORK  [conn4] end connection 127.0.0.1:52045 (0 connections now open)
+2018-01-02T18:36:51.728+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:52049 #5 (1 connection now open)
+2018-01-02T18:36:51.729+0000 I NETWORK  [conn5] received client metadata from 127.0.0.1:52049 conn: { driver: { name: "PyMongo", version: "3.6.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T18:36:51.731+0000 I NETWORK  [conn5] end connection 127.0.0.1:52049 (0 connections now open)
+2018-01-02T18:37:53.736+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:52051 #6 (1 connection now open)
+2018-01-02T18:37:53.737+0000 I NETWORK  [conn6] received client metadata from 127.0.0.1:52051 conn: { driver: { name: "PyMongo", version: "3.6.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T18:37:53.739+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:52052 #7 (2 connections now open)
+2018-01-02T18:37:53.739+0000 I NETWORK  [conn7] received client metadata from 127.0.0.1:52052 conn: { driver: { name: "PyMongo", version: "3.6.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T18:37:53.769+0000 I STORAGE  [conn7] createCollection: static_data.tradeblock with generated UUID: d481df9d-2600-4f9a-a307-3c38f197c5b9
+2018-01-02T18:37:53.797+0000 I NETWORK  [conn6] end connection 127.0.0.1:52051 (1 connection now open)
+2018-01-02T18:37:53.797+0000 I NETWORK  [conn7] end connection 127.0.0.1:52052 (0 connections now open)
+2018-01-02T18:39:44.339+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:52053 #8 (1 connection now open)
+2018-01-02T18:39:44.339+0000 I NETWORK  [conn8] received client metadata from 127.0.0.1:52053 conn: { driver: { name: "PyMongo", version: "3.6.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T18:39:50.659+0000 I NETWORK  [listener] connection accepted from 127.0.0.1:52054 #9 (2 connections now open)
+2018-01-02T18:39:50.660+0000 I NETWORK  [conn9] received client metadata from 127.0.0.1:52054 conn: { driver: { name: "PyMongo", version: "3.6.0" }, os: { type: "Windows", name: "Windows 10", architecture: "AMD64", version: "10.0.16299-SP0" }, platform: "CPython 3.6.3.final.0" }
+2018-01-02T21:29:33.929+0000 I NETWORK  [conn9] end connection 127.0.0.1:52054 (1 connection now open)
+2018-01-02T21:29:33.929+0000 I NETWORK  [conn8] end connection 127.0.0.1:52053 (0 connections now open)
+2018-01-02T21:31:33.997+0000 I CONTROL  [serviceShutdown] got SERVICE_CONTROL_STOP request from Windows Service Control Manager, will terminate after current cmd ends
+2018-01-02T21:31:33.998+0000 I NETWORK  [serviceShutdown] shutdown: going to close listening sockets...
+2018-01-02T21:31:33.999+0000 F CONTROL  [thread11] Encountered an error in PeriodicRunnerASIO: The I/O operation has been aborted because of either a thread exit or an application request.
+2018-01-02T21:31:33.999+0000 F CONTROL  [thread11] Encountered an error in PeriodicRunnerASIO: The I/O operation has been aborted because of either a thread exit or an application request.
+2018-01-02T21:31:34.000+0000 I FTDC     [serviceShutdown] Shutting down full-time diagnostic data capture
+2018-01-02T21:31:34.008+0000 I STORAGE  [serviceShutdown] WiredTigerKVEngine shutting down
+2018-01-02T21:31:34.262+0000 I STORAGE  [serviceShutdown] shutdown: removing fs lock...
+2018-01-02T21:31:34.262+0000 I CONTROL  [serviceShutdown] now exiting

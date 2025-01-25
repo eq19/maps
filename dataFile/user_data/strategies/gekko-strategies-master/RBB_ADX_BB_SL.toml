@@ -1,0 +1,43 @@
+# Activate longs & shorts 
+# (1 = yes, 0 = no)
+activateLongs = 1
+activateShorts = 0
+
+# Trailing stop loss in % 
+# (0 = disabled)
+stopLoss = 0
+
+[ADX]
+adx = 3.0
+high = 70.0
+low = 50.0
+
+[BBtrend]
+# % values of total bband width
+upperThreshold = 50
+lowerThreshold = 50
+upperPersistence = 15
+lowerPersistence = 15
+
+[BEAR]
+high = 60.4
+low = 28.2
+mod_high = 1.4
+mod_low = -1.5
+rsi = 10.5
+
+[BULL]
+high = 85.6
+low = 42.3
+mod_high = 3.2
+mod_low = -9
+rsi = 14.6
+
+[SMA]
+long = 1000.0
+short = 50.0
+
+[bbands]
+NbDevDn = 2.0
+NbDevUp = 2.0
+TimePeriod = 20.0

@@ -1,0 +1,25 @@
+{
+  "strategy_name": "AOTSStrategy",
+  "params": {
+    "buy": {},
+    "sell": {},
+    "protection": {},
+    "roi": {
+      "0": 0.35700000000000004,
+      "91": 0.079,
+      "150": 0.029,
+      "439": 0
+    },
+    "stoploss": {
+      "stoploss": -0.068
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.236,
+      "trailing_stop_positive_offset": 0.285,
+      "trailing_only_offset_is_reached": true
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2021-10-24 05:24:48.629620+00:00"
+}

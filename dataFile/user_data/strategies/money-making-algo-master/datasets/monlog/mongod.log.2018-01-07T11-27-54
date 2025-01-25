@@ -1,0 +1,42 @@
+2018-01-07T11:24:14.338+0000 I CONTROL  [main] Trying to start Windows service 'MongoDB'
+2018-01-07T11:24:14.339+0000 I CONTROL  [initandlisten] MongoDB starting : pid=3468 port=27017 dbpath=C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\mongo 64-bit host=DESKTOP-EF2F8B1
+2018-01-07T11:24:14.340+0000 I CONTROL  [initandlisten] targetMinOS: Windows 7/Windows Server 2008 R2
+2018-01-07T11:24:14.340+0000 I CONTROL  [initandlisten] db version v3.6.1
+2018-01-07T11:24:14.340+0000 I CONTROL  [initandlisten] git version: 025d4f4fe61efd1fb6f0005be20cb45a004093d1
+2018-01-07T11:24:14.340+0000 I CONTROL  [initandlisten] OpenSSL version: OpenSSL 1.0.1u-fips  22 Sep 2016
+2018-01-07T11:24:14.340+0000 I CONTROL  [initandlisten] allocator: tcmalloc
+2018-01-07T11:24:14.341+0000 I CONTROL  [initandlisten] modules: none
+2018-01-07T11:24:14.341+0000 I CONTROL  [initandlisten] build environment:
+2018-01-07T11:24:14.341+0000 I CONTROL  [initandlisten]     distmod: 2008plus-ssl
+2018-01-07T11:24:14.341+0000 I CONTROL  [initandlisten]     distarch: x86_64
+2018-01-07T11:24:14.341+0000 I CONTROL  [initandlisten]     target_arch: x86_64
+2018-01-07T11:24:14.341+0000 I CONTROL  [initandlisten] options: { config: "C:\Users\Yong Zhen Yu\Documents\money-making-algo\mongod.config", service: true, storage: { dbPath: "C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\mongo" }, systemLog: { destination: "file", path: "C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\monlog\mongod.log" } }
+2018-01-07T11:24:14.349+0000 I -        [initandlisten] Detected data files in C:\Users\Yong Zhen Yu\Documents\money-making-algo\datasets\mongo created by the 'wiredTiger' storage engine, so setting the active storage engine to 'wiredTiger'.
+2018-01-07T11:24:14.350+0000 I STORAGE  [initandlisten] wiredtiger_open config: create,cache_size=3507M,session_max=20000,eviction=(threads_min=4,threads_max=4),config_base=false,statistics=(fast),log=(enabled=true,archive=true,path=journal,compressor=snappy),file_manager=(close_idle_time=100000),statistics_log=(wait=0),verbose=(recovery_progress),
+2018-01-07T11:24:14.590+0000 I STORAGE  [initandlisten] WiredTiger message [1515324254:589391][3468:140723117252944], txn-recover: Main recovery loop: starting at 4/142976
+2018-01-07T11:24:14.821+0000 I STORAGE  [initandlisten] WiredTiger message [1515324254:821512][3468:140723117252944], txn-recover: Recovering log 4 through 5
+2018-01-07T11:24:14.968+0000 I STORAGE  [initandlisten] WiredTiger message [1515324254:968402][3468:140723117252944], txn-recover: Recovering log 5 through 5
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] 
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] ** WARNING: Access control is not enabled for the database.
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] **          Read and write access to data and configuration is unrestricted.
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] 
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] ** WARNING: This server is bound to localhost.
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] **          Remote systems will be unable to connect to this server. 
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] **          Start the server with --bind_ip <address> to specify which IP 
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] **          addresses it should serve responses from, or with --bind_ip_all to
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] **          bind to all interfaces. If this behavior is desired, start the
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] **          server with --bind_ip 127.0.0.1 to disable this warning.
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] 
+2018-01-07T11:24:15.113+0000 I CONTROL  [initandlisten] 
+2018-01-07T11:24:15.114+0000 I CONTROL  [initandlisten] ** WARNING: The file system cache of this machine is configured to be greater than 40% of the total memory. This can lead to increased memory pressure and poor performance.
+2018-01-07T11:24:15.114+0000 I CONTROL  [initandlisten] See http://dochub.mongodb.org/core/wt-windows-system-file-cache
+2018-01-07T11:24:15.114+0000 I CONTROL  [initandlisten] 
+2018-01-07T11:24:15.418+0000 I FTDC     [initandlisten] Initializing full-time diagnostic data capture with directory 'C:/Users/Yong Zhen Yu/Documents/money-making-algo/datasets/mongo/diagnostic.data'
+2018-01-07T11:24:15.420+0000 I NETWORK  [initandlisten] waiting for connections on port 27017
+2018-01-07T11:24:15.421+0000 I STORAGE  [initandlisten] Service running
+2018-01-07T11:27:22.622+0000 I CONTROL  [serviceShutdown] got SERVICE_CONTROL_PRESHUTDOWN request from Windows Service Control Manager, will terminate after current cmd ends
+2018-01-07T11:27:22.623+0000 I NETWORK  [serviceShutdown] shutdown: going to close listening sockets...
+2018-01-07T11:27:22.624+0000 I FTDC     [serviceShutdown] Shutting down full-time diagnostic data capture
+2018-01-07T11:27:22.634+0000 I STORAGE  [serviceShutdown] WiredTigerKVEngine shutting down
+2018-01-07T11:27:22.986+0000 I STORAGE  [serviceShutdown] shutdown: removing fs lock...
+2018-01-07T11:27:22.986+0000 I CONTROL  [serviceShutdown] now exiting

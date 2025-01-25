@@ -1,0 +1,28 @@
+{
+  "strategy_name": "DoubleEMACrossoverWithTrend",
+  "params": {
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": 0.03,
+      "trailing_stop_positive_offset": 0.04,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 10
+    },
+    "buy": {},
+    "sell": {},
+    "protection": {},
+    "roi": {
+      "0": 0.298,
+      "1753": 0.219,
+      "3840": 0.099,
+      "8560": 0
+    },
+    "stoploss": {
+      "stoploss": -0.344
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2023-07-28 05:26:14.630974+00:00"
+}

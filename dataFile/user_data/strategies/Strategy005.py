@@ -1,3 +1,4 @@
+
 # --- Do not remove these libs ---
 from freqtrade.strategy import IStrategy
 from freqtrade.strategy import CategoricalParameter, IntParameter
@@ -36,7 +37,7 @@ class Strategy005(IStrategy):
     stoploss = -0.10
 
     # Optimal timeframe for the strategy
-    timeframe = '15m'
+    timeframe = '5m'
 
     # trailing stoploss
     trailing_stop = False
@@ -44,7 +45,7 @@ class Strategy005(IStrategy):
     trailing_stop_positive_offset = 0.02
 
     # run "populate_indicators" only for new candle
-    process_only_new_candles = True
+    process_only_new_candles = False
 
     # Experimental settings (configuration will overide these if set)
     use_exit_signal = True

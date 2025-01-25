@@ -1,0 +1,29 @@
+# Original Source: https://raw.githubusercontent.com/vrfurl/gekko/stable/config/strategies/EMACrossover.toml
+# Downloaded from: https://github.com/xFFFFF/Gekko-Strategies
+# Changed EMA's to 3 and 50 periods and Added 9 Period RSI. (TC Mabe 7/11/2018)
+# This strategy enters a trade when EMA-3 is above EMA-50 and RSI-9 is equal or above 60.
+# This strategy exits a trade when the EMA-50 is above the EMA-3 regardless of RSI values.
+# This strategy was built with 15 minute intervals in mind.
+
+# Tell the bot if the first trade should be a buy or sell
+firstTrade = "buy"
+
+# shortEMA size
+shortSize = 3
+
+# longEMA size
+longSize = 50
+
+# rsiPeriods
+rsiPeriods = 9
+
+# rsiHigh
+rsiHigh = 60
+
+# rsiLow
+rsiLow = 40
+
+# Delta between the two EMAs after they cross
+delta = 0
+
+[emaCrossover]

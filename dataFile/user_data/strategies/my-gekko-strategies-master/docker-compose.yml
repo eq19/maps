@@ -1,0 +1,38 @@
+version: '3'
+services:
+  gekko:
+    image: "jspare/gekko:latest"
+    links:
+#      - redis
+      - mongodb
+    environment:
+     - GEKKO_ADAPTER=mongodb
+     - GEKKO_MONGODB_CONNECTION=mongodb://mongodb/gekko
+     - GEKKO_WORKSPACE_SCM=https://github.com/pflima92/my-gekko-strategies.git
+    ports: ["3000:3000"]
+    networks:
+      gekko_net:
+        aliases: ["gekko"]
+  mongodb:
+    image: mongo
+    ports: ["27017:27017"]
+    volumes:
+      - gekko-db:/data/db2
+      - gekko-configdb:/data/configdb
+    networks:
+      gekko_net:
+        aliases: ["mongodb"]
+#  redis:
+#    image: redis:latest
+#    volumes:
+#      - ./volumes/redis:/data
+
+# Network used by swarm deployment.
+networks:
+  gekko_net:
+    driver: overlay
+
+# Data Volumes
+volumes:
+  gekko-db:
+  gekko-configdb:

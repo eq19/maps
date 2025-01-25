@@ -1,0 +1,13 @@
+{
+    "watch": {
+        "exchange": "binance",
+        "currency": "BTC",
+        "asset": "ETH"
+    },
+    "backtest": {
+        "daterange": {
+            "from": "2019-03-04T12:00:00Z",
+            "to": "2019-03-20T00:00:00Z"
+          }
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "strategy": "StrategyKlingerStochWBtc2",
+  "max_open_trades": 10,
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "timeframe": "4h",
+  "dry_run": true,
+  "cancel_open_orders_on_exit": true,
+  "amend_last_stake_amount": true,  
+  "unfilledtimeout": {
+    "buy": 10,
+    "sell": 30
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
+}

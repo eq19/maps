@@ -1,0 +1,30 @@
+persistence = 9
+
+[rsi]
+active = true #true/false activate or deactivate rsi
+interval = 14 #rsi indicator
+strongLow = 29
+low = 40
+high = 60
+strongHigh = 79
+
+[bbands]
+active = true #true/false activate or deactivate bbands
+TimePeriod = 200 #The amount of samples used for the average
+NbDevUp = 2 #The distance in stdev of the upper band from the SMA
+NbDevDn = 2 #The distance in stdev of the lower band from the SMA
+
+[macd]
+active = true #true/false activate or deactivate macd
+short = 12 #macd indicator
+long = 26 #macd indicator
+signal = 9 #macd indicator
+down = -0.025
+up = 0.025
+
+[cci]
+active = true #true/false activate or deactivate cci
+constant = 0.015 #cci indicator # constant multiplier. 0.015 gets to around 70% fit
+history = 90 #cci indicator # history size, make same or smaller than history
+up = 100
+down = -100

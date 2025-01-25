@@ -1,0 +1,5 @@
+# FROM freqtradeorg/freqtrade:stable
+FROM freqtradeorg/freqtrade:develop_plot
+
+RUN pip install ta
+# RUN pip install plotly

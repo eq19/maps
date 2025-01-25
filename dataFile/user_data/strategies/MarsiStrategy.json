@@ -1,0 +1,25 @@
+{
+  "strategy_name": "MarsiStrategy",
+  "params": {
+    "buy": {},
+    "sell": {},
+    "protection": {},
+    "roi": {
+      "0": 0.082,
+      "36": 0.054,
+      "92": 0.04,
+      "209": 0
+    },
+    "stoploss": {
+      "stoploss": -0.324
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.098,
+      "trailing_stop_positive_offset": 0.10600000000000001,
+      "trailing_only_offset_is_reached": true
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2021-10-24 12:47:16.222886+00:00"
+}

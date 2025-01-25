@@ -1,0 +1,33 @@
+{
+  "strategy_name": "FlawlessVictory",
+  "params": {
+    "roi": {
+      "0": 10.0
+    },
+    "stoploss": {
+      "stoploss": -1.0
+    },
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 10
+    },
+    "buy": {
+      "buy_bb_window": 10,
+      "buy_rsi_length": 16,
+      "buy_rsi_lower": 53
+    },
+    "sell": {
+      "sell_bb_window": 21,
+      "sell_rsi_length": 13,
+      "sell_rsi_upper": 52
+    },
+    "protection": {}
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2023-06-11 19:49:56.265416+00:00"
+}

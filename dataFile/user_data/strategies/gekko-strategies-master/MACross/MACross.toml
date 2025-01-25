@@ -1,0 +1,5 @@
+shortMATimePeriod = 5
+longMATimePeriod = 50
+
+trendPersist = 3
+lmaTrendPersist = 3

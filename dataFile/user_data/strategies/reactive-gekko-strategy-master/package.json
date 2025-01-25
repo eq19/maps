@@ -1,0 +1,30 @@
+{
+  "name": "reative-gekko-strategy",
+  "version": "0.0.1",
+  "description": "A self updating gekko trading strategy that will run the most profitable indicators.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DustinJSilk/reactive-gekko-strategy.git"
+  },
+  "keywords": [
+    "gekko",
+    "cryptocurrencies",
+    "bitcoin",
+    "trading",
+    "trader",
+    "bot"
+  ],
+  "author": "Dustin J Silk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DustinJSilk/reactive-gekko-strategy/issues"
+  },
+  "homepage": "https://github.com/DustinJSilk/reactive-gekko-strategy#readme",
+  "dependencies": {
+    "toml": "^2.3.3"
+  }
+}

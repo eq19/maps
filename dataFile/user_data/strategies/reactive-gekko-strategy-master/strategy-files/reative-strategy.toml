@@ -1,0 +1,9 @@
+# NB: Set candles to 1 minute.
+
+# The amount of time (minutes) to run each strategy backtesting before picking
+# the best one.
+max_strategy_test_time = 2
+
+# Time between updates / initial warm up time
+update_strategy_time = 10
+use_strategies = [stochastic]

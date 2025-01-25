@@ -1,0 +1,12 @@
+{
+  "dry_run": true,
+  "db_url": "sqlite:///tradesv3.sqlite",
+  "strategy_path": "user_data/strategies/",
+  "dataformat_ohlcv": "hdf5",
+  "bot_name": "freqtrade - base",
+  "initial_state": "running",
+  "forcebuy_enable": false,
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}

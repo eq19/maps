@@ -1,0 +1,97 @@
+# --- Do not remove these libs ---
+from freqtrade.strategy.interface import IStrategy
+from pandas import DataFrame
+# --------------------------------
+import talib.abstract as ta
+import pandas_ta as pta
+import freqtrade.vendor.qtpylib.indicators as qtpylib
+# ---------- Commands -----------
+# Commands for backtesting etc.:
+# /opt/freqtrade/.env/bin/freqtrade backtesting --config user_data/configs/backtest_conf.json --strategy new_strat
+# /opt/freqtrade/.env/bin/freqtrade backtesting --config user_data/configs/backtest_conf.json --timerange=20210201-20210310 --strategy new_strat --export trades --export-filename=user_data/backtest_results/simple_strat_30m_test.json
+# /opt/freqtrade/.env/bin/freqtrade plot-dataframe --config user_data/configs/backtest_conf.json --strategy new_strat  --export-filename=user_data/backtest_results/new_strat-2021-05-13_19-29-25.json
+# /opt/freqtrade/.env/bin/freqtrade plot-profit --config user_data/configs/backtest_conf.json  --strategy new_strat --export-filename=user_data/backtest_results/new_strat-2021-05-13_19-29-25.json
+# --------------------------------
+
+class new_strat_copy(IStrategy):
+    stoploss = -0.25
+    timeframe = "1d"
+
+    order_types = {
+        "buy": "limit",
+        "sell": "limit",
+        "emergencysell": "market",
+        "stoploss": "market",
+        "stoploss_on_exchange": False,
+        "stoploss_on_exchange_interval": 60,
+        "stoploss_on_exchange_limit_ratio": 0.99,
+    }
+
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        # Indicatoren
+        dataframe['st_ultra_d'] = pta.supertrend(high=dataframe['high'], low=dataframe['low'], close=dataframe['close'], length=10, multiplier=3)['SUPERTd_10_3.0']
+        dataframe['st_long_d'] = pta.supertrend(high=dataframe['high'], low=dataframe['low'], close=dataframe['close'], length=10, multiplier=1.8)['SUPERTd_10_1.8']
+        dataframe['st_medium_d'] = pta.supertrend(high=dataframe['high'], low=dataframe['low'], close=dataframe['close'], length=10, multiplier=1.3)['SUPERTd_10_1.3']
+        dataframe['st_short_d'] = pta.supertrend(high=dataframe['high'], low=dataframe['low'], close=dataframe['close'], length=10, multiplier=0.8)['SUPERTd_10_0.8']
+
+        # Trade R:R bepalen
+        def get_position(row):
+            if row['st_ultra_d'] == 1 and row['st_long_d'] == 1 and row['st_medium_d'] == 1 and row['st_short_d'] == 1:
+                val = 'high_r_long' # R:R 1:5 long position
+            elif row['st_ultra_d'] == -1 and row['st_long_d'] == 1 and row['st_medium_d'] == 1 and row['st_short_d'] == 1:
+                val = 'low_r_long' # R:R 1:2 long position
+            else:
+                val = 'neutral'
+            return val
+
+        dataframe['position'] = dataframe.apply(get_position, axis=1)
+
+        # Verandering advies detectie
+        dataframe['advice_changed'] = dataframe['position'].shift(+1) != dataframe['position']
+
+        # Stoploss bepalen
+        dataframe['stoploss'] = pta.supertrend(high=dataframe['high'], low=dataframe['low'], close=dataframe['close'], length=10, multiplier=1.8)['SUPERT_10_1.8']
+        
+        # Takeprofit
+        for i, row in dataframe.iterrows():
+            if row['position'] == 'high_r_long' and row['advice_changed'] == True:
+                dataframe.loc[i,'takeprofit'] = ((row['close']-row['stoploss']) * 1.5) + row['close']
+            elif row['position'] == 'low_r_long' and row['advice_changed'] == True:
+                dataframe.loc[i,'takeprofit'] = ((row['close']-row['stoploss']) * 1.2) + row['close']
+            else:
+                dataframe.loc[i,'takeprofit'] = dataframe.loc[i-1,'takeprofit']
+        
+        # Print stuff
+        # print(dataframe.tail(25))
+        return dataframe
+
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[
+            (
+            ((dataframe["position"] == "high_r_long") | (dataframe["position"] == "high_r_long"))
+            & (dataframe["advice_changed"] == True)
+            ),
+            "buy",
+        ] = 1
+
+        return dataframe
+
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[
+            (
+            (dataframe['close'] > dataframe['takeprofit'])
+            | (dataframe['close'] < dataframe['stoploss'])
+            ),
+            "sell",
+        ] = 1
+        return dataframe
+
+
+# Testresultaten 
+# Backtesting with data from 2017-08-17 00:00:00 up to 2021-05-11 00:00:00 (1363 days)..
+# vulcan_strat 3 trades	30m	1126%	1871	780	1091	209%	42%	58%	500	100	5,35	535,37%	73058667322950600000000000000000000,00
+# vulcan_strat	1h	1113%	884	381	503	254%	43%	57%	500	100	4,01	401,07%	560562309489550000000000,00
+# Zonder tsl	2h	888%	463	216	247	303%	47%	53%	500	100	1,96	195,53%	4084035014,78
+# Zonder tsl	4h	1020%	231	109	122	295%	47%	53%	500	100	1,76	175,66%	196691326,46
+# Zonder tsl	1d	635%	50	17	33	349%	34%	66%	500	100	27,56	2756,29%	186234422673508000000000000000000000000000,00
+# vulcan_strat 2 trades	30m	1396%	1306	538	768	141%	41%	59%	500	100	5,93	592,78%	6534742790242520000000000000000000000000000000000000000,00

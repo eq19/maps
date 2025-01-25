@@ -1,0 +1,29 @@
+{
+  "max_open_trades": 10,
+  "stake_currency": "BTC",
+  "stake_amount": 0.0001,
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "USD",
+  "dry_run_wallet": 0.00430398,
+  "timeframe": "1h",
+  "dry_run": true,
+  "cancel_open_orders_on_exit": false,
+  "unfilledtimeout": {
+    "buy": 10,
+    "sell": 30
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ],
+  "db_url": "sqlite:///tradesv3.sqlite",
+  "strategy_path": "../user_data/strategies/",
+  "dataformat_ohlcv": "hdf5",
+  "bot_name": "freqtrade - base",
+  "initial_state": "running",
+  "forcebuy_enable": false,
+  "internals": {
+    "process_throttle_secs": 5
+  }
+}

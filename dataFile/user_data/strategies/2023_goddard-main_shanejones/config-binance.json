@@ -1,0 +1,78 @@
+{
+  "max_open_trades": 5,
+  "stake_currency": "BUSD",
+  "stake_amount": "unlimited",
+  "tradable_balance_ratio": 0.99,
+  "fiat_display_currency": "GBP",
+  "dry_run": false,
+  "cancel_open_orders_on_exit": false,
+  "order_types": {
+      "buy": "market",
+      "sell": "market",
+      "forcesell": "market",
+      "stoploss": "market",
+      "stoploss_on_exchange": false
+  },
+  "bid_strategy": {
+      "price_side": "ask",
+      "ask_last_balance": 0.0
+  },
+  "unfilledtimeout": {
+    "unit": "seconds",
+    "buy": 30,
+    "sell": 10
+  },
+  "ask_strategy": {
+      "price_side": "bid"
+  },
+  "telegram": {
+    "enabled": true,
+    "token": "",
+    "chat_id": ""
+  },
+  "exchange": {
+      "name": "binance",
+      "key": "",
+      "secret": "",
+      "ccxt_config": {"enableRateLimit": true},
+      "ccxt_async_config": {
+          "enableRateLimit": true,
+          "rateLimit": 100
+      },
+      "pair_whitelist": [
+        // Choose your whitelist from available options
+      ],
+      "pair_blacklist": [
+        // Choose your blacklist from available options
+      ]
+  },
+  "pairlists": [
+      {"method": "StaticPairList"},
+      {"method": "SpreadFilter", "max_spread_ratio": 0.005},
+      {
+        "method": "PriceFilter",
+        "low_price_ratio": 0.10,
+        "min_price": 0.001
+      },
+      {
+        "method": "RangeStabilityFilter",
+        "lookback_days": 3,
+        "min_rate_of_change": 0.1,
+        "refresh_period": 1800
+      },
+      {
+        "method": "VolatilityFilter",
+        "lookback_days": 3,
+        "min_volatility": 0.02,
+        "max_volatility": 0.75,
+        "refresh_period": 43200
+      },
+      {"method": "ShuffleFilter", "seed": 42}
+  ],
+  "bot_name": "freqtrade-binance",
+  "initial_state": "running",
+  "forcebuy_enable": false,
+  "internals": {
+      "process_throttle_secs": 3
+  }
+}

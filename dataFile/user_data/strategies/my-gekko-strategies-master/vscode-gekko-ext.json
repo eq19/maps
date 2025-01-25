@@ -1,0 +1,22 @@
+{
+    "workspaceConfig": "vscode-gekko-ext.json",
+    "username": "pflima92",
+    "dirs": {
+        "strategies": [
+            "./strategies/"
+        ],
+        "indicators": [
+            "./indicators/"
+        ]
+    },
+    "backtest": {
+        "watch": {
+            "exchange": "binance",
+            "currency": "BNB",
+            "asset": "XRP"
+        },
+        "backtest": {
+            "daterange": {}
+        }
+    }
+}

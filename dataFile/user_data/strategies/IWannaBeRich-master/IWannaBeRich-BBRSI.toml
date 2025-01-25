@@ -1,0 +1,10 @@
+[rsi]
+interval = 1 #indicator
+low = 29
+high = 79
+persistence = 1
+
+[bbands]
+TimePeriod = 270
+NbDevUp = 309
+NbDevDn = 14

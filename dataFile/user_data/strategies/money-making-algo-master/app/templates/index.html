@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hi, !</h1>
+    {% for api in api_data %}
+    <div><p>{{ api.name }} Last Fetched: <b>{{ api.last_fetched }}</b></p></div>
+    {% endfor %}
+{% endblock %}

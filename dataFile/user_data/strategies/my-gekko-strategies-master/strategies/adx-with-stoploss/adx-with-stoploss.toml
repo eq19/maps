@@ -1,0 +1,10 @@
+historySize = 80
+optInTimePeriod = 15
+candleSize = 10
+
+[general]
+stopLoss = 0.8
+
+[thresholds]
+up = 30
+down = 20

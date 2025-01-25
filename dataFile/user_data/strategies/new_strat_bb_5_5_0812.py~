@@ -1,0 +1,141 @@
+# --- Do not remove these libs ---
+from freqtrade.strategy.interface import IStrategy
+from pandas import DataFrame
+
+# Add your lib to import here
+import talib.abstract as ta
+import freqtrade.vendor.qtpylib.indicators as qtpylib
+
+
+class new_strat_bb_5_5_0812(IStrategy):
+    stoploss = -0.2
+    timeframe = "30m"
+    minimal_roi = {
+        "0": 0.07,  
+            }
+
+    order_types = {
+        "buy": "limit",
+        "sell": "limit",
+        "emergencysell": "market",
+        "stoploss": "market",
+        "stoploss_on_exchange": True,
+        "stoploss_on_exchange_interval": 60,
+        "stoploss_on_exchange_limit_ratio": 0.99,
+    }
+
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        # RSI
+        dataframe["rsi"] = ta.RSI(dataframe, timeperiod=14)
+        dataframe["rsi_sma"] = dataframe["rsi"].rolling(window=14).mean()
+
+        # Bollinger Bands
+        bollinger = ta.BBANDS(dataframe, nbdevup=2.0, nbdevdn=2.0, timeperiod=50)
+        dataframe["bb_lowerband"] = bollinger["lowerband"]
+        dataframe["bb_middleband"] = bollinger["middleband"]
+        dataframe["bb_upperband"] = bollinger["upperband"]
+        
+        # Bollinger % percent
+        dataframe["bb_percent"] = (
+            (dataframe["close"] - dataframe["bb_lowerband"]) /
+            (dataframe["bb_upperband"] - dataframe["bb_lowerband"])
+        )
+        
+        # Bollinger width
+        dataframe["bb_width"] = (
+            (dataframe["bb_upperband"] - dataframe["bb_lowerband"]) / dataframe["bb_middleband"]
+        )
+
+        # MACD
+        # https://mrjbq7.github.io/ta-lib/func_groups/momentum_indicators.html
+        macd = ta.MACD(
+            dataframe,
+            fastperiod=8,
+            fastmatype=0,
+            slowperiod=24,
+            slowmatype=0,
+            signalperiod=9,
+            signalmatype=0,
+        )
+        dataframe["macd"] = macd["macd"]
+        dataframe["macdsignal"] = macd["macdsignal"]
+        dataframe["macdhist"] = macd["macdhist"]
+
+        # === ENTRY CONDITIONS ===
+        # RSI oversold crosses above treshold is the first signal to look out for
+        dataframe["rsi_oversold"]=qtpylib.crossed_above(dataframe['rsi'], 30)
+        # RSI should cross rsi_sma above after oversold conditions
+        dataframe["rsi_sma_cross"] = qtpylib.crossed_above(dataframe['rsi'], dataframe['rsi_sma'])
+        # Entry signal 0 is valid when a rsi sma cross occurs after a RSI oversold signal within a certain period
+        dataframe["entry_0"] = (dataframe["rsi_oversold"] & dataframe["rsi_sma_cross"]) | (dataframe["rsi_oversold"].shift(+1) & dataframe["rsi_sma_cross"])| (dataframe["rsi_oversold"].shift(+2) & dataframe["rsi_sma_cross"]) | (dataframe["rsi_oversold"].shift(+3) & dataframe["rsi_sma_cross"]) | (dataframe["rsi_oversold"].shift(+4) & dataframe["rsi_sma_cross"]) | (dataframe["rsi_oversold"].shift(+5) & dataframe["rsi_sma_cross"]) | (dataframe["rsi_oversold"].shift(+6) & dataframe["rsi_sma_cross"]) | (dataframe["rsi_oversold"].shift(+7) & dataframe["rsi_sma_cross"]) | (dataframe["rsi_oversold"].shift(+8) & dataframe["rsi_sma_cross"])
+
+        # Before or during oversold conditions price should be lower than lower bollinger band and move into the band
+        # (BB percent should cross above 0 percent)
+        dataframe["bb_percent_cross"] = qtpylib.crossed_above(dataframe['bb_percent'], 0)
+        # Entry signal 1 occurs when rsi signal_0 happens during or shortly after bb percent cross
+        dataframe["entry_1"] = (dataframe["bb_percent_cross"] & dataframe["entry_0"]) | (dataframe["bb_percent_cross"].shift(+1) & dataframe["entry_0"]) | (dataframe["bb_percent_cross"].shift(+2) & dataframe["entry_0"]) | (dataframe["bb_percent_cross"].shift(+3) & dataframe["entry_0"]) | (dataframe["bb_percent_cross"].shift(+4) & dataframe["entry_0"])
+
+        # After signal 1 a MACD cross should happen below 0 line which indicates that a bullish move can happen
+        dataframe["macd_cross"] = (dataframe["macd"] < 0) & (dataframe["macdsignal"] < 0) & (dataframe["macdhist"] > 0)
+        # Entry signal 2 is valid when macd cross happens shortly after signal 1
+        # Entry 1 and Entry 2 do not have to occur at the same time for a valid signal
+        # but signal 1 has to happen within x periods before macd cross.
+        dataframe["entry_2"] = (dataframe["entry_1"] & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+1) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+2) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+3) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+4) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+5) & dataframe["macd_cross"])| (dataframe["entry_1"].shift(+6) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+7) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+8) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+9) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+10) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+11) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+12) & dataframe["macd_cross"]) | (dataframe["entry_1"].shift(+13) & dataframe["macd_cross"])
+        # Entry signal 3 is valid when price closes above bollinger middle band
+        dataframe["entry_3"]=dataframe["close"] > dataframe["bb_middleband"]
+        
+
+        dataframe['last_high'] = dataframe['high'].rolling(20).max().shift(1)
+        dataframe['last_high_cross'] = dataframe["close"] > dataframe["last_high"]
+        # dataframe["entry_2"] = (dataframe["entry_1"] & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+1) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+2) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+3) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+4) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+5) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+6) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+7) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+8) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+9) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+10) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+11) & dataframe["last_high_cross"]) | (dataframe["entry_1"].shift(+12) & dataframe["last_high_cross"]) 
+        
+        # === EXIT CONDITIONS ===
+        dataframe["exit_1"]=qtpylib.crossed_above(dataframe['bb_middleband'], dataframe['close'])
+        
+        
+        # === PRINT STUFF ===
+        # print(dataframe[['date','close','entry_2','entry_3','exit_1']].loc[dataframe['exit_1'] == True].tail(55))
+        print(dataframe[['date','close','entry_0','entry_1','entry_2','entry_3']].loc[dataframe['entry_1'] == True].tail(55))
+        # print(dataframe[['date','close','bb_percent','bb_percent_cross','rsi','rsi_sma','rsi_sma_cross','entry_1','macd_cross','entry_2']].loc[dataframe['entry_2'] == True].tail(55))
+        # print(dataframe.tail(55))
+        return dataframe
+
+    def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[
+            # (dataframe["entry_1"] == True)
+            (dataframe["entry_2"] == True)
+            & (dataframe["entry_3"] == True),
+            "buy",
+        ] = 1
+        return dataframe
+
+    def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        dataframe.loc[
+            (dataframe['close'] < dataframe['bb_middleband']),
+            # (qtpylib.crossed_above(dataframe['bb_middleband'], dataframe['close'])),
+            # (qtpylib.crossed_above(dataframe['bb_percent'], 1)),
+            # (()), 
+            "sell",
+        ] = 1
+        return dataframe
+
+
+# Step 2:
+# For these beliefs some potential considerations for the best trading signals are below. Note that the number values have been selected arbitrarily so you will need to test various values to find those you are happiest with:
+
+#     Setup:
+#     Instrument made a new 100 day high in the last 5 days;  OR
+#     50 day moving average is above the 200 day moving average; OR
+#     Price is 10 ATR higher than it was 2 months ago…
+#     Entry:
+#     Positive directional movement indicator crosses above negative directional movement indicator; OR
+#     Short term moving average crosses above the medium term moving average; OR
+#     Price crosses above the parabolic SAR indicator…
+#     Exit:
+#     100 day low channel breakout; OR
+#     Chandelier exit; OR
+#     Price crosses below the 200 day moving average …
+#     Initial stops:
+#     Lowest low of the last 10 days; OR
+#     Yesterday’s close minus three times the average true range; OR
+#     Yesterday’s close minus 1 standard deviation of daily price movements…

@@ -1,0 +1,35 @@
+{
+  "stake_currency": "EUR",
+  "exchange": {
+    "pair_whitelist": [
+      "ETH/EUR",
+      "BTC/EUR",
+      "DOGE/EUR",
+      "XRP/EUR",
+      "ADA/EUR",
+      "EOS/EUR",
+      "LTC/EUR",
+      "VET/EUR",
+      "XLM/EUR",
+      "DOT/EUR",
+      "MATIC/EUR",
+      "LINK/EUR",
+      "BCH/EUR",
+      "YFI/EUR",
+      "BTT/EUR",
+      "CHZ/EUR",
+      "TRX/EUR",
+      "THETA/EUR",
+      "SXP/EUR",
+      "LUNA/EUR",
+      "AVAX/EUR",
+      "GRT/EUR",
+      "EGLD/EUR",
+      "ENJ/EUR",
+      "WIN/EUR",
+      "UNI/EUR",
+      "HOT/EUR",
+      "WRX/EUR"
+    ]
+  }
+}

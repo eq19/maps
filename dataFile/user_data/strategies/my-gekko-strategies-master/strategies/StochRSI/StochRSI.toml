@@ -1,0 +1,8 @@
+interval = 3
+
+[thresholds]
+low = 30
+high = 70
+persistence = 3
+
+stoploss = 0.975

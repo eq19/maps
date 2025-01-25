@@ -1,0 +1,38 @@
+{
+  "stake_currency": "BTC",
+  "exchange": {
+    "name": "kraken",
+    "pair_whitelist": [
+      "ETH/BTC",
+      "ADA/BTC",
+      "DOT/BTC",
+      "LINK/BTC",
+      "XRP/BTC",
+      "DOGE/BTC",
+      "LTC/BTC",
+      "BCH/BTC",
+      "EOS/BTC",
+      "XMR/BTC",
+      "ETC/BTC",
+      "SC/BTC",
+      "FLOW/BTC",
+      "UNI/BTC",
+      "XLM/BTC",
+      "XTZ/BTC",
+      "KSM/BTC",
+      "ANT/BTC",
+      "YFI/BTC",
+      "AAVE/BTC",
+      "EWT/BTC",
+      "ZEC/BTC",
+      "OXT/BTC",
+      "WAVES/BTC",
+      "ICX/BTC",
+      "OMG/BTC",
+      "NANO/BTC",
+      "QTUM/BTC",
+      "LSK/BTC",
+      "MATIC/BTC"
+    ]
+  }
+}

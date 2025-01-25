@@ -1,0 +1,25 @@
+{
+  "strategy_name": "BBRSINaiveStrategy",
+  "params": {
+    "buy": {},
+    "sell": {},
+    "protection": {},
+    "roi": {
+      "0": 0.236,
+      "87": 0.052000000000000005,
+      "163": 0.018,
+      "466": 0
+    },
+    "stoploss": {
+      "stoploss": -0.257
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.041,
+      "trailing_stop_positive_offset": 0.044000000000000004,
+      "trailing_only_offset_is_reached": true
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2021-10-24 04:14:58.292862+00:00"
+}

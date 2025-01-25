@@ -1,0 +1,17 @@
+{
+    "watch": {
+        "exchange": "binance",
+        "currency": "BNB",
+        "asset": "XRP"
+    },
+    "tradingAdvisor": {
+        "candleSize": 5,
+        "historySize": 10
+    },
+    "backtest": {
+        "daterange": {
+            "from": "2019-06-01T00:00:00Z",
+            "to": "2019-06-28T00:00:00Z"
+        }
+    }
+}
