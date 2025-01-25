@@ -56,7 +56,7 @@ class MasterMoniGoManiHyperStrategy(IStrategy, ABC):
     ####################################################################################################################
     #                                           START OF CONFIG NAMES SECTION                                          #
     ####################################################################################################################
-    mgm_config_name = 'mgm-config.json'
+    mgm_config_name = '/home/runner/user_data/config_examples/config_mgm.example.json'
     mgm_config_hyperopt_name = 'mgm-config-hyperopt.json'
     ####################################################################################################################
     #                                            END OF CONFIG NAMES SECTION                                           #
