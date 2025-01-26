@@ -91,7 +91,8 @@ else
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily \
+    --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies
   [[ ! -f /home/runner/user_data/stregies/$STRATEGY.json ]] mv $PARAMS /home/runner/user_data/stregies/$STRATEGY.json
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
