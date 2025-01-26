@@ -35,8 +35,10 @@
       "trailing_stop_positive_offset": 0.175,
       "trailing_only_offset_is_reached": false
     },
-    "max_open_trades": 3
+    "max_open_trades": {
+      "value": 3
+    }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-01-25 13:45:00+00:00"
+  "export_time": "2025-01-25 14:00:00+00:00"
 }
