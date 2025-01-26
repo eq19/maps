@@ -9,6 +9,7 @@ FEE=0.003322
 STRATEGY=ichiV1
 TIMEFRAME='15m 1h 1d'
 CONFIG=user_data/config_examples/config_indodax.example.json
+PARAMS=user_data/config_examples/config_params.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 
@@ -91,6 +92,7 @@ else
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily
+  [[ ! -f /home/runner/user_data/stregies/$STRATEGY.json ]] mv $PARAMS /home/runner/user_data/stregies/$STRATEGY.json
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
