@@ -97,8 +97,8 @@ else
     --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  freqtrade backtesting --help
   cat user_data/strategies/$STRATEGY.json
+  echo -e "\n$hr\n" && freqtrade backtesting --help
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
