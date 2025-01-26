@@ -93,7 +93,7 @@ else
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily \
     --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies
-  [[ ! -f /home/runner/user_data/stregies/$STRATEGY.json ]] mv $PARAMS /home/runner/user_data/stregies/$STRATEGY.json
+  [[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
