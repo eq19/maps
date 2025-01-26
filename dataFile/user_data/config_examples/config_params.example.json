@@ -1,42 +1,42 @@
-{
+I{
   "strategy_name": "ichiV1",
   "params": {
     "buy": {
-      "buy_fan_magnitude_shift_value": 1,
-      "buy_min_fan_magnitude_gain": 1.009,
-      "buy_trend_above_senkou_level": 7,
-      "buy_trend_bullish_level": 5
+        "buy_fan_magnitude_shift_value": 6,
+        "buy_min_fan_magnitude_gain": 1.0,
+        "buy_trend_above_senkou_level": 3,
+        "buy_trend_bullish_level": 7
     },
     "sell": {
-      "pHSL": -0.113,
-      "ProfitLoss1": 0.008,
-      "ProfitLoss2": 0.014,
-      "ProfitMargin1": 0.015,
-      "ProfitMargin2": 0.034,
-      "ExitTrendIndicator": "trend_close_6h"
+        "ExitTrendIndicator": "trend_close_2h",
+        "ProfitLoss1": 0.012,
+        "ProfitLoss2": 0.018,
+        "ProfitMargin1": 0.018,
+        "ProfitMargin2": 0.043,
+        "pHSL": -0.09
     },
     "protection": {
     },
     "roi": {
-      "0": 0.05,
-      "12": 0.04,
-      "51": 0.03,
-      "60": 0.02,
-      "92": 0.01,
-      "157": 0.0001,
-      "369": -10
+        "0": 0.05,
+        "17": 0.04,
+        "31": 0.03,
+        "81": 0.02,
+        "99": 0.01,
+        "131": 0.0001,
+        "575": -10
     },
     "stoploss": {
-      "stoploss": -0.319
+      "stoploss": -0.254
     },
     "trailing": {
-      "trailing_stop": true,
-      "trailing_stop_positive": 0.148,
-      "trailing_stop_positive_offset": 0.175,
-      "trailing_only_offset_is_reached": false
+      "trailing_stop": False,
+      "trailing_stop_positive": None,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": False
     },
     "max_open_trades": {
-      "value": 3
+      "value": -1
     }
   },
   "ft_stratparam_v": 1,
