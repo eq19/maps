@@ -7,8 +7,8 @@
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
 STRATEGY=ichiV1
-TIMEFRAMES='1m 5m'
-#TIMEFRAMES='15m 1h 1d'
+#TIMEFRAMES='1m 5m'
+TIMEFRAMES='15m 1h 1d'
 CONFIG=user_data/config_examples/config_indodax.example.json
 PARAMS=user_data/config_examples/config_params.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
