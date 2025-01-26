@@ -2,17 +2,17 @@
   "strategy_name": "ichiV1",
   "params": {
     "buy": {
-      "buy_fan_magnitude_shift_value": "1",
+      "buy_fan_magnitude_shift_value": 1,
       "buy_min_fan_magnitude_gain": 1.009,
-      "buy_trend_above_senkou_level": "7",
-      "buy_trend_bullish_level": "5"
+      "buy_trend_above_senkou_level": 7,
+      "buy_trend_bullish_level": 5
     },
     "sell": {
-      "ExitTrendIndicator": "trend_close_6h",
       "ProfitLoss1": 0.008,
       "ProfitLoss2": 0.014,
       "ProfitMargin1": 0.015,
-      "ProfitMargin2": 0.034
+      "ProfitMargin2": 0.034,
+      "ExitTrendIndicator": "trend_close_6h"
     },
     "protection": {
       "pHSL": -0.113
