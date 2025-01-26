@@ -13,6 +13,7 @@ CONFIG=user_data/config_examples/config_indodax.example.json
 PARAMS=user_data/config_examples/config_params.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
+HYPERPY=
 
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=30  # Adjust as per your strategy
@@ -93,6 +94,7 @@ else
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
+  sed -i "s|if params.get(FTHYPT_FILEVERSION, 1) >= 2|if params.get(FTHYPT_FILEVERSION, 1) >= 1|g" $HYPERPY
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily \
     --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies
 
