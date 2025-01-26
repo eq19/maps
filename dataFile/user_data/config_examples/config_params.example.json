@@ -8,6 +8,7 @@
       "buy_trend_bullish_level": 5
     },
     "sell": {
+      "pHSL": -0.113,
       "ProfitLoss1": 0.008,
       "ProfitLoss2": 0.014,
       "ProfitMargin1": 0.015,
@@ -15,7 +16,6 @@
       "ExitTrendIndicator": "trend_close_6h"
     },
     "protection": {
-      "pHSL": -0.113
     },
     "roi": {
       "0": 0.05,
