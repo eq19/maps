@@ -182,8 +182,8 @@ class ichiV1(IStrategy):
     # Optimal
     timeframe = '15m'
     startup_candle_count = 120
-    ignore_roi_if_entry_signal = False
     process_only_new_candles = False
+    ignore_roi_if_entry_signal = False
 
     # Stoploss:
     stoploss = -0.275
@@ -196,8 +196,8 @@ class ichiV1(IStrategy):
 
     # Buy hyperspace params:
     buy_params = {
-        "buy_trend_above_senkou_level": 1,
         "buy_trend_bullish_level": 6,
+        "buy_trend_above_senkou_level": 1,
         "buy_fan_magnitude_shift_value": 3,
         "buy_min_fan_magnitude_gain": 1.002 # NOTE: Good value (Win% ~70%), alot of trades
         #"buy_min_fan_magnitude_gain": 1.008 # NOTE: Very save value (Win% ~90%), only the biggest moves 1.008,
