@@ -2,10 +2,10 @@
   "strategy_name": "ichiV1",
   "params": {
     "buy": {
+        "buy_trend_above_senkou_level": 1,
+        "buy_trend_bullish_level": 6,
         "buy_fan_magnitude_shift_value": 3,
-        "buy_min_fan_magnitude_gain": 1.019,
-        "buy_trend_above_senkou_level": 6,
-        "buy_trend_bullish_level": 5
+        "buy_min_fan_magnitude_gain": 1.002
     },
     "sell": {
         "ExitTrendIndicator": "trend_close_2h",
