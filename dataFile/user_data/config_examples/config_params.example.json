@@ -3,7 +3,7 @@
   "params": {
     "buy": {
         "buy_fan_magnitude_shift_value": 6,
-        "buy_min_fan_magnitude_gain": 1.0,
+        "buy_min_fan_magnitude_gain": 1.019,
         "buy_trend_above_senkou_level": 3,
         "buy_trend_bullish_level": 7
     },
@@ -30,10 +30,7 @@
       "stoploss": -0.254
     },
     "trailing": {
-      "trailing_stop": false,
-      "trailing_stop_positive": null,
-      "trailing_stop_positive_offset": 0.0,
-      "trailing_only_offset_is_reached": false
+      "trailing_stop": false
     },
     "max_open_trades": {
       "value": -1
