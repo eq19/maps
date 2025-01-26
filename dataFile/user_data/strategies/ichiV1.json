@@ -1,29 +1,42 @@
 {
-    "params": {
-        "buy_fan_magnitude_shift_value": "1",
-        "buy_min_fan_magnitude_gain": 1.009,
-        "buy_trend_above_senkou_level": "7",
-        "buy_trend_bullish_level": "5",
-        "ExitTrendIndicator": "trend_close_6h",
-        "ProfitLoss1": 0.008,
-        "ProfitLoss2": 0.014,
-        "ProfitMargin1": 0.015,
-        "ProfitMargin2": 0.034,
-        "pHSL": -0.113
+  "strategy_name": "ichiV1",
+  "params": {
+    "buy": {
+      "buy_fan_magnitude_shift_value": "1",
+      "buy_min_fan_magnitude_gain": 1.009,
+      "buy_trend_above_senkou_level": "7",
+      "buy_trend_bullish_level": "5"
     },
-    "minimal_roi": {
-        "0": 0.05,
-        "12": 0.04,
-        "51": 0.03,
-        "60": 0.02,
-        "92": 0.01,
-        "157": 0.0001,
-        "369": -10
+    "sell": {
+      "ExitTrendIndicator": "trend_close_6h",
+      "ProfitLoss1": 0.008,
+      "ProfitLoss2": 0.014,
+      "ProfitMargin1": 0.015,
+      "ProfitMargin2": 0.034
     },
-    "stoploss": -0.319,
-    "trailing_stop": true,
-    "trailing_stop_positive": 0.148,
-    "trailing_stop_positive_offset": 0.175,
-    "trailing_only_offset_is_reached": false,
+    "protection": {
+      "pHSL": -0.113
+    },
+    "roi": {
+      "0": 0.05,
+      "12": 0.04,
+      "51": 0.03,
+      "60": 0.02,
+      "92": 0.01,
+      "157": 0.0001,
+      "369": -10
+    },
+    "stoploss": {
+      "stoploss": -0.319
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.148,
+      "trailing_stop_positive_offset": 0.175,
+      "trailing_only_offset_is_reached": false
+    },
     "max_open_trades": 3
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2025-01-25 13:45:00+00:00"
 }
