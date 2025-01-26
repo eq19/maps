@@ -84,6 +84,7 @@ else
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
+  [[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
   #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
 
@@ -94,10 +95,10 @@ else
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily \
     --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies
-  [[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
+  cat user_data/strategies/$STRATEGY.json
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
