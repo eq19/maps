@@ -1,7 +1,7 @@
 {
-  "enable_protections": false,
   "position_stacking": false,
   "disableparamexport": false,
+  "enable_protections": false,
   "hyperopt_jobs": 32,
   "hyperopt_loss": "SortinoHyperOptLossDaily",
   "hyperopt_min_trades": 150,
