@@ -94,7 +94,8 @@ else
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  sed -i "s|saved to '{self.results_file}'.|saved to '{self.results_file}' and '{self.current_best_epoch}'.|g" $HYPERPY && cat $HYPERPY 
+  sed -i "s|# Export parameters||g" $HYPERPY && cat $HYPERPY 
+  sed -i "s|# Export parameters||g" $HYPERPY && cat $HYPERPY 
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily \
     --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies
 
