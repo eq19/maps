@@ -185,14 +185,14 @@ class ichiV1(IStrategy):
     process_only_new_candles = False
     ignore_roi_if_entry_signal = False
 
-    # Stoploss:
+    # Stoploss
     stoploss = -0.275
-    trailing_stop = False
-    use_exit_signal = True
-    exit_profit_only = False
-    #trailing_stop_positive = 0.002
-    #trailing_stop_positive_offset = 0.025
-    #trailing_only_offset_is_reached = True
+
+    # Trailing
+    trailing_stop = True
+    trailing_stop_positive = 0.161
+    trailing_stop_positive_offset = 0.201
+    trailing_only_offset_is_reached = False
 
     # Buy hyperspace params:
     buy_params = {
