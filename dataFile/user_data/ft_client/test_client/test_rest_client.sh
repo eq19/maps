@@ -94,8 +94,8 @@ else
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  sed -i "s|if params.get(FTHYPT_FILEVERSION, 1) >= 2 and not|logger.warning('Export parameters')|g" $HYPERPY
-  sed -i "s|    # Export parameters ...||g" $HYPERPY && cat $HYPERPY
+  sed -i "s|if params.get(FTHYPT_FILEVERSION, 1) >= 2 and not config.get(\"disableparamexport\", False):|logger.warning('Export parameters')|g" $HYPERPY
+  sed -i "s|    # Export parameters ...|if params.get(FTHYPT_FILEVERSION, 1) >= 2 and not config.get(\"disableparamexport\", False):|g" $HYPERPY && cat $HYPERPY
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --hyperopt-loss SharpeHyperOptLossDaily \
     --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies
 
