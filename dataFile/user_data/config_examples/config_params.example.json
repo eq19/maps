@@ -23,6 +23,12 @@
             "ProfitMargin1": 0.018,
             "ProfitMargin2": 0.051,
             "ExitTrendIndicator": "trend_close_2h"
+        },
+        "trailing": {
+            "trailing_stop": true,
+            "trailing_stop_positive": 0.161,
+            "trailing_stop_positive_offset": 0.201,
+            "trailing_only_offset_is_reached": false
         }
     },
     "ft_stratparam_v": 1,
