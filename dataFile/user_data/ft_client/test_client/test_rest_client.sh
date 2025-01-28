@@ -67,9 +67,6 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  #sed -i "s|ichi|$STRATEGY|g" $CONFIG
-  #freqtrade download-data --config $CONFIG
-  #freqtrade download-data --config $CONFIG --timerange="$TD"
   freqtrade download-data --config $CONFIG --timeframes $TIMEFRAMES --timerange="$TD"
 
   echo -e "\n$hr\nLIST DATA\n$hr"
@@ -84,7 +81,7 @@ else
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  [[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
+  #[[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
