@@ -22,7 +22,7 @@ TODAY=$(date -u +%Y%m%d)
 YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
 # 30 days ago in the required format
-EARLIEST_DATE=$(date -u -d "90 days ago" +%Y%m%d)
+EARLIEST_DATE=$(date -u -d "1 year ago" +%Y%m%d)
 
 # Backtesting start date in the required format (earliest_date + sliding window)
 BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
