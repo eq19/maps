@@ -85,23 +85,14 @@ else
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
   [[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
-  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
-  #freqtrade backtesting --config $CONFIG --freqaimodel LightGBMRegressor --timerange="$TB" --export signals
-  freqtrade backtesting \
-    --strategy ConsolidatedIchimoku15MWith1H \
-    --timerange 20230101-20240101 \
-    --timeframe 15m \
-    --informative-timeframe 1h \
-    --enable-protections
+  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
   #freqtrade hyperopt-list --config $CONFIG
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  #sed -i "s|if params.get(FTHYPT_FILEVERSION, 1) >= 2 and not config.get(\"disableparamexport\", False):|logger.warning(f'{params.get(FTHYPT_FILEVERSION, 1)} and {config.get(\"disableparamexport\", False)}')|g" $HYPERPY
-  #sed -i "s|# Export parameters ...|logger.warning(f'{HyperoptTools.get_strategy_filename(config, strategy_name)}')|g" $HYPERPY && cat $HYPERPY
-  freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --timerange="$TB" --spaces roi buy sell stoploss trailing
+  freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --timerange="$TB" --spaces all
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   cat user_data/strategies/$STRATEGY.json
