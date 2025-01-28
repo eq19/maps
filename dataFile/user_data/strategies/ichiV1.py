@@ -85,6 +85,7 @@ def to_minutes(**timdelta_kwargs):
 #######################  ichiV1_Mod #####################
 """
 Here are some potential logical issues in the provided strategy file:
+# Ref: https://brookmiles.github.io/freqtrade-stuff/2021/04/12/backtesting-traps/
 
 1. **Exception Handling in `adjust_trade_position`**:
    The method catches all exceptions but does not log the exception or 
