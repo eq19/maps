@@ -4,6 +4,7 @@
     "timeframe": "15m",
     "max_open_trades": -1,
     "stake_amount": 100000,
+    "trading_mode": "spot",
     "stake_currency": "IDR",
     "dry_run_wallet": 1000000,
     "fiat_display_currency": "IDR",
