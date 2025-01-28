@@ -188,14 +188,6 @@ class ichiV1(IStrategy):
     # Stoploss
     stoploss = -0.275
 
-    # Optional order type mapping.
-    order_types = {
-        "buy": "limit",
-        "sell": "limit",
-        "stoploss": "market",
-        "stoploss_on_exchange": True,
-    }
-
   # Trailing
     trailing_stop = True
     trailing_stop_positive = 0.161
