@@ -14,7 +14,7 @@ import pandas as pd  # noqa
 from pandas import DataFrame
 from skopt.space import Categorical, Dimension, Integer, Real  # noqa
 
-from freqtrade.optimize.hyperopt_interface import IHyperOpt
+from freqtrade.optimize.hyperopt.hyperopt_interface import IHyperOpt
 
 # --------------------------------
 # Add your lib to import here
