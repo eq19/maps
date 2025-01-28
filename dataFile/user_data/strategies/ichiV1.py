@@ -139,12 +139,6 @@ class ichiV1(IStrategy):
         "528": -10
     }
 
-    # Optimal
-    timeframe = '15m'
-    startup_candle_count = 120
-    process_only_new_candles = False
-    ignore_roi_if_entry_signal = False
-
     class HyperOpt:
         @staticmethod
         def generate_roi_table(params: dict):
