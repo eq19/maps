@@ -139,6 +139,12 @@ class ichiV1(IStrategy):
         "528": -10
     }
 
+    # Optimal
+    timeframe = '15m'
+    startup_candle_count = 120
+    process_only_new_candles = False
+    ignore_roi_if_entry_signal = False
+
     class HyperOpt:
         @staticmethod
         def generate_roi_table(params: dict):
@@ -178,21 +184,6 @@ class ichiV1(IStrategy):
                 Integer(30, 60, name='roi_t5'),
                 Integer(1, 30, name='roi_t6'),
             ]
-
-    # Optimal
-    timeframe = '15m'
-    startup_candle_count = 120
-    process_only_new_candles = False
-    ignore_roi_if_entry_signal = False
-
-    # Stoploss
-    stoploss = -0.275
-
-  # Trailing
-    trailing_stop = True
-    trailing_stop_positive = 0.161
-    trailing_stop_positive_offset = 0.201
-    trailing_only_offset_is_reached = False
 
     # Buy hyperspace params:
     buy_params = {
