@@ -3,7 +3,7 @@
   "disableparamexport": false,
   "enable_protections": false,
   "hyperopt_jobs": 32,
-  "hyperopt_loss": "SortinoHyperOptLossDaily",
+  "hyperopt_loss": "SortinoHyperOptLoss",
   "hyperopt_min_trades": 150,
   "print_all": true,
   "max_generated_candidates": 100,
