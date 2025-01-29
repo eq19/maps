@@ -110,10 +110,6 @@ else
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
   #sed -i "s|ichiV1_Marius|$STRATEGY|g" $CONFIG
-  sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
-  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
-  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
-  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
   cd /home/runner
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
