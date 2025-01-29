@@ -63,7 +63,15 @@ class ichiV2_15M1H(IStrategy):
     volume_filter = DecimalParameter(0.8, 1.5, default=1.2, space='buy')
 
     def informative_pairs(self):
-        return [(pair, self.informative_timeframe) for pair in self.dp.current_whitelist()]
+        # get access to all pairs available in whitelist.
+        pairs = self.dp.current_whitelist()
+        # Assign tf to each pair so they can be downloaded and cached for strategy.
+        informative_pairs = [(pair, '1d') for pair in pairs]
+        # Optionally Add additional "static" pairs
+        informative_pairs += [("USDT/IDR", "5m"),
+                              ("USDT/IDR", "1h"),
+                            ]
+        return informative_pairs
 
     def calculate_ichimoku(self, dataframe):
         if dataframe.empty:
@@ -102,6 +110,41 @@ class ichiV2_15M1H(IStrategy):
             raise      
         return dataframe
 
+
+
+
+
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        if not self.dp:
+            # Don't do anything if DataProvider is not available.
+            return dataframe
+
+        inf_tf = '1d'
+        # Get the informative pair
+        informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=inf_tf)
+        # Get the 14 day rsi
+        informative['rsi'] = ta.RSI(informative, timeperiod=14)
+
+        # Use the helper function merge_informative_pair to safely merge the pair
+        # Automatically renames the columns and merges a shorter timeframe dataframe and a longer timeframe informative pair
+        # use ffill to have the 1d value available in every row throughout the day.
+        # Without this, comparisons between columns of the original and the informative pair would only work once per day.
+        # Full documentation of this method, see below
+        dataframe = merge_informative_pair(dataframe, informative, self.timeframe, inf_tf, ffill=True)
+
+        # Calculate rsi of the original dataframe (5m timeframe)
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+
+        # Do other stuff
+        # ...
+
+        return dataframe
+
+
+
+
+
+  
     def populate_indicators(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
         # 1. Process 15m timeframe first
         dataframe = self.calculate_ichimoku(dataframe)
