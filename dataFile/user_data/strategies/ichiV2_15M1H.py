@@ -62,7 +62,9 @@ class ichiV2_15M1H(IStrategy):
     hull_period = IntParameter(10, 30, default=18, space='sell')
     volume_filter = DecimalParameter(0.8, 1.5, default=1.2, space='buy')
 
-    
+    def informative_pairs(self):
+        return [(pair, self.informative_timeframe) for pair in self.dp.current_whitelist()]
+
     def calculate_ichimoku(self, dataframe):
         if dataframe.empty:
             logger.error("Empty dataframe!")
