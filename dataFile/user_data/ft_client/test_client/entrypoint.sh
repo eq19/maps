@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
 
+CONFIG=/home/runner/config.json
+  
+if [ -f /home/runner/config.json ]: then
+  sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
+  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
+  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
+  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
+fi
+
 # Check the Deeplearning 
 if [ -d /mnt/disks/deeplearning ]; then
   /mnt/disks/deeplearning/usr/bin/gcloud auth application-default print-access-token > /tmp/token || { echo "Failed to get token"; exit 1; };
   TOKEN=$(cat /tmp/token)
   #curl -H "Authorization: Bearer $TOKEN" \
     #"https://secretmanager.googleapis.com/v1/projects/feedmapping/secrets/freqtrade-config/versions/latest:access" | \
-    #jq -r '.payload.data' | base64 --decode > /home/runner/config.json
+    #jq -r '.payload.data' | base64 --decode > $CONFIG
 
-  # Run PostgreSQL (autostart)
-  #sudo service supervisor start
-  exec supervisord -c /etc/supervisor/supervisord.conf
 else
   "Deeplearning is not found.";
 fi
+
+# Run PostgreSQL (autostart)
+#sudo service supervisor start
+exec supervisord -c /etc/supervisor/supervisord.conf
+  
