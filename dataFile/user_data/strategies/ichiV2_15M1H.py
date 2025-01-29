@@ -41,17 +41,14 @@ class ichiV2_15M1H(IStrategy):
     trailing_stop = False
     
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Critical check for column names with hidden characters
         cols_repr = [repr(col) for col in dataframe.columns]
-        logger.debug(f"Columns with hidden characters: {cols_repr}")
+        logger.debug(f"Columns: {cols_repr}")
         
-        # Validate core OHLCV columns exist
         required = ['open', 'high', 'low', 'close', 'volume']
         missing = [col for col in required if col not in dataframe.columns]
         if missing:
-            raise ValueError(f"Missing required columns: {missing}")
+            raise ValueError(f"Missing columns: {missing}")
             
-        # Ensure numeric types
         dataframe = dataframe.astype({
             'open': 'float64',
             'high': 'float64', 
@@ -60,55 +57,50 @@ class ichiV2_15M1H(IStrategy):
             'volume': 'float64'
         })
         
-        # Calculate Ichimoku
         dataframe = self.calculate_ichimoku(dataframe)
-        
         return dataframe
 
     def calculate_ichimoku(self, dataframe):
-        # Final safeguard against empty data
         if dataframe.empty:
-            logger.error("Received empty dataframe in Ichimoku calculation!")
+            logger.error("Empty dataframe!")
             return dataframe
             
         try:
-            # Ichimoku parameters
             tenkan = 9
             kijun = 26
             senkou = 52
             
-            # Tenkan-sen (Conversion Line)
+            # CORRECTED LINES BELOW
             dataframe['tenkan'] = (
-                dataframe['high'].rolling(window=tenkan).max() + 
-                dataframe['low'].rolling(window=tenkan).min()
+                dataframe['high'].rolling(tenkan).max() + 
+                dataframe['low'].rolling(tenkan).min()
             ) / 2
             
-            # Kijun-sen (Base Line)
             dataframe['kijun'] = (
-                dataframe['high'].rolling(window=kijun).max() + 
-                dataframe['low'].rolling(window=kijun).min()
+                dataframe['high'].rolling(kijun).max() + 
+                dataframe['low'].rolling(kijun).min()
             ) / 2
             
-            # Senkou Span A (Leading Span A)
             dataframe['senkou_a'] = (
                 (dataframe['tenkan'] + dataframe['kijun']) / 2
             ).shift(kijun)
             
-            # Senkou Span B (Leading Span B)
+            # FIXED LINE 101: Removed ".2" before shift
             dataframe['senkou_b'] = (
-                dataframe['high'].rolling(window=senkou).max() + 
-                dataframe['low'].rolling(window=senkou).min()
-            ) / 2.shift(kijun)
+                (
+                    dataframe['high'].rolling(senkou).max() + 
+                    dataframe['low'].rolling(senkou).min()
+                ) / 2  # Properly closed division
+            ).shift(kijun)  # Shift applied to entire result
             
         except KeyError as e:
-            logger.error(f"Critical column error: {e}")
-            logger.error(f"Available columns: {dataframe.columns.tolist()}")
+            logger.error(f"Column error: {e}")
+            logger.error(f"Columns: {dataframe.columns.tolist()}")
             raise
         
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Your entry logic here (unchanged)
         dataframe.loc[
             (
                 (dataframe['close'] > dataframe['senkou_a']) &
@@ -119,7 +111,6 @@ class ichiV2_15M1H(IStrategy):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Your exit logic here (unchanged)
         dataframe.loc[
             (
                 (dataframe['close'] < dataframe['senkou_a']) |
