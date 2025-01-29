@@ -120,58 +120,69 @@ class ichiV2_15M1H(IStrategy):
             'volume': 'float64'
         })
         
-        # Ichimoku Cloud with Dynamic Span Alignment
+        # 1H Indicators
+        informative = self.dp.get_pair_dataframe(
+            pair=metadata['pair'], 
+            timeframe=self.informative_timeframe
+        )
+        informative = self.calculate_ichimoku(informative)
+        informative['ema_200_1h'] = ta.EMA(informative, timeperiod=200)
+        informative['rsi_1h'] = ta.RSI(informative, timeperiod=14)
+        
+        # Merge 1H data
+        dataframe = merge_informative_pair(
+            dataframe,
+            informative,
+            self.timeframe,
+            self.informative_timeframe,
+            ffill=True,
+            append_timeframe=False
+        )
+        
+        # 15M Indicators
         dataframe = self.calculate_ichimoku(dataframe)
-
-        # Momentum Indicators
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
-        dataframe['ema5'] = ta.EMA(dataframe, timeperiod=5)
-        dataframe['ema35'] = ta.EMA(dataframe, timeperiod=35)
-        dataframe['ewo'] = (dataframe['ema5'] - dataframe['ema35']) / dataframe['ema35'] * 100
-
-        # Adaptive Hull MA
-        hull_window = self.hull_period.value
-        dataframe['hull_wma'] = ta.WMA(2 * ta.WMA(dataframe['close'], int(hull_window/2)) - 
-                                     ta.WMA(dataframe['close'], hull_window), 
-                                     int(np.sqrt(hull_window)))
-
-        # Volume Validation
-        dataframe['volume_mean24'] = dataframe['volume'].rolling(24).mean()
-        dataframe['volume_ratio'] = dataframe['volume'] / dataframe['volume_mean24']
-
+        dataframe['ema_short'] = ta.EMA(dataframe, timeperiod=5)
+        dataframe['ema_long'] = ta.EMA(dataframe, timeperiod=35)
+        dataframe['ewo'] = (dataframe['ema_short'] - dataframe['ema_long']) / dataframe['ema_long'] * 100
+        
+        dataframe['hull'] = ta.WMA(
+            2 * ta.WMA(dataframe['close'], int(self.hull_period.value/2)) - 
+            ta.WMA(dataframe['close'], self.hull_period.value), 
+            int(np.sqrt(self.hull_period.value))
+        )
+        
+        dataframe['volume_sma_24'] = dataframe['volume'].rolling(24).mean()
+        
         return dataframe
 
-    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
         dataframe.loc[
             (
-                # Core Trend Alignment
+                (dataframe['close_1h'] > dataframe['ema_200_1h']) &
+                (dataframe['close_1h'] > dataframe['senkou_a_1h']) &
+                (dataframe['close_1h'] > dataframe['senkou_b_1h']) &
+                (dataframe['rsi_1h'] > 50) &
+                
                 (dataframe['close'] > dataframe['senkou_a']) &
                 (dataframe['close'] > dataframe['senkou_b']) &
-                
-                # Momentum Signals
                 (qtpylib.crossed_above(dataframe['tenkan'], dataframe['kijun'])) &
                 (dataframe['rsi'] > self.buy_rsi.value) &
                 (dataframe['ewo'] > self.ewo_high.value) &
-                
-                # Volume Confirmation
-                (dataframe['volume_ratio'] > self.volume_filter.value)
+                (dataframe['volume'] > dataframe['volume_sma_24'])
             ),
             'enter_long'] = 1
-
         return dataframe
 
-    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
         dataframe.loc[
             (
-                # Trend Reversal Detection
-                (qtpylib.crossed_below(dataframe['close'], dataframe['hull_wma'])) |
-                
-                # Profit Protection
+                (qtpylib.crossed_below(dataframe['close'], dataframe['hull'])) |
                 (dataframe['rsi'] > self.sell_rsi.value) |
-                (dataframe['close'] < dataframe['senkou_a'])
+                (dataframe['close'] < dataframe['senkou_a']) |
+                (dataframe['close_1h'] < dataframe['ema_200_1h'])
             ),
             'exit_long'] = 1
-
         return dataframe
 
     # Risk Management Enhancements
