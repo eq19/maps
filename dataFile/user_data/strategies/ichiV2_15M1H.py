@@ -57,9 +57,9 @@ class ichiV2_15M1H(IStrategy):
     # Hyperoptable Parameters
     buy_rsi = IntParameter(25, 45, default=35, space='buy')
     sell_rsi = IntParameter(65, 85, default=75, space='sell')
-    ewo_low = DecimalParameter(-20.0, -6.0, default=-10.0, space='buy')
-    ewo_high = DecimalParameter(4.0, 12.0, default=8.0, space='buy')
-    hull_period = IntParameter(10, 30, default=18, space='sell')
+    ewo_low = DecimalParameter(-20.0, -5.0, default=-10.0, space='buy')
+    ewo_high = DecimalParameter(2.0, 10.0, default=5.0, space='buy')
+    hull_period = IntParameter(8, 20, default=12, space='sell')
     volume_filter = DecimalParameter(0.8, 1.5, default=1.2, space='buy')
 
     def informative_pairs(self):
@@ -102,6 +102,48 @@ class ichiV2_15M1H(IStrategy):
             raise
         
         return dataframe
+
+    def populate_indicators(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
+        # 1. Process 15m timeframe first
+        dataframe = self.calculate_ichimoku(dataframe)
+        
+        # 2. Get and process 1h timeframe
+        informative = self.dp.get_pair_dataframe(
+            pair=metadata['pair'],
+            timeframe=self.informative_timeframe
+        )
+        informative = self.calculate_ichimoku(informative)
+        informative['ema_200_1h'] = ta.EMA(informative, timeperiod=200)
+        informative['rsi_1h'] = ta.RSI(informative, timeperiod=14)
+        
+        # 3. Merge timeframes with proper suffix handling
+        dataframe = merge_informative_pair(
+            dataframe,
+            informative,
+            self.timeframe,
+            self.informative_timeframe,
+            suffixes=('', '_1h'),  # Critical fix here
+            ffill=True
+        )
+        
+        # 4. Add remaining indicators
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        dataframe['ema_short'] = ta.EMA(dataframe, timeperiod=5)
+        dataframe['ema_long'] = ta.EMA(dataframe, timeperiod=35)
+        dataframe['ewo'] = (dataframe['ema_short'] - dataframe['ema_long']) / dataframe['ema_long'] * 100
+        
+        dataframe['hull'] = ta.WMA(
+            2 * ta.WMA(dataframe['close'], int(self.hull_period.value/2)) - 
+            ta.WMA(dataframe['close'], self.hull_period.value), 
+            int(np.sqrt(self.hull_period.value))
+        )
+        
+        dataframe['volume_sma_24'] = dataframe['volume'].rolling(24).mean()
+        
+        return dataframe
+
+
+
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         cols_repr = [repr(col) for col in dataframe.columns]
