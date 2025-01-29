@@ -99,8 +99,7 @@ class ichiV2_15M1H(IStrategy):
         except KeyError as e:
             logger.error(f"Column error: {e}")
             logger.error(f"Columns: {dataframe.columns.tolist()}")
-            raise
-        
+            raise      
         return dataframe
 
     def populate_indicators(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
@@ -138,64 +137,7 @@ class ichiV2_15M1H(IStrategy):
             int(np.sqrt(self.hull_period.value))
         )
         
-        dataframe['volume_sma_24'] = dataframe['volume'].rolling(24).mean()
-        
-        return dataframe
-
-
-
-
-    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        cols_repr = [repr(col) for col in dataframe.columns]
-        logger.debug(f"Columns: {cols_repr}")
-        
-        required = ['open', 'high', 'low', 'close', 'volume']
-        missing = [col for col in required if col not in dataframe.columns]
-        if missing:
-            raise ValueError(f"Missing columns: {missing}")
-            
-        dataframe = dataframe.astype({
-            'open': 'float64',
-            'high': 'float64', 
-            'low': 'float64',
-            'close': 'float64',
-            'volume': 'float64'
-        })
-        
-        # 1H Indicators
-        informative = self.dp.get_pair_dataframe(
-            pair=metadata['pair'], 
-            timeframe=self.informative_timeframe
-        )
-        informative = self.calculate_ichimoku(informative)
-        informative['ema_200_1h'] = ta.EMA(informative, timeperiod=200)
-        informative['rsi_1h'] = ta.RSI(informative, timeperiod=14)
-        
-        # Merge 1H data
-        dataframe = merge_informative_pair(
-            dataframe,
-            informative,
-            self.timeframe,
-            self.informative_timeframe,
-            suffixes=('', '_1h'),  # Critical fix here
-            ffill=True
-        )
-        
-        # 15M Indicators
-        dataframe = self.calculate_ichimoku(dataframe)
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
-        dataframe['ema_short'] = ta.EMA(dataframe, timeperiod=5)
-        dataframe['ema_long'] = ta.EMA(dataframe, timeperiod=35)
-        dataframe['ewo'] = (dataframe['ema_short'] - dataframe['ema_long']) / dataframe['ema_long'] * 100
-        
-        dataframe['hull'] = ta.WMA(
-            2 * ta.WMA(dataframe['close'], int(self.hull_period.value/2)) - 
-            ta.WMA(dataframe['close'], self.hull_period.value), 
-            int(np.sqrt(self.hull_period.value))
-        )
-        
-        dataframe['volume_sma_24'] = dataframe['volume'].rolling(24).mean()
-        
+        dataframe['volume_sma_24'] = dataframe['volume'].rolling(24).mean()     
         return dataframe
 
     def populate_entry_trend(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
