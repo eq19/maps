@@ -34,6 +34,48 @@ class ConsolidatedIchimoku15M(IStrategy):
     hull_period = IntParameter(10, 30, default=18, space='sell')
     volume_filter = DecimalParameter(0.8, 1.5, default=1.2, space='buy')
 
+
+    def calculate_ichimoku(self, dataframe):
+        if dataframe.empty:
+            logger.error("Empty dataframe!")
+            return dataframe
+            
+        try:
+            tenkan = 9
+            kijun = 26
+            senkou = 52
+            
+            # CORRECTED LINES BELOW
+            dataframe['tenkan'] = (
+                dataframe['high'].rolling(tenkan).max() + 
+                dataframe['low'].rolling(tenkan).min()
+            ) / 2
+            
+            dataframe['kijun'] = (
+                dataframe['high'].rolling(kijun).max() + 
+                dataframe['low'].rolling(kijun).min()
+            ) / 2
+            
+            dataframe['senkou_a'] = (
+                (dataframe['tenkan'] + dataframe['kijun']) / 2
+            ).shift(kijun)
+            
+            # FIXED LINE 101: Removed ".2" before shift
+            dataframe['senkou_b'] = (
+                (
+                    dataframe['high'].rolling(senkou).max() + 
+                    dataframe['low'].rolling(senkou).min()
+                ) / 2  # Properly closed division
+            ).shift(kijun)  # Shift applied to entire result
+            
+        except KeyError as e:
+            logger.error(f"Column error: {e}")
+            logger.error(f"Columns: {dataframe.columns.tolist()}")
+            raise
+        
+        return dataframe
+
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Ichimoku Cloud with Dynamic Span Alignment
         ichimoku = ta.Ichimoku(dataframe, 
