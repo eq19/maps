@@ -78,15 +78,7 @@ class ConsolidatedIchimoku15M(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Ichimoku Cloud with Dynamic Span Alignment
-        ichimoku = ta.Ichimoku(dataframe, 
-                             tenkan_period=9,
-                             kijun_period=26,
-                             senkou_period=52)
-        
-        dataframe['tenkan'] = ichimoku['tenkan_sen']
-        dataframe['kijun'] = ichimoku['kijun_sen']
-        dataframe['senkou_a'] = ichimoku['senkou_span_a'].shift(26)
-        dataframe['senkou_b'] = ichimoku['senkou_span_b'].shift(26)
+        dataframe = self.calculate_ichimoku(dataframe)
 
         # Momentum Indicators
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
