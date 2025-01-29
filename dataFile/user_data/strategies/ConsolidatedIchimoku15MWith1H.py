@@ -26,6 +26,11 @@ class ConsolidatedIchimoku15MWith1H(IStrategy):
     trailing_stop_positive_offset = 0.02
     trailing_only_offset_is_reached = True
 
+    # Add Ichimoku parameters
+    ichimoku_tenkan = 9
+    ichimoku_kijun = 26
+    ichimoku_senkou = 52
+
     # Hyperopt parameters
     buy_rsi = IntParameter(30, 50, default=40, space='buy')
     sell_rsi = IntParameter(60, 80, default=70, space='sell')
@@ -38,60 +43,50 @@ class ConsolidatedIchimoku15MWith1H(IStrategy):
         informative_pairs = [(pair, self.informative_timeframe) for pair in pairs]
         return informative_pairs
 
+    def calculate_ichimoku(self, dataframe):
+        # Manually calculate Ichimoku components
+        dataframe['tenkan'] = dataframe['high'].rolling(window=self.ichimoku_tenkan).max().shift() + dataframe['low'].rolling(window=self.ichimoku_tenkan).min().shift()
+        dataframe['tenkan'] /= 2
+        
+        dataframe['kijun'] = dataframe['high'].rolling(window=self.ichimoku_kijun).max().shift() + dataframe['low'].rolling(window=self.ichimoku_kijun).min().shift()
+        dataframe['kijun'] /= 2
+        
+        dataframe['senkou_a'] = ((dataframe['tenkan'] + dataframe['kijun']) / 2).shift(self.ichimoku_kijun)
+        dataframe['senkou_b'] = ((dataframe['high'].rolling(window=self.ichimoku_senkou).max() + 
+                                 dataframe['low'].rolling(window=self.ichimoku_senkou).min()) / 2).shift(self.ichimoku_kijun)
+        return dataframe
+    
     def populate_indicators(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
-        # 1-hour timeframe indicators
+        # Calculate Ichimoku manually instead of using talib
+        dataframe = self.calculate_ichimoku(dataframe)
+        
+        # For 1h timeframe
         informative = self.dp.get_pair_dataframe(
             pair=metadata['pair'], 
             timeframe=self.informative_timeframe
         )
-        
-        # 1H Ichimoku Cloud
-        ichimoku_1h = ta.Ichimoku(informative,
-                                tenkan_period=9,
-                                kijun_period=26,
-                                senkou_period=52)
-        informative['senkou_a_1h'] = ichimoku_1h['senkou_span_a']
-        informative['senkou_b_1h'] = ichimoku_1h['senkou_span_b']
-        
-        # 1H Trend EMA
+        informative = self.calculate_ichimoku(informative)
         informative['ema_200_1h'] = ta.EMA(informative, timeperiod=200)
-        
-        # 1H Momentum
         informative['rsi_1h'] = ta.RSI(informative, timeperiod=14)
         
-        # Merge 1H informative data
         dataframe = merge_informative_pair(
             dataframe, 
             informative, 
             self.timeframe, 
             self.informative_timeframe, 
-            ffill=True
+            suffixes=('', '_1h')
         )
         
-        # 15M Ichimoku Cloud
-        ichimoku = ta.Ichimoku(dataframe,
-                             tenkan_period=9,
-                             kijun_period=26,
-                             senkou_period=52)
-        dataframe['tenkan'] = ichimoku['tenkan_sen']
-        dataframe['kijun'] = ichimoku['kijun_sen']
-        dataframe['senkou_a'] = ichimoku['senkou_span_a']
-        dataframe['senkou_b'] = ichimoku['senkou_span_b']
-        
-        # 15M Momentum
+        # Rest of your indicators
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
         dataframe['ema_short'] = ta.EMA(dataframe, timeperiod=5)
         dataframe['ema_long'] = ta.EMA(dataframe, timeperiod=35)
         dataframe['ewo'] = (dataframe['ema_short'] - dataframe['ema_long']) / dataframe['ema_long'] * 100
-        
-        # 15M Exit Signals
         dataframe['hull'] = ta.WMA(
             2 * ta.WMA(dataframe['close'], int(self.hull_period.value/2)) - 
             ta.WMA(dataframe['close'], self.hull_period.value), 
             int(np.sqrt(self.hull_period.value))
         )
-        
-        # Volume Filter
         dataframe['volume_sma_24'] = dataframe['volume'].rolling(24).mean()
         
         return dataframe
