@@ -40,26 +40,6 @@ class ichiV2_15M1H(IStrategy):
     stoploss = -0.1
     trailing_stop = False
     
-    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        cols_repr = [repr(col) for col in dataframe.columns]
-        logger.debug(f"Columns: {cols_repr}")
-        
-        required = ['open', 'high', 'low', 'close', 'volume']
-        missing = [col for col in required if col not in dataframe.columns]
-        if missing:
-            raise ValueError(f"Missing columns: {missing}")
-            
-        dataframe = dataframe.astype({
-            'open': 'float64',
-            'high': 'float64', 
-            'low': 'float64',
-            'close': 'float64',
-            'volume': 'float64'
-        })
-        
-        dataframe = self.calculate_ichimoku(dataframe)
-        return dataframe
-
     def calculate_ichimoku(self, dataframe):
         if dataframe.empty:
             logger.error("Empty dataframe!")
@@ -98,6 +78,26 @@ class ichiV2_15M1H(IStrategy):
             logger.error(f"Columns: {dataframe.columns.tolist()}")
             raise
         
+        return dataframe
+
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        cols_repr = [repr(col) for col in dataframe.columns]
+        logger.debug(f"Columns: {cols_repr}")
+        
+        required = ['open', 'high', 'low', 'close', 'volume']
+        missing = [col for col in required if col not in dataframe.columns]
+        if missing:
+            raise ValueError(f"Missing columns: {missing}")
+            
+        dataframe = dataframe.astype({
+            'open': 'float64',
+            'high': 'float64', 
+            'low': 'float64',
+            'close': 'float64',
+            'volume': 'float64'
+        })
+        
+        dataframe = self.calculate_ichimoku(dataframe)
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
