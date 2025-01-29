@@ -7,7 +7,7 @@
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
 TIMEFRAMES='15m 1h 1d'
-STRATEGY=ConsolidatedIchimoku15MWith1H
+STRATEGY=ichiV2_15M1H
 CONFIG=user_data/config_examples/config_indodax.example.json
 PARAMS=user_data/config_examples/config_params.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
