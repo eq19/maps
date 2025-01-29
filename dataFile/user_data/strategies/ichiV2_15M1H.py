@@ -35,10 +35,33 @@ from technical.indicators import dema
 logger = logging.getLogger(__name__)
 
 class ichiV2_15M1H(IStrategy):
+    INTERFACE_VERSION = 3
     timeframe = '15m'
-    minimal_roi = {"0": 0.1}
-    stoploss = -0.1
-    trailing_stop = False
+    can_short: bool = False
+
+    # Optimized ROI
+    minimal_roi = {
+        "0": 0.10,
+        "60": 0.05,
+        "120": 0.03,
+        "240": 0
+    }
+
+    # Enhanced Risk Parameters
+    stoploss = -0.15
+    trailing_stop = True
+    trailing_stop_positive = 0.015
+    trailing_stop_positive_offset = 0.025
+    trailing_only_offset_is_reached = True
+
+    # Hyperoptable Parameters
+    buy_rsi = IntParameter(25, 45, default=35, space='buy')
+    sell_rsi = IntParameter(65, 85, default=75, space='sell')
+    ewo_low = DecimalParameter(-20.0, -6.0, default=-10.0, space='buy')
+    ewo_high = DecimalParameter(4.0, 12.0, default=8.0, space='buy')
+    hull_period = IntParameter(10, 30, default=18, space='sell')
+    volume_filter = DecimalParameter(0.8, 1.5, default=1.2, space='buy')
+
     
     def calculate_ichimoku(self, dataframe):
         if dataframe.empty:
