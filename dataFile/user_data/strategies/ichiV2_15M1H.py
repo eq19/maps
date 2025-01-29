@@ -75,7 +75,6 @@ class ichiV2_15M1H(IStrategy):
             kijun = 26
             senkou = 52
             
-            # CORRECTED LINES BELOW
             dataframe['tenkan'] = (
                 dataframe['high'].rolling(tenkan).max() + 
                 dataframe['low'].rolling(tenkan).min()
@@ -90,7 +89,6 @@ class ichiV2_15M1H(IStrategy):
                 (dataframe['tenkan'] + dataframe['kijun']) / 2
             ).shift(kijun)
             
-            # FIXED LINE 101: Removed ".2" before shift
             dataframe['senkou_b'] = (
                 (
                     dataframe['high'].rolling(senkou).max() + 
