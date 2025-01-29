@@ -4,6 +4,7 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import pandas as pd
 from typing import Dict, List
+from datetime import datetime, timedelta, timezone
 import numpy as np
 
 class ConsolidatedIchimoku15MWith1H(IStrategy):
