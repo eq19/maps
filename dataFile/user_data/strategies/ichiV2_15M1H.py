@@ -37,6 +37,7 @@ class ichiV2_15M1H(IStrategy):
 
     def populate_indicators(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
         # 1H Indicators
+        print("Available columns:", dataframe.columns.tolist())  # Debug line
         informative = self.dp.get_pair_dataframe(
             pair=metadata['pair'], 
             timeframe=self.informative_timeframe
