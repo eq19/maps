@@ -7,7 +7,7 @@ from typing import Dict, List
 from datetime import datetime, timedelta, timezone
 import numpy as np
 
-class ConsolidatedIchimoku15MWith1H(IStrategy):
+class ichiV2_15M1H(IStrategy):
     INTERFACE_VERSION = 3
     timeframe = '15m'
     informative_timeframe = '1h'
