@@ -120,25 +120,77 @@ class ichiV2_15M1H(IStrategy):
             'volume': 'float64'
         })
         
+        # Ichimoku Cloud with Dynamic Span Alignment
         dataframe = self.calculate_ichimoku(dataframe)
+
+        # Momentum Indicators
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        dataframe['ema5'] = ta.EMA(dataframe, timeperiod=5)
+        dataframe['ema35'] = ta.EMA(dataframe, timeperiod=35)
+        dataframe['ewo'] = (dataframe['ema5'] - dataframe['ema35']) / dataframe['ema35'] * 100
+
+        # Adaptive Hull MA
+        hull_window = self.hull_period.value
+        dataframe['hull_wma'] = ta.WMA(2 * ta.WMA(dataframe['close'], int(hull_window/2)) - 
+                                     ta.WMA(dataframe['close'], hull_window), 
+                                     int(np.sqrt(hull_window)))
+
+        # Volume Validation
+        dataframe['volume_mean24'] = dataframe['volume'].rolling(24).mean()
+        dataframe['volume_ratio'] = dataframe['volume'] / dataframe['volume_mean24']
+
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
+                # Core Trend Alignment
                 (dataframe['close'] > dataframe['senkou_a']) &
                 (dataframe['close'] > dataframe['senkou_b']) &
-                (dataframe['tenkan'] > dataframe['kijun'])
+                
+                # Momentum Signals
+                (qtpylib.crossed_above(dataframe['tenkan'], dataframe['kijun'])) &
+                (dataframe['rsi'] > self.buy_rsi.value) &
+                (dataframe['ewo'] > self.ewo_high.value) &
+                
+                # Volume Confirmation
+                (dataframe['volume_ratio'] > self.volume_filter.value)
             ),
             'enter_long'] = 1
+
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
-                (dataframe['close'] < dataframe['senkou_a']) |
-                (dataframe['close'] < dataframe['senkou_b']) |
-                (dataframe['tenkan'] < dataframe['kijun'])
+                # Trend Reversal Detection
+                (qtpylib.crossed_below(dataframe['close'], dataframe['hull_wma'])) |
+                
+                # Profit Protection
+                (dataframe['rsi'] > self.sell_rsi.value) |
+                (dataframe['close'] < dataframe['senkou_a'])
             ),
             'exit_long'] = 1
+
         return dataframe
+
+    # Risk Management Enhancements
+    def leverage(self, pair: str, current_time: datetime, current_rate: float,
+                 proposed_leverage: float, max_leverage: float, entry_tag: str,
+                 side: str, **kwargs) -> float:
+        return 1.0  # Conservative leverage
+
+    @property
+    def protections(self):
+        return [
+            {
+                "method": "CooldownPeriod",
+                "stop_duration_candles": 7
+            },
+            {
+                "method": "StoplossGuard",
+                "lookback_period_candles": 24,
+                "trade_limit": 4,
+                "stop_duration_candles": 12,
+            }
+        ]
