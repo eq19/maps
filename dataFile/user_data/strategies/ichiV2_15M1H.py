@@ -36,15 +36,15 @@ logger = logging.getLogger(__name__)
 
 class ichiV2_15M1H(IStrategy):
     INTERFACE_VERSION = 3
-    timeframe = '15m'
     can_short: bool = False
+    informative_timeframe = '1h'
 
     # Optimized ROI
     minimal_roi = {
-        "0": 0.10,
-        "60": 0.05,
-        "120": 0.03,
-        "240": 0
+        "0": 0.05,
+        "30": 0.03,
+        "60": 0.01,
+        "120": 0
     }
 
     # Enhanced Risk Parameters
