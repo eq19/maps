@@ -74,7 +74,7 @@ class ichiV2_15M1H(IStrategy):
             informative, 
             self.timeframe, 
             self.informative_timeframe, 
-            suffixes=('', '_1h')
+            ffill=True
         )
         
         # Rest of your indicators
