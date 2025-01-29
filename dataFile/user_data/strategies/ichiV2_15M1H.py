@@ -132,7 +132,7 @@ class ichiV2_15M1H(IStrategy):
         # Automatically renames the columns and merges a shorter timeframe dataframe and a longer timeframe informative pair
         # use ffill to have the 1d value available in every row throughout the day.
         # Without this, comparisons between columns of the original and the informative pair would only work once per day.
-        # Full documentation of this method, see below
+        # Full documentation see https://www.freqtrade.io/en/stable/strategy-customization/#complete-dataprovider-sample
         dataframe = merge_informative_pair(
             dataframe,
             informative,
