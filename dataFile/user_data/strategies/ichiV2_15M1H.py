@@ -159,10 +159,10 @@ class ichiV2_15M1H(IStrategy):
     def populate_entry_trend(self, dataframe: pd.DataFrame, metadata: dict) -> pd.DataFrame:
         dataframe.loc[
             (
-                (dataframe['close_1h'] > dataframe['ema_200_1h']) &
-                (dataframe['close_1h'] > dataframe['senkou_a_1h']) &
-                (dataframe['close_1h'] > dataframe['senkou_b_1h']) &
-                (dataframe['rsi_1h'] > 50) &
+                #(dataframe['close_1h'] > dataframe['ema_200_1h']) &
+                #(dataframe['close_1h'] > dataframe['senkou_a_1h']) &
+                #(dataframe['close_1h'] > dataframe['senkou_b_1h']) &
+                #(dataframe['rsi_1h'] > 50) &
                 
                 (dataframe['close'] > dataframe['senkou_a']) &
                 (dataframe['close'] > dataframe['senkou_b']) &
@@ -178,9 +178,9 @@ class ichiV2_15M1H(IStrategy):
         dataframe.loc[
             (
                 (qtpylib.crossed_below(dataframe['close'], dataframe['hull'])) |
-                (dataframe['rsi'] > self.sell_rsi.value) |
+                #(dataframe['close_1h'] < dataframe['ema_200_1h']) |
                 (dataframe['close'] < dataframe['senkou_a']) |
-                (dataframe['close_1h'] < dataframe['ema_200_1h'])
+                (dataframe['rsi'] > self.sell_rsi.value)
             ),
             'exit_long'] = 1
         return dataframe
