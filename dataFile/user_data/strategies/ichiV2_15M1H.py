@@ -135,8 +135,8 @@ class ichiV2_15M1H(IStrategy):
             informative,
             self.timeframe,
             self.informative_timeframe,
-            ffill=True,
-            append_timeframe=False
+            suffixes=('', '_1h'),  # Critical fix here
+            ffill=True
         )
         
         # 15M Indicators
