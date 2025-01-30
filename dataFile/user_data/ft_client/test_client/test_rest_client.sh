@@ -92,9 +92,14 @@ else
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --timerange="$TB" --spaces roi buy sell stoploss trailing
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  cat user_data/strategies/$STRATEGY.json 
   echo -e "\n$hr\n" && freqtrade backtesting --help
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
+
+  git clone https://eq19:$GITHUB_TOKEN@github.com/eq19/eq19.git
+  cat user_data/strategies/$STRATEGY.json > $PARAMS
+
+  
+  cd eq19 && git add . && git commit --allow-empty -m "update params" && git push
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
