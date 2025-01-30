@@ -107,7 +107,8 @@ else
   #freqtrade lookahead-analysis --config $CONFIG
   #freqtrade recursive-analysis --config $CONFIG
   #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
-
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists=$new_pairlists[0].pairlists' $CONFIG > config.json
+  
   #echo -e "\n$hr\nAI MODELS\n$hr"
   #freqtrade list-freqaimodels --help
   #freqtrade list-freqaimodels --config $CONFIG
@@ -116,8 +117,6 @@ else
   freqtrade trade --help
 
   cd /home/runner
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = \
-    $new_pairlists[0].pairlists' $CONFIG > config.json
   sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
   sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
   sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
@@ -138,12 +137,12 @@ else
       break
     fi
   done  
-  rm -rf *.json freqtrade_pid.txt freqtrade.log
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = \
-    $new_pairlists[0].pairlists' $CONFIG > config.json
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
   #freqtrade plot-profit --config $CONFIG --timerange="$TB"
 
+  rm -rf *.json freqtrade_pid.txt freqtrade.log
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists=$new_pairlists[0].pairlists' $CONFIG > config.json
+  
 fi
