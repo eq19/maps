@@ -11,7 +11,7 @@ STRATEGY=ichiV2_15M1H
 CONFIG=user_data/config_examples/config_indodax.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
-PARAMS=eq19/.github/entrypoint/artifact/python/src/params/spaces.json
+PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -95,19 +95,21 @@ else
   freqtrade backtesting --help
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
-  git clone https://eq19:$TOKEN@github.com/eq19/eq19.git
-  cat user_data/strategies/$STRATEGY.json > $PARAMS && cd eq19
+  cd /tmp && git clone https://eq19:$TOKEN@github.com/eq19/eq19.git
+  cat user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
 
+  cd /tmp/rq19
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
   git add . && git commit --allow-empty -m "update params" && git push
+  cd /home/runner && rm -rf /tmp/eq19
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
   #freqtrade lookahead-analysis --config $CONFIG
   #freqtrade recursive-analysis --config $CONFIG
   #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists=$new_pairlists[0].pairlists' $CONFIG > config.json
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   
   #echo -e "\n$hr\nAI MODELS\n$hr"
   #freqtrade list-freqaimodels --help
@@ -116,7 +118,6 @@ else
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
 
-  cd /home/runner
   sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
   sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
   sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
@@ -143,6 +144,6 @@ else
   #freqtrade plot-profit --config $CONFIG --timerange="$TB"
 
   rm -rf *.json freqtrade_pid.txt freqtrade.log
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists=$new_pairlists[0].pairlists' $CONFIG > config.json
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   
 fi
