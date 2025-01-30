@@ -95,7 +95,7 @@ else
   freqtrade backtesting --help
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
-  git clone https://eq19:$GITHUB_TOKEN@github.com/eq19/eq19.git
+  git clone https://eq19:$TOKEN@github.com/eq19/eq19.git
   cat user_data/strategies/$STRATEGY.json > $PARAMS && cd eq19
 
   git config --global user.name eq19
