@@ -1,9 +1,6 @@
 {
   "strategy_name": "ichiV2_15M1H",
   "params": {
-    "max_open_trades": {
-      "max_open_trades": Infinity
-    },
     "buy": {
       "buy_rsi": 30,
       "ewo_high": 8.752,
