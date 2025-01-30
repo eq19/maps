@@ -96,10 +96,11 @@ else
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
   git clone https://eq19:$GITHUB_TOKEN@github.com/eq19/eq19.git
-  cat user_data/strategies/$STRATEGY.json > $PARAMS
+  cat user_data/strategies/$STRATEGY.json > $PARAMS && cd eq19
 
-  
-  cd eq19 && git add . && git commit --allow-empty -m "update params" && git push
+  git config --global user.name eq19
+  git config --global user.email eq19@users.noreply.github.com
+  git add . && git commit --allow-empty -m "update params" && git push
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
@@ -114,10 +115,10 @@ else
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
   #sed -i "s|ichiV1_Marius|$STRATEGY|g" $CONFIG
-  sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
-  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
-  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
-  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
+  #sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
+  #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
+  #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
+  #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
   cd /home/runner
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
