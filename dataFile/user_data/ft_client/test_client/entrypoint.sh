@@ -6,6 +6,7 @@ if [ -f /home/runner/config.json ]; then
   sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
   sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
   sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
+  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
 fi
 
 # Check the Deeplearning 
