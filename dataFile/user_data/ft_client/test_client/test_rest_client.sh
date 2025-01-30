@@ -89,7 +89,7 @@ else
   #freqtrade hyperopt-show --config $CONFIG
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500
-  freqtrade hyperopt --config $CONFIG -e 20 --fee=$FEE --timerange="$TB" --spaces roi buy sell stoploss trailing
+  freqtrade hyperopt --config $CONFIG -e 30 --fee=$FEE --timerange="$TB" --spaces roi buy sell stoploss trailing
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
