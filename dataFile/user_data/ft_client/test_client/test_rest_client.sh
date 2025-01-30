@@ -130,7 +130,7 @@ else
       break
     fi
   done  
-  rm -rf *.json freqtrade_pid.txt freqtrade.log
+  rm -rf freqtrade_pid.txt freqtrade.log
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
