@@ -2,10 +2,10 @@
 
 CONFIG=/home/runner/config.json
 if [ -f /home/runner/config.json ]; then
-  sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
-  sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
+  #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
+  #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
+  sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG
   sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
-  sed -i "s|your_telegram_token|$TELEGRAM_BOT_TOKEN|g" $CONFIG
   jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
 fi
 
