@@ -8,8 +8,8 @@ hr='----------------------------------------------------------------------------
 FEE=0.003322
 TIMEFRAMES='15m 1h 1d'
 STRATEGY=ichiV2_15M1H
-CONFIG=user_data/config_examples/config_indodax.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
+CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
@@ -46,19 +46,18 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-exchanges -- help
   freqtrade list-exchanges
 
-  #freqtrade show-trades --config $CONFIG
-  #freqtrade convert-db --config $CONFIG
-  #freqtrade install-ui --config $CONFIG
-  #freqtrade webserver --config $CONFIG
+  #freqtrade show-trades
+  #freqtrade convert-db 
+  #freqtrade install-ui
+  #freqtrade webserver
 
   echo -e "\n$hr\nSHOW PAIRS\n$hr"
-  freqtrade list-pairs --help
-  freqtrade list-pairs --config $CONFIG
+  freqtrade list-pairs
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
-  freqtrade list-strategies --config $CONFIG
-  #freqtrade strategy-updater --config $CONFIG
+  freqtrade list-strategies
+  #freqtrade strategy-updater
 
 else
 
@@ -67,33 +66,32 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  freqtrade download-data --config $CONFIG --timeframes $TIMEFRAMES --timerange="$TD"
+  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD"
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
-  freqtrade list-data --config $CONFIG
+  freqtrade list-data
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
-  #sed -i "s|ichi|ichiV1_Marius|g" $CONFIG
   #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
   #freqtrade edge --fee=$FEE
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  #freqtrade hyperopt-list --config $CONFIG
-  #freqtrade hyperopt-show --config $CONFIG
+  #freqtrade hyperopt-list
+  #freqtrade hyperopt-show
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500
-  freqtrade hyperopt --config $CONFIG -e 30 --fee=$FEE --timerange="$TB" --spaces roi buy sell stoploss trailing
+  freqtrade hyperopt -e 30 --fee=$FEE --timerange="$TB" --spaces roi buy sell stoploss trailing
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
 
   git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
   cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
@@ -106,22 +104,22 @@ else
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
-  #freqtrade lookahead-analysis --config $CONFIG
-  #freqtrade recursive-analysis --config $CONFIG
-  #freqtrade backtesting-analysis --config $CONFIG --timerange="$TB" --indicator-list all
+  #freqtrade lookahead-analysis
+  #freqtrade recursive-analysis
+  #freqtrade backtesting-analysis --timerange="$TB" --indicator-list all
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   
   #echo -e "\n$hr\nAI MODELS\n$hr"
   #freqtrade list-freqaimodels --help
-  #freqtrade list-freqaimodels --config $CONFIG
+  #freqtrade list-freqaimodels
 
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
 
-  sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
-  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
-  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
-  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
+  #sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
+  #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
+  #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
+  #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
 
   echo "Starting freqtrade trade..."
   #freqtrade trade --freqaimodel LightGBMRegressor
@@ -140,10 +138,9 @@ else
   done  
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
-  #freqtrade plot-dataframe --config $CONFIG
-  #freqtrade plot-profit --config $CONFIG --timerange="$TB"
+  #freqtrade plot-dataframe
+  #freqtrade plot-profit --timerange="$TB"
 
   rm -rf *.json freqtrade_pid.txt freqtrade.log
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   
 fi
