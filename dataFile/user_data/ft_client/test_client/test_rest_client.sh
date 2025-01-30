@@ -11,6 +11,7 @@ STRATEGY=ichiV2_15M1H
 CONFIG=user_data/config_examples/config_indodax.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
+PARAMS=eq19/.github/entrypoint/artifact/python/src/params/spaces.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -91,7 +92,7 @@ else
   freqtrade hyperopt --config $CONFIG -e 10 --fee=$FEE --timerange="$TB" --spaces roi buy sell stoploss trailing
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  cat user_data/strategies/$STRATEGY.json
+  cat user_data/strategies/$STRATEGY.json 
   echo -e "\n$hr\n" && freqtrade backtesting --help
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
