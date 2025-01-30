@@ -9,9 +9,9 @@ FEE=0.003322
 TIMEFRAMES='15m 1h 1d'
 STRATEGY=ichiV2_15M1H
 CONFIG=user_data/config_examples/config_indodax.example.json
-PARAMS=user_data/config_examples/config_params.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
+PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
