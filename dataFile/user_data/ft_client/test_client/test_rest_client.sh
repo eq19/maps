@@ -81,7 +81,7 @@ else
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  #[[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
+  [[ ! -f user_data/strategies/$STRATEGY.json ]] && mv -f $PARAMS user_data/strategies/$STRATEGY.json
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
