@@ -114,15 +114,14 @@ else
 
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
-  #sed -i "s|ichiV1_Marius|$STRATEGY|g" $CONFIG
-  #sed -i "s|your_exchange_key|$ACCESS_API|g" $CONFIG
-  #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" $CONFIG
-  #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" $CONFIG
-  #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" $CONFIG
 
   cd /home/runner
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
-  #gh secret set CONFIG_JSON < config.json
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = \
+    $new_pairlists[0].pairlists' $CONFIG > config.json
+  sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
+  sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
+  sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
+  sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
 
   echo "Starting freqtrade trade..."
   #freqtrade trade --freqaimodel LightGBMRegressor
@@ -139,7 +138,9 @@ else
       break
     fi
   done  
-  rm -rf freqtrade_pid.txt freqtrade.log
+  rm -rf *.json freqtrade_pid.txt freqtrade.log
+  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = \
+    $new_pairlists[0].pairlists' $CONFIG > config.json
 
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe --config $CONFIG
