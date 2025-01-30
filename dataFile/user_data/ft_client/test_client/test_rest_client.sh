@@ -95,10 +95,10 @@ else
   freqtrade backtesting --help
   freqtrade backtesting --config $CONFIG --fee=$FEE --timerange="$TB" --export signals
 
-  cd /tmp && git clone https://eq19:$TOKEN@github.com/eq19/eq19.git
-  cat user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
+  git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
+  cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
 
-  cd /tmp/rq19
+  cd /tmp/eq19
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
   git add . && git commit --allow-empty -m "update params" && git push
