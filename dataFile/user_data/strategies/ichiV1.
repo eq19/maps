@@ -10,8 +10,8 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy # noqa
 
-
-class Strategy005(IStrategy):
+class ichiV1(IStrategy):
+#class Strategy005(IStrategy):
     """
     Strategy 005
     author@: Gerald Lonlas
