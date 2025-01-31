@@ -1,4 +1,3 @@
-
 # --- Do not remove these libs ---
 from freqtrade.strategy import IStrategy
 from freqtrade.strategy import CategoricalParameter, IntParameter
@@ -183,3 +182,24 @@ class ichiV1(IStrategy):
             dataframe.loc[reduce(lambda x, y: x & y, conditions), 'exit_long'] = 1
 
         return dataframe
+
+    # Risk Management Enhancements
+    def leverage(self, pair: str, current_time: datetime, current_rate: float,
+                 proposed_leverage: float, max_leverage: float, entry_tag: str,
+                 side: str, **kwargs) -> float:
+        return 1.0  # Conservative leverage
+
+    @property
+    def protections(self):
+        return [
+            {
+                "method": "CooldownPeriod",
+                "stop_duration_candles": 7
+            },
+            {
+                "method": "StoplossGuard",
+                "lookback_period_candles": 24,
+                "trade_limit": 4,
+                "stop_duration_candles": 12,
+            }
+        ]
