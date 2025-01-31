@@ -4,9 +4,7 @@ import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy  # noqa
 
-
-class ichiV1(IStrategy):
-#class EMAPriceCrossoverWithThreshold(IStrategy):
+class EMAPriceCrossoverWithThreshold(IStrategy):
 
     """
     EMAPriceCrossoverWithThreshold
