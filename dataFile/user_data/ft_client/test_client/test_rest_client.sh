@@ -93,14 +93,16 @@ else
   freqtrade backtesting --help
   freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
 
-  git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
-  cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
+  if [[ -f /home/runner/user_data/strategies/$STRATEGY.json ]]; then
+    git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
+    cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
 
-  cd /tmp/eq19
-  git config --global user.name eq19
-  git config --global user.email eq19@users.noreply.github.com
-  git add . && git commit --allow-empty -m "update params" && git push
-  cd /home/runner && rm -rf /tmp/eq19
+    cd /tmp/eq19
+    git config --global user.name eq19
+    git config --global user.email eq19@users.noreply.github.com
+    git add . && git commit --allow-empty -m "update params" && git push
+    cd /home/runner && rm -rf /tmp/eq19
+  fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
