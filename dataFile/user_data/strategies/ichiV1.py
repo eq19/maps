@@ -1,13 +1,39 @@
 # --- Do not remove these libs ---
-from freqtrade.strategy import IStrategy
-from freqtrade.strategy import CategoricalParameter, IntParameter
-from functools import reduce
-from pandas import DataFrame
-# --------------------------------
-
+from sqlalchemy import true
+from freqtrade.strategy.interface import IStrategy
+from pandas import DataFrame, Series
+import copy
+import logging
+import pathlib
+import rapidjson
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
+import pandas as pd  # noqa
+pd.options.mode.chained_assignment = None  # default='warn'
+import technical.indicators as ftt
+from freqtrade.exchange import timeframe_to_prev_date
+from functools import reduce
+from datetime import datetime, timedelta, timezone
+import numpy as np
+from technical.util import resample_to_interval, resampled_merge
+from freqtrade.strategy import informative
+from freqtrade.strategy import stoploss_from_open
+from freqtrade.strategy import (BooleanParameter,timeframe_to_minutes, merge_informative_pair,
+                                DecimalParameter, IntParameter, CategoricalParameter)
+from freqtrade.persistence import Trade
+from typing import Dict
 import numpy # noqa
+import math
+import pandas_ta as pta
+from typing import List
+from skopt.space import Dimension, Integer
+import time
+from warnings import simplefilter
+
+from technical.indicators import dema
+
+logger = logging.getLogger(__name__)
+
 
 class ichiV1(IStrategy):
 #class Strategy005(IStrategy):
