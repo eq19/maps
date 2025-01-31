@@ -152,7 +152,7 @@ class ichiV2_15M1H(IStrategy):
                 
                 (dataframe['close'] > dataframe['senkou_a']) &
                 (dataframe['close'] > dataframe['senkou_b']) &
-                (qtpylib.crossed_above(dataframe['tenkan'], dataframe['kijun'])) &
+                (qtpylib.crossed_above(dataframe['tenkan_sen'], dataframe['kijun_sen'])) &
                 (dataframe['rsi'] > self.buy_rsi.value) &
                 (dataframe['ewo'] > self.ewo_high.value) &
                 (dataframe['volume'] > dataframe['volume_sma_24'])
