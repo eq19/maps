@@ -5,8 +5,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy  # noqa
 
 
-class ichiV1(IStrategy):
-#class DoubleEMACrossoverWithTrend(IStrategy):
+class DoubleEMACrossoverWithTrend(IStrategy):
 
     """
     DoubleEMACrossoverWithTrend
