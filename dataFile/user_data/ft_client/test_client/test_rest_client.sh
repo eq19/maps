@@ -51,7 +51,8 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade webserver
 
   echo -e "\n$hr\nSHOW PAIRS\n$hr"
-  freqtrade list-pairs
+  freqtrade test-pairlist --help
+  freqtrade test-pairlist
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
