@@ -37,7 +37,7 @@ class ichiV1(IStrategy):
     stoploss = -0.10
 
     # Optimal timeframe for the strategy
-    timeframe = '5m'
+    timeframe = '15m'
 
     # trailing stoploss
     trailing_stop = False
