@@ -79,30 +79,16 @@ class ichiV2_15M1H(IStrategy):
             return dataframe
             
         try:
-            tenkan = 9
-            kijun = 26
-            senkou = 52
-            
-            dataframe['tenkan'] = (
-                dataframe['high'].rolling(tenkan).max() + 
-                dataframe['low'].rolling(tenkan).min()
-            ) / 2
-            
-            dataframe['kijun'] = (
-                dataframe['high'].rolling(kijun).max() + 
-                dataframe['low'].rolling(kijun).min()
-            ) / 2
-            
-            dataframe['senkou_a'] = (
-                (dataframe['tenkan'] + dataframe['kijun']) / 2
-            ).shift(kijun)
-            
-            dataframe['senkou_b'] = (
-                (
-                    dataframe['high'].rolling(senkou).max() + 
-                    dataframe['low'].rolling(senkou).min()
-                ) / 2  # Properly closed division
-            ).shift(kijun)  # Shift applied to entire result
+            ichimoku = ftt.ichimoku(dataframe, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
+            dataframe['chikou_span'] = ichimoku['chikou_span']
+            dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
+            dataframe['kijun_sen'] = ichimoku['kijun_sen']
+            dataframe['senkou_a'] = ichimoku['senkou_span_a']
+            dataframe['senkou_b'] = ichimoku['senkou_span_b']
+            dataframe['leading_senkou_span_a'] = ichimoku['leading_senkou_span_a']
+            dataframe['leading_senkou_span_b'] = ichimoku['leading_senkou_span_b']
+            dataframe['cloud_green'] = ichimoku['cloud_green']
+            dataframe['cloud_red'] = ichimoku['cloud_red']
             
         except KeyError as e:
             logger.error(f"Column error: {e}")
