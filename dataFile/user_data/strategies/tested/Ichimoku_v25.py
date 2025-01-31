@@ -7,8 +7,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy
 from technical.indicators import ichimoku
 
-class ichiV1(IStrategy):
-#class Ichimoku_v25(IStrategy):
+class Ichimoku_v25(IStrategy):
     """
 
     """
