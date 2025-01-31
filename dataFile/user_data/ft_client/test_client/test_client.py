@@ -3,7 +3,7 @@ import ccxt
 from freqtrade.configuration import Configuration
 from freqtrade.resolvers import ExchangeResolver
 
-config = Configuration.from_files(["user_data/config_examples/config_exhange.example.json"])
+#config = Configuration.from_files(["user_data/config_examples/config_exhange.example.json"])
 
 # Test ccxt
 exchange = ccxt.indodax()
