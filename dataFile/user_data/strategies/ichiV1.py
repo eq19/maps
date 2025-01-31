@@ -8,7 +8,7 @@ import numpy
 from technical.indicators import ichimoku
 
 class ichiV1(IStrategy):
-#class Ichimoku_v9(IStrategy):
+#class Ichimoku_v25(IStrategy):
     """
 
     """
@@ -47,17 +47,17 @@ class ichiV1(IStrategy):
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
-                (qtpylib.crossed_above(dataframe['close'], dataframe['senkou_a'])) &
-                (dataframe['close'] > dataframe['senkou_a']) &
-                (dataframe['close'] > dataframe['senkou_b'])
+                (qtpylib.crossed_above(dataframe['close'].shift(2), dataframe['senkou_a'])) &
+                (dataframe['close'].shift(2) > dataframe['senkou_a']) &
+                (dataframe['close'].shift(2) > dataframe['senkou_b'])
             ),
             'buy'] = 1
 
         dataframe.loc[
             (
-                (qtpylib.crossed_above(dataframe['close'], dataframe['senkou_b'])) &
-                (dataframe['close'] > dataframe['senkou_a']) &
-                (dataframe['close'] > dataframe['senkou_b'])
+                (qtpylib.crossed_above(dataframe['close'].shift(2), dataframe['senkou_b'])) &
+                (dataframe['close'].shift(2) > dataframe['senkou_a']) &
+                (dataframe['close'].shift(2 ) > dataframe['senkou_b'])
             ),
             'buy'] = 1
 
