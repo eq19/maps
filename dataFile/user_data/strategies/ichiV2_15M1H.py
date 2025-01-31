@@ -68,7 +68,7 @@ class ichiV2_15M1H(IStrategy):
         # Assign tf to each pair so they can be downloaded and cached for strategy.
         informative_pairs = [(pair, '1d') for pair in pairs]
         # Optionally Add additional "static" pairs
-        informative_pairs += [("USDT/IDR", "5m"),
+        informative_pairs += [("USDT/IDR", "15m"),
                               ("USDT/IDR", "1h"),
                             ]
         return informative_pairs
