@@ -14,7 +14,7 @@ PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
-BACKTESTING_DURATION=30  # Adjust as per your strategy
+BACKTESTING_DURATION=60  # Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
