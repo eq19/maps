@@ -1,7 +1,6 @@
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
     "dry_run": true,
-    "timeframe": "15m",
     "max_open_trades": -1,
     "stake_amount": 100000,
     "trading_mode": "spot",
