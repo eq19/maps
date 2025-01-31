@@ -105,13 +105,13 @@ class ichiV2_15M1H(IStrategy):
         dataframe = self.calculate_ichimoku(dataframe)
         
         # 2. Get and process 1h timeframe
-        informative = self.dp.get_pair_dataframe(
-            pair=metadata['pair'],
-            timeframe=self.informative_timeframe
-        )
-        informative = self.calculate_ichimoku(informative)
-        informative['ema_200_1h'] = ta.EMA(informative, timeperiod=200)
-        informative['rsi_1h'] = ta.RSI(informative, timeperiod=14)
+        #informative = self.dp.get_pair_dataframe(
+        #    pair=metadata['pair'],
+        #    timeframe=self.informative_timeframe
+        #)
+        #informative = self.calculate_ichimoku(informative)
+        #informative['ema_200_1h'] = ta.EMA(informative, timeperiod=200)
+        #informative['rsi_1h'] = ta.RSI(informative, timeperiod=14)
         
         # 3. Merge timeframes with proper suffix handling
         # Use the helper function merge_informative_pair to safely merge the pair
@@ -119,13 +119,13 @@ class ichiV2_15M1H(IStrategy):
         # use ffill to have the 1d value available in every row throughout the day.
         # Without this, comparisons between columns of the original and the informative pair would only work once per day.
         # Full documentation see https://www.freqtrade.io/en/stable/strategy-customization/#complete-dataprovider-sample
-        dataframe = merge_informative_pair(
-            dataframe,
-            informative,
-            self.timeframe,
-            self.informative_timeframe,
-            ffill=True
-        )
+        #dataframe = merge_informative_pair(
+        #    dataframe,
+        #    informative,
+        #    self.timeframe,
+        #    self.informative_timeframe,
+        #    ffill=True
+        #)
         
         # 4. Add remaining indicators
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
