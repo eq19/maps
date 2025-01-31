@@ -110,8 +110,8 @@ class ichiV2_15M1H(IStrategy):
         #    timeframe=self.informative_timeframe
         #)
         #informative = self.calculate_ichimoku(informative)
-        #informative['ema_200_1h'] = ta.EMA(informative, timeperiod=200)
-        #informative['rsi_1h'] = ta.RSI(informative, timeperiod=14)
+        #informative['ema_200'] = ta.EMA(informative, timeperiod=200)
+        #informative['rsi'] = ta.RSI(informative, timeperiod=14)
         
         # 3. Merge timeframes with proper suffix handling
         # Use the helper function merge_informative_pair to safely merge the pair
