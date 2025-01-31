@@ -1,7 +1,7 @@
 {
+  "enable_protections": true,
   "position_stacking": false,
   "disableparamexport": false,
-  "enable_protections": false,
   "hyperopt_jobs": 32,
   "hyperopt_loss": "SharpeHyperOptLossDaily",
   "hyperopt_min_trades": 150,
