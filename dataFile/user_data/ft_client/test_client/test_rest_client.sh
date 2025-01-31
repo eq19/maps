@@ -50,9 +50,9 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade install-ui
   #freqtrade webserver
 
-  echo -e "\n$hr\nSHOW PAIRS\n$hr"
+  echo -e "\n$hr\nTEST PAIRLIST\n$hr"
   freqtrade test-pairlist --help
-  freqtrade test-pairlist
+  freqtrade test-pairlist --one-column --print-json
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
