@@ -6,12 +6,11 @@
 #
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
+STRATEGY=ichiV1
 TIMEFRAMES='15m 1h 1d'
-STRATEGY=ichiV2_15M1H
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
-PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -94,6 +93,7 @@ else
   freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
 
   if [[ -f /home/runner/user_data/strategies/$STRATEGY.json ]]; then
+    PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
     cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
 
