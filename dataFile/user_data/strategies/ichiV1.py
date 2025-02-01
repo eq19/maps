@@ -20,7 +20,6 @@ from freqtrade.strategy import informative
 from freqtrade.strategy import stoploss_from_open
 from freqtrade.strategy import (BooleanParameter,timeframe_to_minutes, merge_informative_pair,
                                 DecimalParameter, IntParameter, CategoricalParameter)
-from freqtrade.optimize.space import IntParameter
 from freqtrade.persistence import Trade
 from typing import Dict
 import numpy # noqa
@@ -229,12 +228,12 @@ class ichiV1(IStrategy):
         return [
             {
                 "method": "CooldownPeriod",
-                "stop_duration_candles": 7
+                "stop_duration_candles": self.protection_params["cooldown_period"]
             },
             {
                 "method": "StoplossGuard",
-                "lookback_period_candles": 24,
-                "trade_limit": 4,
-                "stop_duration_candles": 12,
-            }
+                "lookback_period_candles": self.protection_params["lookback_period"],
+                "trade_limit": self.protection_params["trade_limit"],
+                "stop_duration_candles": self.protection_params["stop_duration"],
+            }    
         ]
