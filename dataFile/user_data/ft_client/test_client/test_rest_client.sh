@@ -7,21 +7,21 @@
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
 STRATEGY=ichiV1
-TIMEFRAMES='15m 1h 1d'
+TIMEFRAMES='1m 15m'
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
-BACKTESTING_DURATION=60  # Adjust as per your strategy
+BACKTESTING_DURATION=6  # Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
 YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
 # 30 days ago in the required format
-EARLIEST_DATE=$(date -u -d "90 days ago" +%Y%m%d)
+EARLIEST_DATE=$(date -u -d "9 days ago" +%Y%m%d)
 
 # Backtesting start date in the required format (earliest_date + sliding window)
 BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
