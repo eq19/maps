@@ -85,18 +85,12 @@ class ichiV1(IStrategy):
         'stoploss_on_exchange': False
     }
 
+    # Buy hyperspace params:
     buy_volumeAVG = IntParameter(low=50, high=300, default=70, space='buy', optimize=True)
     buy_rsi = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
     buy_fastd = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
     buy_fishRsiNorma = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
 
-    sell_rsi = IntParameter(low=1, high=100, default=70, space='sell', optimize=True)
-    sell_minusDI = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
-    sell_fishRsiNorma = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
-    sell_trigger = CategoricalParameter(["rsi-macd-minusdi", "sar-fisherRsi"],
-                                        default=30, space='sell', optimize=True)
-
-    # Buy hyperspace params:
     buy_params = {
         "buy_fastd": 1,
         "buy_fishRsiNorma": 5,
@@ -105,6 +99,12 @@ class ichiV1(IStrategy):
     }
 
     # Sell hyperspace params:
+    sell_rsi = IntParameter(low=1, high=100, default=70, space='sell', optimize=True)
+    sell_minusDI = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
+    sell_fishRsiNorma = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
+    sell_trigger = CategoricalParameter(["rsi-macd-minusdi", "sar-fisherRsi"],
+                                        default=30, space='sell', optimize=True)
+
     sell_params = {
         "sell_fishRsiNorma": 30,
         "sell_minusDI": 4,
@@ -112,6 +112,43 @@ class ichiV1(IStrategy):
         "sell_trigger": "rsi-macd-minusdi",
     }
 
+    # Protection Space  
+    cooldown_period = IntParameter(2, 90, default=7, space="protection", optimize=True)
+    lookback_period = IntParameter(5, 50, default=24, space="protection", optimize=True)
+    trade_limit = IntParameter(1, 10, default=4, space="protection", optimize=True)
+    stop_duration = IntParameter(1, 100, default=3, space="protection", optimize=True)
+    use_stop_protection = BooleanParameter(default=True, space="protection", optimize=True)
+
+    @property
+    def protections(self):
+        return [
+            {
+                "method": "CooldownPeriod",
+                "stop_duration_candles": self.cooldown_period.value
+            },
+            {
+                "method": "MaxDrawdown",
+                "lookback_period_candles": self.cooldown_lookback.value,
+                "trade_limit": 5,
+                "stop_duration_candles": self.stop_duration.value,
+                "max_allowed_drawdown": 0.9
+            },
+            {
+                "method": "StoplossGuard",
+                "lookback_period_candles": self.lookback_period.value,
+                "trade_limit": self.trade_limit.value,
+                "stop_duration_candles": self.stop_duration.value,
+                "only_per_pair": False
+            },
+            {
+                "method": "LowProfitPairs",
+                "lookback_period_candles": 24,
+                "trade_limit": 2,
+                "stop_duration_candles": 4,
+                "required_profit": 0.01 ok
+            }
+        ]
+           
     def informative_pairs(self):
         """
         Define additional, informative pair/interval combinations to be cached from the exchange.
@@ -214,57 +251,3 @@ class ichiV1(IStrategy):
                  proposed_leverage: float, max_leverage: float, entry_tag: str,
                  side: str, **kwargs) -> float:
         return 1.0  # Conservative leverage
-
-    # Protection Space  
-    cooldown_period = IntParameter(1, 20, default=7, space="protection")
-    lookback_period = IntParameter(5, 50, default=24, space="protection")
-    trade_limit = IntParameter(1, 10, default=4, space="protection")
-    stop_duration = IntParameter(1, 24, default=12, space="protection")
-    cooldown_lookback = IntParameter(2, 90, default=3, space="protection", optimize=True)
-    stop_duration = IntParameter(12, 100, default=3, space="protection", optimize=True)
-    use_stop_protection = BooleanParameter(default=True, space="protection", optimize=True)
-
-    @property
-    def protections(self):
-        return [
-            {
-                "method": "CooldownPeriod",
-                "stop_duration_candles": self.cooldown_lookback.value
-            },
-            {
-                "method": "MaxDrawdown",
-                "lookback_period_candles": self.cooldown_lookback.value,
-                "trade_limit": 5,
-                "stop_duration_candles": self.stop_duration.value,
-                "max_allowed_drawdown": 0.9
-            },
-            {
-                "method": "StoplossGuard",
-                "lookback_period_candles": 20,
-                "trade_limit": 3,
-                "stop_duration_candles": 4,
-                "only_per_pair": False
-            },
-            {
-                "method": "LowProfitPairs",
-                "lookback_period_candles": 24,
-                "trade_limit": 2,
-                "stop_duration_candles": 4,
-                "required_profit": 0.01
-            }
-        ]
-  
-    @property
-    def protections(self):
-        return [
-            {
-                "method": "CooldownPeriod",
-                "stop_duration_candles": self.cooldown_period.value
-            },
-            {
-                "method": "StoplossGuard",
-                "lookback_period_candles": self.lookback_period.value,
-                "trade_limit": self.trade_limit.value,
-                "stop_duration_candles": self.stop_duration.value,
-            }
-        ]
