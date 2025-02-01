@@ -47,14 +47,55 @@ class ichiV1(IStrategy):
     """
     INTERFACE_VERSION = 3
 
-    # Minimal ROI designed for the strategy.
-    # This attribute will be overridden if the config file contains "minimal_roi"
+    class HyperOpt:
+        @staticmethod
+        def generate_roi_table(params: dict):
+            """
+            Generate the ROI table that will be used by Hyperopt
+            This implementation generates the default legacy Freqtrade ROI tables.
+            Change it if you need different number of steps in the generated
+            ROI tables or other structure of the ROI tables.
+            Please keep it aligned with parameters in the 'roi' optimization
+            hyperspace defined by the roi_space method.
+            """
+            roi_table = {}
+            roi_table[0] = 0.05
+            roi_table[params['roi_t6']] = 0.04
+            roi_table[params['roi_t5']] = 0.03
+            roi_table[params['roi_t4']] = 0.02
+            roi_table[params['roi_t3']] = 0.01
+            roi_table[params['roi_t2']] = 0.0001
+            roi_table[params['roi_t1']] = -10
+
+            return roi_table
+
+        @staticmethod
+        def roi_space() -> List[Dimension]:
+            """
+            Values to search for each ROI steps
+            Override it if you need some different ranges for the parameters in the
+            'roi' optimization hyperspace.
+            Please keep it aligned with the implementation of the
+            generate_roi_table method.
+            """
+            return [
+                Integer(240, 720, name='roi_t1'),
+                Integer(120, 240, name='roi_t2'),
+                Integer(90, 120, name='roi_t3'),
+                Integer(60, 90, name='roi_t4'),
+                Integer(30, 60, name='roi_t5'),
+                Integer(1, 30, name='roi_t6'),
+            ]
+
+    # ROI table:
     minimal_roi = {
-        "1440": 0.01,
-        "80": 0.02,
-        "40": 0.03,
-        "20": 0.04,
-        "0":  0.05
+        "0": 0.05,
+        "15": 0.04,
+        "51": 0.03,
+        "81": 0.02,
+        "112": 0.01,
+        "154": 0.0001,
+        "400": -10
     }
 
     # Optimal stoploss designed for the strategy
