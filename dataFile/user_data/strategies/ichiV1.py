@@ -126,6 +126,84 @@ class ichiV1(IStrategy):
         'stoploss_on_exchange': False
     }
 
+
+
+
+    # Custom stoploss
+    use_custom_stoploss = True
+
+    process_only_new_candles = True
+    startup_candle_count = 168
+
+    order_types = {
+        'buy': 'market',
+        'sell': 'market',
+        'emergencysell': 'market',
+        'forcebuy': "market",
+        'forcesell': 'market',
+        'stoploss': 'market',
+        'stoploss_on_exchange': False,
+
+        'stoploss_on_exchange_interval': 60,
+        'stoploss_on_exchange_limit_ratio': 0.99
+    }
+
+    # hard stoploss profit
+    pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
+    # profit threshold 1, trigger point, SL_1 is used
+    pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='sell', load=True)
+    pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='sell', load=True)
+
+    # profit threshold 2, SL_2 is used
+    pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='sell', load=True)
+    pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='sell', load=True)
+
+    def informative_pairs(self):
+        pairs = self.dp.current_whitelist()
+        informative_pairs = [(pair, '1h') for pair in pairs]
+        return informative_pairs
+
+
+    ############################################################################
+    #come from BB_RPB_TSL
+
+    ## Custom Trailing stoploss ( credit to Perkmeister for this custom stoploss to help the strategy ride a green candle )
+    def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
+                        current_rate: float, current_profit: float, **kwargs) -> float:
+
+        # hard stoploss profit
+        HSL = self.pHSL.value
+        PF_1 = self.pPF_1.value
+        SL_1 = self.pSL_1.value
+        PF_2 = self.pPF_2.value
+        SL_2 = self.pSL_2.value
+
+        # For profits between PF_1 and PF_2 the stoploss (sl_profit) used is linearly interpolated
+        # between the values of SL_1 and SL_2. For all profits above PL_2 the sl_profit value
+        # rises linearly with current profit, for profits below PF_1 the hard stoploss profit is used.
+
+        if (current_profit > PF_2):
+            sl_profit = SL_2 + (current_profit - PF_2)
+        elif (current_profit > PF_1):
+            sl_profit = SL_1 + ((current_profit - PF_1) * (SL_2 - SL_1) / (PF_2 - PF_1))
+        else:
+            sl_profit = HSL
+
+        # Only for hyperopt invalid return
+        if (sl_profit >= current_profit):
+            return -0.99
+
+        return stoploss_from_open(sl_profit, current_profit)
+
+    ############################################################################
+
+
+
+
+
+
+
+  
     # Buy hyperspace params:
     buy_params = {
         "buy_fastd": 1,
