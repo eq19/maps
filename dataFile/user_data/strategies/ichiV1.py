@@ -20,6 +20,7 @@ from freqtrade.strategy import informative
 from freqtrade.strategy import stoploss_from_open
 from freqtrade.strategy import (BooleanParameter,timeframe_to_minutes, merge_informative_pair,
                                 DecimalParameter, IntParameter, CategoricalParameter)
+from freqtrade.optimize.space import IntParameter
 from freqtrade.persistence import Trade
 from typing import Dict
 import numpy # noqa
@@ -214,6 +215,14 @@ class ichiV1(IStrategy):
                  proposed_leverage: float, max_leverage: float, entry_tag: str,
                  side: str, **kwargs) -> float:
         return 1.0  # Conservative leverage
+
+    def protection_space():
+        return [
+            IntParameter(1, 20, default=7, space="protection", name="cooldown_period"),
+            IntParameter(5, 50, default=24, space="protection", name="lookback_period"),
+            IntParameter(1, 10, default=4, space="protection", name="trade_limit"),
+            IntParameter(1, 24, default=12, space="protection", name="stop_duration"),
+        ]
 
     @property
     def protections(self):
