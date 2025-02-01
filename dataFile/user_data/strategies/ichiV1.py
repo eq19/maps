@@ -145,7 +145,7 @@ class ichiV1(IStrategy):
                 "lookback_period_candles": 24,
                 "trade_limit": 2,
                 "stop_duration_candles": 4,
-                "required_profit": 0.01 ok
+                "required_profit": 0.01
             }
         ]
            
