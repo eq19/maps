@@ -215,7 +215,7 @@ class ichiV1(IStrategy):
                  side: str, **kwargs) -> float:
         return 1.0  # Conservative leverage
 
-    def protection_space():
+    def protection_params():
         return [
             IntParameter(1, 20, default=7, space="protection", name="cooldown_period"),
             IntParameter(5, 50, default=24, space="protection", name="lookback_period"),
