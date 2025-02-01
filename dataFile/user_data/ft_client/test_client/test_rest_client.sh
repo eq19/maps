@@ -90,7 +90,7 @@ else
   freqtrade hyperopt -e 30 --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42
 
   echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
-  freqtrade hyperopt -e 30 --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 --hyperopt-loss MultiMetricHyperOptLoss
+  freqtrade hyperopt -e 30 --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 --hyperopt-loss ProfitDrawDownHyperOptLoss
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
