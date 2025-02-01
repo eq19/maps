@@ -296,8 +296,54 @@ class ichiV1(IStrategy):
 
         return dataframe
 
-    # Risk Management Enhancements
+    # Risk Management
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float, entry_tag: str,
                  side: str, **kwargs) -> float:
         return 1.0  # Conservative leverage
+
+    # Plot Enhancements
+    plot_config = {
+        "main_plot": {
+            "ema_14": {
+                "color": "#888b48",
+                "type": "line"
+            },
+            "buy_sell": {
+                "sell_tag": {"color": "red"},
+                "buy_tag": {"color": "blue"},
+            },
+        },
+        "subplots": {
+            "rsi4": {
+                "rsi_4": {
+                    "color": "#888b48",
+                    "type": "line"
+                }
+            },
+            "rsi14": {
+                "rsi_14": {
+                    "color": "#888b48",
+                    "type": "line"
+                }
+            },
+            "cti": {
+                "cti": {
+                    "color": "#573892",
+                    "type": "line"
+                }
+            },
+            "ewo": {
+                "EWO": {
+                    "color": "#573892",
+                    "type": "line"
+                }
+            },
+            "pct_change": {
+                "pct_change": {
+                    "color": "#26782f",
+                    "type": "line"
+                }
+            }
+        }
+    }
