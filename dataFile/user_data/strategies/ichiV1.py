@@ -215,25 +215,22 @@ class ichiV1(IStrategy):
                  side: str, **kwargs) -> float:
         return 1.0  # Conservative leverage
 
-    def protection_params():
-        return [
-            IntParameter(1, 20, default=7, space="protection", name="cooldown_period"),
-            IntParameter(5, 50, default=24, space="protection", name="lookback_period"),
-            IntParameter(1, 10, default=4, space="protection", name="trade_limit"),
-            IntParameter(1, 24, default=12, space="protection", name="stop_duration"),
-        ]
+    cooldown_period = IntParameter(1, 20, default=7, space="protection")
+    lookback_period = IntParameter(5, 50, default=24, space="protection")
+    trade_limit = IntParameter(1, 10, default=4, space="protection")
+    stop_duration = IntParameter(1, 24, default=12, space="protection")
 
     @property
     def protections(self):
         return [
             {
                 "method": "CooldownPeriod",
-                "stop_duration_candles": self.protection_params["cooldown_period"]
+                "stop_duration_candles": self.cooldown_period.value
             },
             {
                 "method": "StoplossGuard",
-                "lookback_period_candles": self.protection_params["lookback_period"],
-                "trade_limit": self.protection_params["trade_limit"],
-                "stop_duration_candles": self.protection_params["stop_duration"],
-            }    
+                "lookback_period_candles": self.lookback_period.value,
+                "trade_limit": self.trade_limit.value,
+                "stop_duration_candles": self.stop_duration.value,
+            }
         ]
