@@ -128,23 +128,23 @@ class ichiV1(IStrategy):
             },
             {
                 "method": "MaxDrawdown",
-                "lookback_period_candles": self.cooldown_lookback.value,
-                "trade_limit": 5,
+                "lookback_period_candles": self.lookback_period.value,
+                "trade_limit": self.trade_limit.value,
                 "stop_duration_candles": self.stop_duration.value,
                 "max_allowed_drawdown": 0.9
             },
             {
                 "method": "StoplossGuard",
                 "lookback_period_candles": self.lookback_period.value,
-                "trade_limit": self.trade_limit.value,
                 "stop_duration_candles": self.stop_duration.value,
-                "only_per_pair": False
+                 "trade_limit": self.trade_limit.value,
+                 "only_per_pair": False
             },
             {
                 "method": "LowProfitPairs",
-                "lookback_period_candles": 24,
-                "trade_limit": 2,
-                "stop_duration_candles": 4,
+                "lookback_period_candles": self.lookback_period.value,
+                "stop_duration_candles": self.stop_duration.value,
+                "trade_limit": self.trade_limit.value,
                 "required_profit": 0.01
             }
         ]
