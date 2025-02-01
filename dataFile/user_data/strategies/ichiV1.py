@@ -110,24 +110,13 @@ class ichiV1(IStrategy):
     trailing_stop_positive = 0.01
     trailing_stop_positive_offset = 0.02
 
-    # run "populate_indicators" only for new candle
+    # run "populate_indicators"
     process_only_new_candles = False
 
-    # Experimental settings (configuration will overide these if set)
+    # Experimental settings
     use_exit_signal = True
     exit_profit_only = True
     ignore_roi_if_entry_signal = False
-
-    # Optional order type mapping
-    order_types = {
-        'entry': 'limit',
-        'exit': 'limit',
-        'stoploss': 'market',
-        'stoploss_on_exchange': False
-    }
-
-
-
 
     # Custom stoploss
     use_custom_stoploss = True
@@ -136,42 +125,35 @@ class ichiV1(IStrategy):
     startup_candle_count = 168
 
     order_types = {
-        'buy': 'market',
-        'sell': 'market',
-        'emergencysell': 'market',
+        'entry': 'limit',
+        'exit': 'market',
         'forcebuy': "market",
         'forcesell': 'market',
         'stoploss': 'market',
+        'emergencysell': 'market',
         'stoploss_on_exchange': False,
 
         'stoploss_on_exchange_interval': 60,
         'stoploss_on_exchange_limit_ratio': 0.99
     }
 
-    # hard stoploss profit
+    ############################################################################
+
+    # Hard stoploss profit
     pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
     # profit threshold 1, trigger point, SL_1 is used
     pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='sell', load=True)
     pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='sell', load=True)
 
-    # profit threshold 2, SL_2 is used
+    # Profit threshold 2, SL_2 is used
     pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='sell', load=True)
     pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='sell', load=True)
-
-    def informative_pairs(self):
-        pairs = self.dp.current_whitelist()
-        informative_pairs = [(pair, '1h') for pair in pairs]
-        return informative_pairs
-
-
-    ############################################################################
-    #come from BB_RPB_TSL
 
     ## Custom Trailing stoploss ( credit to Perkmeister for this custom stoploss to help the strategy ride a green candle )
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                         current_rate: float, current_profit: float, **kwargs) -> float:
 
-        # hard stoploss profit
+        # Hard stoploss profit
         HSL = self.pHSL.value
         PF_1 = self.pPF_1.value
         SL_1 = self.pSL_1.value
@@ -196,13 +178,6 @@ class ichiV1(IStrategy):
         return stoploss_from_open(sl_profit, current_profit)
 
     ############################################################################
-
-
-
-
-
-
-
   
     # Buy hyperspace params:
     buy_params = {
