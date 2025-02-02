@@ -87,17 +87,13 @@ else
   #freqtrade hyperopt-show
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500 > /dev/null 2>&1
-  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 -e 30 
+  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 -e 10
 
-  #echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
-  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 \
-    -e 300 --hyperopt-loss ProfitDrawDownHyperOptLoss > /dev/null 2>&1
+  #echo -e "\n$hr\nRERUN RUNNER\n$hr"
+  if [[ "${RERUN_RUNNER}" != "true" ]]; then
+    freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 \
+      -e 1000 --hyperopt-loss ProfitDrawDownHyperOptLoss > /dev/null 2>&1
 
-  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  freqtrade backtesting --help
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
-
-  if [[ -f /home/runner/user_data/strategies/$STRATEGY.json ]]; then
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
     cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
@@ -108,6 +104,10 @@ else
     git add . && git commit --allow-empty -m "update params" && git push
     cd /home/runner && rm -rf /tmp/eq19
   fi
+
+  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
+  freqtrade backtesting --help
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
