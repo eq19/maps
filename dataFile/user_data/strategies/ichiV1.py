@@ -140,14 +140,14 @@ class ichiV1(IStrategy):
     ############################################################################
 
     # Hard stoploss profit
-    pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
+    pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='trailing', load=True)
     # profit threshold 1, trigger point, SL_1 is used
-    pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='sell', load=True)
-    pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='sell', load=True)
+    pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='trailing', load=True)
+    pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='trailing', load=True)
 
     # Profit threshold 2, SL_2 is used
-    pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='sell', load=True)
-    pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='sell', load=True)
+    pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='trailing', load=True)
+    pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='trailing', load=True)
 
     ## Custom Trailing stoploss ( credit to Perkmeister for this custom stoploss to help the strategy ride a green candle )
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
