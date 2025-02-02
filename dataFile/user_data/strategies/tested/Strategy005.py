@@ -35,8 +35,7 @@ from technical.indicators import dema
 logger = logging.getLogger(__name__)
 
 
-class ichiV1(IStrategy):
-#class Strategy005(IStrategy):
+class Strategy005(IStrategy):
     """
     Strategy 005
     author@: Gerald Lonlas
