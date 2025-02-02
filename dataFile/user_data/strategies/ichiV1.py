@@ -47,7 +47,8 @@ def indicator_permutations(profiles, max_indicators=1, include_none=True):
     return profile_permutations
 
 
-class AwesomeStrategy(IStrategy):
+class ichiV1(IStrategy):
+#class AwesomeStrategy(IStrategy):
 
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
@@ -57,7 +58,7 @@ class AwesomeStrategy(IStrategy):
     can_short: bool = False
 
     # Optimal timeframe for the strategy.
-    timeframe = "15m"
+    timeframe = "1m"
     # informative_timeframe = '15m'
 
     # Run "populate_indicators()" only for new candle.
@@ -70,7 +71,7 @@ class AwesomeStrategy(IStrategy):
 
     # Hyperoptable parameters
     macd_profiles = {
-        "5m": {
+        "1m": {
             "fast": 6,
             "slow": 13,
             "signal": 4
