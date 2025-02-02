@@ -1,36 +1,55 @@
 {
-  "strategy_name": "ichiV2_15M1H",
+  "strategy_name": "ichiV1",
   "params": {
-    "max_open_trades": {
-      "max_open_trades": Infinity
-    },
     "buy": {
-      "buy_rsi": 28,
-      "ewo_high": 7.172,
-      "ewo_low": -9.601,
-      "volume_filter": 1.088
+      "buy_fastd": 62,
+      "buy_fishRsiNorma": 60,
+      "buy_rsi": 41,
+      "buy_volumeAVG": 188
     },
     "sell": {
-      "hull_period": 8,
-      "sell_rsi": 74
+      "pHSL": -0.163,
+      "pPF_1": 0.013,
+      "pPF_2": 0.093,
+      "pSL_1": 0.016,
+      "pSL_2": 0.024,
+      "sell_fishRsiNorma": 12,
+      "sell_minusDI": 40,
+      "sell_rsi": 57,
+      "sell_trigger": "rsi-macd-minusdi"
     },
-    "protection": {},
+    "protection": {
+      "protection_cooldown_period": 15,
+      "protection_maxdrawdown_lookback_period_candles": 26,
+      "protection_maxdrawdown_max_allowed_drawdown": 0.147,
+      "protection_maxdrawdown_stop_duration_candles": 12,
+      "protection_maxdrawdown_trade_limit": 8,
+      "protection_stoplossguard_lookback_period_candles": 2,
+      "protection_stoplossguard_stop_duration_candles": 34,
+      "protection_stoplossguard_trade_limit": 3
+    },
     "roi": {
-      "0": 0.29,
-      "68": 0.047,
-      "190": 0.023,
-      "533": 0
+      "0": 0.05,
+      "13": 0.04,
+      "53": 0.03,
+      "84": 0.02,
+      "99": 0.01,
+      "199": 0.0001,
+      "257": -10
     },
     "stoploss": {
-      "stoploss": -0.239
+      "stoploss": -0.229
     },
     "trailing": {
       "trailing_stop": true,
-      "trailing_stop_positive": 0.253,
-      "trailing_stop_positive_offset": 0.34099999999999997,
+      "trailing_stop_positive": 0.349,
+      "trailing_stop_positive_offset": 0.44699999999999995,
       "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": -1
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-01-30 08:11:34.483206+00:00"
+  "export_time": "2025-02-01 11:22:25.412373+00:00"
 }
