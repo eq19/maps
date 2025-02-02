@@ -86,12 +86,12 @@ else
   #freqtrade hyperopt-list
   #freqtrade hyperopt-show
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500
-  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --random-state 42 -e 30
+  #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500 > /dev/null 2>&1
+  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 -e 30 
 
   echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
-  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --random-state 42 \
-    -e 300 --hyperopt-loss ProfitDrawDownHyperOptLoss --log-level CRITICAL > /dev/null 2>&1
+  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 \
+    -e 300 --hyperopt-loss ProfitDrawDownHyperOptLoss --log-level CRITICAL
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
