@@ -49,6 +49,7 @@ class ichiV1(IStrategy):
 
     # Optimal timeframe for the strategy
     timeframe = '1m'
+    startup_candle_count = 168
 
     # Optimal stoploss designed for the strategy
     # This attribute will be overridden if the config file contains "stoploss"
@@ -67,15 +68,13 @@ class ichiV1(IStrategy):
 
     # Experimental settings
     use_exit_signal = True
-    exit_profit_only = True
-    ignore_roi_if_entry_signal = False
-
+    exit_profit_only = False
     process_only_new_candles = True
-    startup_candle_count = 168
+    ignore_roi_if_entry_signal = False
 
     order_types = {
         'entry': 'limit',
-        'exit': 'market',
+        'exit': 'limit',
         'forcebuy': "market",
         'forcesell': 'market',
         'stoploss': 'market',
@@ -115,11 +114,11 @@ class ichiV1(IStrategy):
     sell_rsi = IntParameter(low=1, high=100, default=70, space='sell', optimize=True)
     sell_minusDI = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
     sell_fishRsiNorma = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
-    sell_trigger = CategoricalParameter(["rsi-macd-minusdi", "sar-fisherRsi"],
-                                        default=30, space='sell', optimize=True)
+    sell_trigger = CategoricalParameter(["rsi-macd-minusdi", "sar-fisherRsi"], default=30, space='sell', optimize=True)
 
     # Hard stoploss profit
     pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
+
     # profit threshold 1, trigger point, SL_1 is used
     pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='sell', load=True)
     pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='sell', load=True)
