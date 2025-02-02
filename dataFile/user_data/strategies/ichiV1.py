@@ -47,6 +47,9 @@ class ichiV1(IStrategy):
     """
     INTERFACE_VERSION = 3
 
+    # Optimal timeframe for the strategy
+    timeframe = '1m'
+
     # Buy hyperspace params:
     buy_params = {
         "buy_fastd": 1,
@@ -74,12 +77,14 @@ class ichiV1(IStrategy):
     sell_trigger = CategoricalParameter(["rsi-macd-minusdi", "sar-fisherRsi"],
                                         default=30, space='sell', optimize=True)
 
+    ############################################################################
+
     # Optimal stoploss designed for the strategy
     # This attribute will be overridden if the config file contains "stoploss"
     stoploss = -0.10
 
-    # Optimal timeframe for the strategy
-    timeframe = '1m'
+    # Custom stoploss
+    use_custom_stoploss = True
 
     # trailing stoploss
     trailing_stop = False
@@ -93,9 +98,6 @@ class ichiV1(IStrategy):
     use_exit_signal = True
     exit_profit_only = True
     ignore_roi_if_entry_signal = False
-
-    # Custom stoploss
-    use_custom_stoploss = True
 
     process_only_new_candles = True
     startup_candle_count = 168
@@ -112,8 +114,6 @@ class ichiV1(IStrategy):
         'stoploss_on_exchange_interval': 60,
         'stoploss_on_exchange_limit_ratio': 0.99
     }
-
-    ############################################################################
 
     # Hard stoploss profit
     pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
