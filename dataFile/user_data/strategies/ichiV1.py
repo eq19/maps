@@ -88,23 +88,28 @@ class ichiV1(IStrategy):
 
     # Buy hyperspace params:
     buy_params = {
-        "buy_fastd": 1,
-        "buy_fishRsiNorma": 5,
         "buy_rsi": 26,
+        "buy_fastd": 1,
         "buy_volumeAVG": 150,
+        "buy_fishRsiNorma": 5
     }
 
-    buy_volumeAVG = IntParameter(low=50, high=300, default=70, space='buy', optimize=True)
     buy_rsi = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
     buy_fastd = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
+    buy_volumeAVG = IntParameter(low=50, high=300, default=70, space='buy', optimize=True)
     buy_fishRsiNorma = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
 
     # Sell hyperspace params:
-    sell_params = {
-        "sell_fishRsiNorma": 30,
-        "sell_minusDI": 4,
+    sell_params = {        
+        "pHSL": -0.163,
+        "pPF_1": 0.013,
+        "pPF_2": 0.093,
+        "pSL_1": 0.016,
+        "pSL_2": 0.024,
         "sell_rsi": 74,
-        "sell_trigger": "rsi-macd-minusdi",
+        "sell_minusDI": 4,
+        "sell_fishRsiNorma": 30,
+        "sell_trigger": "rsi-macd-minusdi"
     }
 
     sell_rsi = IntParameter(low=1, high=100, default=70, space='sell', optimize=True)
