@@ -47,56 +47,32 @@ class ichiV1(IStrategy):
     """
     INTERFACE_VERSION = 3
 
-    class HyperOpt:
-        @staticmethod
-        def generate_roi_table(params: dict):
-            """
-            Generate the ROI table that will be used by Hyperopt
-            This implementation generates the default legacy Freqtrade ROI tables.
-            Change it if you need different number of steps in the generated
-            ROI tables or other structure of the ROI tables.
-            Please keep it aligned with parameters in the 'roi' optimization
-            hyperspace defined by the roi_space method.
-            """
-            roi_table = {}
-            roi_table[0] = 0.05
-            roi_table[params['roi_t6']] = 0.04
-            roi_table[params['roi_t5']] = 0.03
-            roi_table[params['roi_t4']] = 0.02
-            roi_table[params['roi_t3']] = 0.01
-            roi_table[params['roi_t2']] = 0.0001
-            roi_table[params['roi_t1']] = -10
-
-            return roi_table
-
-        @staticmethod
-        def roi_space() -> List[Dimension]:
-            """
-            Values to search for each ROI steps
-            Override it if you need some different ranges for the parameters in the
-            'roi' optimization hyperspace.
-            Please keep it aligned with the implementation of the
-            generate_roi_table method.
-            """
-            return [
-                Integer(240, 720, name='roi_t1'),
-                Integer(120, 240, name='roi_t2'),
-                Integer(90, 120, name='roi_t3'),
-                Integer(60, 90, name='roi_t4'),
-                Integer(30, 60, name='roi_t5'),
-                Integer(1, 30, name='roi_t6'),
-            ]
-
-    # ROI table:
-    minimal_roi = {
-        "0": 0.05,
-        "15": 0.04,
-        "51": 0.03,
-        "81": 0.02,
-        "112": 0.01,
-        "154": 0.0001,
-        "400": -10
+    # Buy hyperspace params:
+    buy_params = {
+        "buy_fastd": 1,
+        "buy_fishRsiNorma": 5,
+        "buy_rsi": 26,
+        "buy_volumeAVG": 150,
     }
+
+    buy_volumeAVG = IntParameter(low=50, high=300, default=70, space='buy', optimize=True)
+    buy_rsi = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
+    buy_fastd = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
+    buy_fishRsiNorma = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
+
+    # Sell hyperspace params:
+    sell_params = {
+        "sell_fishRsiNorma": 30,
+        "sell_minusDI": 4,
+        "sell_rsi": 74,
+        "sell_trigger": "rsi-macd-minusdi",
+    }
+
+    sell_rsi = IntParameter(low=1, high=100, default=70, space='sell', optimize=True)
+    sell_minusDI = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
+    sell_fishRsiNorma = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
+    sell_trigger = CategoricalParameter(["rsi-macd-minusdi", "sar-fisherRsi"],
+                                        default=30, space='sell', optimize=True)
 
     # Optimal stoploss designed for the strategy
     # This attribute will be overridden if the config file contains "stoploss"
@@ -140,14 +116,14 @@ class ichiV1(IStrategy):
     ############################################################################
 
     # Hard stoploss profit
-    pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='trailing', load=True)
+    pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
     # profit threshold 1, trigger point, SL_1 is used
-    pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='trailing', load=True)
-    pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='trailing', load=True)
+    pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='sell', load=True)
+    pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='sell', load=True)
 
     # Profit threshold 2, SL_2 is used
-    pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='trailing', load=True)
-    pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='trailing', load=True)
+    pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='sell', load=True)
+    pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='sell', load=True)
 
     ## Custom Trailing stoploss ( credit to Perkmeister for this custom stoploss to help the strategy ride a green candle )
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
@@ -178,33 +154,57 @@ class ichiV1(IStrategy):
         return stoploss_from_open(sl_profit, current_profit)
 
     ############################################################################
-  
-    # Buy hyperspace params:
-    buy_params = {
-        "buy_fastd": 1,
-        "buy_fishRsiNorma": 5,
-        "buy_rsi": 26,
-        "buy_volumeAVG": 150,
+
+    # ROI table:
+    minimal_roi = {
+        "0": 0.05,
+        "15": 0.04,
+        "51": 0.03,
+        "81": 0.02,
+        "112": 0.01,
+        "154": 0.0001,
+        "400": -10
     }
 
-    buy_volumeAVG = IntParameter(low=50, high=300, default=70, space='buy', optimize=True)
-    buy_rsi = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
-    buy_fastd = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
-    buy_fishRsiNorma = IntParameter(low=1, high=100, default=30, space='buy', optimize=True)
+    class HyperOpt:
+        @staticmethod
+        def generate_roi_table(params: dict):
+            """
+            Generate the ROI table that will be used by Hyperopt
+            This implementation generates the default legacy Freqtrade ROI tables.
+            Change it if you need different number of steps in the generated
+            ROI tables or other structure of the ROI tables.
+            Please keep it aligned with parameters in the 'roi' optimization
+            hyperspace defined by the roi_space method.
+            """
+            roi_table = {}
+            roi_table[0] = 0.05
+            roi_table[params['roi_t6']] = 0.04
+            roi_table[params['roi_t5']] = 0.03
+            roi_table[params['roi_t4']] = 0.02
+            roi_table[params['roi_t3']] = 0.01
+            roi_table[params['roi_t2']] = 0.0001
+            roi_table[params['roi_t1']] = -10
 
-    # Sell hyperspace params:
-    sell_params = {
-        "sell_fishRsiNorma": 30,
-        "sell_minusDI": 4,
-        "sell_rsi": 74,
-        "sell_trigger": "rsi-macd-minusdi",
-    }
+            return roi_table
 
-    sell_rsi = IntParameter(low=1, high=100, default=70, space='sell', optimize=True)
-    sell_minusDI = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
-    sell_fishRsiNorma = IntParameter(low=1, high=100, default=50, space='sell', optimize=True)
-    sell_trigger = CategoricalParameter(["rsi-macd-minusdi", "sar-fisherRsi"],
-                                        default=30, space='sell', optimize=True)
+        @staticmethod
+        def roi_space() -> List[Dimension]:
+            """
+            Values to search for each ROI steps
+            Override it if you need some different ranges for the parameters in the
+            'roi' optimization hyperspace.
+            Please keep it aligned with the implementation of the
+            generate_roi_table method.
+            """
+            return [
+                Integer(240, 720, name='roi_t1'),
+                Integer(120, 240, name='roi_t2'),
+                Integer(90, 120, name='roi_t3'),
+                Integer(60, 90, name='roi_t4'),
+                Integer(30, 60, name='roi_t5'),
+                Integer(1, 30, name='roi_t6'),
+            ]
 
     # Protection hyperspace params:
     protection_params = {
