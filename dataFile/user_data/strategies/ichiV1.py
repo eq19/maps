@@ -307,7 +307,7 @@ class ichiV1(IStrategy):
         VWAP        = (dataframe['close'] > dataframe['vwap'])
         STOCK_OSC   = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         BB          = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        EMA         = (dataframe["ema10"] > dataframe["ema50"])
+        EMA         = (dataframe["ema9"] > dataframe["ema21"])
         # EMA         = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
         
         long_conditions.append(RSI)
