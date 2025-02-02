@@ -91,7 +91,7 @@ else
 
   echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
   freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 \
-    -e 300 --hyperopt-loss ProfitDrawDownHyperOptLoss --log-level CRITICAL
+    -e 300 --hyperopt-loss ProfitDrawDownHyperOptLoss -v WARNING
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
