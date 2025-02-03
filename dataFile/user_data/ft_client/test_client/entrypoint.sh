@@ -3,13 +3,6 @@
 # Default workspace
 WORKSPACE="/home/runner"
 
-# Detect if running in DevContainer
-if [ -f "/.dockerenv" ] || [ -n "$DEVCONTAINER" ]; then
-  export IS_DEVCONTAINER=true
-else
-  export IS_DEVCONTAINER=false
-fi
-
 # Check if the Deep Learning disk exists
 if [ -d "/mnt/disks/deeplearning" ]; then
   WORKSPACE="/mnt/disks/deeplearning/home/runner"
@@ -53,7 +46,7 @@ ln -sfn "$WORKSPACE" /freqtrade
 cd /freqtrade
 
 # 🚨 Prevent supervisord from running in devcontainer
-if [ "$IS_DEVCONTAINER" = "false" ]; then
+if [ -d "/mnt/disks/deeplearning" ]; then
   echo "Starting supervisord..."
   exec supervisord -c /etc/supervisor/supervisord.conf &
 else
