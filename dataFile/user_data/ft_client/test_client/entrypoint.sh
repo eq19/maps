@@ -32,11 +32,11 @@ if [ ! -f "$WORKSPACE/config.json" ]; then
   sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" "$WORKSPACE/config.json"
 fi
 
-# Move user_data to the correct workspace (if it exists)
-if [ -d "/home/runner/user_data" ]; then
+# Move user_data to the correct workspace (only if different)
+if [ -d "/home/runner/user_data" ] && [ "$WORKSPACE/user_data" != "/home/runner/user_data" ]; then
   mv -f /home/runner/user_data "$WORKSPACE/user_data" 2>/dev/null || {
     echo "Move failed, falling back to copy."
-    cp -r /home/runner/user_data "$WORKSPACE/user_data"
+    cp -r /home/runner/user_data/* "$WORKSPACE/user_data/"
     rm -rf /home/runner/user_data
   }
 fi
@@ -45,6 +45,10 @@ fi
 ln -sfn "$WORKSPACE" /freqtrade
 cd /freqtrade
 
-# Start supervisord and execute the main container process
-exec supervisord -c /etc/supervisor/supervisord.conf &
+# Start supervisord (only if NOT inside devcontainer setup)
+if [ -z "$DEVCONTAINER" ]; then
+  exec supervisord -c /etc/supervisor/supervisord.conf &
+fi
+
+# Execute the main process
 exec "$@"
