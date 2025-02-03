@@ -16,21 +16,21 @@ if [ -d "/mnt/disks/deeplearning" ]; then
     #jq -r '.payload.data' | base64 --decode > $CONFIG
 fi
 
-# Move `user_data` to the correct workspace, with a fallback
-if [ ! -d "$WORKSPACE/user_data" ]; then
-    if mv -f /home/runner/user_data "$WORKSPACE/user_data" 2>/dev/null; then
-        echo "Moved user_data to $WORKSPACE successfully."
-    else
-        echo "Move failed, falling back to copy."
-        cp -r /home/runner/user_data "$WORKSPACE/user_data" && rm -rf /home/runner/user_data
-    fi
-fi
-
-# Ensure `config.json` is in the correct workspace
 if [ ! -f "$WORKSPACE/config.json" ]; then
-  jq '.telegram.enabled = true' /home/runner/config.json > tmp.json && mv tmp.json $WORKSPACE/config.json
+  # Ensure `config.json` is in the correct workspace
+  jq '.telegram.enabled = true' /home/runner/config.json > $WORKSPACE/config.json
+  rm -rf /home/runner/config.json
+
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $WORKSPACE/config.jsom
   sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $WORKSPACE/config.json
+
+  # Move `user_data` to the correct workspace, with a fallback
+  if mv -f /home/runner/user_data "$WORKSPACE/user_data" 2>/dev/null; then
+    echo "Moved user_data to $WORKSPACE successfully."
+  else
+    echo "Move failed, falling back to copy."
+    cp -r /home/runner/user_data "$WORKSPACE/user_data" && rm -rf /home/runner/user_data
+  fi
 fi
 
 # Change to the correct working directory
