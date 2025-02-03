@@ -28,10 +28,9 @@ fi
 
 # Ensure `config.json` is in the correct workspace
 if [ ! -f "$WORKSPACE/config.json" ]; then
-  cp /home/runner/config.json $WORKSPACE/config.json
+  jq '.telegram.enabled = true' /home/runner/config.json > tmp.json && mv tmp.json $WORKSPACE/config.json
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $WORKSPACE/config.jsom
   sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $WORKSPACE/config.json
-  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
 fi
 
 # Change to the correct working directory
