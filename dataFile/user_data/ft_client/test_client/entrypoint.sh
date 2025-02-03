@@ -1,35 +1,19 @@
 #!/usr/bin/env bash
 
-# Check the Deeplearning 
-if [ -d /mnt/disks/deeplearning ]; then
+# Default workspace
+WORKSPACE="/home/runner"
+
+# Check if the Deep Learning exists
+if [ -d "/mnt/disks/deeplearning" ]; then
+  WORKSPACE="/mnt/disks/deeplearning/home/runner"
+  exec supervisord -c /etc/supervisor/supervisord.conf
+  freqtrade create-userdir --userdir $WORKSPACE/user_data/
+
   /mnt/disks/deeplearning/usr/bin/gcloud auth application-default print-access-token > /tmp/token || { echo "Failed to get token"; exit 1; };
   TOKEN=$(cat /tmp/token)
   #curl -H "Authorization: Bearer $TOKEN" \
     #"https://secretmanager.googleapis.com/v1/projects/feedmapping/secrets/freqtrade-config/versions/latest:access" | \
     #jq -r '.payload.data' | base64 --decode > $CONFIG
-
-else
-  "Deeplearning is not found.";
-fi
-
-# Run PostgreSQL (autostart)
-#sudo service supervisor start
-exec supervisord -c /etc/supervisor/supervisord.conf
-
-#!/bin/bash
-
-# Default workspace
-WORKSPACE="/home/runner"
-CONFIG=/home/runner/config.json
-
-# Check if the Deep Learning exists
-if [ -d "/mnt/disks/deeplearning" ]; then
-  WORKSPACE="/mnt/disks/deeplearning/home/runner"
-  freqtrade create-userdir --userdir $WORKSPACE/user_data/
-
-  sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $WORKSPACE/config.jsom
-  sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $WORKSPACE/config.json
-  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
 fi
 
 # Move `user_data` to the correct workspace, with a fallback
@@ -44,16 +28,15 @@ fi
 
 # Ensure `config.json` is in the correct workspace
 if [ ! -f "$WORKSPACE/config.json" ]; then
-    cp /home/runner/config.json "$WORKSPACE/config.json"
-fi
-
-# Create a symbolic link for Freqtrade (avoid conflict with GitHub Actions)
-if [ -z "$GITHUB_ACTIONS" ]; then
-    ln -sfn "$WORKSPACE" /freqtrade
+  cp /home/runner/config.json $WORKSPACE/config.json
+  sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $WORKSPACE/config.jsom
+  sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $WORKSPACE/config.json
+  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
 fi
 
 # Change to the correct working directory
-cd "$WORKSPACE"
+ln -sfn "$WORKSPACE" /freqtrade
+cd /freqtrade
 
 # Execute the container's main process
 exec "$@"
