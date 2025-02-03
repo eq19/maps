@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-
-if [ -f /home/runner/config.json ]; then
-  #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
-  #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
-fi
-
 # Check the Deeplearning 
 if [ -d /mnt/disks/deeplearning ]; then
   /mnt/disks/deeplearning/usr/bin/gcloud auth application-default print-access-token > /tmp/token || { echo "Failed to get token"; exit 1; };
@@ -28,16 +22,15 @@ exec supervisord -c /etc/supervisor/supervisord.conf
 WORKSPACE="/home/runner"
 CONFIG=/home/runner/config.json
 
-# Check if the Deep Learning workspace exists
-if [ -d "/mnt/disks/deeplearning/home/runner" ]; then
+# Check if the Deep Learning exists
+if [ -d "/mnt/disks/deeplearning" ]; then
   WORKSPACE="/mnt/disks/deeplearning/home/runner"
+  freqtrade create-userdir --userdir $WORKSPACE/user_data/
+
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $WORKSPACE/config.jsom
   sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $WORKSPACE/config.json
   jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
 fi
-
-# Ensure the workspace exists
-mkdir -p "$WORKSPACE"
 
 # Move `user_data` to the correct workspace, with a fallback
 if [ ! -d "$WORKSPACE/user_data" ]; then
