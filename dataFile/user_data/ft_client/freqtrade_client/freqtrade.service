@@ -6,7 +6,7 @@ After=network.target
 User=root
 Restart=always
 WorkingDirectory=/mnt/disks/deeplearning/home/runner
-ExecStart=/usr/local/bin/freqtrade trade -v --log-file /mnt/disks/deeplearning/var/log/apt/freqtrade.log
+ExecStart=freqtrade trade -v --log-file /mnt/disks/deeplearning/var/log/apt/freqtrade.log
 
 [Install]
 WantedBy=multi-user.target
