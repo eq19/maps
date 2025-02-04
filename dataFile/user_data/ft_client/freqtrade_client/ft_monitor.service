@@ -1,0 +1,12 @@
+[Unit]
+Description=Freqtrade Bot
+After=network.target
+
+[Service]
+User=root
+Restart=always
+WorkingDirectory=/mnt/disks/deeplearning/home/runner
+ExecStart=/freqtrade.sh
+
+[Install]
+WantedBy=multi-user.target
