@@ -47,7 +47,8 @@ cd /freqtrade
 
 # 🚨 Prevent supervisord from running in devcontainer
 if [ -d "/mnt/disks/deeplearning" ]; then
-  echo "Starting supervisord..."
+  echo "Starting postgres..."
+  docker-entrypoint.sh postgres
   #exec supervisord -c /etc/supervisor/supervisord.conf &
 else
   echo "Skipping supervisord in devcontainer..."
