@@ -48,7 +48,7 @@ cd /freqtrade
 # 🚨 Prevent supervisord from running in devcontainer
 if [ -d "/mnt/disks/deeplearning" ]; then
   echo "Starting supervisord..."
-  exec supervisord -c /etc/supervisor/supervisord.conf &
+  #exec supervisord -c /etc/supervisor/supervisord.conf &
 else
   echo "Skipping supervisord in devcontainer..."
 fi
