@@ -6,7 +6,7 @@ yg#!/usr/bin/env bash
 #
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
-STRATEGY=ichiV1
+STRATEGY=fibbo
 TIMEFRAMES='1m 15m'
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
