@@ -119,8 +119,8 @@ class fibbo(IStrategy):
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
     swing_period                = IntParameter(30, 100, default=50, space='buy')
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy')
-    sell_fib_level.             = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell')
-    sell_rsi_threshold.         = IntParameter(60, 80, default=75, space='sell')
+    sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell')
+    sell_rsi_threshold          = IntParameter(60, 80, default=75, space='sell')
 
 
     @property
