@@ -117,6 +117,11 @@ class fibbo(IStrategy):
     use_low_profit              = BooleanParameter(default=False, space="protection", optimize=True)
     use_max_drawdown_protection = BooleanParameter(default=False, space="protection", optimize=True)
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
+    swing_period                = IntParameter(30, 100, default=50, space='buy')
+    buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy')
+    sell_fib_level.             = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell')
+    sell_rsi_threshold.         = IntParameter(60, 80, default=75, space='sell')
+
 
     @property
     def protections(self):
@@ -175,14 +180,26 @@ class fibbo(IStrategy):
     # This attribute will be overridden if the config file contains "stoploss".
     stoploss = -0.327
 
-    # Trailing stop:
+    # Trailing stop with Fibonacci-inspired offset
     trailing_stop = True
-    trailing_stop_positive = 0.236    # Trail by 23.6% of price movement
-    trailing_stop_positive_offset = 0.618  # Activate after 61.8% gaintrailing_stop_positive = 0.01
-    trailing_only_offset_is_reached = False
-
+    trailing_stop_positive = 0.15
+    trailing_stop_positive_offset = 0.786  # Wait for ~78.6% gain before trailing
+    trailing_only_offset_is_reached = True
+    
     # ATR Stoploss Multiplier
     atr_stoploss_multiplier = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
+    use_custom_stoploss = True
+    def custom_stoploss(self, pair: str, trade: Trade, current_time: 'datetime', current_rate: float, current_profit: float, **kwargs) -> float:
+        # Calculate ATR-based stoploss
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        last_candle = dataframe.iloc[-1]
+        atr_stoploss = last_candle['atr'] * self.atr_stoploss_multiplier.value
+        
+        # Set stoploss based on ATR
+        stoploss_price = trade.open_rate - atr_stoploss
+        if current_rate < stoploss_price:
+            return -1  # stop out
+        return 1  # continue
 
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 200
@@ -213,7 +230,6 @@ class fibbo(IStrategy):
             },
         },
     }
-
 
 
     def custom_params(self, pair: str, param: str):
@@ -273,7 +289,18 @@ class fibbo(IStrategy):
         dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
         dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
-        # MACD
+        # Swing high/low for Fibonacci levels
+        dataframe['swing_high'] = dataframe['high'].rolling(self.swing_period.value).max()
+        dataframe['swing_low'] = dataframe['low'].rolling(self.swing_period.value).min()
+        
+        # Compute all Fibonacci retracement levels
+        swing_range = dataframe['swing_high'] - dataframe['swing_low']
+        dataframe['fib_236'] = dataframe['swing_high'] - swing_range * 0.236
+        dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
+        dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
+        dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
+        
+       # MACD
         macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
         dataframe["macd"]       = macd["macd"]
         dataframe["macdsignal"] = macd["macdsignal"]
@@ -291,25 +318,16 @@ class fibbo(IStrategy):
 
         # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
+        dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         return dataframe
 
 
-    use_custom_stoploss = True
-    def custom_stoploss(self, pair: str, trade: Trade, current_time: 'datetime', current_rate: float, current_profit: float, **kwargs) -> float:
-        # Calculate ATR-based stoploss
-        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1]
-        atr_stoploss = last_candle['atr'] * self.atr_stoploss_multiplier.value
-        
-        # Set stoploss based on ATR
-        stoploss_price = trade.open_rate - atr_stoploss
-        if current_rate < stoploss_price:
-            return -1  # stop out
-        return 1  # continue
-
+class EnhancedFibonacciDEMAStrategy(IStrategy):
+    timeframe = '1m'
+    
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-       # Define the buy conditions
+        # Define the buy conditions
         long_conditions = []
         
         ### Momentum Indicators ###
@@ -351,7 +369,6 @@ class fibbo(IStrategy):
                 'enter_long'] = 1
 
         return dataframe
-
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Define the sell conditions
