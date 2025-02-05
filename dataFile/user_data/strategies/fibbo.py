@@ -87,7 +87,7 @@ class fibbo(IStrategy):
         },
     }
 
-    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "EMA", "TTM"]
+    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
     
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
@@ -317,7 +317,8 @@ class fibbo(IStrategy):
         VWAP        = (dataframe['close'] > dataframe['vwap'])
         STOCK_OSC   = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         BB          = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        EMA         = (dataframe["ema10"] > dataframe["ema50"])
+        EMA         = (dataframe["ema5"] > dataframe["ema13"])
+        DEMA        = (dataframe["dema5"] > dataframe["ema13"])
         FIBBO       = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
         
         long_conditions.append(RSI)
@@ -331,7 +332,11 @@ class fibbo(IStrategy):
             long_conditions.append(BB)
         if "EMA" in self.buy_additional_indicator.value:
             long_conditions.append(EMA)
-        
+        if "DEMA" in self.buy_additional_indicator.value:
+            long_conditions.append(DEMA)
+        if "FIBBO" in self.buy_additional_indicator.value:
+            long_conditions.append(FIBBO)
+   
 
         # TTM Squeeze entry condition
         squeeze_on = dataframe['squeeze_on']
