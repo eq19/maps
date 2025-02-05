@@ -262,10 +262,10 @@ class fibbo(IStrategy):
         dataframe['ema55'] = ta.EMA(dataframe, timeperiod=55)
         dataframe['ema89'] = ta.EMA(dataframe, timeperiod=89)
 
-        # DEMA - Exponential Moving Average
+        # DEMA - Double Exponential Moving Average
         dataframe['dema3']   = ta.DEMA(dataframe, timeperiod=3)
         dataframe['dema5']   = ta.DEMA(dataframe, timeperiod=5)
-        dataframe['dema8']   = ta.EMA(dataframe, timeperiod=8)
+        dataframe['dema8']   = ta.DEMA(dataframe, timeperiod=8)
         dataframe['dema13']  = ta.DEMA(dataframe, timeperiod=13)
         dataframe['dema21']  = ta.DEMA(dataframe, timeperiod=21)
         dataframe['dema34']  = ta.DEMA(dataframe, timeperiod=34)
