@@ -255,22 +255,22 @@ class fibbo(IStrategy):
         # EMA - Exponential Moving Average
         dataframe['ema3']   = ta.EMA(dataframe, timeperiod=3)
         dataframe['ema5']   = ta.EMA(dataframe, timeperiod=5)
-        dataframe['ema9']   = ta.EMA(dataframe, timeperiod=9)
-        dataframe['ema10']  = ta.EMA(dataframe, timeperiod=10)
+        dataframe['ema8']   = ta.EMA(dataframe, timeperiod=8)
+        dataframe['ema13']  = ta.EMA(dataframe, timeperiod=13)
         dataframe['ema21']  = ta.EMA(dataframe, timeperiod=21)
-        dataframe['ema50']  = ta.EMA(dataframe, timeperiod=50)
-        dataframe['ema100'] = ta.EMA(dataframe, timeperiod=100)
-        dataframe['ema200'] = ta.EMA(dataframe, timeperiod=200)
+        dataframe['ema34']  = ta.EMA(dataframe, timeperiod=34)
+        dataframe['ema55'] = ta.EMA(dataframe, timeperiod=55)
+        dataframe['ema89'] = ta.EMA(dataframe, timeperiod=89)
 
         # DEMA - Exponential Moving Average
         dataframe['dema3']   = ta.DEMA(dataframe, timeperiod=3)
         dataframe['dema5']   = ta.DEMA(dataframe, timeperiod=5)
-        dataframe['dema9']   = ta.EMA(dataframe, timeperiod=9)
-        dataframe['dema10']  = ta.DEMA(dataframe, timeperiod=10)
+        dataframe['dema8']   = ta.EMA(dataframe, timeperiod=8)
+        dataframe['dema13']  = ta.DEMA(dataframe, timeperiod=13)
         dataframe['dema21']  = ta.DEMA(dataframe, timeperiod=21)
-        dataframe['dema50']  = ta.DEMA(dataframe, timeperiod=50)
-        dataframe['dema100'] = ta.DEMA(dataframe, timeperiod=100)
-        dataframe['dema200'] = ta.DEMA(dataframe, timeperiod=200)
+        dataframe['dema34']  = ta.DEMA(dataframe, timeperiod=34)
+        dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
+        dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
         # MACD
         macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
