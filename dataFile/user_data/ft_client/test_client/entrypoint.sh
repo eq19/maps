@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-CONFIG=/home/runner/config.json
-if [ -f /home/runner/config.json ]; then
+CONFIG=/home/runner/user_data/config.json
+if [ -f /home/runner/user_data/config.json ]; then
   #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
   #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG
