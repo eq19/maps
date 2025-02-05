@@ -102,10 +102,11 @@ class fibbo(IStrategy):
     # sell_stoch_osc              = IntParameter(70, 100, default=77, optimize=True)
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
-    # fast_emas = ["3", "5", "9", "10", "21", "50"]
-    # slow_emas = ["50", "100", "200"]
-    # buy_fast_ema = CategoricalParameter(fast_emas, default="10", optimize=True)
-    # buy_slow_ema = CategoricalParameter(slow_emas, default="50", optimize=True)
+    # Fibonacci-aligned periods only
+    fast_emas = ["3", "5", "8", "13", "21"]
+    slow_emas = ["34", "55", "89"]
+    buy_fast_ema = CategoricalParameter(fast_emas, default="13", optimize=True)
+    buy_slow_ema = CategoricalParameter(slow_emas, default="34", optimize=True)
 
     # Define the parameter spaces
     cooldown_lookback           = IntParameter(2, 48, default=30, space="protection", optimize=True)
@@ -317,7 +318,7 @@ class fibbo(IStrategy):
         STOCK_OSC   = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         BB          = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
         EMA         = (dataframe["ema10"] > dataframe["ema50"])
-        # EMA         = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
+        FIBBO       = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
         
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
