@@ -1,49 +1,37 @@
 {
-  "strategy_name": "ichiV1",
+  "strategy_name": "fibbo",
   "params": {
     "buy": {
-      "buy_fastd": 62,
-      "buy_fishRsiNorma": 60,
-      "buy_rsi": 41,
-      "buy_volumeAVG": 188
+      "buy_additional_indicator": "MACD, STOCH_OSC",
+      "buy_rsi": 42
     },
     "sell": {
-      "pHSL": -0.163,
-      "pPF_1": 0.013,
-      "pPF_2": 0.093,
-      "pSL_1": 0.016,
-      "pSL_2": 0.024,
-      "sell_fishRsiNorma": 12,
-      "sell_minusDI": 40,
-      "sell_rsi": 57,
-      "sell_trigger": "rsi-macd-minusdi"
+      "sell_additional_indicator": "MACD",
+      "sell_rsi": 70
     },
     "protection": {
-      "protection_cooldown_period": 15,
-      "protection_maxdrawdown_lookback_period_candles": 26,
-      "protection_maxdrawdown_max_allowed_drawdown": 0.147,
-      "protection_maxdrawdown_stop_duration_candles": 12,
-      "protection_maxdrawdown_trade_limit": 8,
-      "protection_stoplossguard_lookback_period_candles": 2,
-      "protection_stoplossguard_stop_duration_candles": 34,
-      "protection_stoplossguard_trade_limit": 3
+      "cooldown_lookback": 5,
+      "low_profit_trade_limit": 4,
+      "max_drawdown_trade_limit": 10,
+      "stop_duration": 160,
+      "trade_limit": 6,
+      "use_low_profit": true,
+      "use_max_drawdown_protection": true,
+      "use_stop_protection": true
     },
     "roi": {
-      "0": 0.05,
-      "13": 0.04,
-      "53": 0.03,
-      "84": 0.02,
-      "99": 0.01,
-      "199": 0.0001,
-      "257": -10
+      "0": 0.06999999999999999,
+      "7": 0.011,
+      "17": 0.003,
+      "28": 0
     },
     "stoploss": {
-      "stoploss": -0.229
+      "stoploss": -0.149
     },
     "trailing": {
       "trailing_stop": true,
-      "trailing_stop_positive": 0.349,
-      "trailing_stop_positive_offset": 0.44699999999999995,
+      "trailing_stop_positive": 0.124,
+      "trailing_stop_positive_offset": 0.197,
       "trailing_only_offset_is_reached": false
     },
     "max_open_trades": {
@@ -51,5 +39,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-02-01 11:22:25.412373+00:00"
+  "export_time": "2025-02-02 21:08:17.381601+00:00"
 }
