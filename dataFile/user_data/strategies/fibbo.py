@@ -321,10 +321,6 @@ class fibbo(IStrategy):
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         return dataframe
-
-
-class EnhancedFibonacciDEMAStrategy(IStrategy):
-    timeframe = '1m'
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Define the buy conditions
@@ -356,7 +352,6 @@ class EnhancedFibonacciDEMAStrategy(IStrategy):
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
    
-
         # TTM Squeeze entry condition
         squeeze_on = dataframe['squeeze_on']
         momentum_positive = dataframe['momentum_hist'] > 0
