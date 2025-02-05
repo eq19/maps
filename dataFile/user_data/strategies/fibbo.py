@@ -177,10 +177,9 @@ class fibbo(IStrategy):
 
     # Trailing stop:
     trailing_stop = True
-    trailing_stop_positive = 0.01
-    trailing_stop_positive_offset = 0.037
+    trailing_stop_positive = 0.236    # Trail by 23.6% of price movement
+    trailing_stop_positive_offset = 0.618  # Activate after 61.8% gaintrailing_stop_positive = 0.01
     trailing_only_offset_is_reached = False
-
 
     # ATR Stoploss Multiplier
     atr_stoploss_multiplier = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
