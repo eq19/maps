@@ -63,6 +63,19 @@ class fibbo(IStrategy):
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
 
+    # Number of candles the strategy requires before producing valid signals
+    startup_candle_count: int = 200
+
+    # Optimal stoploss designed for the strategy.
+    # This attribute will be overridden if the config file contains "stoploss".
+    stoploss = -0.1
+    use_custom_stoploss = True
+
+    # These values can be overridden in the config.
+    use_exit_signal = True
+    exit_profit_only = False
+    ignore_roi_if_entry_signal = False
+
     # Minimal ROI designed for the strategy.
     # This attribute will be overridden if the config file contains "minimal_roi".
     minimal_roi = {
@@ -71,20 +84,6 @@ class fibbo(IStrategy):
         "280": 0.055,
         "507": 0
     }
-
-    # Optimal stoploss designed for the strategy.
-    # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.327
-
-    # Trailing stop with Fibonacci-inspired offset
-    trailing_stop = True
-    trailing_stop_positive = 0.236
-    trailing_stop_positive_offset = 0.786  # Wait for ~78.6% gain before trailing
-    trailing_only_offset_is_reached = True
-    # These values can be overridden in the config.
-    use_exit_signal = True
-    exit_profit_only = False
-    ignore_roi_if_entry_signal = False
 
     # Hyperoptable parameters
     macd_profiles = {
@@ -105,9 +104,6 @@ class fibbo(IStrategy):
         },
     }
 
-    # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 200
-
     # Optional order type mapping.
     order_types = {
         "entry": "limit",
@@ -115,6 +111,12 @@ class fibbo(IStrategy):
         "stoploss": "market",
         "stoploss_on_exchange": False,
     }
+
+    # Trailing stop with Fibonacci-inspired offset
+    trailing_stop = True
+    trailing_stop_positive = 0.236
+    trailing_stop_positive_offset = 0.786  # Wait for ~78.6% gain before trailing
+    trailing_only_offset_is_reached = True
 
     # Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
@@ -131,16 +133,16 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
     # Define the parameter spaces
-    buy_rsi                     = IntParameter(10, 45, default=25, optimize=True)
-    sell_rsi                    = IntParameter(70, 100, default=89, optimize=True)
-    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", optimize=True)
-    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", optimize=True)
-    buy_stoch_osc               = IntParameter(0, 30, default=10, optimize=True)    
-    sell_stoch_osc              = IntParameter(70, 100, default=77, optimize=True)
-    swing_period                = IntParameter(30, 100, default=50, space='buy')
-    buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy')
-    sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell')
-    sell_rsi_threshold          = IntParameter(60, 80, default=75, space='sell')
+    buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
+    sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
+    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", space="buy", optimize=True)
+    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="sell", optimize=True)
+    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
+    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
+    swing_period                = IntParameter(30, 100, default=50, space="buy", optimize=True)
+    buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=True)
+    sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=True)
+    sell_rsi_threshold          = IntParameter(60, 80, default=75, space="sell", optimize=True)
     use_exit_signal             = BooleanParameter(default=True, space="sell", optimize=True)
     exit_profit_only            = BooleanParameter(default=False, space="sell", optimize=True)
     ignore_roi_if_entry_signal  = BooleanParameter(default=False, space="buy", optimize=True)
@@ -152,6 +154,7 @@ class fibbo(IStrategy):
     use_low_profit              = BooleanParameter(default=False, space="protection", optimize=True)
     use_max_drawdown_protection = BooleanParameter(default=False, space="protection", optimize=True)
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
+    atr_stoploss_multiplier     = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
 
 
     @property
@@ -199,8 +202,6 @@ class fibbo(IStrategy):
         return prot
 
     # ATR Stoploss Multiplier
-    atr_stoploss_multiplier = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
-    use_custom_stoploss = True
     def custom_stoploss(self, pair: str, trade: Trade, current_time: 'datetime', current_rate: float, current_profit: float, **kwargs) -> float:
         # Calculate ATR-based stoploss
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
