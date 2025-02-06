@@ -89,24 +89,21 @@ class fibbo(IStrategy):
 
     buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
+    fast_emas       = ["3", "5", "8", "13", "21"]
+    slow_emas       = ["34", "55", "89"]
     
+    # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_profiles, max_indicators=2)
-
-    buy_rsi                     = IntParameter(10, 45, default=25, optimize=True)
-    # buy_stoch_osc               = IntParameter(0, 30, default=10, optimize=True)
     buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
-    
-
-    sell_rsi                    = IntParameter(70, 100, default=89, optimize=True)
-    # sell_stoch_osc              = IntParameter(70, 100, default=77, optimize=True)
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
-    # Fibonacci-aligned periods only
-    fast_emas = ["3", "5", "8", "13", "21"]
-    slow_emas = ["34", "55", "89"]
-    buy_fast_ema = CategoricalParameter(fast_emas, default="13", optimize=True)
-    buy_slow_ema = CategoricalParameter(slow_emas, default="34", optimize=True)
+    buy_rsi                     = IntParameter(10, 45, default=25, optimize=True)
+    sell_rsi                    = IntParameter(70, 100, default=89, optimize=True)
+    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", optimize=True)
+    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", optimize=True)
+    # buy_stoch_osc              = IntParameter(0, 30, default=10, optimize=True)    
+    # sell_stoch_osc             = IntParameter(70, 100, default=77, optimize=True)
 
     # Define the parameter spaces
     cooldown_lookback           = IntParameter(2, 48, default=30, space="protection", optimize=True)
