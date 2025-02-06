@@ -286,17 +286,6 @@ class fibbo(IStrategy):
         dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
         dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
-        # Swing high/low for Fibonacci levels
-        dataframe['swing_high'] = dataframe['high'].rolling(self.swing_period.value).max()
-        dataframe['swing_low'] = dataframe['low'].rolling(self.swing_period.value).min()
-        
-        # Compute all Fibonacci retracement levels
-        swing_range = dataframe['swing_high'] - dataframe['swing_low']
-        dataframe['fib_236'] = dataframe['swing_high'] - swing_range * 0.236
-        dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
-        dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
-        dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
-        
        # MACD
         macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
         dataframe["macd"]       = macd["macd"]
@@ -317,6 +306,17 @@ class fibbo(IStrategy):
         dataframe = self.ttm_squeeze(dataframe)
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
+        # Swing high/low for Fibonacci levels
+        dataframe['swing_high'] = dataframe['high'].rolling(self.swing_period.value).max()
+        dataframe['swing_low'] = dataframe['low'].rolling(self.swing_period.value).min()
+        swing_range = dataframe['swing_high'] - dataframe['swing_low']
+       
+        # Compute all Fibonacci retracement levels
+        dataframe['fib_236'] = dataframe['swing_high'] - swing_range * 0.236
+        dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
+        dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
+        dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
+        
         return dataframe
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
