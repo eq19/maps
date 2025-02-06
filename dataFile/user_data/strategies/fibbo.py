@@ -339,19 +339,17 @@ class fibbo(IStrategy):
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
 
-        if "MACD" in self.buy_additional_indicator.value:
-            long_conditions.append(MACD)
-        if "STOCK_OSC" in self.buy_additional_indicator.value:
-            long_conditions.append(STOCK_OSC)
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
         if "EMA" in self.buy_additional_indicator.value:
             long_conditions.append(EMA)
-        if "DEMA" in self.buy_additional_indicator.value:
-            long_conditions.append(DEMA)
+        if "MACD" in self.buy_additional_indicator.value:
+            long_conditions.append(MACD)
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
-   
+        if "STOCK_OSC" in self.buy_additional_indicator.value:
+            long_conditions.append(STOCK_OSC)
+  
         # TTM Squeeze entry condition
         squeeze_on = dataframe['squeeze_on']
         momentum_positive = dataframe['momentum_hist'] > 0
