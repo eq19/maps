@@ -102,8 +102,8 @@ class fibbo(IStrategy):
     sell_rsi                    = IntParameter(70, 100, default=89, optimize=True)
     buy_fast_ema                = CategoricalParameter(fast_emas, default="13", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", optimize=True)
-    # buy_stoch_osc              = IntParameter(0, 30, default=10, optimize=True)    
-    # sell_stoch_osc             = IntParameter(70, 100, default=77, optimize=True)
+    buy_stoch_osc               = IntParameter(0, 30, default=10, optimize=True)    
+    sell_stoch_osc              = IntParameter(70, 100, default=77, optimize=True)
 
     # Define the parameter spaces
     cooldown_lookback           = IntParameter(2, 48, default=30, space="protection", optimize=True)
