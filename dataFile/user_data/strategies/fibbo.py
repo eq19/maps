@@ -263,39 +263,39 @@ class fibbo(IStrategy):
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
         
         # EMA - Exponential Moving Average
-        dataframe['ema3']   = ta.EMA(dataframe, timeperiod=3)
-        dataframe['ema5']   = ta.EMA(dataframe, timeperiod=5)
-        dataframe['ema8']   = ta.EMA(dataframe, timeperiod=8)
-        dataframe['ema9']   = ta.EMA(dataframe, timeperiod=9)
-        dataframe['ema13']  = ta.EMA(dataframe, timeperiod=13)
-        dataframe['ema21']  = ta.EMA(dataframe, timeperiod=21)
-        dataframe['ema34']  = ta.EMA(dataframe, timeperiod=34)
+        dataframe['ema3']  = ta.EMA(dataframe, timeperiod=3)
+        dataframe['ema5']  = ta.EMA(dataframe, timeperiod=5)
+        dataframe['ema8']  = ta.EMA(dataframe, timeperiod=8)
+        dataframe['ema9']  = ta.EMA(dataframe, timeperiod=9)
+        dataframe['ema13'] = ta.EMA(dataframe, timeperiod=13)
+        dataframe['ema21'] = ta.EMA(dataframe, timeperiod=21)
+        dataframe['ema34'] = ta.EMA(dataframe, timeperiod=34)
         dataframe['ema55'] = ta.EMA(dataframe, timeperiod=55)
         dataframe['ema89'] = ta.EMA(dataframe, timeperiod=89)
 
         # DEMA - Double Exponential Moving Average
-        dataframe['dema3']   = ta.DEMA(dataframe, timeperiod=3)
-        dataframe['dema5']   = ta.DEMA(dataframe, timeperiod=5)
-        dataframe['dema8']   = ta.DEMA(dataframe, timeperiod=8)
-        dataframe['dema9']   = ta.DEMA(dataframe, timeperiod=9)
-        dataframe['dema13']  = ta.DEMA(dataframe, timeperiod=13)
-        dataframe['dema21']  = ta.DEMA(dataframe, timeperiod=21)
-        dataframe['dema34']  = ta.DEMA(dataframe, timeperiod=34)
+        dataframe['dema3']  = ta.DEMA(dataframe, timeperiod=3)
+        dataframe['dema5']  = ta.DEMA(dataframe, timeperiod=5)
+        dataframe['dema8']  = ta.DEMA(dataframe, timeperiod=8)
+        dataframe['dema9']  = ta.DEMA(dataframe, timeperiod=9)
+        dataframe['dema13'] = ta.DEMA(dataframe, timeperiod=13)
+        dataframe['dema21'] = ta.DEMA(dataframe, timeperiod=21)
+        dataframe['dema34'] = ta.DEMA(dataframe, timeperiod=34)
         dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
         dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
        # MACD
         macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
         dataframe["macd"]       = macd["macd"]
-        dataframe["macdsignal"] = macd["macdsignal"]
         dataframe["macdhist"]   = macd["macdhist"]
+        dataframe["macdsignal"] = macd["macdsignal"]
 
         # Bollinger Bands
         bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
-        dataframe['bb_lowerband']   = bollinger['lower']
-        dataframe['bb_middleband']  = bollinger['mid']
-        dataframe['bb_upperband']   = bollinger['upper']
-        
+        dataframe['bb_middleband'] = bollinger['mid']
+        dataframe['bb_upperband']  = bollinger['upper']
+        dataframe['bb_lowerband']  = bollinger['lower']
+       
         # VWAP
         # dataframe['vwap'] = qtpylib.vwap(dataframe)
         dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
