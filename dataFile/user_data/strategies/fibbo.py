@@ -122,7 +122,7 @@ class fibbo(IStrategy):
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
     slow_emas       = ["34", "55", "89"]
-    fast_demas       = ["3", "5", "8", "13", "21"]
+    fast_demas       = ["5", "8", "13", "21"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
     buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "FIBBO"]
     
