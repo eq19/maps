@@ -122,7 +122,6 @@ class fibbo(IStrategy):
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
     slow_emas       = ["34", "55", "89"]
-    fast_emas       = ["3", "5", "8", "13", "21"]
     fast_demas       = ["3", "5", "8", "13", "21"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
     buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "FIBBO"]
@@ -134,9 +133,8 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
     # Define the parameter spaces
-    buy_fast_dema               = CategoricalParameter(fast_demas, default="13", space="buy", optimize=True)
-    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", space="buy", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="buy", optimize=True)
+    buy_fast_dema               = CategoricalParameter(fast_demas, default="13", space="buy", optimize=True)
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
