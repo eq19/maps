@@ -124,6 +124,7 @@ class fibbo(IStrategy):
     buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
     fast_demas       = ["3", "5", "8", "13", "21"]
+    fast_emas       = ["3", "5", "8", "13", "21"]
     slow_emas       = ["34", "55", "89"]
     
     # Fibonacci-aligned periods only
@@ -132,6 +133,7 @@ class fibbo(IStrategy):
     buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
     buy_fast_dema               = CategoricalParameter(fast_demas, default="13", optimize=True)
+    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", optimize=True)
 
     # Define the parameter spaces
@@ -331,7 +333,7 @@ class fibbo(IStrategy):
         STOCK_OSC   = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         BB          = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
         EMA         = (dataframe["ema9"] > dataframe["ema21"])
-        DEMA        = (dataframe["dema5"] > dataframe["ema13"])
+        DEMA        = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_fast_ema.value}"])
         FIBBO       = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
         
         long_conditions.append(RSI)
