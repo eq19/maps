@@ -135,8 +135,8 @@ class fibbo(IStrategy):
     # Define the parameter spaces
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
-    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", space="buy", optimize=True)
-    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="sell", optimize=True)
+    #buy_fast_ema                = CategoricalParameter(fast_emas, default="13", space="buy", optimize=True)
+    #buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="sell", optimize=True)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
     swing_period                = IntParameter(30, 100, default=50, space="buy", optimize=True)
