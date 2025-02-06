@@ -63,6 +63,24 @@ class fibbo(IStrategy):
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
 
+    # Minimal ROI designed for the strategy.
+    # This attribute will be overridden if the config file contains "minimal_roi".
+    minimal_roi = {
+        "0": 0.298,
+        "115": 0.144,
+        "280": 0.055,
+        "507": 0
+    }
+
+    # Optimal stoploss designed for the strategy.
+    # This attribute will be overridden if the config file contains "stoploss".
+    stoploss = -0.327
+
+    # Trailing stop with Fibonacci-inspired offset
+    trailing_stop = True
+    trailing_stop_positive = 0.236
+    trailing_stop_positive_offset = 0.786  # Wait for ~78.6% gain before trailing
+    trailing_only_offset_is_reached = True
     # These values can be overridden in the config.
     use_exit_signal = True
     exit_profit_only = False
@@ -86,6 +104,20 @@ class fibbo(IStrategy):
             "signal": 9
         },
     }
+
+    # Number of candles the strategy requires before producing valid signals
+    startup_candle_count: int = 200
+
+    # Optional order type mapping.
+    order_types = {
+        "entry": "limit",
+        "exit": "limit",
+        "stoploss": "market",
+        "stoploss_on_exchange": False,
+    }
+
+    # Optional order time in force.
+    order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
     buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
@@ -166,25 +198,6 @@ class fibbo(IStrategy):
 
         return prot
 
-    # Minimal ROI designed for the strategy.
-    # This attribute will be overridden if the config file contains "minimal_roi".
-    minimal_roi = {
-        "0": 0.298,
-        "115": 0.144,
-        "280": 0.055,
-        "507": 0
-    }
-
-    # Optimal stoploss designed for the strategy.
-    # This attribute will be overridden if the config file contains "stoploss".
-    stoploss = -0.327
-
-    # Trailing stop with Fibonacci-inspired offset
-    trailing_stop = True
-    trailing_stop_positive = 0.236
-    trailing_stop_positive_offset = 0.786  # Wait for ~78.6% gain before trailing
-    trailing_only_offset_is_reached = True
-    
     # ATR Stoploss Multiplier
     atr_stoploss_multiplier = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
     use_custom_stoploss = True
@@ -193,26 +206,12 @@ class fibbo(IStrategy):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1]
         atr_stoploss = last_candle['atr'] * self.atr_stoploss_multiplier.value
-        
+
         # Set stoploss based on ATR
         stoploss_price = trade.open_rate - atr_stoploss
         if current_rate < stoploss_price:
             return -1  # stop out
         return 1  # continue
-
-    # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 200
-
-    # Optional order type mapping.
-    order_types = {
-        "entry": "limit",
-        "exit": "limit",
-        "stoploss": "market",
-        "stoploss_on_exchange": False,
-    }
-
-    # Optional order time in force.
-    order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
     plot_config = {
         "main_plot": {
@@ -229,7 +228,6 @@ class fibbo(IStrategy):
             },
         },
     }
-
 
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
