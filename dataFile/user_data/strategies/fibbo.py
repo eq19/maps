@@ -121,7 +121,7 @@ class fibbo(IStrategy):
     # Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
-    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
+    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
     fast_emas       = ["3", "5", "8", "13", "21"]
     slow_emas       = ["34", "55", "89"]
@@ -332,7 +332,7 @@ class fibbo(IStrategy):
         BB          = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
         EMA         = (dataframe["ema9"] > dataframe["ema21"])
         DEMA        = (dataframe["dema5"] > dataframe["ema13"])
-        FIBBO       = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
+        #FIBBO       = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
         
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
