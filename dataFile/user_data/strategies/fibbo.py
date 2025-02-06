@@ -121,9 +121,9 @@ class fibbo(IStrategy):
     # Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
-    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA"]
+    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
-    fast_emas       = ["3", "5", "8", "13", "21"]
+    fast_demas       = ["3", "5", "8", "13", "21"]
     slow_emas       = ["34", "55", "89"]
     
     # Fibonacci-aligned periods only
@@ -131,12 +131,12 @@ class fibbo(IStrategy):
     sell_additional_indicators  = indicator_permutations(sell_profiles, max_indicators=2)
     buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
+    buy_fast_dema               = CategoricalParameter(fast_demas, default="13", optimize=True)
+    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", optimize=True)
 
     # Define the parameter spaces
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
-    #buy_fast_ema                = CategoricalParameter(fast_emas, default="13", space="buy", optimize=True)
-    #buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="sell", optimize=True)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
     swing_period                = IntParameter(30, 100, default=50, space="buy", optimize=True)
@@ -332,7 +332,7 @@ class fibbo(IStrategy):
         BB          = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
         EMA         = (dataframe["ema9"] > dataframe["ema21"])
         DEMA        = (dataframe["dema5"] > dataframe["ema13"])
-        #FIBBO       = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
+        FIBBO       = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
         
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
