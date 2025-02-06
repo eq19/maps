@@ -121,22 +121,22 @@ class fibbo(IStrategy):
     # Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
-    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
-    sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
-    fast_demas       = ["3", "5", "8", "13", "21"]
-    fast_emas       = ["3", "5", "8", "13", "21"]
     slow_emas       = ["34", "55", "89"]
+    fast_emas       = ["3", "5", "8", "13", "21"]
+    fast_demas       = ["3", "5", "8", "13", "21"]
+    sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
+    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_profiles, max_indicators=2)
     buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
-    buy_fast_dema               = CategoricalParameter(fast_demas, default="13", optimize=True)
-    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", optimize=True)
-    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", optimize=True)
 
     # Define the parameter spaces
+    buy_fast_dema               = CategoricalParameter(fast_demas, default="13", space="buy", optimize=True)
+    buy_fast_ema                = CategoricalParameter(fast_emas, default="13", space="buy", optimize=True)
+    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="buy", optimize=True)
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
