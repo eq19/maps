@@ -331,8 +331,17 @@ class fibbo(IStrategy):
         BB          = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
         EMA         = (dataframe["ema9"] > dataframe["ema21"])
         DEMA        = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_fast_ema.value}"])
-        FIBBO       = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
-        
+        ema_crossover = (dataframe[f"ema{self.buy_fast_ema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
+    
+        # Fibonacci retracement near 0.382 or 0.618
+        near_fib_382 = dataframe['close'].between(dataframe['fib_382'] * 0.998, dataframe['fib_382'] * 1.002)
+        near_fib_618 = dataframe['close'].between(dataframe['fib_618'] * 0.998, dataframe['fib_618'] * 1.002)
+    
+        # Volume confirmation
+        volume_ok = dataframe['volume'] > dataframe['volume'].rolling(20).mean()
+    
+        FIBBO = ema_crossover & (near_fib_382 | near_fib_618) & volume_ok
+
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
 
