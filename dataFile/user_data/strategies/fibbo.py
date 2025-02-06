@@ -125,7 +125,7 @@ class fibbo(IStrategy):
     fast_emas       = ["3", "5", "8", "13", "21"]
     fast_demas       = ["3", "5", "8", "13", "21"]
     sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
-    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "DEMA", "FIBBO"]
+    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
