@@ -98,14 +98,20 @@ class fibbo(IStrategy):
     buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
+    # Define the parameter spaces
     buy_rsi                     = IntParameter(10, 45, default=25, optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, optimize=True)
     buy_fast_ema                = CategoricalParameter(fast_emas, default="13", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", optimize=True)
     buy_stoch_osc               = IntParameter(0, 30, default=10, optimize=True)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, optimize=True)
-
-    # Define the parameter spaces
+    swing_period                = IntParameter(30, 100, default=50, space='buy')
+    buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy')
+    sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell')
+    sell_rsi_threshold          = IntParameter(60, 80, default=75, space='sell')
+    use_exit_signal             = BooleanParameter(default=True, space="sell", optimize=True)
+    exit_profit_only            = BooleanParameter(default=False, space="sell", optimize=True)
+    ignore_roi_if_entry_signal  = BooleanParameter(default=False, space="buy", optimize=True)
     cooldown_lookback           = IntParameter(2, 48, default=30, space="protection", optimize=True)
     low_profit_trade_limit      = IntParameter(2, 10, default=9, space="protection", optimize=True)
     max_drawdown_trade_limit    = IntParameter(2, 10, default=3, space="protection", optimize=True)
@@ -114,10 +120,6 @@ class fibbo(IStrategy):
     use_low_profit              = BooleanParameter(default=False, space="protection", optimize=True)
     use_max_drawdown_protection = BooleanParameter(default=False, space="protection", optimize=True)
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
-    swing_period                = IntParameter(30, 100, default=50, space='buy')
-    buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy')
-    sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell')
-    sell_rsi_threshold          = IntParameter(60, 80, default=75, space='sell')
 
 
     @property
