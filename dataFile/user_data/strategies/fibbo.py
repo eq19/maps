@@ -286,7 +286,13 @@ class fibbo(IStrategy):
         dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
         # ICHIMOKU
-        ichimoku = ftt.ichimoku(dataframe, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
+        ichimoku = ftt.ichimoku(dataframe,
+          conversion_line_period=20,
+          base_line_periods=60,
+          laggin_span=120,
+          displacement=30
+        )
+
         dataframe['chikou_span'] = ichimoku['chikou_span']
         dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
         dataframe['kijun_sen'] = ichimoku['kijun_sen']
