@@ -251,6 +251,16 @@ class fibbo(IStrategy):
 
         return dataframe
     
+    def informative_pairs(self):
+        if not self.dp:
+        # Don't do anything if DataProvider is not available.
+            return []
+        # Get access to all pairs available in whitelist.
+        pairs = self.dp.current_whitelist()
+        # Assign tf to each pair so they can be downloaded and cached for strategy.
+        informative_pairs =  [(pair, '1d') for pair in pairs]
+        return informative_pairs
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Stochastic RSI
         stoch_rsi = ta.STOCHRSI(dataframe)
