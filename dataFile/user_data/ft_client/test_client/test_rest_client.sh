@@ -84,15 +84,16 @@ else
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
   #freqtrade hyperopt-list
-  #freqtrade hyperopt-show
+  #freqtrade hyperopt-show > /dev/null 2>&1
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500 > /dev/null 2>&1
   freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 -e 10
 
   #echo -e "\n$hr\nRERUN RUNNER\n$hr"
   if [[ "${RERUN_RUNNER}" != "true" ]]; then
-    freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 \
-      -e 1000 --hyperopt-loss ProfitDrawDownHyperOptLoss > /dev/null 2>&1
+    LOGURU_LEVEL=ERROR freqtrade hyperopt --epochs 1000 --logfile /dev/null \
+      --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces \
+      --hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42
 
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
