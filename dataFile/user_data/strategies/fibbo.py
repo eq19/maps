@@ -134,6 +134,10 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
     # Define the parameter spaces
+    conversion_line_period      = IntParameter(5, 15, default=9, space="buy", optimize=True)
+    base_line_period            = IntParameter(10, 40, default=26, space="buy", optimize=True)
+    lagging_span                = IntParameter(30, 100, default=52, space="buy", optimize=True)
+    displacement                = IntParameter(10, 40, default=26, space="buy", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="buy", optimize=True)
     buy_fast_dema               = CategoricalParameter(fast_demas, default="13", space="buy", optimize=True)
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
@@ -348,10 +352,10 @@ class fibbo(IStrategy):
 
         # ICHIMOKU
         ha_ichi = ftt.ichimoku(heikinashi,
-            conversion_line_period=20,
-            base_line_periods=60,
-            laggin_span=120,
-            displacement=30
+            conversion_line_period=self.conversion_line_period.value,
+            base_line_periods=self.base_line_period.value,
+            laggin_span=self.lagging_span.value,
+            displacement=self.displacement.value
         )
 
         #Required Ichi Parameters
