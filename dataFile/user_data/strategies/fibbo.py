@@ -347,7 +347,7 @@ class fibbo(IStrategy):
         dataframe['ha_4h_low'] = heik['low']
 
         # ICHIMOKU
-        ha_ichi = ichimoku(heikinashi,
+        ha_ichi = ftt.ichimoku(heikinashi,
             conversion_line_period=20,
             base_line_periods=60,
             laggin_span=120,
