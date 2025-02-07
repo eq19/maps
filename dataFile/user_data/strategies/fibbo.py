@@ -334,9 +334,8 @@ class fibbo(IStrategy):
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
 
-        dataframe_inf = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
-
         #Heiken Ashi Candlestick Data
+        dataframe_inf = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
         heikinashi = qtpylib.heikinashi(dataframe_inf)
         heik = qtpylib.heikinashi(dataframe)
 
@@ -345,10 +344,10 @@ class fibbo(IStrategy):
         dataframe_inf['ha_high'] = heikinashi['high']
         dataframe_inf['ha_low'] = heikinashi['low']
 
-        dataframe['ha_4h_open'] = heik['open']
-        dataframe['ha_4h_close'] = heik['close']
-        dataframe['ha_4h_high'] = heik['high']
-        dataframe['ha_4h_low'] = heik['low']
+        dataframe['ha_1m_open'] = heik['open']
+        dataframe['ha_1m_close'] = heik['close']
+        dataframe['ha_1m_high'] = heik['high']
+        dataframe['ha_1m_low'] = heik['low']
 
         # ICHIMOKU
         ha_ichi = ftt.ichimoku(heikinashi,
