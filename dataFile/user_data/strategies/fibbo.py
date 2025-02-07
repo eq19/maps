@@ -124,8 +124,8 @@ class fibbo(IStrategy):
 
     slow_emas       = ["34", "55", "89"]
     fast_demas      = ["5", "8", "13", "21"]
-    sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
-    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "FIBBO"]
+    sell_profiles   = ["MACD", "STOCH_OSC", "TTM", "ICHIMOKU"]
+    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "ICHIMOKU", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
@@ -391,7 +391,19 @@ class fibbo(IStrategy):
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
         STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
-
+        ICHIMOKU     = (
+            (
+                (dataframe['ha_4h_close'].crossed_above(dataframe['senkou_a_1d'])) &
+                (dataframe['ha_4h_close'].shift() < (dataframe['senkou_a_1d'])) &
+                (dataframe['cloud_green_1d'] == True)
+            ) |
+            (
+                (dataframe['ha_4h_close'].crossed_above(dataframe['senkou_b_1d'])) &
+                (dataframe['ha_4h_close'].shift() < (dataframe['senkou_b_1d'])) &
+                (dataframe['cloud_red_1d'] == True)
+            )
+        )
+ 
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
 
@@ -403,6 +415,8 @@ class fibbo(IStrategy):
             long_conditions.append(MACD)
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
+        if "ICHIMOKU" in self.buy_additional_indicator.value:
+            long_conditions.append(ICHIMOKU)
         if "STOCK_OSC" in self.buy_additional_indicator.value:
             long_conditions.append(STOCK_OSC)
   
@@ -427,11 +441,17 @@ class fibbo(IStrategy):
         RSI = (dataframe['rsi'] >= self.sell_rsi.value)
         MACD = (dataframe["macd"] >= dataframe["macdsignal"])
         STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
+        ICHIMOKU = (
+            (dataframe['ha_4h_close'] < dataframe['senkou_a_1d']) |
+            (dataframe['ha_4h_close'] < dataframe['senkou_b_1d'])
+        )
 
         long_conditions.append(RSI)
 
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
+        if "ICHIMOKU" in self.buy_additional_indicator.value:
+            long_conditions.append(ICHIMOKU)
         if "STOCK_OSC" in self.sell_additional_indicator.value:
             long_conditions.append(STOCK_OSC)
 
