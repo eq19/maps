@@ -154,6 +154,23 @@ class fibbo(IStrategy):
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
     atr_stoploss_multiplier     = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
 
+    plot_config = {
+        "main_plot": {
+            "tema": {},
+            "sar": {"color": "white"},
+        },
+        "subplots": {
+            "MACD": {
+                "macd": {"color": "blue"},
+                "macdsignal": {"color": "orange"},
+            },
+            "RSI": {
+                "rsi": {"color": "red"},
+            },
+        },
+    }
+
+
 
     @property
     def protections(self):
@@ -211,22 +228,6 @@ class fibbo(IStrategy):
         if current_rate < stoploss_price:
             return -1  # stop out
         return 1  # continue
-
-    plot_config = {
-        "main_plot": {
-            "tema": {},
-            "sar": {"color": "white"},
-        },
-        "subplots": {
-            "MACD": {
-                "macd": {"color": "blue"},
-                "macdsignal": {"color": "orange"},
-            },
-            "RSI": {
-                "rsi": {"color": "red"},
-            },
-        },
-    }
 
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
