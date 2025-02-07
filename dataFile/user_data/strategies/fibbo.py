@@ -284,7 +284,18 @@ class fibbo(IStrategy):
         dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
         dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
-       # MACD
+        # ICHIMOKU
+        ichimoku = ftt.ichimoku(dataframe, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
+        dataframe['chikou_span'] = ichimoku['chikou_span']
+        dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
+        dataframe['kijun_sen'] = ichimoku['kijun_sen']
+        dataframe['senkou_a'] = ichimoku['senkou_span_a']
+        dataframe['senkou_b'] = ichimoku['senkou_span_b']
+        dataframe['leading_senkou_span_a'] = ichimoku['leading_senkou_span_a']
+        dataframe['leading_senkou_span_b'] = ichimoku['leading_senkou_span_b']
+        dataframe['cloud_green'] = ichimoku['cloud_green']
+        dataframe['cloud_red'] = ichimoku['cloud_red']
+
         macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
         dataframe["macd"]       = macd["macd"]
         dataframe["macdhist"]   = macd["macdhist"]
