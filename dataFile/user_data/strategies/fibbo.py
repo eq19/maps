@@ -59,7 +59,7 @@ class fibbo(IStrategy):
 
     # Optimal timeframe for the strategy.
     timeframe = "1m"
-    # informative_timeframe = '15m'
+    informative_timeframe = '15m'
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -330,7 +330,7 @@ class fibbo(IStrategy):
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
 
-        dataframe_inf = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.inf_tf)
+        dataframe_inf = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
 
         #Heiken Ashi Candlestick Data
         heikinashi = qtpylib.heikinashi(dataframe_inf)
@@ -361,7 +361,7 @@ class fibbo(IStrategy):
         dataframe_inf['cloud_red'] = ha_ichi['cloud_red']
 
         # Merge timeframes
-        dataframe = merge_informative_pair(dataframe, dataframe_inf, self.timeframe, self.inf_tf, ffill=True)
+        dataframe = merge_informative_pair(dataframe, dataframe_inf, self.timeframe, self.informative_timeframe, ffill=True)
 
         """
         Senkou Span A > Senkou Span B = Cloud Green
