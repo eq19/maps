@@ -292,7 +292,6 @@ class fibbo(IStrategy):
           laggin_span=120,
           displacement=30
         )
-
         dataframe['chikou_span'] = ichimoku['chikou_span']
         dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
         dataframe['kijun_sen'] = ichimoku['kijun_sen']
@@ -303,7 +302,12 @@ class fibbo(IStrategy):
         dataframe['cloud_green'] = ichimoku['cloud_green']
         dataframe['cloud_red'] = ichimoku['cloud_red']
 
-        macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
+        # MACD
+        macd = ta.MACD(dataframe,
+          slow=self.macd_profiles[self.timeframe]["slow"],
+          fast=self.macd_profiles[self.timeframe]["fast"],
+          signal=self.macd_profiles[self.timeframe]["signal"]
+        )
         dataframe["macd"]       = macd["macd"]
         dataframe["macdhist"]   = macd["macdhist"]
         dataframe["macdsignal"] = macd["macdsignal"]
