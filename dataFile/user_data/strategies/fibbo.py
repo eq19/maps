@@ -171,7 +171,6 @@ class fibbo(IStrategy):
     }
 
 
-
     @property
     def protections(self):
         prot = []
