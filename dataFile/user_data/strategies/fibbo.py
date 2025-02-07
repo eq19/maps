@@ -295,23 +295,6 @@ class fibbo(IStrategy):
         dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
         dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
-        # ICHIMOKU
-        ichimoku = ftt.ichimoku(dataframe,
-          conversion_line_period=20,
-          base_line_periods=60,
-          laggin_span=120,
-          displacement=30
-        )
-        dataframe['chikou_span'] = ichimoku['chikou_span']
-        dataframe['tenkan_sen'] = ichimoku['tenkan_sen']
-        dataframe['kijun_sen'] = ichimoku['kijun_sen']
-        dataframe['senkou_span_a'] = ichimoku['senkou_span_a']
-        dataframe['senkou_span_b'] = ichimoku['senkou_span_b']
-        dataframe['leading_senkou_span_a'] = ichimoku['leading_senkou_span_a']
-        dataframe['leading_senkou_span_b'] = ichimoku['leading_senkou_span_b']
-        dataframe['cloud_green'] = ichimoku['cloud_green']
-        dataframe['cloud_red'] = ichimoku['cloud_red']
-
         # MACD
         macd = ta.MACD(dataframe,
           slow=self.macd_profiles[self.timeframe]["slow"],
@@ -346,7 +329,45 @@ class fibbo(IStrategy):
         dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
-        
+
+        dataframe_inf = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.inf_tf)
+
+        #Heiken Ashi Candlestick Data
+        heikinashi = qtpylib.heikinashi(dataframe_inf)
+        heik = qtpylib.heikinashi(dataframe)
+
+        dataframe_inf['ha_open'] = heikinashi['open']
+        dataframe_inf['ha_close'] = heikinashi['close']
+        dataframe_inf['ha_high'] = heikinashi['high']
+        dataframe_inf['ha_low'] = heikinashi['low']
+
+        dataframe['ha_4h_open'] = heik['open']
+        dataframe['ha_4h_close'] = heik['close']
+        dataframe['ha_4h_high'] = heik['high']
+        dataframe['ha_4h_low'] = heik['low']
+
+        # ICHIMOKU
+        ha_ichi = ichimoku(heikinashi,
+            conversion_line_period=20,
+            base_line_periods=60,
+            laggin_span=120,
+            displacement=30
+        )
+
+        #Required Ichi Parameters
+        dataframe_inf['senkou_a'] = ha_ichi['senkou_span_a']
+        dataframe_inf['senkou_b'] = ha_ichi['senkou_span_b']
+        dataframe_inf['cloud_green'] = ha_ichi['cloud_green']
+        dataframe_inf['cloud_red'] = ha_ichi['cloud_red']
+
+        # Merge timeframes
+        dataframe = merge_informative_pair(dataframe, dataframe_inf, self.timeframe, self.inf_tf, ffill=True)
+
+        """
+        Senkou Span A > Senkou Span B = Cloud Green
+        Senkou Span B > Senkou Span A = Cloud Red
+        """
+ 
         return dataframe
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
