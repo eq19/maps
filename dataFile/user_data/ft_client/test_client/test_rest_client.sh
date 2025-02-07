@@ -87,11 +87,12 @@ else
   #freqtrade hyperopt-show
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500 > /dev/null 2>&1
-  freqtrade hyperopt --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces --random-state 42 -e 10
+  freqtrade hyperopt --fee=$FEE --timerange="$TB" \
+    --spaces all --ignore-missing-spaces --random-state 42 -e 10
 
   #echo -e "\n$hr\nRERUN RUNNER\n$hr"
   if [[ "${RERUN_RUNNER}" != "true" ]]; then
-    LOGURU_LEVEL=ERROR freqtrade hyperopt --epochs 1000 --logfile /dev/null \
+    LOGURU_LEVEL=ERROR freqtrade hyperopt -e 3200 --logfile /dev/null \
       --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces \
       --hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42 > /dev/null 2>&1
 
