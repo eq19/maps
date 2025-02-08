@@ -262,7 +262,7 @@ class fibbo(IStrategy):
         # Get access to all pairs available in whitelist.
         pairs = self.dp.current_whitelist()
         # Assign tf to each pair so they can be downloaded and cached for strategy.
-        informative_pairs =  [(pair, '1d') for pair in pairs]
+        informative_pairs =  [(pair, '15m') for pair in pairs]
         return informative_pairs
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -397,12 +397,12 @@ class fibbo(IStrategy):
             (
                 (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_a_15m'])) &
                 (dataframe['ha_1m_close'].shift() < (dataframe['senkou_a_15m'])) &
-                (dataframe['cloud_green_1d'] == True)
+                (dataframe['cloud_green_15m'] == True)
             ) |
             (
                 (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_b_15m'])) &
                 (dataframe['ha_1m_close'].shift() < (dataframe['senkou_b_15m'])) &
-                (dataframe['cloud_red_1d'] == True)
+                (dataframe['cloud_red_15m'] == True)
             )
         )
  
