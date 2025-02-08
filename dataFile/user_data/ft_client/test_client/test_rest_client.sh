@@ -91,9 +91,9 @@ else
 
   #echo -e "\n$hr\nRERUN RUNNER\n$hr"
   if [[ "${RERUN_RUNNER}" != "true" ]]; then
-    LOGURU_LEVEL=ERROR freqtrade hyperopt --epochs 1000 --logfile /dev/null \
-      --fee=$FEE --timerange="$TB" --spaces all --ignore-missing-spaces \
-      --hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42 > /dev/null 2>&1
+    LOGURU_LEVEL=ERROR freqtrade hyperopt -e 100 --logfile /dev/null \
+      --random-state 42 --timerange="$TB" --spaces all --ignore-missing-spaces \
+      --hyperopt-loss ProfitDrawDownHyperOptLoss --fee=$FEE > /dev/null 2>&1
 
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
