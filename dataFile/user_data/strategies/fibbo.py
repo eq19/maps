@@ -371,6 +371,8 @@ class fibbo(IStrategy):
         Senkou Span B > Senkou Span A = Cloud Red
         """
  
+        # Drop NaN values to avoid issues
+        dataframe.dropna(inplace=True)
         return dataframe
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
