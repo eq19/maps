@@ -395,13 +395,13 @@ class fibbo(IStrategy):
         STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         ICHIMOKU     = (
             (
-                (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_a_1d'])) &
-                (dataframe['ha_1m_close'].shift() < (dataframe['senkou_a_1d'])) &
+                (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_a_15m'])) &
+                (dataframe['ha_1m_close'].shift() < (dataframe['senkou_a_15m'])) &
                 (dataframe['cloud_green_1d'] == True)
             ) |
             (
-                (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_b_1d'])) &
-                (dataframe['ha_1m_close'].shift() < (dataframe['senkou_b_1d'])) &
+                (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_b_15m'])) &
+                (dataframe['ha_1m_close'].shift() < (dataframe['senkou_b_15m'])) &
                 (dataframe['cloud_red_1d'] == True)
             )
         )
@@ -444,8 +444,8 @@ class fibbo(IStrategy):
         MACD = (dataframe["macd"] >= dataframe["macdsignal"])
         STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
         ICHIMOKU = (
-            (dataframe['ha_1m_close'] < dataframe['senkou_a_1d']) |
-            (dataframe['ha_1m_close'] < dataframe['senkou_b_1d'])
+            (dataframe['ha_1m_close'] < dataframe['senkou_a_15m']) |
+            (dataframe['ha_1m_close'] < dataframe['senkou_b_15m'])
         )
 
         long_conditions.append(RSI)
