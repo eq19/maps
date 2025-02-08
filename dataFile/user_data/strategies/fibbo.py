@@ -395,12 +395,12 @@ class fibbo(IStrategy):
         STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         ICHIMOKU     = (
             (
-                (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_a_15m'])) &
+                (dataframe['ha_1m_close'] > dataframe['senkou_a_15m']) & 
                 (dataframe['ha_1m_close'].shift() < (dataframe['senkou_a_15m'])) &
                 (dataframe['cloud_green_15m'] == True)
             ) |
             (
-                (dataframe['ha_1m_close'].crossed_above(dataframe['senkou_b_15m'])) &
+                (dataframe['ha_1m_close'] > dataframe['senkou_b_15m']) & 
                 (dataframe['ha_1m_close'].shift() < (dataframe['senkou_b_15m'])) &
                 (dataframe['cloud_red_15m'] == True)
             )
