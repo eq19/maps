@@ -440,10 +440,7 @@ class fibbo(IStrategy):
         RSI = dataframe['rsi'] >= self.sell_rsi.value
         MACD = dataframe["macd"] >= dataframe["macdsignal"]
         STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
-        ICHIMOKU = (
-            (dataframe['ha_1m_close'] < dataframe['senkou_a_15m']) |
-            (dataframe['ha_1m_close'] < dataframe['senkou_b_15m'])
-        )
+        ICHIMOKU = ((dataframe['ha_1m_close'] < dataframe['senkou_a_15m']) | (dataframe['ha_1m_close'] < dataframe['senkou_b_15m']))
 
         long_conditions.append(RSI)
 
