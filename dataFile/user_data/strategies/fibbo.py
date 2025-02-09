@@ -386,11 +386,9 @@ class fibbo(IStrategy):
         volume_check = dataframe['volume'] > dataframe['volume'].rolling(20).mean()
         
         # Check if the current close is above senkou_a and senkou_b
-        ichi_cond_a  = (dataframe['ha_1m_close'] > dataframe['senkou_a_15m']) & 
-                       (dataframe['ha_1m_close'].shift() < dataframe['senkou_a_15m'])
+        ichi_cond_a  = (dataframe['ha_1m_close'] > dataframe['senkou_a_15m']) & (dataframe['ha_1m_close'].shift() < dataframe['senkou_a_15m'])
         ichi_a_cloud = (dataframe['cloud_green_15m'] == True)
-        ichi_cond_b  = (dataframe['ha_1m_close'] > dataframe['senkou_b_15m']) & 
-                       (dataframe['ha_1m_close'].shift() < dataframe['senkou_b_15m'])
+        ichi_cond_b  = (dataframe['ha_1m_close'] > dataframe['senkou_b_15m']) & (dataframe['ha_1m_close'].shift() < dataframe['senkou_b_15m'])
         ichi_b_cloud = (dataframe['cloud_red_15m'] == True)
 
         ### Momentum Indicators ###
