@@ -380,32 +380,29 @@ class fibbo(IStrategy):
         long_conditions = []
 
         # Fibonacci retracement near 0.382 or 0.618
-        dema_cross   = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
+        dema_cross   = dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"]
         near_fib_382 = dataframe['close'].between(dataframe['fib_382'] * 0.998, dataframe['fib_382'] * 1.002)
         near_fib_618 = dataframe['close'].between(dataframe['fib_618'] * 0.998, dataframe['fib_618'] * 1.002)
         volume_check = dataframe['volume'] > dataframe['volume'].rolling(20).mean()
         
+        # Check if the current close is above senkou_a and senkou_b
+        ichi_cond_a  = (dataframe['ha_1m_close'] > dataframe['senkou_a_15m']) & 
+                       (dataframe['ha_1m_close'].shift() < dataframe['senkou_a_15m'])
+        ichi_a_cloud = (dataframe['cloud_green_15m'] == True)
+        ichi_cond_b  = (dataframe['ha_1m_close'] > dataframe['senkou_b_15m']) & 
+                       (dataframe['ha_1m_close'].shift() < dataframe['senkou_b_15m'])
+        ichi_b_cloud = (dataframe['cloud_red_15m'] == True)
+
         ### Momentum Indicators ###
+        RSI          = dataframe['rsi'] < self.buy_rsi.value
+        EMA          = dataframe["ema9"] > dataframe["ema21"]
+        VWAP         = dataframe['close'] > dataframe['vwap']
+        MACD         = dataframe["macd"] < dataframe["macdsignal"]
+        BB           = dataframe["close"] <= dataframe["bb_lowerband"]
+        STOCK_OSC    = dataframe['fastk_rsi'] > dataframe['fastd_rsi']
+        ICHIMOKU     = (ichi_cond_a & ichi_a_cloud) | (ichi_cond_b & ichi_b_cloud)
         FIBBO        = dema_cross & (near_fib_382 | near_fib_618) & volume_check
-        RSI          = (dataframe['rsi'] < self.buy_rsi.value)
-        EMA          = (dataframe["ema9"] > dataframe["ema21"])
-        VWAP         = (dataframe['close'] > dataframe['vwap'])
-        MACD         = (dataframe["macd"] < dataframe["macdsignal"])
-        BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
-        ICHIMOKU     = (
-            (
-                (dataframe['ha_1m_close'] > dataframe['senkou_a_15m']) & 
-                (dataframe['ha_1m_close'].shift() < (dataframe['senkou_a_15m'])) &
-                (dataframe['cloud_green_15m'] == True)
-            ) |
-            (
-                (dataframe['ha_1m_close'] > dataframe['senkou_b_15m']) & 
-                (dataframe['ha_1m_close'].shift() < (dataframe['senkou_b_15m'])) &
-                (dataframe['cloud_red_15m'] == True)
-            )
-        )
- 
+
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
 
@@ -440,8 +437,8 @@ class fibbo(IStrategy):
         long_conditions = []
 
         ### Momentum Indicators ###
-        RSI = (dataframe['rsi'] >= self.sell_rsi.value)
-        MACD = (dataframe["macd"] >= dataframe["macdsignal"])
+        RSI = dataframe['rsi'] >= self.sell_rsi.value
+        MACD = dataframe["macd"] >= dataframe["macdsignal"]
         STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
         ICHIMOKU = (
             (dataframe['ha_1m_close'] < dataframe['senkou_a_15m']) |
