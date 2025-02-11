@@ -83,7 +83,8 @@ else
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) && ls -al .
-  jq '[.. | objects | select(has("profit_abs")) | .profit_abs] | add' $(ls -t backtest-result-*.json | head -n 1)
+  LATEST_JSON=$(ls -t backtest-result-*.json | head -n 1)
+  PROFIT_ABS1=$(jq '[.. | objects | select(has("profit_abs")) | .profit_abs] | add' $LATEST_JSON)
   rm -rf * && cd /home/runner
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
@@ -115,6 +116,12 @@ else
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
   freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
+
+  cd /home/runner/user_data/backtest_results
+  unzip $(ls -t backtest-result-*.zip | head -n 1) && ls -al .
+  LATEST_JSON=$(ls -t backtest-result-*.json | head -n 1)
+  PROFIT_ABS2=$(jq '[.. | objects | select(has("profit_abs")) | .profit_abs] | add' $LATEST_JSON)
+  rm -rf * && cd /home/runner
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
