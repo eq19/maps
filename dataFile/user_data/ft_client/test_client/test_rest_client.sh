@@ -80,8 +80,8 @@ else
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections --export trades
+  unzip $(ls -t /home/runner/user_data/backtest_results/backtest-result-*.zip | head -n 1)
   ls -al /home/runner/user_data/backtest_results
-  jq . $(ls -t /home/runner/user_data/backtest_results/backtest-result-*.json | head -n 1)
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
