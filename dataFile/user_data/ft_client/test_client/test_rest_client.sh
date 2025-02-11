@@ -83,7 +83,7 @@ else
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) && ls -al .
-  jq . $(ls -t backtest-result-*.json | head -n 1) && cd /home/runner
+  jq . $(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1) && cd /home/runner
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
