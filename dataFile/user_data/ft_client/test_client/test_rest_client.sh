@@ -119,7 +119,7 @@ else
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
     cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
-    gh variable set RERUN_RUNNER --body "true"
+    #gh variable set RERUN_RUNNER --body "true"
 
     cd /tmp/eq19
     git config --global user.name eq19
@@ -127,7 +127,7 @@ else
     git add . && git commit --allow-empty -m "update params" && git push
 
     git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
-    git add . && git commit --allow-empty -m "rerun due to job update" && git push
+    git add . && git commit --allow-empty -m "RERUN_RUNNER due to job update" && git push
     #cd /home/runner && rm -rf /tmp/eq19
     exit 1
   fi
