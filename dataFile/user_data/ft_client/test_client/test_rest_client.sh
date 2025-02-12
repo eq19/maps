@@ -82,8 +82,8 @@ else
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections --export trades
 
   cd /home/runner/user_data/backtest_results
-  unzip $(ls -t backtest-result-*.zip | head -n 1) && ls -al .
-  LATEST_JSON=$(ls -t backtest-result-*.json | head -n 1)
+  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
+  LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   echo $(jq '.strategy_comparison' $LATEST_JSON)
   echo $(jq '.strategy.strategy_comparison' $LATEST_JSON)
   echo $(jq '.strategy.strategy_comparison[] | select(.key == "fibbo") | .winrate' $LATEST_JSON)
@@ -121,7 +121,7 @@ else
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) && ls -al .
-  LATEST_JSON=$(ls -t backtest-result-*.json | head -n 1)
+  LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   echo $(jq '.strategy.strategy_comparison' $LATEST_JSON)
   rm -rf * && cd /home/runner
 
