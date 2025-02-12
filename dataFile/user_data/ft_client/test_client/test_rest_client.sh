@@ -120,7 +120,7 @@ else
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) && ls -al .
   LATEST_JSON=$(ls -t backtest-result-*.json | head -n 1)
-  echo $(jq '.strategy_comparison[] | select(.key == "fibbo") | .winrate' $LATEST_JSON)
+  echo $(jq '.strategy_comparison' $LATEST_JSON)
   rm -rf * && cd /home/runner
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
