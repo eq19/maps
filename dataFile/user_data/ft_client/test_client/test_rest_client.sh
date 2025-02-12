@@ -119,6 +119,7 @@ else
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
     cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
+    gh variable set RERUN_RUNNER --body "true"
 
     cd /tmp/eq19
     git config --global user.name eq19
