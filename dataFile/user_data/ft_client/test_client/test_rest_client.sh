@@ -109,7 +109,7 @@ else
   freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
 
   cd /home/runner/user_data/backtest_results
-  unzip $(ls -t backtest-result-*.zip | head -n 1) && ls -al .
+  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
   LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   echo $(jq '.strategy_comparison' $LATEST_JSON)
   WINRATE_NEW=$(jq '.strategy_comparison[] | select(.key == "fibbo") | .winrate' $LATEST_JSON)
