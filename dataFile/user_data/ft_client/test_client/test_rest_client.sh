@@ -79,7 +79,7 @@ else
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections --export trades
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --export trades
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
@@ -106,7 +106,7 @@ else
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --export signals
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --export trades
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
