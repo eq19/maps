@@ -126,6 +126,7 @@ else
     git config --global user.email eq19@users.noreply.github.com
     git add . && git commit --allow-empty -m "update params" && git push
 
+    REMOTE_REPO="https://eq19:$TOKEN@github.com/$GITHUB_REPOSITORY.git"
     git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
     git add . && git commit --allow-empty -m "rerun due to job update" && git push
     #cd /home/runner && rm -rf /tmp/eq19
