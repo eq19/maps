@@ -125,7 +125,11 @@ else
     git config --global user.name eq19
     git config --global user.email eq19@users.noreply.github.com
     git add . && git commit --allow-empty -m "update params" && git push
-    cd /home/runner && rm -rf /tmp/eq19
+
+    git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
+    git add . && git commit --allow-empty -m "rerun due to job update" && git push
+    #cd /home/runner && rm -rf /tmp/eq19
+    exit 1
   fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
