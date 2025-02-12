@@ -102,16 +102,6 @@ else
     LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --logfile /dev/null \
       --random-state 42 --timerange="$TB" --spaces all --ignore-missing-spaces \
       --hyperopt-loss ProfitDrawDownHyperOptLoss > /dev/null 2>&1
- 
-    PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
-    git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
-    cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
-
-    cd /tmp/eq19
-    git config --global user.name eq19
-    git config --global user.email eq19@users.noreply.github.com
-    git add . && git commit --allow-empty -m "update params" && git push
-    cd /home/runner && rm -rf /tmp/eq19
   fi
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
@@ -123,6 +113,18 @@ else
   LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   WINRATE_NEW=$(jq '.strategy_comparison[] | select(.key == "fibbo") | .winrate' $LATEST_JSON)
   rm -rf * && cd /home/runner
+
+  if (( $(echo "$WINRATE_NEW > $WINRATE_OLD" | bc -l) )); then
+    PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
+    git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
+    cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
+
+    cd /tmp/eq19
+    git config --global user.name eq19
+    git config --global user.email eq19@users.noreply.github.com
+    git add . && git commit --allow-empty -m "update params" && git push
+    cd /home/runner && rm -rf /tmp/eq19
+  fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
