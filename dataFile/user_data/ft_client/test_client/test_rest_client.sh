@@ -136,7 +136,8 @@ else
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
   LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   echo $(jq '.strategy_comparison' $LATEST_JSON)
-  WINRATE_OLD=$(jq '.strategy_comparison[] | select(.key == "fibbo") | .winrate' $LATEST_JSON)
+  OLD_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
+  echo $OLD_SCORE
   rm -rf * && cd /home/runner
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
@@ -163,10 +164,11 @@ else
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
   LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   echo $(jq '.strategy_comparison' $LATEST_JSON)
-  WINRATE_NEW=$(jq '.strategy_comparison[] | select(.key == "fibbo") | .winrate' $LATEST_JSON)
+  NEW_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
+  echo $NEW_SCORE
   rm -rf * && cd /home/runner
 
-  if (( $(echo "$WINRATE_NEW > $WINRATE_OLD" | bc -l) )); then
+  if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
     cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
