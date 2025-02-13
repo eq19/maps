@@ -39,7 +39,50 @@ echo "Backtesting Timerange: $TB"
 echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 printenv
 
-if [[ "$1" == "listing" ]]; then
+calculate_score() {
+  local json_file="$1"
+  local key="$2"
+
+  # Extract JSON data for the given strategy key
+  local json_data=$(jq ".strategy_comparison[] | select(.key==\"$key\")" "$json_file")
+
+  # Extract required values
+  local winrate=$(echo "$json_data" | jq -r '.winrate')
+  local profit_total_pct=$(echo "$json_data" | jq -r '.profit_total_pct')
+  local profit_sum=$(echo "$json_data" | jq -r '.profit_sum')
+  local profit_total=$(echo "$json_data" | jq -r '.profit_total')
+  local max_drawdown_account=$(echo "$json_data" | jq -r '.max_drawdown_account')
+  local trade_count=$(echo "$json_data" | jq -r '.trades')
+
+  # Prevent division by zero in profit factor calculation
+  if (( $(echo "$profit_sum == $profit_total" | bc -l) )); then
+    profit_factor=1
+  else
+    profit_factor=$(echo "scale=4; $profit_sum / ($profit_sum - $profit_total)" | bc)
+  fi
+
+  # Adjusted Winrate (subtracting drawdown)
+  adjusted_winrate=$(echo "scale=4; $winrate - $max_drawdown_account" | bc)
+
+  # Score Calculation
+  winrate_score=$(echo "scale=4; $winrate * 100 * 0.3" | bc)
+  profit_total_score=$(echo "scale=4; $profit_total_pct * 2" | bc)
+  profit_factor_score=$(echo "scale=4; ($profit_factor - 1) * 200" | bc)
+  max_drawdown_score=$(echo "scale=4; (10 - ($max_drawdown_account * 100)) * 2" | bc)
+  trade_count_score=$(echo "scale=4; ($trade_count / 200) * 10" | bc)
+
+  # Total Score Calculation
+  total_score=$(echo "scale=2; $winrate_score + $profit_total_score + $profit_factor_score + $max_drawdown_score + $trade_count_score" | bc)
+
+  # Print final strategy performance score
+  echo "Strategy: $key | Score: $total_score / 100"
+}
+
+# Example Usage
+LATEST_JSON="your_file.json"  # Change to actual file
+calculate_score "$LATEST_JSON" "fibbo"
+
+# Call this function multiple times with different strategy names or JSON filesif [[ "$1" == "listing" ]]; then
 
   echo -e "\n$hr\nLIST EXCHANGES\n$hr"
   freqtrade list-exchanges -- help
