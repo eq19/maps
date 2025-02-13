@@ -78,19 +78,7 @@ calculate_score() {
   echo "$total_score"
 }
 
-# Example Usage
-LATEST_JSON="your_file.json"  # Change this to your actual JSON file
-
-# Assign function output to a variable
-total_score=$(calculate_score "$LATEST_JSON" "fibbo")
-
-# Print the score
-echo "Total Strategy Score: $total_score / 100"
-# Example Usage
-LATEST_JSON="your_file.json"  # Change to actual file
-calculate_score "$LATEST_JSON" "fibbo"
-
-# Call this function multiple times with different strategy names or JSON filesif [[ "$1" == "listing" ]]; then
+if [[ "$1" == "listing" ]]; then
 
   echo -e "\n$hr\nLIST EXCHANGES\n$hr"
   freqtrade list-exchanges -- help
