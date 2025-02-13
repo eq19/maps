@@ -46,7 +46,7 @@ calculate_score() {
   # Extract JSON data for the given strategy key
   local json_data=$(jq ".strategy_comparison[] | select(.key==\"$key\")" "$json_file")
 
-  # Extract required values
+  # Extract values
   local winrate=$(echo "$json_data" | jq -r '.winrate')
   local profit_total_pct=$(echo "$json_data" | jq -r '.profit_total_pct')
   local profit_sum=$(echo "$json_data" | jq -r '.profit_sum')
@@ -56,9 +56,9 @@ calculate_score() {
 
   # Prevent division by zero in profit factor calculation
   if (( $(echo "$profit_sum == $profit_total" | bc -l) )); then
-    profit_factor=1
+      profit_factor=1
   else
-    profit_factor=$(echo "scale=4; $profit_sum / ($profit_sum - $profit_total)" | bc)
+      profit_factor=$(echo "scale=4; $profit_sum / ($profit_sum - $profit_total)" | bc)
   fi
 
   # Adjusted Winrate (subtracting drawdown)
@@ -74,10 +74,18 @@ calculate_score() {
   # Total Score Calculation
   total_score=$(echo "scale=2; $winrate_score + $profit_total_score + $profit_factor_score + $max_drawdown_score + $trade_count_score" | bc)
 
-  # Print final strategy performance score
-  echo "Strategy: $key | Score: $total_score / 100"
+  # Return total score
+  echo "$total_score"
 }
 
+# Example Usage
+LATEST_JSON="your_file.json"  # Change this to your actual JSON file
+
+# Assign function output to a variable
+total_score=$(calculate_score "$LATEST_JSON" "fibbo")
+
+# Print the score
+echo "Total Strategy Score: $total_score / 100"
 # Example Usage
 LATEST_JSON="your_file.json"  # Change to actual file
 calculate_score "$LATEST_JSON" "fibbo"
