@@ -20,7 +20,7 @@ else
     #jq -r '.payload.data' | base64 --decode > $CONFIG
 
   # The line you want to add to the crontab
-  NEW_LINE="0 * * * * supervisorctl start monitor_freqtrade"
+  NEW_LINE="0 * * * * supervisorctl stop monitor_freqtrade && supervisorctl start monitor_freqtrade"
 
   # Check if the line already exists in the crontab
   if ! crontab -l | grep -Fxq "$NEW_LINE"; then
