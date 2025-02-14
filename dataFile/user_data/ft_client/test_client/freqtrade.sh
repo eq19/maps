@@ -29,7 +29,7 @@ tail -f "/mnt/disks/deeplearning/var/log/apt/freqtrade.log" | \
 grep --line-buffered -iE "WARNING|ERROR" | \
 while read -r line; do
     send_telegram_message "$line"
-done &
+done
 
 # Capture the background process PID for later termination
 TAIL_PID=$!
