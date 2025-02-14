@@ -10,18 +10,28 @@ if [ -f /home/runner/user_data/config.json ]; then
 fi
 
 # Check the Deeplearning 
-if [ -d /mnt/disks/deeplearning ]; then
+if [ ! -d /mnt/disks/deeplearning ]; then
+  echo "Deeplearning is not found."
+else
   /mnt/disks/deeplearning/usr/bin/gcloud auth application-default print-access-token > /tmp/token || { echo "Failed to get token"; exit 1; };
   TOKEN=$(cat /tmp/token)
   #curl -H "Authorization: Bearer $TOKEN" \
     #"https://secretmanager.googleapis.com/v1/projects/feedmapping/secrets/freqtrade-config/versions/latest:access" | \
     #jq -r '.payload.data' | base64 --decode > $CONFIG
 
-else
-  "Deeplearning is not found.";
+  # The line you want to add to the crontab
+  NEW_LINE="0 * * * * supervisorctl start monitor_freqtrade"
+
+  # Check if the line already exists in the crontab
+  if ! crontab -l | grep -Fxq "$NEW_LINE"; then
+    # If the line does not exist, add it
+    (crontab -l 2>/dev/null; echo "$NEW_LINE") | crontab -
+    echo "Crontab updated with the new line: $NEW_LINE"
+  else
+    echo "The line already exists in the crontab. No changes made."
+  fi
 fi
 
 # Run PostgreSQL (autostart)
 #sudo service supervisor start
 exec supervisord -c /etc/supervisor/supervisord.conf
-  
