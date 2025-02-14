@@ -364,7 +364,7 @@ class fibbo(IStrategy):
         dataframe_inf['cloud_red'] = ha_ichi['cloud_red']
 
         # Merge timeframes
-        #dataframe = merge_informative_pair(dataframe, dataframe_inf, self.timeframe, self.informative_timeframe, ffill=True)
+        dataframe = merge_informative_pair(dataframe, dataframe_inf, self.timeframe, self.informative_timeframe, ffill=True)
 
         """
         Senkou Span A > Senkou Span B = Cloud Green
