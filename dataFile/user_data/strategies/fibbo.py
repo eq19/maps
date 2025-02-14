@@ -373,6 +373,7 @@ class fibbo(IStrategy):
  
         # Drop NaN values to avoid issues
         dataframe.dropna(inplace=True)
+        print(f"Indicators DF length: {len(dataframe)}")
         return dataframe
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -428,6 +429,7 @@ class fibbo(IStrategy):
                 reduce(lambda x, y: x & y, long_conditions),
                 'enter_long'] = 1
 
+        print(f"Entry DF length before return: {len(dataframe)}")
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -460,4 +462,5 @@ class fibbo(IStrategy):
                 reduce(lambda x, y: x & y, long_conditions),
                 'exit_long'] = 1
             
+        print(f"Exit DF length before return: {len(dataframe)}")
         return dataframe
