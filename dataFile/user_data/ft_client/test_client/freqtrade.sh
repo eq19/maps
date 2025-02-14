@@ -35,9 +35,7 @@ done &
 TAIL_PID=$!
 
 # Keep the script running
-while true; do
-    sleep 3600
-done
+#while true; do sleep 3600; done
 
 # Handle graceful termination
 trap "echo 'Terminating...'; kill $TAIL_PID; exit" SIGINT SIGTERM
