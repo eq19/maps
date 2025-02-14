@@ -98,7 +98,7 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-strategies
   #freqtrade strategy-updater
 
-else
+elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
@@ -138,11 +138,9 @@ else
     --spaces all --ignore-missing-spaces --random-state 42
 
   #echo -e "\n$hr\nRERUN RUNNER\n$hr"
-  if [[ "${RERUN_RUNNER}" != "true" ]]; then
-    LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --logfile /dev/null \
-      --random-state 42 --timerange="$TB" --spaces all --ignore-missing-spaces \
-      --hyperopt-loss ProfitDrawDownHyperOptLoss > /dev/null 2>&1
-  fi
+  LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --logfile /dev/null \
+    --random-state 42 --timerange="$TB" --spaces all --ignore-missing-spaces \
+    --hyperopt-loss ProfitDrawDownHyperOptLoss > /dev/null 2>&1
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
@@ -183,6 +181,8 @@ else
   #echo -e "\n$hr\nAI MODELS\n$hr"
   #freqtrade list-freqaimodels --help
   #freqtrade list-freqaimodels
+
+else
 
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
