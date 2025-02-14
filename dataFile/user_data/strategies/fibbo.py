@@ -444,7 +444,7 @@ class fibbo(IStrategy):
 
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
-        if "ICHIMOKU" in self.buy_additional_indicator.value:
+        if "ICHIMOKU" in self.sell_additional_indicator.value:
             long_conditions.append(ICHIMOKU)
         if "STOCK_OSC" in self.sell_additional_indicator.value:
             long_conditions.append(STOCK_OSC)
