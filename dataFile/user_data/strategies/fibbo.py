@@ -26,7 +26,6 @@ from functools import reduce
 import talib.abstract as ta
 import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
-import technical.indicators as ftt
 from itertools import permutations
 
 random.seed(18)
@@ -59,7 +58,7 @@ class fibbo(IStrategy):
 
     # Optimal timeframe for the strategy.
     timeframe = "1m"
-    informative_timeframe = '15m'
+    # informative_timeframe = '15m'
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -134,10 +133,6 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
     # Define the parameter spaces
-    conversion_line_period      = IntParameter(5, 15, default=9, space="buy", optimize=True)
-    base_line_period            = IntParameter(10, 40, default=26, space="buy", optimize=True)
-    lagging_span                = IntParameter(30, 100, default=52, space="buy", optimize=True)
-    displacement                = IntParameter(10, 40, default=26, space="buy", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="buy", optimize=True)
     buy_fast_dema               = CategoricalParameter(fast_demas, default="13", space="buy", optimize=True)
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
@@ -157,22 +152,6 @@ class fibbo(IStrategy):
     use_max_drawdown_protection = BooleanParameter(default=False, space="protection", optimize=True)
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
     atr_stoploss_multiplier     = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
-
-    plot_config = {
-        "main_plot": {
-            "tema": {},
-            "sar": {"color": "white"},
-        },
-        "subplots": {
-            "MACD": {
-                "macd": {"color": "blue"},
-                "macdsignal": {"color": "orange"},
-            },
-            "RSI": {
-                "rsi": {"color": "red"},
-            },
-        },
-    }
 
 
     @property
@@ -232,6 +211,22 @@ class fibbo(IStrategy):
             return -1  # stop out
         return 1  # continue
 
+    plot_config = {
+        "main_plot": {
+            "tema": {},
+            "sar": {"color": "white"},
+        },
+        "subplots": {
+            "MACD": {
+                "macd": {"color": "blue"},
+                "macdsignal": {"color": "orange"},
+            },
+            "RSI": {
+                "rsi": {"color": "red"},
+            },
+        },
+    }
+
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
@@ -255,16 +250,6 @@ class fibbo(IStrategy):
 
         return dataframe
     
-    def informative_pairs(self):
-        if not self.dp:
-        # Don't do anything if DataProvider is not available.
-            return []
-        # Get access to all pairs available in whitelist.
-        pairs = self.dp.current_whitelist()
-        # Assign tf to each pair so they can be downloaded and cached for strategy.
-        informative_pairs =  [(pair, '15m') for pair in pairs]
-        return informative_pairs
-
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Stochastic RSI
         stoch_rsi = ta.STOCHRSI(dataframe)
@@ -299,12 +284,8 @@ class fibbo(IStrategy):
         dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
         dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
 
-        # MACD
-        macd = ta.MACD(dataframe,
-          slow=self.macd_profiles[self.timeframe]["slow"],
-          fast=self.macd_profiles[self.timeframe]["fast"],
-          signal=self.macd_profiles[self.timeframe]["signal"]
-        )
+       # MACD
+        macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
         dataframe["macd"]       = macd["macd"]
         dataframe["macdhist"]   = macd["macdhist"]
         dataframe["macdsignal"] = macd["macdsignal"]
@@ -333,46 +314,7 @@ class fibbo(IStrategy):
         dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
-
-        # Heiken Ashi Candlestick Data
-        #dataframe_inf = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
-        #heikinashi = qtpylib.heikinashi(dataframe_inf)
-        #heik = qtpylib.heikinashi(dataframe)
-
-        #dataframe_inf['ha_open'] = heikinashi['open']
-        #dataframe_inf['ha_close'] = heikinashi['close']
-        #dataframe_inf['ha_high'] = heikinashi['high']
-        #dataframe_inf['ha_low'] = heikinashi['low']
-
-        #dataframe['ha_1m_open'] = heik['open']
-        #dataframe['ha_1m_close'] = heik['close']
-        #dataframe['ha_1m_high'] = heik['high']
-        #dataframe['ha_1m_low'] = heik['low']
-
-        # ICHIMOKU
-        #ha_ichi = ftt.ichimoku(heikinashi,
-        #    conversion_line_period=self.conversion_line_period.value,
-        #    base_line_periods=self.base_line_period.value,
-        #    laggin_span=self.lagging_span.value,
-        #    displacement=self.displacement.value
-        #)
-
-        # Required Ichi Parameters
-        #dataframe_inf['senkou_a'] = ha_ichi['senkou_span_a']
-        #dataframe_inf['senkou_b'] = ha_ichi['senkou_span_b']
-        #dataframe_inf['cloud_green'] = ha_ichi['cloud_green']
-        #dataframe_inf['cloud_red'] = ha_ichi['cloud_red']
-
-        # Merge timeframes
-        #dataframe = merge_informative_pair(dataframe, dataframe_inf, self.timeframe, self.informative_timeframe, ffill=True)
-
-        """
-        Senkou Span A > Senkou Span B = Cloud Green
-        Senkou Span B > Senkou Span A = Cloud Red
-        """
- 
-        # Drop NaN values to avoid issues
-        dataframe.dropna(inplace=True)
+        
         return dataframe
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -380,26 +322,19 @@ class fibbo(IStrategy):
         long_conditions = []
 
         # Fibonacci retracement near 0.382 or 0.618
-        dema_cross   = dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"]
+        dema_cross   = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
         near_fib_382 = dataframe['close'].between(dataframe['fib_382'] * 0.998, dataframe['fib_382'] * 1.002)
         near_fib_618 = dataframe['close'].between(dataframe['fib_618'] * 0.998, dataframe['fib_618'] * 1.002)
         volume_check = dataframe['volume'] > dataframe['volume'].rolling(20).mean()
         
-        # Check if the current close is above senkou_a and senkou_b
-        #ichi_cond_a  = (dataframe['ha_1m_close'] > dataframe['senkou_a_15m']) & (dataframe['ha_1m_close'].shift() < dataframe['senkou_a_15m'])
-        #ichi_a_cloud = (dataframe['cloud_green_15m'] == True)
-        #ichi_cond_b  = (dataframe['ha_1m_close'] > dataframe['senkou_b_15m']) & (dataframe['ha_1m_close'].shift() < dataframe['senkou_b_15m'])
-        #ichi_b_cloud = (dataframe['cloud_red_15m'] == True)
-
         ### Momentum Indicators ###
-        RSI          = dataframe['rsi'] < self.buy_rsi.value
-        EMA          = dataframe["ema9"] > dataframe["ema21"]
-        VWAP         = dataframe['close'] > dataframe['vwap']
-        MACD         = dataframe["macd"] < dataframe["macdsignal"]
-        BB           = dataframe["close"] <= dataframe["bb_lowerband"]
-        STOCK_OSC    = dataframe['fastk_rsi'] > dataframe['fastd_rsi']
-        #ICHIMOKU     = (ichi_cond_a & ichi_a_cloud) | (ichi_cond_b & ichi_b_cloud)
         FIBBO        = dema_cross & (near_fib_382 | near_fib_618) & volume_check
+        RSI          = (dataframe['rsi'] < self.buy_rsi.value)
+        EMA          = (dataframe["ema9"] > dataframe["ema21"])
+        VWAP         = (dataframe['close'] > dataframe['vwap'])
+        MACD         = (dataframe["macd"] < dataframe["macdsignal"])
+        BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
+        STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
@@ -412,8 +347,6 @@ class fibbo(IStrategy):
             long_conditions.append(MACD)
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
-        #if "ICHIMOKU" in self.buy_additional_indicator.value:
-        #    long_conditions.append(ICHIMOKU)
         if "STOCK_OSC" in self.buy_additional_indicator.value:
             long_conditions.append(STOCK_OSC)
   
@@ -435,17 +368,14 @@ class fibbo(IStrategy):
         long_conditions = []
 
         ### Momentum Indicators ###
-        RSI = dataframe['rsi'] >= self.sell_rsi.value
-        MACD = dataframe["macd"] >= dataframe["macdsignal"]
+        RSI = (dataframe['rsi'] >= self.sell_rsi.value)
+        MACD = (dataframe["macd"] >= dataframe["macdsignal"])
         STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
-        #ICHIMOKU = ((dataframe['ha_1m_close'] < dataframe['senkou_a_15m']) | (dataframe['ha_1m_close'] < dataframe['senkou_b_15m']))
 
         long_conditions.append(RSI)
 
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
-        #if "ICHIMOKU" in self.sell_additional_indicator.value:
-        #    long_conditions.append(ICHIMOKU)
         if "STOCK_OSC" in self.sell_additional_indicator.value:
             long_conditions.append(STOCK_OSC)
 
