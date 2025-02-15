@@ -135,12 +135,13 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500 > /dev/null 2>&1
   freqtrade hyperopt -e 10 --fee=$FEE --timerange="$TB" --disable-param-export \
-    --spaces all --ignore-missing-spaces --analyze-per-epoch --random-state 42
+    --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
+    --analyze-per-epoch --random-state 42
 
   #echo -e "\n$hr\nRERUN RUNNER\n$hr"
-  LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --logfile /dev/null \
-    --timerange="$TB" --spaces all --ignore-missing-spaces \
-    --analyze-per-epoch --random-state 42 > /dev/null 2>&1
+  LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
+    --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
+    --analyze-per-epoch --random-state 42 --logfile /dev/null > /dev/null 2>&1
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
