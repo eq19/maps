@@ -118,7 +118,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --export trades
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
@@ -144,7 +144,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --export trades
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
