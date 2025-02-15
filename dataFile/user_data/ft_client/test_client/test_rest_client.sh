@@ -139,8 +139,8 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   #echo -e "\n$hr\nRERUN RUNNER\n$hr"
   LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --logfile /dev/null \
-    --random-state 42 --timerange="$TB" --spaces all --ignore-missing-spaces \
-    --hyperopt-loss ProfitDrawDownHyperOptLoss > /dev/null 2>&1
+    --timerange="$TB" --spaces all --ignore-missing-spaces \
+    --random-state 42 > /dev/null 2>&1
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
