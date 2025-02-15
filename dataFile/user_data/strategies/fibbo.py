@@ -129,8 +129,8 @@ class fibbo(IStrategy):
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_profiles, max_indicators=2)
-    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
-    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
+    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="STOCH_OSC", optimize=True)
+    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="STOCH_OSC", optimize=True)
 
     # Define the parameter spaces
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="buy", optimize=True)
