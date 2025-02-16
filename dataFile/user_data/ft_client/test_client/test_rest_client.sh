@@ -118,6 +118,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   echo -e "\n$hr\nRUN BACKTESTING\n$hr"
   freqtrade backtesting --help
+  rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   cd /home/runner/user_data/backtest_results
@@ -125,34 +126,37 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   echo $(jq '.strategy_comparison' $LATEST_JSON)
   OLD_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
-  echo $OLD_SCORE
-  rm -rf * && cd /home/runner
+  echo $OLD_SCORE && cd /home/runner
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
-  #freqtrade hyperopt-list
-  #freqtrade hyperopt-show
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  #freqtrade hyperopt --hyperopt-loss SharpeHyperOptLossDaily -e 500 > /dev/null 2>&1
   freqtrade hyperopt -e 10 --fee=$FEE --timerange="$TB" --disable-param-export \
     --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
     --analyze-per-epoch --random-state 42
 
-  #echo -e "\n$hr\nRERUN RUNNER\n$hr"
+  echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
   LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
     --spaces buy sell --ignore-missing-spaces --analyze-per-epoch \
     --random-state 42 --logfile /dev/null > /dev/null 2>&1
+  freqtrade hyperopt-list
+  freqtrade hyperopt-show
 
-  echo -e "\n$hr\nINIT BACKTEST\n$hr"
+  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
   freqtrade backtesting --help
+  rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
+  echo -e "\n$hr\nFINAL HYPEROPT\n$hr"
   LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
     --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
     --analyze-per-epoch --random-state 42 --logfile /dev/null > /dev/null 2>&1
+  freqtrade hyperopt-list
+  freqtrade hyperopt-show
 
   echo -e "\n$hr\nFINAL BACKTEST\n$hr"
   freqtrade backtesting --help
+  rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   cd /home/runner/user_data/backtest_results
@@ -160,8 +164,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   echo $(jq '.strategy_comparison' $LATEST_JSON)
   NEW_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
-  echo $NEW_SCORE
-  rm -rf * && cd /home/runner
+  echo $NEW_SCORE && cd /home/runner
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
