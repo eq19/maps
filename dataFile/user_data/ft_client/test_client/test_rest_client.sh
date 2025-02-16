@@ -153,17 +153,9 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-  #freqtrade hyperopt -e 10 --fee=$FEE --timerange="$TB" --disable-param-export \
-    #--spaces roi stoploss trailing protection trades --ignore-missing-spaces \
-    #--analyze-per-epoch --random-state 42
-
-  #LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
-    #--spaces buy sell --ignore-missing-spaces --analyze-per-epoch \
-    #--hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42 \
-    #--logfile /dev/null > /dev/null 2>&1
 
   # Step 1: Optimize buy, sell, and ROI logic
-  hyperopt 10 10 SharpeHyperOptLoss buy sell roi
+  hyperopt 10 100 SharpeHyperOptLoss buy sell roi
 
   # Step 2: Optimize ROI, protection, and trailing for profit management
   #hyperopt 60 500 ShortTradeDurHyperOptLoss roi protection trailing
@@ -176,10 +168,6 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   # Step 5: Comprehensive optimization with all parameters
   #hyperopt 180 2500 ExpectancyHyperOptLoss all
-
-  echo -e "\n$hr\nFINAL BACKTEST\n$hr"
-  rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
