@@ -69,11 +69,28 @@ hyperopt() {
 
 calculate_score() {
 
-  # Extract JSON data for the given strategy key
-  local dir=/home/runner/user_data/backtest_results
-  unzip $(ls -t $dir/backtest-result-*.zip | head -n 1) -d $dir > /dev/null 2>&1
-  local json_file=$(ls -t $DIR/backtest-result-*.json | grep -v '.meta.json' | head -n 1)
-  local json_data=$(jq ".strategy_comparison[] | select(.key==\"$key\")" "$json_file")
+    # Unzip the latest backtest result file
+    local dir="/home/runner/user_data/backtest_results"
+    local latest_zip=$(ls -t "$dir/backtest-result-"*.zip | head -n 1)
+    if [[ -z "$latest_zip" ]]; then
+        echo "No ZIP file found in $dir"
+        return 1
+    fi
+    unzip -q "$latest_zip" -d "$dir"  # -q for quiet mode
+
+    # Find the latest JSON file (excluding .meta.json)
+    local json_file=$(ls -t "$dir/backtest-result-"*.json | grep -v '.meta.json' | head -n 1)
+    if [[ -z "$json_file" ]]; then
+        echo "No JSON file found in $dir"
+        return 1
+    fi
+
+    # Extract JSON data for the given strategy key
+    local json_data=$(jq ".strategy_comparison[] | select(.key==\"fibbo\")" "$json_file")
+    if [[ -z "$json_data" ]]; then
+        echo "No data found for key: $key"
+        return 1
+    fi
 
   # Extract values
   local winrate=$(echo "$json_data" | jq -r '.winrate')
