@@ -292,9 +292,9 @@ class fibbo(IStrategy):
         dataframe = self.ttm_squeeze(dataframe)
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
-        # Swing High/Low for Fibonacci
-        dataframe['swing_high'] = dataframe['high'].rolling(24).max()
-        dataframe['swing_low'] = dataframe['low'].rolling(24).min()
+        # Swing high/low for Fibonacci levels
+        dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
+        dataframe['swing_low'] = dataframe['low'].rolling(self.buy_swing_period.value).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
 
         dataframe['fib_236'] = dataframe['swing_high'] - swing_range * 0.236
