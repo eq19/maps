@@ -68,11 +68,11 @@ hyperopt() {
 }
 
 calculate_score() {
-  DIR=/home/runner/user_data/backtest_results
-  unzip $(ls -t $DIR/backtest-result-*.zip | head -n 1) -d $DIR > /dev/null 2>&1
-  json_file=$(ls -t $DIR/backtest-result-*.json | grep -v '.meta.json' | head -n 1)
 
   # Extract JSON data for the given strategy key
+  local dir=/home/runner/user_data/backtest_results
+  unzip $(ls -t $dir/backtest-result-*.zip | head -n 1) -d $dir > /dev/null 2>&1
+  local json_file=$(ls -t $DIR/backtest-result-*.json | grep -v '.meta.json' | head -n 1)
   local json_data=$(jq ".strategy_comparison[] | select(.key==\"$key\")" "$json_file")
 
   # Extract values
