@@ -11,7 +11,6 @@ TIMEFRAMES='1m 15m'
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
-HYPERFILE=user_data/config_examples/config_hyperopt.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -43,6 +42,7 @@ printenv
 # Function to calculate start and end date
 hyperopt() {
   # Load JSON and filter by given ID
+  HYPERFILE=user_data/config_examples/config_hyperopt.example.json
   jq -c --argjson ids "[$*]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     id=$(echo "$pipeline" | jq -r '.id')
     days=$(echo "$pipeline" | jq -r '.days')
@@ -68,9 +68,9 @@ hyperopt() {
 }
 
 calculate_score() {
-  cd /home/runner/user_data/backtest_results
-  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
-  json_file=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
+  DIR=/home/runner/user_data/backtest_results
+  unzip $(ls -t $DIR/backtest-result-*.zip | head -n 1) -d $DIR > /dev/null 2>&1
+  json_file=$(ls -t $DIR/backtest-result-*.json | grep -v '.meta.json' | head -n 1)
 
   # Extract JSON data for the given strategy key
   local json_data=$(jq ".strategy_comparison[] | select(.key==\"$key\")" "$json_file")
@@ -105,7 +105,6 @@ calculate_score() {
 
   # Return total score
   echo "$total_score"
-  cd /home/runner   
 }
 
 if [[ "$1" == "listing" ]]; then
@@ -151,23 +150,15 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
-  cd /home/runner/user_data/backtest_results
-  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
-  LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
-  echo $(jq '.strategy_comparison' $LATEST_JSON)
-  OLD_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
-  echo $OLD_SCORE && cd /home/runner
+  OLD_SCORE=$(calculate_score)
+  echo $OLD_SCORE
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help && hyperopt 1
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
-  cd /home/runner/user_data/backtest_results
-  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
-  LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
-  echo $(jq '.strategy_comparison' $LATEST_JSON)
-  NEW_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
-  echo $NEW_SCORE && cd /home/runner
+  NEW_SCORE=$(calculate_score)
+  echo $NEW_SCORE
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
