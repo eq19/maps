@@ -135,10 +135,11 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
     --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
     --analyze-per-epoch --random-state 42
 
-  echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
   LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
     --spaces buy sell --ignore-missing-spaces --analyze-per-epoch \
     --random-state 42 --logfile /dev/null > /dev/null 2>&1
+
+  echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
   freqtrade hyperopt-list
   freqtrade hyperopt-show
 
@@ -146,10 +147,18 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
-  echo -e "\n$hr\nFINAL HYPEROPT\n$hr"
+  cd /home/runner/user_data/backtest_results
+  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
+  LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
+  echo $(jq '.strategy_comparison' $LATEST_JSON)
+  NEW_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
+  echo $NEW_SCORE && cd /home/runner
+
   LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
     --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
     --analyze-per-epoch --random-state 42 --logfile /dev/null > /dev/null 2>&1
+
+  echo -e "\n$hr\nFINAL HYPEROPT\n$hr"
   freqtrade hyperopt-list
   freqtrade hyperopt-show
 
