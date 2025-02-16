@@ -321,10 +321,9 @@ class fibbo(IStrategy):
         # Define the buy conditions
         long_conditions = []
 
-        # Fibonacci retracement near 0.382 or 0.618
+        # Fibonacci retracement near 0.618
         volume_check = (dataframe['volume'] > dataframe['volume_mean'])
         dema_cross   = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
-        near_fib_382 = (dataframe['close'].between(dataframe['fib_382'] * 0.998, dataframe['fib_382'] * 1.002))
         near_fib_618 = (dataframe['close'].between(dataframe['fib_618'] * 0.998, dataframe['fib_618'] * 1.002))
         
         ### Momentum Indicators ###
@@ -332,7 +331,7 @@ class fibbo(IStrategy):
         EMA          = (dataframe["ema9"] > dataframe["ema21"])
         VWAP         = (dataframe['close'] > dataframe['vwap'])
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
-        FIBBO        = (volume_check & dema_cross & (near_fib_382 | near_fib_618))
+        FIBBO        = (volume_check & dema_cross & near_fib_618)
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) & (dataframe["close"].shift(1) < dataframe["close"])
         STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
@@ -367,15 +366,15 @@ class fibbo(IStrategy):
         # Define the sell conditions
         long_conditions = []
 
-        # Exit condition: Price crosses below 23.6% Fib level
+        # Exit condition: Price crosses below 32.8% Fib level
         volume_check = (dataframe['volume'] > 0)  # Ensure there is trading volume
-        prev_fib_236 = (dataframe['close'].shift(1) > dataframe['fib_236'])  # Previous candle above Fib 23.6%
-        curr_fib_236 = (dataframe['close'] < dataframe['fib_236'])  # Current candle below Fib 23.6%
+        prev_fib_328 = (dataframe['close'].shift(1) > dataframe['fib_382'])  # Previous candle above Fib 32.8%
+        curr_fib_328 = (dataframe['close'] < dataframe['fib_382'])  # Current candle below Fib 32.8%
         
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
-        FIBBO        = (volume_check & prev_fib_236 & curr_fib_236)
+        FIBBO        = (volume_check & prev_fib_328 & curr_fib_328)
         STOCK_OSC    = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
