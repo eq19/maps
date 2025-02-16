@@ -46,7 +46,8 @@ hyperopt() {
     shift 3
     local spaces="$@"
 
-    freqtrade hyperopt --timerange -${timerange}d --epochs ${epochs} -j 4 --spaces ${spaces} --hyperopt-loss ${loss}
+    freqtrade hyperopt --timerange -${timerange}d --epochs ${epochs} -j 4 --spaces ${spaces} --hyperopt-loss ${loss} \
+      --ignore-missing-spaces --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
 }
 
 calculate_score() {
@@ -150,6 +151,20 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
     --hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42 \
     --logfile /dev/null > /dev/null 2>&1
 
+  # Step 1: Optimize buy, sell, and ROI logic
+  #hyperopt 30 100 SharpeHyperOptLoss buy sell roi
+
+  # Step 2: Optimize ROI, protection, and trailing for profit management
+  #hyperopt 60 500 ShortTradeDurHyperOptLoss roi protection trailing
+
+  # Step 3: Optimize protection, stoploss, and trade parameters
+  #hyperopt 90 1000 OnlyProfitHyperOptLoss protection stoploss trades
+
+  # Step 4: Refine protection, stoploss, and trailing parameters for risk management
+  #hyperopt 120 1500 MaxDrawDownHyperOptLoss protection stoploss trailing
+
+  # Step 5: Comprehensive optimization with all parameters
+  #hyperopt 180 2500 ExpectancyHyperOptLoss all
   freqtrade hyperopt-list
   freqtrade hyperopt-show
 
