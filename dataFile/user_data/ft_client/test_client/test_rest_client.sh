@@ -40,20 +40,25 @@ echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 printenv
 
 hyperopt() {
-    local timerange=$1
-    local epochs=$2
-    local loss=$3
-    shift 3
-    local spaces="$@"
+  local days=$1
+  local epochs=$2
+  local loss=$3
+  shift 3
+  local spaces="$@"
 
-    # Calculate start_date and end_date
-    local end_date=$(date +"%Y%m%d")  # Today’s date
-    local start_date=$(date -d "-${days} days" +"%Y%m%d")  # `days` ago
+  # Calculate start_date and end_date
+  local end_date=$(date +"%Y%m%d")  # Today’s date
+  local start_date=$(date -d "-${days} days" +"%Y%m%d")  # `days` ago
 
-    # Run Freqtrade hyperopt with calculated timerange
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
-      --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
-      --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
+  # Run Freqtrade hyperopt with calculated timerange
+  LOGURU_LEVEL=ERROR freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+    --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
+    --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
+
+  echo -e "\n$hr\nList $loss\n$hr"
+  freqtrade hyperopt-list
+  echo -e "\n$hr\nShow $loss\n$hr"
+  freqtrade hyperopt-show
 }
 
 calculate_score() {
@@ -152,13 +157,13 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
     #--spaces roi stoploss trailing protection trades --ignore-missing-spaces \
     #--analyze-per-epoch --random-state 42
 
-  LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
-    --spaces buy sell --ignore-missing-spaces --analyze-per-epoch \
-    --hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42 \
-    --logfile /dev/null > /dev/null 2>&1
+  #LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
+    #--spaces buy sell --ignore-missing-spaces --analyze-per-epoch \
+    #--hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42 \
+    #--logfile /dev/null > /dev/null 2>&1
 
   # Step 1: Optimize buy, sell, and ROI logic
-  #hyperopt 30 100 SharpeHyperOptLoss buy sell roi
+  hyperopt 10 10 SharpeHyperOptLoss buy sell roi
 
   # Step 2: Optimize ROI, protection, and trailing for profit management
   #hyperopt 60 500 ShortTradeDurHyperOptLoss roi protection trailing
@@ -171,27 +176,6 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   # Step 5: Comprehensive optimization with all parameters
   #hyperopt 180 2500 ExpectancyHyperOptLoss all
-  freqtrade hyperopt-list
-  freqtrade hyperopt-show
-
-  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
-
-  cd /home/runner/user_data/backtest_results
-  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
-  LATEST_JSON=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
-  echo $(jq '.strategy_comparison' $LATEST_JSON)
-  NEW_SCORE=$(calculate_score "$LATEST_JSON" "fibbo")
-  echo $NEW_SCORE && cd /home/runner
-
-  LOGURU_LEVEL=ERROR freqtrade hyperopt -e 500 --fee=$FEE --timerange="$TB" \
-    --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
-    --analyze-per-epoch --random-state 42 --logfile /dev/null > /dev/null 2>&1
-
-  echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
-  freqtrade hyperopt-list
-  freqtrade hyperopt-show
 
   echo -e "\n$hr\nFINAL BACKTEST\n$hr"
   rm -rf /home/runner/user_data/backtest_results/*
