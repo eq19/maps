@@ -253,7 +253,16 @@ class fibbo(IStrategy):
         return dataframe
 
     def informative_pairs(self):
-        return [(self.dp.current_whitelist()[0], self.informative_timeframe)]
+        # Get all trading pairs from the whitelist
+        pairs = self.dp.current_whitelist()
+    
+        # Assign the desired timeframe for each pair
+        informative_pairs = [(pair, '15m') for pair in pairs]
+
+        # Add any additional fixed pairs
+        informative_pairs += [("USDT/IDR", "1m"), ("USDT/IDR", "15m")]
+
+        return informative_pairs
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Stochastic RSI
