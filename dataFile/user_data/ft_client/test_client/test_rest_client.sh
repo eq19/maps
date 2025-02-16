@@ -55,14 +55,14 @@ hyperopt() {
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
     hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
-    echo "Running $hyperopt_loss for ID: $id | Spaces: $spaces | Epochs: $epochs"
+    echo "\nRunning $hyperopt_loss for ID: $id | Spaces: $spaces | Epochs: $epochs"
     LOGURU_LEVEL=ERROR freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
       --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
 
-    echo -e "\n$hr\nStep-$id: Hyperopt Result of ${loss} ${spaces}\n$hr"
+    echo -e "\n$hr\nStep-$id: Hyperopt Result\n$hr"
     freqtrade hyperopt-list
-    echo -e "\n$hr\nnStep-$id: Backtesting Results of ${loss} ${spaces}\n$hr"
+    echo -e "\n$hr\nnStep-$id: Backtesting Results\n$hr"
     freqtrade hyperopt-show
   done
 }
