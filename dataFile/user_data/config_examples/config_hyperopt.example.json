@@ -9,97 +9,59 @@
   "max_parallel_backtest": 8,
   "pipelines": [
     {
-      "id": "00_generate",
-      "type": "hyperopt_generate",
-      "timerange": "20210101-20220101",
-      "epochs": 3200,
-      "spaces": [
-        "buy",
-        "stoploss",
-        "roi"
-      ]
-    },
-    {
-      "id": "00_optimize",
-      "previous_id": "00_generate",
+      "id": 1,
+      "description": "Optimize buy, sell, and ROI logic (last 30 days)",
       "type": "hyperopt_optimize",
-      "timeframe_detail": "1h",
-      "timerange": "20210101-20220101",
-      "epochs": 256,
-      "spaces": [
-        "stoploss",
-        "roi",
-        "trailing"
-      ]
+      "timeframe": "1m",
+      "days": 30,
+      "epochs": 100,
+      "spaces": ["buy", "sell", "roi"],
+      "hyperopt_loss": "SharpeHyperOptLoss",
+      "parallel_jobs": 4
     },
     {
-      "id": "00_testing",
-      "previous_id": "00_optimize",
-      "type": "backtesting",
-      "timeframe_detail": "15m",
-      "timerange": "20240101-20240401"
-    },
-    {
-      "id": "01_generate",
-      "type": "hyperopt_generate",
-      "timerange": "20220101-20230101",
-      "epochs": 3200,
-      "spaces": [
-        "buy",
-        "stoploss",
-        "roi"
-      ]
-    },
-    {
-      "id": "01_optimize",
-      "previous_id": "01_generate",
+      "id": 2,
+      "description": "Optimize ROI, protection, and trailing for profit management (last 60 days)",
       "type": "hyperopt_optimize",
-      "timeframe_detail": "1h",
-      "timerange": "20220101-20230101",
-      "epochs": 256,
-      "spaces": [
-        "stoploss",
-        "roi",
-        "trailing"
-      ]
+      "timeframe": "1m",
+      "days": 60,
+      "epochs": 500,
+      "spaces": ["roi", "protection", "trailing"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss",
+      "parallel_jobs": 4
     },
     {
-      "id": "01_testing",
-      "previous_id": "01_optimize",
-      "type": "backtesting",
-      "timeframe_detail": "15m",
-      "timerange": "20240101-20240401"
-    },
-    {
-      "id": "02_generate",
-      "type": "hyperopt_generate",
-      "timerange": "20230101-20240101",
-      "epochs": 3200,
-      "spaces": [
-        "buy",
-        "stoploss",
-        "roi"
-      ]
-    },
-    {
-      "id": "02_optimize",
-      "previous_id": "02_generate",
+      "id": 3,
+      "description": "Optimize protection, stoploss, and trade parameters (last 90 days)",
       "type": "hyperopt_optimize",
-      "timeframe_detail": "1h",
-      "timerange": "20230101-20240101",
-      "epochs": 256,
-      "spaces": [
-        "stoploss",
-        "roi",
-        "trailing"
-      ]
+      "timeframe": "1m",
+      "days": 90,
+      "epochs": 1000,
+      "spaces": ["protection", "stoploss", "trades"],
+      "hyperopt_loss": "OnlyProfitHyperOptLoss",
+      "parallel_jobs": 4
     },
     {
-      "id": "02_testing",
-      "previous_id": "02_optimize",
-      "type": "backtesting",
-      "timeframe_detail": "15m",
-      "timerange": "20240101-20240401"
+      "id": 4,
+      "description": "Refine protection, stoploss, and trailing parameters for risk management (last 120 days)",
+      "type": "hyperopt_optimize",
+      "timeframe": "1m",
+      "days": 120,
+      "epochs": 1500,
+      "spaces": ["protection", "stoploss", "trailing"],
+      "hyperopt_loss": "MaxDrawDownHyperOptLoss",
+      "parallel_jobs": 4
+    },
+    {
+      "id": 5,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "type": "hyperopt_optimize",
+      "timeframe": "1m",
+      "days": 180,
+      "epochs": 2500,
+      "spaces": ["all"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss",
+      "parallel_jobs": 4
     }
   ]
 }
