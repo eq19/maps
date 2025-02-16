@@ -305,6 +305,7 @@ class fibbo(IStrategy):
         # ---- Fetch and merge informative timeframe (15m) ----
         informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
         if informative is None or 'close' not in informative.columns:
+            logger.debug("Informative pairs data: %s", self.informative_pairs.keys())
             logger.error("Missing 'close' column in informative DataFrame for pair: %s", metadata['pair'])
             return dataframe  # Return original dataframe to prevent crashing
     
