@@ -3,7 +3,6 @@
   "position_stacking": false,
   "disableparamexport": false,
   "hyperopt_jobs": 32,
-  "hyperopt_loss": "MultiMetricHyperOptLoss",
   "hyperopt_min_trades": 150,
   "print_all": true,
   "max_generated_candidates": 100,
