@@ -68,8 +68,9 @@ hyperopt() {
 }
 
 calculate_score() {
-  local json_file="$1"
-  local key="$2"
+  cd /home/runner/user_data/backtest_results
+  unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
+  json_file=$(ls -t backtest-result-*.json | grep -v '.meta.json' | head -n 1)
 
   # Extract JSON data for the given strategy key
   local json_data=$(jq ".strategy_comparison[] | select(.key==\"$key\")" "$json_file")
@@ -104,6 +105,7 @@ calculate_score() {
 
   # Return total score
   echo "$total_score"
+  cd /home/runner   
 }
 
 if [[ "$1" == "listing" ]]; then
