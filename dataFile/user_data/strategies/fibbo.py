@@ -20,6 +20,7 @@ from freqtrade.persistence import Trade
 # --------------------------------
 # Add your lib to import here
 import random
+import logging
 from itertools import product, chain
 from datetime import datetime
 from functools import reduce
@@ -29,6 +30,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 
 random.seed(18)
+logger = logging.getLogger(__name__)
 # random.seed(datetime.now().timestamp())
 
 def indicator_permutations(profiles, max_indicators=1, include_none=True):
@@ -58,7 +60,7 @@ class fibbo(IStrategy):
 
     # Optimal timeframe for the strategy.
     timeframe = "1m"
-    # informative_timeframe = '15m'
+    informative_timeframe = "15m"
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -249,73 +251,76 @@ class fibbo(IStrategy):
         dataframe['momentum_hist'] = momentum_hist
 
         return dataframe
-    
+
+    def informative_pairs(self):
+        return [(self.dp.current_whitelist()[0], self.informative_timeframe)]
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Stochastic RSI
         stoch_rsi = ta.STOCHRSI(dataframe)
         dataframe['fastd_rsi'] = stoch_rsi['fastd']
         dataframe['fastk_rsi'] = stoch_rsi['fastk']
 
-        # Calculate ATR with a 14-period setting and rolling mean of the True Range
+        # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
 
-        # Get the 14 day rsi
+        # RSI
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
-        
-        # EMA - Exponential Moving Average
-        dataframe['ema3']  = ta.EMA(dataframe, timeperiod=3)
-        dataframe['ema5']  = ta.EMA(dataframe, timeperiod=5)
-        dataframe['ema8']  = ta.EMA(dataframe, timeperiod=8)
-        dataframe['ema9']  = ta.EMA(dataframe, timeperiod=9)
-        dataframe['ema13'] = ta.EMA(dataframe, timeperiod=13)
-        dataframe['ema21'] = ta.EMA(dataframe, timeperiod=21)
-        dataframe['ema34'] = ta.EMA(dataframe, timeperiod=34)
-        dataframe['ema55'] = ta.EMA(dataframe, timeperiod=55)
-        dataframe['ema89'] = ta.EMA(dataframe, timeperiod=89)
 
-        # DEMA - Double Exponential Moving Average
-        dataframe['dema3']  = ta.DEMA(dataframe, timeperiod=3)
-        dataframe['dema5']  = ta.DEMA(dataframe, timeperiod=5)
-        dataframe['dema8']  = ta.DEMA(dataframe, timeperiod=8)
-        dataframe['dema9']  = ta.DEMA(dataframe, timeperiod=9)
-        dataframe['dema13'] = ta.DEMA(dataframe, timeperiod=13)
-        dataframe['dema21'] = ta.DEMA(dataframe, timeperiod=21)
-        dataframe['dema34'] = ta.DEMA(dataframe, timeperiod=34)
-        dataframe['dema55'] = ta.DEMA(dataframe, timeperiod=55)
-        dataframe['dema89'] = ta.DEMA(dataframe, timeperiod=89)
+        # Exponential Moving Averages
+        ema_periods = [3, 5, 8, 9, 13, 21, 34, 55, 89]
+        for period in ema_periods:
+            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
+            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
 
-       # MACD
-        macd = ta.MACD(dataframe, slow=self.macd_profiles[self.timeframe]["slow"], fast=self.macd_profiles[self.timeframe]["fast"], signal=self.macd_profiles[self.timeframe]["signal"])
-        dataframe["macd"]       = macd["macd"]
-        dataframe["macdhist"]   = macd["macdhist"]
-        dataframe["macdsignal"] = macd["macdsignal"]
+        # MACD
+        macd = ta.MACD(dataframe, fastperiod=12, slowperiod=26, signalperiod=9)
+        dataframe['macd'] = macd['macd']
+        dataframe['macdhist'] = macd['macdhist']
+        dataframe['macdsignal'] = macd['macdsignal']
 
         # Bollinger Bands
-        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
-        dataframe['bb_middleband'] = bollinger['mid']
-        dataframe['bb_upperband']  = bollinger['upper']
-        dataframe['bb_lowerband']  = bollinger['lower']
-       
+        bollinger = ta.BBANDS(dataframe, timeperiod=20, nbdevup=2, nbdevdn=2, matype=0)
+        dataframe['bb_upperband'] = bollinger['upperband']
+        dataframe['bb_middleband'] = bollinger['middleband']
+        dataframe['bb_lowerband'] = bollinger['lowerband']
+
         # VWAP
-        # dataframe['vwap'] = qtpylib.vwap(dataframe)
         dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
 
-        # TTM Squeeze
-        dataframe = self.ttm_squeeze(dataframe)
-        dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
-
-        # Swing high/low for Fibonacci levels
-        dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
-        dataframe['swing_low'] = dataframe['low'].rolling(self.buy_swing_period.value).min()
+        # Swing High/Low for Fibonacci
+        dataframe['swing_high'] = dataframe['high'].rolling(24).max()
+        dataframe['swing_low'] = dataframe['low'].rolling(24).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
-       
-        # Compute all Fibonacci retracement levels
         dataframe['fib_236'] = dataframe['swing_high'] - swing_range * 0.236
         dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
 
-        return dataframe
+        # ---- Fetch and merge informative timeframe (15m) ----
+        informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
+
+        # Compute indicators on informative (15m) timeframe
+        informative['ema50'] = ta.EMA(informative, timeperiod=50)
+        informative['rsi'] = ta.RSI(informative, timeperiod=14)
+        informative['atr'] = ta.ATR(informative, timeperiod=14)
+
+        macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
+        informative['macd'] = macd_inf['macd']
+        informative['macdhist'] = macd_inf['macdhist']
+        informative['macdsignal'] = macd_inf['macdsignal']
+
+        # Merge informative pair data into main dataframe
+        merged_dataframe = merge_informative_pair(dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True)
+
+        # Check for length mismatch
+        if len(merged_dataframe) != len(dataframe):
+            logger.warning(
+                f"Dataframe length mismatch after merging informative pair: {metadata['pair']} "
+                f"(before: {len(dataframe)}, after: {len(merged_dataframe)})"
+            )
+
+        return merged_dataframe
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Define the buy conditions
