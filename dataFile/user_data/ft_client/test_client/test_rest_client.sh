@@ -140,7 +140,6 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
     --hyperopt-loss ProfitDrawDownHyperOptLoss --random-state 42 \
     --logfile /dev/null > /dev/null 2>&1
 
-  echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
   freqtrade hyperopt-list
   freqtrade hyperopt-show
 
@@ -159,7 +158,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
     --spaces roi stoploss trailing protection trades --ignore-missing-spaces \
     --analyze-per-epoch --random-state 42 --logfile /dev/null > /dev/null 2>&1
 
-  echo -e "\n$hr\nFINAL HYPEROPT\n$hr"
+  echo -e "\n$hr\nRERUN HYPEROPT\n$hr"
   freqtrade hyperopt-list
   freqtrade hyperopt-show
 
