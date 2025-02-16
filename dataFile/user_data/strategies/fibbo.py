@@ -123,14 +123,14 @@ class fibbo(IStrategy):
 
     slow_emas       = ["34", "55", "89"]
     fast_demas      = ["5", "8", "13", "21"]
-    sell_profiles   = ["MACD", "STOCH_OSC", "TTM"]
-    buy_profiles    = ["MACD", "BB", "STOCH_OSC", "TTM", "EMA", "FIBBO"]
+    sell_profiles   = ["MACD", "STOCH_OSC", "TTM", "FIBBO"]
+    buy_profiles    = ["MACD", "BB", "EMA", "STOCH_OSC", "TTM", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_profiles, max_indicators=2)
-    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="STOCH_OSC", optimize=True)
-    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="STOCH_OSC", optimize=True)
+    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="FIBBO", optimize=True)
+    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="FIBBO", optimize=True)
 
     # Define the parameter spaces
     buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="buy", optimize=True)
@@ -323,18 +323,18 @@ class fibbo(IStrategy):
 
         # Fibonacci retracement near 0.382 or 0.618
         dema_cross   = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
-        near_fib_382 = dataframe['close'].between(dataframe['fib_382'] * 0.998, dataframe['fib_382'] * 1.002)
-        near_fib_618 = dataframe['close'].between(dataframe['fib_618'] * 0.998, dataframe['fib_618'] * 1.002)
-        volume_check = dataframe['volume'] > dataframe['volume'].rolling(20).mean()
+        near_fib_382 = (dataframe['close'].between(dataframe['fib_382'] * 0.998, dataframe['fib_382'] * 1.002))
+        near_fib_618 = (dataframe['close'].between(dataframe['fib_618'] * 0.998, dataframe['fib_618'] * 1.002))
+        volume_check = (dataframe['volume'] > dataframe['volume'].rolling(20).mean())
         
         ### Momentum Indicators ###
-        FIBBO        = dema_cross & (near_fib_382 | near_fib_618) & volume_check
         RSI          = (dataframe['rsi'] < self.buy_rsi.value)
         EMA          = (dataframe["ema9"] > dataframe["ema21"])
         VWAP         = (dataframe['close'] > dataframe['vwap'])
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
-        BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
+        FIBBO        = (dema_cross & (near_fib_382 | near_fib_618) & volume_check)
+        BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) & (dataframe["close"].shift(1) < dataframe["close"])
+        STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
@@ -367,15 +367,23 @@ class fibbo(IStrategy):
         # Define the sell conditions
         long_conditions = []
 
+        # Exit condition: Price crosses below 23.6% Fib level
+        prev_fib_236 = (dataframe['close'].shift(1) > dataframe['fib_236'])  # Previous candle above Fib 23.6%
+        curr_fib_236 = (dataframe['close'] < dataframe['fib_236'])  # Current candle below Fib 23.6%
+        volume_check = (dataframe['volume'] > 0)  # Ensure there is trading volume
+        
         ### Momentum Indicators ###
-        RSI = (dataframe['rsi'] >= self.sell_rsi.value)
-        MACD = (dataframe["macd"] >= dataframe["macdsignal"])
-        STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
+        RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
+        MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
+        FIBBO        = (prev_fib_236 & curr_fib_236 & volume_check)
+        STOCK_OSC    = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
+        if "FIBBO" in self.sell_additional_indicator.value:
+            long_conditions.append(FIBBO)
         if "STOCK_OSC" in self.sell_additional_indicator.value:
             long_conditions.append(STOCK_OSC)
 
