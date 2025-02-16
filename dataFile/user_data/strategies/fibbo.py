@@ -303,9 +303,10 @@ class fibbo(IStrategy):
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
 
         # ---- Fetch and merge informative timeframe (15m) ----
+        logger.debug("Informative pairs data: %s", self.informative_pairs.keys())
         informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
+
         if informative is None or 'close' not in informative.columns:
-            logger.debug("Informative pairs data: %s", self.informative_pairs.keys())
             logger.error("Missing 'close' column in informative DataFrame for pair: %s", metadata['pair'])
             return dataframe  # Return original dataframe to prevent crashing
     
