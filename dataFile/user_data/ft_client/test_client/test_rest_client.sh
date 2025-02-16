@@ -39,6 +39,16 @@ echo "Backtesting Timerange: $TB"
 echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 printenv
 
+hyperopt() {
+    local timerange=$1
+    local epochs=$2
+    local loss=$3
+    shift 3
+    local spaces="$@"
+
+    freqtrade hyperopt --timerange -${timerange}d --epochs ${epochs} -j 4 --spaces ${spaces} --hyperopt-loss ${loss}
+}
+
 calculate_score() {
   local json_file="$1"
   local key="$2"
