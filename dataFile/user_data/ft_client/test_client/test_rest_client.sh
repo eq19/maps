@@ -46,6 +46,10 @@ hyperopt() {
   shift 3
   local spaces="$@"
 
+  # Increment the counter
+  counter=${counter:-0}
+  counter=$((counter + 1))
+    
   # Calculate start_date and end_date
   local end_date=$(date +"%Y%m%d")  # Today’s date
   local start_date=$(date -d "-${days} days" +"%Y%m%d")  # `days` ago
@@ -55,9 +59,9 @@ hyperopt() {
     --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
     --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
 
-  echo -e "\n$hr\nList $loss\n$hr"
+  echo -e "\n$hr\nStep-${counter}: Hyperopt Result of ${loss} ${spaces}\n$hr"
   freqtrade hyperopt-list
-  echo -e "\n$hr\nShow $loss\n$hr"
+  echo -e "\n$hr\nnStep-${counter}: Backtesting Results of ${loss} ${spaces}\n$hr"
   freqtrade hyperopt-show
 }
 
