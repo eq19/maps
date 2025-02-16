@@ -11,6 +11,7 @@ TIMEFRAMES='1m 15m'
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
+HYPERFILE=user_data/config_examples/config_hyperopt.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -39,30 +40,31 @@ echo "Backtesting Timerange: $TB"
 echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 printenv
 
+# Function to calculate start and end date
 hyperopt() {
-  local days=$1
-  local epochs=$2
-  local loss=$3
-  shift 3
-  local spaces="$@"
+  # Load JSON and filter by given ID
+  jq -c --argjson ids "[$*]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
+    id=$(echo "$pipeline" | jq -r '.id')
+    days=$(echo "$pipeline" | jq -r '.days')
+    epochs=$(echo "$pipeline" | jq -r '.epochs')
 
-  # Increment the counter
-  counter=${counter:-0}
-  counter=$((counter + 1))
-    
-  # Calculate start_date and end_date
-  local end_date=$(date +"%Y%m%d")  # Today’s date
-  local start_date=$(date -d "-${days} days" +"%Y%m%d")  # `days` ago
+    end_date=$(date +"%Y%m%d")
+    start_date=$(date -d "$days days ago" +"%Y%m%d")
+    timerange="$start_date-$end_date"
 
-  # Run Freqtrade hyperopt with calculated timerange
-  LOGURU_LEVEL=ERROR freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
-    --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
-    --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
+    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+    hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
-  echo -e "\n$hr\nStep-${counter}: Hyperopt Result of ${loss} ${spaces}\n$hr"
-  freqtrade hyperopt-list
-  echo -e "\n$hr\nnStep-${counter}: Backtesting Results of ${loss} ${spaces}\n$hr"
-  freqtrade hyperopt-show
+    echo "Running $hyperopt_loss for ID: $id | Spaces: $spaces | Epochs: $epochs"
+    LOGURU_LEVEL=ERROR freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+      --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
+      --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
+
+    echo -e "\n$hr\nStep-$id: Hyperopt Result of ${loss} ${spaces}\n$hr"
+    freqtrade hyperopt-list
+    echo -e "\n$hr\nnStep-$id: Backtesting Results of ${loss} ${spaces}\n$hr"
+    freqtrade hyperopt-show
+  done
 }
 
 calculate_score() {
@@ -155,23 +157,8 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   echo $OLD_SCORE && cd /home/runner
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
-  freqtrade hyperopt --help
+  freqtrade hyperopt --help && hyperopt 1
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-
-  # Step 1: Optimize buy, sell, and ROI logic
-  hyperopt 10 100 SharpeHyperOptLoss buy sell roi
-
-  # Step 2: Optimize ROI, protection, and trailing for profit management
-  #hyperopt 60 500 ShortTradeDurHyperOptLoss roi protection trailing
-
-  # Step 3: Optimize protection, stoploss, and trade parameters
-  #hyperopt 90 1000 OnlyProfitHyperOptLoss protection stoploss trades
-
-  # Step 4: Refine protection, stoploss, and trailing parameters for risk management
-  #hyperopt 120 1500 MaxDrawDownHyperOptLoss protection stoploss trailing
-
-  # Step 5: Comprehensive optimization with all parameters
-  #hyperopt 180 2500 ExpectancyHyperOptLoss all
 
   cd /home/runner/user_data/backtest_results
   unzip $(ls -t backtest-result-*.zip | head -n 1) > /dev/null 2>&1
