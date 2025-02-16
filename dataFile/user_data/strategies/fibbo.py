@@ -139,7 +139,7 @@ class fibbo(IStrategy):
     buy_fast_dema               = CategoricalParameter(fast_demas, default="13", space="buy", optimize=True)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
-    swing_period                = IntParameter(30, 100, default=50, space="buy", optimize=True)
+    buy_swing_period            = IntParameter(30, 100, default=50, space="buy", optimize=True)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=True)
     sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=True)
     sell_rsi_threshold          = IntParameter(60, 80, default=75, space="sell", optimize=True)
@@ -305,8 +305,8 @@ class fibbo(IStrategy):
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         # Swing high/low for Fibonacci levels
-        dataframe['swing_high'] = dataframe['high'].rolling(self.swing_period.value).max()
-        dataframe['swing_low'] = dataframe['low'].rolling(self.swing_period.value).min()
+        dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
+        dataframe['swing_low'] = dataframe['low'].rolling(self.buy_swing_period.value).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
        
         # Compute all Fibonacci retracement levels
