@@ -304,11 +304,14 @@ class fibbo(IStrategy):
 
         # ---- Fetch and merge informative timeframe (15m) ----
         informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
-
-        # Compute indicators on informative (15m) timeframe
-        informative['ema50'] = ta.EMA(informative, timeperiod=50)
+        if informative is None or 'close' not in informative.columns:
+            logger.error("Missing 'close' column in informative DataFrame for pair: %s", metadata['pair'])
+            return dataframe  # Return original dataframe to prevent crashing
+    
+        # Now it's safe to use 'close'
         informative['rsi'] = ta.RSI(informative, timeperiod=14)
         informative['atr'] = ta.ATR(informative, timeperiod=14)
+        informative['ema50'] = ta.EMA(informative, timeperiod=50)
 
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
