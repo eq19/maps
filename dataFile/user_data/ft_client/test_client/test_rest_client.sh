@@ -46,8 +46,14 @@ hyperopt() {
     shift 3
     local spaces="$@"
 
-    freqtrade hyperopt --timerange -${timerange}d --epochs ${epochs} -j 4 --spaces ${spaces} --hyperopt-loss ${loss} \
-      --ignore-missing-spaces --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
+    # Calculate start_date and end_date
+    local end_date=$(date +"%Y%m%d")  # Today’s date
+    local start_date=$(date -d "-${days} days" +"%Y%m%d")  # `days` ago
+
+    # Run Freqtrade hyperopt with calculated timerange
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+      --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
+      --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
 }
 
 calculate_score() {
