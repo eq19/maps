@@ -288,10 +288,15 @@ class fibbo(IStrategy):
         # VWAP
         dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
 
+       # TTM Squeeze
+        dataframe = self.ttm_squeeze(dataframe)
+        dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
+
         # Swing High/Low for Fibonacci
         dataframe['swing_high'] = dataframe['high'].rolling(24).max()
         dataframe['swing_low'] = dataframe['low'].rolling(24).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
+
         dataframe['fib_236'] = dataframe['swing_high'] - swing_range * 0.236
         dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
