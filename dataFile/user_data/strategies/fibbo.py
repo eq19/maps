@@ -383,7 +383,7 @@ class fibbo(IStrategy):
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
         FIBBO        = (volume_check & near_fib_382)  # Current candle below Fib 38.2%
-        STOCK_OSC    = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
+        STOCK_OSC = (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
