@@ -314,7 +314,7 @@ class fibbo(IStrategy):
         dataframe['fib_382'] = dataframe['swing_high'] - swing_range * 0.382
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
-        
+
         return dataframe
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
