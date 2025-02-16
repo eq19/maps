@@ -116,7 +116,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
   #freqtrade edge --fee=$FEE
 
-  echo -e "\n$hr\nRUN BACKTESTING\n$hr"
+  echo -e "\n$hr\nRUN BACKTEST\n$hr"
   freqtrade backtesting --help
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
@@ -143,7 +143,6 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   freqtrade hyperopt-show
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  freqtrade backtesting --help
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
@@ -155,7 +154,6 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   freqtrade hyperopt-show
 
   echo -e "\n$hr\nFINAL BACKTEST\n$hr"
-  freqtrade backtesting --help
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
