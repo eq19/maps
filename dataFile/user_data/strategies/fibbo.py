@@ -278,9 +278,9 @@ class fibbo(IStrategy):
 
         # EMA & DEMA
         for period in self.slow_emas:
-            dataframe[f'dema{period}'] = ta.EMA(dataframe, timeperiod=period)
+            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
         for period in self.fast_demas:
-            dataframe[f'ema{period}'] = ta.DEMA(dataframe, timeperiod=period)
+            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
 
         # MACD
         macd = ta.MACD(dataframe, fastperiod=12, slowperiod=26, signalperiod=9)
@@ -297,7 +297,7 @@ class fibbo(IStrategy):
         # VWAP
         dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
 
-       # TTM Squeeze
+        # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
