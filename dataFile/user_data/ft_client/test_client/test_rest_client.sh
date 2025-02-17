@@ -67,7 +67,7 @@ hyperopt() {
     freqtrade hyperopt-show
 
     NEW_SCORE=$(calculate_score)
-    echo $NEW_SCORE
+    echo "NEW SCORE: $NEW_SCORE"
   done
 }
 
@@ -174,7 +174,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   OLD_SCORE=$(calculate_score)
-  echo $OLD_SCORE
+  echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help && hyperopt 1
