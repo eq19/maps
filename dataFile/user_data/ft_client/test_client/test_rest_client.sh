@@ -5,7 +5,6 @@
 # Ref: https://strat.ninja/ranking.php
 #
 hr='------------------------------------------------------------------------------------'
-NEW_SCORE=0
 FEE=0.003322
 STRATEGY=fibbo
 TIMEFRAMES='1m 15m'
@@ -65,9 +64,6 @@ hyperopt() {
     freqtrade hyperopt-list
     echo -e "\n$hr\nnStep-$id: Backtesting Results\n$hr"
     freqtrade hyperopt-show
-
-    NEW_SCORE=$(calculate_score)
-    echo "NEW SCORE: $NEW_SCORE"
   done
 }
 
@@ -179,6 +175,14 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   freqtrade hyperopt --help && hyperopt 1
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
+
+  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
+  freqtrade backtesting --help
+  rm -rf /home/runner/user_data/backtest_results/*
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+  
+  NEW_SCORE=$(calculate_score)
+  echo "NEW SCORE: $NEW_SCORE"
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
