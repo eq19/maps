@@ -276,11 +276,11 @@ class fibbo(IStrategy):
         # RSI
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
-        # Exponential Moving Averages
-        ema_periods = [3, 5, 8, 9, 13, 21, 34, 55, 89]
-        for period in ema_periods:
-            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
-            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
+        # EMA & DEMA
+        for period in self.slow_emas:
+            dataframe[f'dema{period}'] = ta.EMA(dataframe, timeperiod=period)
+        for period in self.fast_demas:
+            dataframe[f'ema{period}'] = ta.DEMA(dataframe, timeperiod=period)
 
         # MACD
         macd = ta.MACD(dataframe, fastperiod=12, slowperiod=26, signalperiod=9)
@@ -322,7 +322,8 @@ class fibbo(IStrategy):
         # Now it's safe to use 'close'
         informative['rsi'] = ta.RSI(informative, timeperiod=14)
         informative['atr'] = ta.ATR(informative, timeperiod=14)
-        informative['ema50'] = ta.EMA(informative, timeperiod=50)
+        for period in self.slow_emas:
+            informative[f'ema{period}'] = ta.EMA(informative, timeperiod=period)
 
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
@@ -351,8 +352,8 @@ class fibbo(IStrategy):
         
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] < self.buy_rsi.value)
-        EMA          = (dataframe["ema9"] > dataframe["ema21"])
         VWAP         = (dataframe['close'] > dataframe['vwap'])
+        DEMA         = (dataframe["dema13"] > dataframe["ema34_15m"])
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
         FIBBO        = (dema_cross & near_fib_618)  # Current candle above Fib 61.8%
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) & (dataframe["close"].shift(1) < dataframe["close"])
@@ -360,11 +361,10 @@ class fibbo(IStrategy):
 
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
+        long_conditions.append(DEMA)
 
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
-        if "EMA" in self.buy_additional_indicator.value:
-            long_conditions.append(EMA)
         if "MACD" in self.buy_additional_indicator.value:
             long_conditions.append(MACD)
         if "FIBBO" in self.buy_additional_indicator.value:
