@@ -11,8 +11,8 @@
     {
       "id": 1,
       "description": "Optimize buy, sell, and ROI logic (last 30 days)",
-      "days": 10,
-      "epochs": 10,
+      "days": 3,
+      "epochs": 100,
       "spaces": ["buy", "sell", "roi"],
       "hyperopt_loss": "SharpeHyperOptLoss",
       "parallel_jobs": 4
@@ -20,7 +20,7 @@
     {
       "id": 2,
       "description": "Optimize ROI, protection, and trailing for profit management (last 60 days)",
-      "days": 60,
+      "days": 6,
       "epochs": 500,
       "spaces": ["roi", "protection", "trailing"],
       "hyperopt_loss": "ShortTradeDurHyperOptLoss",
@@ -29,7 +29,7 @@
     {
       "id": 3,
       "description": "Optimize protection, stoploss, and trade parameters (last 90 days)",
-      "days": 90,
+      "days": 9,
       "epochs": 1000,
       "spaces": ["protection", "stoploss", "trades"],
       "hyperopt_loss": "OnlyProfitHyperOptLoss",
@@ -38,7 +38,7 @@
     {
       "id": 4,
       "description": "Refine protection, stoploss, and trailing parameters for risk management (last 120 days)",
-      "days": 120,
+      "days": 12,
       "epochs": 1500,
       "spaces": ["protection", "stoploss", "trailing"],
       "hyperopt_loss": "MaxDrawDownHyperOptLoss",
@@ -47,7 +47,7 @@
     {
       "id": 5,
       "description": "Comprehensive optimization with all parameters (last 180 days)",
-      "days": 180,
+      "days": 18,
       "epochs": 2500,
       "spaces": ["all"],
       "hyperopt_loss": "ExpectancyHyperOptLoss",
