@@ -12,7 +12,7 @@
       "id": 1,
       "description": "Optimize buy, sell, and ROI logic (last 30 days)",
       "days": 3,
-      "epochs": 500,
+      "epochs": 10,
       "spaces": ["buy", "sell", "roi"],
       "hyperopt_loss": "SharpeHyperOptLoss",
       "parallel_jobs": 4
