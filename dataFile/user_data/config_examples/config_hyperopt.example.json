@@ -10,7 +10,7 @@
   "pipelines": [
     {
       "id": 1,
-      "description": "Optimize buy, sell, and ROI (for robust result change to the last 30 days)",
+      "description": "Optimize buy, sell, and ROI (use to the last 30 days for robust result)",
       "days": 3,
       "epochs": 10,
       "spaces": ["buy", "sell", "roi"],
