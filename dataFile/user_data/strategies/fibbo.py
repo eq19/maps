@@ -123,10 +123,10 @@ class fibbo(IStrategy):
     # Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
-    slow_emas       = ["34", "55", "89"]
     fast_demas      = ["5", "8", "13", "21"]
-    sell_profiles   = ["MACD", "STOCH_OSC", "TTM", "FIBBO"]
-    buy_profiles    = ["BB", "EMA", "MACD", "STOCH_OSC", "TTM", "FIBBO"]
+    slow_emas       = ["34", "55", "89", "144"]
+    sell_profiles   = ["MACD", "TTM", "STOCH_OSC", "FIBBO"]
+    buy_profiles    = ["BB", "EMA", "MACD", "TTM", "STOCH_OSC", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_profiles, max_indicators=2)
