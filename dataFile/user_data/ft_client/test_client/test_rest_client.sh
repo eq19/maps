@@ -58,7 +58,7 @@ hyperopt() {
     echo -e "\nRunning $hyperopt_loss ID: $id | Spaces: $spaces | Epochs: $epochs | Days: $days"
     LOGURU_LEVEL=ERROR freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
-      --analyze-per-epoch  --random-state 42 --logfile /dev/null > /dev/null 2>&1
+      --analyze-per-epoch  --random-state 42 #--logfile /dev/null > /dev/null 2>&1
 
     echo -e "\n$hr\nStep-$id: Hyperopt Result\n$hr"
     freqtrade hyperopt-list
