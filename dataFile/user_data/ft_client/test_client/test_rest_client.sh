@@ -69,28 +69,30 @@ hyperopt() {
 
 calculate_score() {
 
-    # Unzip the latest backtest result file
-    local dir="/home/runner/user_data/backtest_results"
-    local latest_zip=$(ls -t "$dir/backtest-result-"*.zip | head -n 1)
-    if [[ -z "$latest_zip" ]]; then
-        echo "No ZIP file found in $dir"
-        return 1
-    fi
-    unzip -q "$latest_zip" -d "$dir"  # -q for quiet mode
+  # Unzip the latest backtest result file
+  local dir="/home/runner/user_data/backtest_results"
+  local latest_zip=$(ls -t "$dir/backtest-result-"*.zip | head -n 1)
+  if [[ -z "$latest_zip" ]]; then
+     echo "No ZIP file found in $dir"
+      return 1
+  fi
+  unzip -q "$latest_zip" -d "$dir"  # -q for quiet mode
 
-    # Find the latest JSON file (excluding .meta.json)
-    local json_file=$(ls -t "$dir/backtest-result-"*.json | grep -v '.meta.json' | head -n 1)
-    if [[ -z "$json_file" ]]; then
-        echo "No JSON file found in $dir"
-        return 1
-    fi
+  # Find the latest JSON file (excluding .meta.json)
+  local json_file=$(ls -t "$dir/backtest-result-"*.json | grep -v '.meta.json' | head -n 1)
+  if [[ -z "$json_file" ]]; then
+    echo "No JSON file found in $dir"
+    return 1
+  fi
 
-    # Extract JSON data for the given strategy key
-    local json_data=$(jq ".strategy_comparison[] | select(.key==\"fibbo\")" "$json_file")
-    if [[ -z "$json_data" ]]; then
-        echo "No data found for key: $key"
-        return 1
-    fi
+  # Extract JSON data for the given strategy key
+  local json_data=$(jq ".strategy_comparison[] | select(.key==\"fibbo\")" "$json_file")
+  if [[ -z "$json_data" ]]; then
+    echo "No data found for key: $key"
+    return 1
+  else
+    rm -rf $dir/*
+  fi
 
   # Extract values
   local winrate=$(echo "$json_data" | jq -r '.winrate')
@@ -102,9 +104,9 @@ calculate_score() {
 
   # Prevent division by zero in profit factor calculation
   if (( $(echo "$profit_sum == $profit_total" | bc -l) )); then
-      profit_factor=1
+    profit_factor=1
   else
-      profit_factor=$(echo "scale=4; $profit_sum / ($profit_sum - $profit_total)" | bc)
+    profit_factor=$(echo "scale=4; $profit_sum / ($profit_sum - $profit_total)" | bc)
   fi
 
   # Adjusted Winrate (subtracting drawdown)
