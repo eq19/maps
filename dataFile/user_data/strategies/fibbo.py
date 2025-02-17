@@ -123,10 +123,10 @@ class fibbo(IStrategy):
     # Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
-    fast_demas      = ["5", "8", "13", "21"]
-    slow_emas       = ["34", "55", "89", "144"]
+    fast_demas      = [5, 8, 13, 21]
+    slow_emas       = [34, 55, 89, 144]
     sell_indicators = ["MACD", "TTM", "STOCH_OSC", "FIBBO"]
-    buy_indicators  = ["BB", "EMA", "MACD", "TTM", "STOCH_OSC", "FIBBO"]
+    buy_indicators  = ["BB", "EMA", "MCD", "TTM", "STOCH_OSC", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
@@ -137,8 +137,8 @@ class fibbo(IStrategy):
     # Define the parameter spaces
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
-    buy_slow_ema                = CategoricalParameter(slow_emas, default="34", space="buy", optimize=True)
-    buy_fast_dema               = CategoricalParameter(fast_demas, default="13", space="buy", optimize=True)
+    buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=True)
+    buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=True)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=True)
