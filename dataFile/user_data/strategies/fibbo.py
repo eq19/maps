@@ -346,17 +346,13 @@ class fibbo(IStrategy):
         # Define the buy conditions
         long_conditions = []
 
-        # Fibonacci retracement near 0.618
-        dema_cross   = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}"])
-        near_fib_618 = (dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])
-        
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] < self.buy_rsi.value)
         VWAP         = (dataframe['close'] > dataframe['vwap'])
-        DEMA         = (dataframe["dema13"] > dataframe["ema34_15m"])
+        DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_15m"])
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
-        FIBBO        = (dema_cross & near_fib_618)  # Current candle above Fib 61.8%
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) & (dataframe["close"].shift(1) < dataframe["close"])
+        FIBBO        = (dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])
         STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
@@ -388,16 +384,12 @@ class fibbo(IStrategy):
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Define the sell conditions
         long_conditions = []
-
-        # Exit condition: Price crosses below 38.2% Fib level
-        volume_check = (dataframe['volume'] > 0)  # Ensure there is trading volume
-        near_fib_382 = (dataframe['close'].shift(1) > dataframe['fib_382']) & (dataframe['close'] < dataframe['fib_382'])
-        
+ 
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
-        FIBBO        = (volume_check & near_fib_382)  # Current candle below Fib 38.2%
-        STOCK_OSC = (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
+        FIBBO        = (dataframe['close'].shift(1) > dataframe['fib_382']) & (dataframe['close'] < dataframe['fib_382'])
+        STOCK_OSC    = (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
