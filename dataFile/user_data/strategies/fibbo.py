@@ -123,8 +123,8 @@ class fibbo(IStrategy):
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
-    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=False)
-    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
+    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="STOCH_OSC", optimize=False)
+    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="STOCH_OSC", optimize=False)
 
     # Define the parameter spaces
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
@@ -385,7 +385,7 @@ class fibbo(IStrategy):
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
         FIBBO        = (dataframe['close'].shift(1) > dataframe['fib_382']) & (dataframe['close'] < dataframe['fib_382'])
-        STOCK_OSC    = (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
+        STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         #long_conditions.append(RSI)
 
