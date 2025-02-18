@@ -314,8 +314,10 @@ class fibbo(IStrategy):
         # Now it's safe to use 'close'
         informative['rsi'] = ta.RSI(informative, timeperiod=14)
         informative['atr'] = ta.ATR(informative, timeperiod=14)
-        informative[f'ema{self.buy_slow_ema}'] = ta.EMA(informative, timeperiod=self.buy_slow_ema)
-        informative[f'dema{self.buy_fast_dema}'] = ta.EMA(informative, timeperiod=self.buy_fast_dema)
+        for period in self.slow_emas:
+            informative[f'ema{period}'] = ta.EMA(informative, timeperiod=period)
+        for period in self.fast_demas:
+            informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=period)
 
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
