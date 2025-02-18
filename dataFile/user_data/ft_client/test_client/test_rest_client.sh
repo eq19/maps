@@ -62,9 +62,9 @@ hyperopt() {
       --logfile /dev/null > /dev/null 2>&1
 
     echo -e "\n$hr\nStep-$id: Hyperopt Result\n$hr"
-    freqtrade hyperopt-list
+    freqtrade hyperopt-list --no-details
     #echo -e "\n$hr\nStep-$id: Backtesting Results\n$hr"
-    #freqtrade hyperopt-show
+    freqtrade hyperopt-show --best
   done
 }
 
