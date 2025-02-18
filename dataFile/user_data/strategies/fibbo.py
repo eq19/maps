@@ -51,15 +51,6 @@ def indicator_permutations(profiles, max_indicators=1, include_none=True):
 
 class fibbo(IStrategy):
 
-     def __init__(self, config: dict) -> None:
-        super().__init__(config)
-        # Retrieve `random_state` from config if provided
-        self.random_state = config.get('random_state', None)
-        
-        if self.random_state is not None:
-            random.seed(self.random_state)
-            np.random.seed(self.random_state)
-
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
@@ -129,6 +120,15 @@ class fibbo(IStrategy):
     sell_indicators = ["MACD", "TTM", "STOCH_OSC", "FIBBO"]
     buy_indicators  = ["BB", "EMA", "MCD", "TTM", "STOCH_OSC", "FIBBO"]
     
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        # Retrieve `random_state` from config if provided
+        self.random_state = config.get('random_state', None)
+        
+        if self.random_state is not None:
+            random.seed(self.random_state)
+            np.random.seed(self.random_state)
+
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
