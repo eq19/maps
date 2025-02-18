@@ -120,15 +120,6 @@ class fibbo(IStrategy):
     sell_indicators = ["MACD", "TTM", "STOCH_OSC", "FIBBO"]
     buy_indicators  = ["BB", "EMA", "MCD", "TTM", "STOCH_OSC", "FIBBO"]
     
-    def __init__(self, config: dict) -> None:
-        super().__init__(config)
-        # Retrieve `random_state` from config if provided
-        self.random_state = config.get('random_state', None)
-        
-        if self.random_state is not None:
-            random.seed(self.random_state)
-            np.random.seed(self.random_state)
-
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
@@ -156,6 +147,15 @@ class fibbo(IStrategy):
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
     atr_stoploss_multiplier     = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
 
+
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        # Retrieve `random_state` from config if provided
+        self.random_state = config.get('random_state', None)
+        
+        if self.random_state is not None:
+            random.seed(self.random_state)
+            np.random.seed(self.random_state)
 
     @property
     def protections(self):
