@@ -314,6 +314,7 @@ class fibbo(IStrategy):
         # Now it's safe to use 'close'
         informative['rsi'] = ta.RSI(informative, timeperiod=14)
         informative['atr'] = ta.ATR(informative, timeperiod=14)
+
         for period in self.slow_emas:
             informative[f'ema{period}'] = ta.EMA(informative, timeperiod=period)
         for period in self.fast_demas:
