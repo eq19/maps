@@ -63,8 +63,8 @@ hyperopt() {
 
     echo -e "\n$hr\nStep-$id: Hyperopt Result\n$hr"
     freqtrade hyperopt-list
-    echo -e "\n$hr\nnStep-$id: Backtesting Results\n$hr"
-    freqtrade hyperopt-show
+    #echo -e "\n$hr\nStep-$id: Backtesting Results\n$hr"
+    #freqtrade hyperopt-show
   done
 }
 
