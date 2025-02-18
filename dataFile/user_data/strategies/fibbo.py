@@ -380,19 +380,16 @@ class fibbo(IStrategy):
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Define the sell conditions
         long_conditions = []
- 
+
         ### Momentum Indicators ###
-        RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
-        MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
-        FIBBO        = (dataframe['close'].shift(1) > dataframe['fib_382']) & (dataframe['close'] < dataframe['fib_382'])
+        RSI = (dataframe['rsi'] >= self.sell_rsi.value)
+        MACD = (dataframe["macd"] >= dataframe["macdsignal"])
         STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
-        if "FIBBO" in self.sell_additional_indicator.value:
-            long_conditions.append(FIBBO)
         if "STOCK_OSC" in self.sell_additional_indicator.value:
             long_conditions.append(STOCK_OSC)
 
