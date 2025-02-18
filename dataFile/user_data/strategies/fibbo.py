@@ -269,10 +269,8 @@ class fibbo(IStrategy):
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
         # EMA & DEMA
-        for period in self.slow_emas:
-            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
-        for period in self.fast_demas:
-            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
+        dataframe[f'ema{self.buy_slow_ema}'] = ta.EMA(dataframe, timeperiod=self.buy_slow_ema)
+        dataframe[f'dema{self.buy_fast_dema}'] = ta.DEMA(dataframe, timeperiod=self.buy_fast_dema)
 
         # MACD
         macd = ta.MACD(dataframe, fastperiod=12, slowperiod=26, signalperiod=9)
@@ -314,8 +312,8 @@ class fibbo(IStrategy):
         # Now it's safe to use 'close'
         informative['rsi'] = ta.RSI(informative, timeperiod=14)
         informative['atr'] = ta.ATR(informative, timeperiod=14)
-        for period in self.slow_emas:
-            informative[f'ema{period}'] = ta.EMA(informative, timeperiod=period)
+        informative[f'ema{self.buy_slow_ema}'] = ta.EMA(informative, timeperiod=self.buy_slow_ema)
+        informative[f'dema{self.buy_fast_dema}'] = ta.EMA(informative, timeperiod=self.buy_fast_dema)
 
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
