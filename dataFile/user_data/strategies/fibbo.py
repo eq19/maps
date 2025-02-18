@@ -157,7 +157,7 @@ class fibbo(IStrategy):
             random.seed(self.random_state)
             np.random.seed(self.random_state)
 
-        if random_state == 1:
+        if random_state == 2:
             self.buy_rsi.optimize = True         
             self.sell_rsi.optimize = True
             self.buy_slow_ema.optimize = True
