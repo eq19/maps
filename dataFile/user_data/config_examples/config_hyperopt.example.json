@@ -10,37 +10,37 @@
   "pipelines": [
     {
       "id": 1,
-      "description": "Optimize buy, sell, and ROI (use to the last 30 days for robust result)",
+      "description": "Optimize buy and sell (use the last 30 days for robust results)",
       "days": 3,
-      "epochs": 10,
-      "spaces": ["buy", "sell", "roi"],
+      "epochs": 200,
+      "spaces": ["buy", "sell"],
       "hyperopt_loss": "SharpeHyperOptLoss",
       "parallel_jobs": 4
     },
     {
       "id": 2,
-      "description": "Optimize ROI, protection, and trailing for profit management (last 60 days)",
+      "description": "Optimize ROI and trailing for profit management (last 60 days)",
       "days": 6,
       "epochs": 500,
-      "spaces": ["roi", "protection", "trailing"],
+      "spaces": ["roi", "trailing"],
       "hyperopt_loss": "ShortTradeDurHyperOptLoss",
       "parallel_jobs": 4
     },
     {
       "id": 3,
-      "description": "Optimize protection, stoploss, and trade parameters (last 90 days)",
+      "description": "Optimize stoploss and trade parameters (last 90 days)",
       "days": 9,
-      "epochs": 1000,
-      "spaces": ["protection", "stoploss", "trades"],
+      "epochs": 800,
+      "spaces": ["stoploss", "trades"],
       "hyperopt_loss": "OnlyProfitHyperOptLoss",
       "parallel_jobs": 4
     },
     {
       "id": 4,
-      "description": "Refine protection, stoploss, and trailing parameters for risk management (last 120 days)",
+      "description": "Refine protection and stoploss parameters for risk management (last 120 days)",
       "days": 12,
-      "epochs": 1500,
-      "spaces": ["protection", "stoploss", "trailing"],
+      "epochs": 1200,
+      "spaces": ["protection", "stoploss"],
       "hyperopt_loss": "MaxDrawDownHyperOptLoss",
       "parallel_jobs": 4
     },
@@ -48,7 +48,7 @@
       "id": 5,
       "description": "Comprehensive optimization with all parameters (last 180 days)",
       "days": 18,
-      "epochs": 2500,
+      "epochs": 2000,
       "spaces": ["all"],
       "hyperopt_loss": "ExpectancyHyperOptLoss",
       "parallel_jobs": 4
