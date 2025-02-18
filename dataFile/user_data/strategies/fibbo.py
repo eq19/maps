@@ -349,7 +349,7 @@ class fibbo(IStrategy):
 
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
-        long_conditions.append(DEMA)
+        #long_conditions.append(DEMA)
 
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
@@ -383,7 +383,7 @@ class fibbo(IStrategy):
         FIBBO        = (dataframe['close'].shift(1) > dataframe['fib_382']) & (dataframe['close'] < dataframe['fib_382'])
         STOCK_OSC    = (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
 
-        long_conditions.append(RSI)
+        #long_conditions.append(RSI)
 
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
