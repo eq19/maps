@@ -287,6 +287,7 @@ class fibbo(IStrategy):
         dataframe['bb_lowerband'] = bollinger['lowerband']
 
         # VWAP
+        # dataframe['vwap'] = qtpylib.vwap(dataframe)
         dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
 
         # TTM Squeeze
