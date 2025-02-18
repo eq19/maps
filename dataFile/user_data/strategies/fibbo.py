@@ -148,29 +148,6 @@ class fibbo(IStrategy):
     atr_stoploss_multiplier     = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
 
 
-    def __init__(self, config: dict) -> None:
-        super().__init__(config)
-        # Retrieve `random_state` from config if provided
-        self.random_state = config.get('random_state', None)
-        
-        if self.random_state is not None:
-            random.seed(self.random_state)
-            np.random.seed(self.random_state)
-
-        if random_state == 2:
-            self.buy_rsi.optimize = True         
-            self.sell_rsi.optimize = True
-            self.buy_slow_ema.optimize = True
-            self.buy_fast_dema.optimize = True
-            self.buy_stoch_osc.optimize = True
-            self.sell_stoch_osc.optimize = True
-            self.buy_fib_level.optimize = True
-            self.sell_fib_level.optimize = True
-            self.buy_swing_period.optimize = True
-            self.sell_rsi_threshold.optimize = True
-            self.buy_additional_indicator.optimize = False
-            self.sell_additional_indicator.optimize = False
-
     @property
     def protections(self):
         prot = []
