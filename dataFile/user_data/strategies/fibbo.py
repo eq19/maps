@@ -106,15 +106,7 @@ class fibbo(IStrategy):
         },
     }
 
-    # Optional order type mapping.
-    order_types = {
-        "entry": "limit",
-        "exit": "limit",
-        "stoploss": "market",
-        "stoploss_on_exchange": False,
-    }
-
-    # Trailing stop with Fibonacci-inspired offset
+    # Trailing stop
     trailing_stop = True
     trailing_stop_positive = 0.236
     trailing_stop_positive_offset = 0.786  # Wait for ~78.6% gain before trailing
