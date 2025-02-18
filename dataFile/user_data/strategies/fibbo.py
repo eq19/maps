@@ -269,8 +269,10 @@ class fibbo(IStrategy):
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
         # EMA & DEMA
-        dataframe[f'ema{self.buy_slow_ema}'] = ta.EMA(dataframe, timeperiod=self.buy_slow_ema)
-        dataframe[f'dema{self.buy_fast_dema}'] = ta.DEMA(dataframe, timeperiod=self.buy_fast_dema)
+        for period in self.slow_emas:
+            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
+        for period in self.fast_demas:
+            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
 
         # MACD
         macd = ta.MACD(dataframe, fastperiod=12, slowperiod=26, signalperiod=9)
