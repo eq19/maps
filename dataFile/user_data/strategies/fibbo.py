@@ -29,9 +29,16 @@ import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 
-random.seed(18)
 logger = logging.getLogger(__name__)
-# random.seed(datetime.now().timestamp())
+    
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        # Retrieve `random_state` from config if provided
+        self.random_state = config.get('random_state', None)
+        
+        if self.random_state is not None:
+            random.seed(self.random_state)
+            np.random.seed(self.random_state)
 
 def indicator_permutations(profiles, max_indicators=1, include_none=True):
     profile_permutations = set()
@@ -46,6 +53,7 @@ def indicator_permutations(profiles, max_indicators=1, include_none=True):
         for perm in permutations(profiles, i):
             if len(perm) <= max_indicators:
                 profile_permutations.add(", ".join(sorted(list(perm))))
+
     return profile_permutations
 
 
