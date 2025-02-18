@@ -157,6 +157,20 @@ class fibbo(IStrategy):
             random.seed(self.random_state)
             np.random.seed(self.random_state)
 
+        if random_state == 1:
+            self.buy_rsi.optimize = True         
+            self.sell_rsi.optimize = True
+            self.buy_slow_ema.optimize = True
+            self.buy_fast_dema.optimize = True
+            self.buy_stoch_osc.optimize = True
+            self.sell_stoch_osc.optimize = True
+            self.buy_fib_level.optimize = True
+            self.sell_fib_level.optimize = True
+            self.buy_swing_period.optimize = True
+            self.sell_rsi_threshold.optimize = True
+            self.buy_additional_indicator.optimize = False
+            self.sell_additional_indicator.optimize = False
+
     @property
     def protections(self):
         prot = []
