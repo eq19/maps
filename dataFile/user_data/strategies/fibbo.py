@@ -29,17 +29,9 @@ import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 
+
 logger = logging.getLogger(__name__)
     
-    def __init__(self, config: dict) -> None:
-        super().__init__(config)
-        # Retrieve `random_state` from config if provided
-        self.random_state = config.get('random_state', None)
-        
-        if self.random_state is not None:
-            random.seed(self.random_state)
-            np.random.seed(self.random_state)
-
 def indicator_permutations(profiles, max_indicators=1, include_none=True):
     profile_permutations = set()
     if include_none:
@@ -58,6 +50,15 @@ def indicator_permutations(profiles, max_indicators=1, include_none=True):
 
 
 class fibbo(IStrategy):
+
+     def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        # Retrieve `random_state` from config if provided
+        self.random_state = config.get('random_state', None)
+        
+        if self.random_state is not None:
+            random.seed(self.random_state)
+            np.random.seed(self.random_state)
 
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
@@ -117,7 +118,7 @@ class fibbo(IStrategy):
     # Trailing stop
     trailing_stop = True
     trailing_stop_positive = 0.236
-    trailing_stop_positive_offset = 0.786  # Wait for ~78.6% gain before trailing
+    trailing_stop_positive_offset = 0.786
     trailing_only_offset_is_reached = True
 
     # Optional order time in force.
