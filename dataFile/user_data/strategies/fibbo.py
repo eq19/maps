@@ -117,22 +117,22 @@ class fibbo(IStrategy):
 
     fast_demas      = [5, 8, 13, 21]
     slow_emas       = [34, 55, 89, 144]
-    sell_indicators = ["MACD", "TTM", "STOCH_OSC", "FIBBO"]
-    buy_indicators  = ["BB", "EMA", "MCD", "TTM", "STOCH_OSC", "FIBBO"]
+    sell_indicators = ["MACD", "TTM", "FIBBO"]
+    buy_indicators  = ["BB", "EMA", "MCD", "TTM", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
-    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=False)
-    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
+    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
+    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
     # Define the parameter spaces
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
     buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
     buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
-    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
-    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
+    #buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
+    #sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
     sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
     buy_swing_period            = IntParameter(30, 100, default=50, space="buy", optimize=False)
@@ -258,9 +258,9 @@ class fibbo(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Stochastic RSI
-        stoch_rsi = ta.STOCHRSI(dataframe)
-        dataframe['fastd_rsi'] = stoch_rsi['fastd']
-        dataframe['fastk_rsi'] = stoch_rsi['fastk']
+        #stoch_rsi = ta.STOCHRSI(dataframe)
+        #dataframe['fastd_rsi'] = stoch_rsi['fastd']
+        #dataframe['fastk_rsi'] = stoch_rsi['fastk']
 
         # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
@@ -349,7 +349,7 @@ class fibbo(IStrategy):
         DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_15m"])
         FIBBO        = (dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
+        #STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
@@ -362,8 +362,8 @@ class fibbo(IStrategy):
             long_conditions.append(DEMA)
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
-        if "STOCK_OSC" in self.buy_additional_indicator.value:
-            long_conditions.append(STOCK_OSC)
+        #if "STOCK_OSC" in self.buy_additional_indicator.value:
+            #long_conditions.append(STOCK_OSC)
   
         # TTM Squeeze entry condition
         squeeze_on = dataframe['squeeze_on']
@@ -385,14 +385,14 @@ class fibbo(IStrategy):
         ### Momentum Indicators ###
         RSI = (dataframe['rsi'] >= self.sell_rsi.value)
         MACD = (dataframe["macd"] >= dataframe["macdsignal"])
-        STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
+        #STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
-        if "STOCK_OSC" in self.sell_additional_indicator.value:
-            long_conditions.append(STOCK_OSC)
+        #if "STOCK_OSC" in self.sell_additional_indicator.value:
+            #long_conditions.append(STOCK_OSC)
 
         # TTM Squeeze exit condition
         squeeze_off = dataframe['squeeze_off']
