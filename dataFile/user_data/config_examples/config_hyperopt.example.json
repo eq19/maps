@@ -11,7 +11,7 @@
     {
       "id": 1,
       "description": "Optimize buy and sell (use the last 30 days for robust results)",
-      "days": 3,
+      "days": 10,
       "epochs": 10,
       "spaces": ["buy", "sell"],
       "hyperopt_loss": "SharpeHyperOptLoss",
