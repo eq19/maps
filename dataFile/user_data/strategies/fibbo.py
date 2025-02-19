@@ -118,7 +118,7 @@ class fibbo(IStrategy):
     fast_demas      = [5, 8, 13, 21]
     slow_emas       = [34, 55, 89, 144]
     sell_indicators = ["MACD", "TTM", "FIBBO"]
-    buy_indicators  = ["BB", "DEMA", "MACD", "TTM", "FIBBO"]
+    buy_indicators  = ["BB", "MACD", "TTM", "FIBBO"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
@@ -129,8 +129,8 @@ class fibbo(IStrategy):
     # Define the parameter spaces
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
-    buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
+    buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=True)
+    buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=True)
     #buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
     #sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
@@ -353,13 +353,12 @@ class fibbo(IStrategy):
 
         long_conditions.append(RSI)
         long_conditions.append(VWAP)
+        long_conditions.append(DEMA)
 
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
         if "MACD" in self.buy_additional_indicator.value:
             long_conditions.append(MACD)
-        if "DEMA" in self.buy_additional_indicator.value:
-            long_conditions.append(DEMA)
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
         #if "STOCK_OSC" in self.buy_additional_indicator.value:
