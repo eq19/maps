@@ -257,7 +257,7 @@ class fibbo(IStrategy):
         return informative_pairs
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Stochastic RSI
+        # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
         #dataframe['fastd_rsi'] = stoch_rsi['fastd']
         #dataframe['fastk_rsi'] = stoch_rsi['fastk']
@@ -274,8 +274,8 @@ class fibbo(IStrategy):
         for period in self.fast_demas:
             dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
 
-        # MACD
-        macd = ta.MACD(dataframe, fastperiod=12, slowperiod=26, signalperiod=9)
+        # MACD (See Hyperopt Table)
+        macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
         dataframe['macd'] = macd['macd']
         dataframe['macdhist'] = macd['macdhist']
         dataframe['macdsignal'] = macd['macdsignal']
