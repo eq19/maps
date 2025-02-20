@@ -132,8 +132,8 @@ class fibbo(IStrategy):
     SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=True) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=False)    
-    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=False)
+    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
+    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
     buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
@@ -356,7 +356,7 @@ class fibbo(IStrategy):
         DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_15m"])
         FIBBO        = (dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
+        STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
         #long_conditions.append(VWAP)
@@ -394,7 +394,7 @@ class fibbo(IStrategy):
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
         ATR          = (dataframe['atr'] < dataframe['atr']).shift(1)
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
-        STOCHRSI     = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
+        STOCHRSI     = (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
