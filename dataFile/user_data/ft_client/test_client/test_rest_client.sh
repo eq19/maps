@@ -59,11 +59,11 @@ hyperopt() {
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
-      --print-all #--logfile /dev/null > /dev/null 2>&1
+      --logfile /dev/null > /dev/null 2>&1
 
     #echo -e "\n$hr\nStep-$id: Hyperopt Result\n$hr"
     #freqtrade hyperopt-list --help
-    #freqtrade hyperopt-list --min-trades 100
+    freqtrade hyperopt-list
     #echo -e "\n$hr\nStep-$id: Backtesting Results\n$hr"
     #freqtrade hyperopt-show --best
   done
