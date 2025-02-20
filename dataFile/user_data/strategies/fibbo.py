@@ -359,7 +359,7 @@ class fibbo(IStrategy):
         STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
-        #long_conditions.append(VWAP)
+        long_conditions.append(VWAP)
         #long_conditions.append(DEMA)
 
         if "BB" in self.buy_additional_indicator.value:
