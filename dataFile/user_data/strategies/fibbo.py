@@ -132,10 +132,10 @@ class fibbo(IStrategy):
     SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
-    rta_length                  = IntParameter(5, 50, default=14, space="buy")
-    rta_smooth                  = IntParameter(1, 10, default=3, space="buy")
-    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
-    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
+    atr_length                  = IntParameter(5, 50, default=14, space="buy", optimize=False)
+    atr_smooth                  = IntParameter(1, 10, default=3, space="buy", optimize=False)
+    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", , optimize=False)    
+    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", , optimize=False)
     buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
     buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
@@ -266,8 +266,8 @@ class fibbo(IStrategy):
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
         # ATR (Volatility)
-        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['rta'] = ta.rta(close=dataframe['close'], length=self.rta_length.value, smooth=self.rta_smooth.value)
+        #dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
+        dataframe['atr'] = ta.ATR(close=dataframe['close'], length=self.atr_length.value, smooth=self.atr_smooth.value)
 
         # VWAP
         # dataframe['vwap'] = qtpylib.vwap(dataframe)
@@ -353,7 +353,7 @@ class fibbo(IStrategy):
 
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] < self.buy_rsi.value)
-        RTA          = (dataframe['rta'] > dataframe['rta'].shift(1))
+        ATR          = (dataframe['atr'] > dataframe['atr'].shift(1))
         VWAP         = (dataframe['close'] > dataframe['vwap'])
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
         DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_15m"])
@@ -367,8 +367,8 @@ class fibbo(IStrategy):
 
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
-        if "RTA" in self.buy_additional_indicator.value:
-            long_conditions.append(RTA)
+        if "ATR" in self.buy_additional_indicator.value:
+            long_conditions.append(ATR)
         if "MACD" in self.buy_additional_indicator.value:
             long_conditions.append(MACD)
         if "FIBBO" in self.buy_additional_indicator.value:
@@ -395,14 +395,14 @@ class fibbo(IStrategy):
 
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
-        RTA          = (dataframe['rta'].shift(1) < dataframe['rta'])
+        ATR          = (dataframe['atr'].shift(1) < dataframe['atr'])
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
         STOCK_OSC    = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
-        if "RTA" in self.sell_additional_indicator.value:
-            long_conditions.append(RTA)
+        if "ATR" in self.sell_additional_indicator.value:
+            long_conditions.append(ATR)
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
         if "STOCK_OSC" in self.sell_additional_indicator.value:
