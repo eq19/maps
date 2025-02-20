@@ -393,7 +393,7 @@ class fibbo(IStrategy):
 
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
-        ATR          = (dataframe['atr'].shift(1) < dataframe['atr'])
+        ATR          = (dataframe['atr'] < dataframe['atr']).shift(1)
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
         STOCK_OSC    = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
