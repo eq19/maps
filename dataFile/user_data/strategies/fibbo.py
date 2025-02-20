@@ -262,12 +262,10 @@ class fibbo(IStrategy):
         return informative_pairs
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # RSI
+        # RSI & ATR (Volatility)
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
-
-        # ATR (Volatility)
-        #dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr'] = ta.ATR(close=dataframe['close'], length=self.atr_length.value, smooth=self.atr_smooth.value)
+        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
+        #dataframe['atr'] = ta.ATR(close=dataframe['close'], length=self.atr_length.value, smooth=self.atr_smooth.value)
 
         # VWAP
         # dataframe['vwap'] = qtpylib.vwap(dataframe)
