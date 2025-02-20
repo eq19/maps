@@ -15,14 +15,14 @@ PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
-BACKTESTING_DURATION=6  # Adjust as per your strategy
+BACKTESTING_DURATION=12  # Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
 YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
 # 30 days ago in the required format
-EARLIEST_DATE=$(date -u -d "9 days ago" +%Y%m%d)
+EARLIEST_DATE=$(date -u -d "30 days ago" +%Y%m%d)
 
 # Backtesting start date in the required format (earliest_date + sliding window)
 BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
@@ -175,7 +175,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
-  freqtrade hyperopt --help && hyperopt 1
+  freqtrade hyperopt --help && hyperopt 2 3 4 5
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
