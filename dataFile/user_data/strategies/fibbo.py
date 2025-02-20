@@ -117,7 +117,7 @@ class fibbo(IStrategy):
 
     fast_demas      = [5, 8, 13, 21]
     slow_emas       = [34, 55, 89, 144]
-    sell_indicators = ["DEMA"] #["MACD", "TTM", "FIBBO", "STOCHRSI"]
+    sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
     buy_indicators  = ["DEMA"] #["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
     
     # Fibonacci-aligned periods only
