@@ -265,7 +265,7 @@ class fibbo(IStrategy):
         # RSI & ATR (Volatility)
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
         #dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr'] = talib.ATR(dataframe['high'], dataframe['low'], dataframe['close'], timeperiod=self.period.value, length=self.atr_length.value, smooth=self.atr_smooth.value)
+        dataframe['atr'] = ta.ATR(dataframe['high'], dataframe['low'], dataframe['close'], timeperiod=self.period.value, length=self.atr_length.value, smooth=self.atr_smooth.value)
 
         # VWAP
         # dataframe['vwap'] = qtpylib.vwap(dataframe)
