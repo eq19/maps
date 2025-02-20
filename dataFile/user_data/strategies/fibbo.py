@@ -32,7 +32,7 @@ from itertools import permutations
 
 logger = logging.getLogger(__name__)
     
-def indicator_permutations(profiles, max_indicators=1, include_none=True):
+def indicator_permutations(profiles, max_indicators=1, include_none=False):
     profile_permutations = set()
     if include_none:
         profile_permutations.add("NONE")
