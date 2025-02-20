@@ -262,11 +262,19 @@ class fibbo(IStrategy):
         #dataframe['fastd_rsi'] = stoch_rsi['fastd']
         #dataframe['fastk_rsi'] = stoch_rsi['fastk']
 
+        # RSI
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+
         # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
 
-        # RSI
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        # VWAP
+        # dataframe['vwap'] = qtpylib.vwap(dataframe)
+        dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
+
+        # TTM Squeeze
+        dataframe = self.ttm_squeeze(dataframe)
+        dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         # EMA & DEMA
         for period in self.slow_emas:
@@ -285,14 +293,6 @@ class fibbo(IStrategy):
         dataframe['bb_upperband'] = bollinger['upperband']
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
-
-        # VWAP
-        # dataframe['vwap'] = qtpylib.vwap(dataframe)
-        dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
-
-        # TTM Squeeze
-        dataframe = self.ttm_squeeze(dataframe)
-        dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         # Swing high/low for Fibonacci levels
         dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
