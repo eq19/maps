@@ -257,11 +257,6 @@ class fibbo(IStrategy):
         return informative_pairs
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # STOCHRSI (Missaligned Issue)
-        #stoch_rsi = ta.STOCHRSI(dataframe)
-        #dataframe['fastd_rsi'] = stoch_rsi['fastd']
-        #dataframe['fastk_rsi'] = stoch_rsi['fastk']
-
         # RSI
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
@@ -276,11 +271,10 @@ class fibbo(IStrategy):
         dataframe = self.ttm_squeeze(dataframe)
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
-        # EMA & DEMA
-        for period in self.slow_emas:
-            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
-        for period in self.fast_demas:
-            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
+        # STOCHRSI (Missaligned Issue)
+        #stoch_rsi = ta.STOCHRSI(dataframe)
+        #dataframe['fastd_rsi'] = stoch_rsi['fastd']
+        #dataframe['fastk_rsi'] = stoch_rsi['fastk']
 
         # MACD (See Hyperopt Table)
         macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
@@ -293,6 +287,12 @@ class fibbo(IStrategy):
         dataframe['bb_upperband'] = bollinger['upperband']
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
+
+        # EMA & DEMA
+        for period in self.slow_emas:
+            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
+        for period in self.fast_demas:
+            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
 
         # Swing high/low for Fibonacci levels
         dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
@@ -316,15 +316,15 @@ class fibbo(IStrategy):
         informative['rsi'] = ta.RSI(informative, timeperiod=14)
         informative['atr'] = ta.ATR(informative, timeperiod=14)
 
-        for period in self.slow_emas:
-            informative[f'ema{period}'] = ta.EMA(informative, timeperiod=period)
-        for period in self.fast_demas:
-            informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=period)
-
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
         informative['macdhist'] = macd_inf['macdhist']
         informative['macdsignal'] = macd_inf['macdsignal']
+
+        for period in self.slow_emas:
+            informative[f'ema{period}'] = ta.EMA(informative, timeperiod=period)
+        for period in self.fast_demas:
+            informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=period)
 
         # Merge informative pair data into main dataframe
         merged_dataframe = merge_informative_pair(dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True)
