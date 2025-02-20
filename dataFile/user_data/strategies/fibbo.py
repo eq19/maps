@@ -117,8 +117,8 @@ class fibbo(IStrategy):
 
     fast_demas      = [5, 8, 13, 21]
     slow_emas       = [34, 55, 89, 144]
-    sell_indicators = ["MACD", "TTM", "FIBBO"]
-    buy_indicators  = ["BB", "MACD", "TTM", "FIBBO"]
+    sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
+    buy_indicators  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
@@ -127,9 +127,9 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
 
     # Define the parameter spaces
-    period                      = IntParameter(10, 30, default=14, space="buy", optimize=False)  # Lookback period for RSI
-    smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
-    SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
+    period                      = IntParameter(10, 30, default=14, space="buy", optimize=True)  # Lookback period for RSI
+    smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=True) # Smoothing for %D line
+    SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=True) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
     atr_length                  = IntParameter(5, 50, default=14, space="buy", optimize=False)
@@ -359,7 +359,7 @@ class fibbo(IStrategy):
         DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_15m"])
         FIBBO        = (dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
+        STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
         #long_conditions.append(VWAP)
@@ -373,8 +373,8 @@ class fibbo(IStrategy):
             long_conditions.append(MACD)
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
-        if "STOCK_OSC" in self.buy_additional_indicator.value:
-            long_conditions.append(STOCK_OSC)
+        if "STOCHRSI" in self.buy_additional_indicator.value:
+            long_conditions.append(STOCHRSI)
   
         # TTM Squeeze entry condition
         squeeze_on = dataframe['squeeze_on']
@@ -397,7 +397,7 @@ class fibbo(IStrategy):
         RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
         ATR          = (dataframe['atr'] < dataframe['atr']).shift(1)
         MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
-        STOCK_OSC    = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
+        STOCHRSI     = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
@@ -405,8 +405,8 @@ class fibbo(IStrategy):
             long_conditions.append(ATR)
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
-        if "STOCK_OSC" in self.sell_additional_indicator.value:
-            long_conditions.append(STOCK_OSC)
+        if "STOCHRSI" in self.sell_additional_indicator.value:
+            long_conditions.append(STOCHRSI)
 
         # TTM Squeeze exit condition
         squeeze_off = dataframe['squeeze_off']
