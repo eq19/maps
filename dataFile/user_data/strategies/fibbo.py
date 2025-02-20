@@ -117,17 +117,17 @@ class fibbo(IStrategy):
 
     fast_demas      = [5, 8, 13, 21]
     slow_emas       = [34, 55, 89, 144]
-    sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
-    buy_indicators  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
+    sell_indicators = ["DEMA"] #["MACD", "TTM", "FIBBO", "STOCHRSI"]
+    buy_indicators  = ["DEMA"] #["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
-    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=False)
+    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
 
     # Define the parameter spaces
-    period                      = IntParameter(5, 50, default=14, space="buy", optimize=True)
+    period                      = IntParameter(5, 50, default=14, space="buy", optimize=False)
     smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
     SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
@@ -359,10 +359,11 @@ class fibbo(IStrategy):
         STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
-        long_conditions.append(ATR)
 
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
+        if "ATR" in self.buy_additional_indicator.value:
+            long_conditions.append(ATR)
         if "DEMA" in self.buy_additional_indicator.value:
             long_conditions.append(DEMA)
         if "VWAP" in self.buy_additional_indicator.value:
