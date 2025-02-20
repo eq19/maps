@@ -127,11 +127,11 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
 
     # Define the parameter spaces
+    period                      = IntParameter(5, 50, default=14, space="buy", optimize=False)
     smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=True) # Smoothing for %D line
     SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=True) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    atr_period                  = IntParameter(5, 50, default=14, space="buy", optimize=False)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=False)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=False)
     buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
@@ -272,7 +272,7 @@ class fibbo(IStrategy):
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         # ATR (Volatility)
-        dataframe['atr'] = ta.ATR(dataframe, timeperiod=int(self.atr_period.value))
+        dataframe['atr'] = ta.ATR(dataframe, timeperiod=int(self.period.value))
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
