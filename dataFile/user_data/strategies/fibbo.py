@@ -353,6 +353,7 @@ class fibbo(IStrategy):
 
         ### Momentum Indicators ###
         RSI          = (dataframe['rsi'] < self.buy_rsi.value)
+        RTA          = (dataframe['rta'] > dataframe['rta'].shift(1))
         VWAP         = (dataframe['close'] > dataframe['vwap'])
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
         DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_15m"])
@@ -366,6 +367,8 @@ class fibbo(IStrategy):
 
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
+        if "RTA" in self.buy_additional_indicator.value:
+            long_conditions.append(RTA)
         if "MACD" in self.buy_additional_indicator.value:
             long_conditions.append(MACD)
         if "FIBBO" in self.buy_additional_indicator.value:
@@ -391,12 +394,15 @@ class fibbo(IStrategy):
         long_conditions = []
 
         ### Momentum Indicators ###
-        RSI = (dataframe['rsi'] >= self.sell_rsi.value)
-        MACD = (dataframe["macd"] >= dataframe["macdsignal"])
-        STOCK_OSC = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
+        RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
+        RTA          = (dataframe['rta'].shift(1) < dataframe['rta'])
+        MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
+        STOCK_OSC    = (dataframe['fastk_rsi'] <= dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] >= self.sell_stoch_osc.value)
 
         long_conditions.append(RSI)
 
+        if "RTA" in self.sell_additional_indicator.value:
+            long_conditions.append(RTA)
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
         if "STOCK_OSC" in self.sell_additional_indicator.value:
