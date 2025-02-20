@@ -279,9 +279,9 @@ class fibbo(IStrategy):
         #stoch_rsi = ta.STOCHRSI(dataframe)
         #dataframe['fastd_rsi'] = stoch_rsi['fastd']
         #dataframe['fastk_rsi'] = stoch_rsi['fastk']
-        stoch_rsi  = (dataframe['rsi'] - dataframe['rsi'].rolling(self.period).min()) / (dataframe['rsi'].rolling(self.period).max() - dataframe['rsi'].rolling(self.period).min())
-        dataframe['fastk_rsi'] = (stoch_rsi * 100).rolling(self.SmoothK).mean()
-        dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(self.smoothD).mean()
+        stoch_rsi = (dataframe['rsi'] - dataframe['rsi'].rolling(self.period.value).min()) / (dataframe['rsi'].rolling(self.period.value).max() - dataframe['rsi'].rolling(self.period.value).min())
+        dataframe['fastk_rsi'] = (stoch_rsi * 100).rolling(self.SmoothK.value).mean()
+        dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(self.smoothD.value).mean()
 
         # MACD (See Hyperopt Table)
         macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
