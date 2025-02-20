@@ -127,13 +127,13 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
 
     # Define the parameter spaces
-    period                      = IntParameter(10, 30, default=14, space="buy", optimize=True)  # Lookback period for RSI
+    period                      = IntParameter(10, 30, default=14, space="buy", optimize=False)  # Lookback period for RSI
     smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
     SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    atr_length                  = IntParameter(5, 50, default=14, space="buy", optimize=True)
-    atr_smooth                  = IntParameter(1, 10, default=3, space="buy", optimize=True)
+    atr_length                  = IntParameter(5, 50, default=14, space="buy", optimize=False)
+    atr_smooth                  = IntParameter(1, 10, default=3, space="buy", optimize=False)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=False)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=False)
     buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
@@ -262,10 +262,8 @@ class fibbo(IStrategy):
         return informative_pairs
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # RSI & ATR (Volatility)
+        # RSI 
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
-        #dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr'] = ta.ATR(dataframe['high'], dataframe['low'], dataframe['close'], timeperiod=self.period.value, length=self.atr_length.value, smooth=self.atr_smooth.value)
 
         # VWAP
         # dataframe['vwap'] = qtpylib.vwap(dataframe)
@@ -274,6 +272,10 @@ class fibbo(IStrategy):
         # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
+
+        # ATR (Volatility)
+        #dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
+        dataframe['atr'] = ta.ATR(dataframe['high'], dataframe['low'], dataframe['close'], timeperiod=self.period.value, length=self.atr_length.value, smooth=self.atr_smooth.value)
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
@@ -360,7 +362,7 @@ class fibbo(IStrategy):
         STOCK_OSC    = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) #& (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
-        long_conditions.append(ATR)
+        #long_conditions.append(VWAP)
         #long_conditions.append(DEMA)
 
         if "BB" in self.buy_additional_indicator.value:
