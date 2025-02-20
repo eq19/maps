@@ -127,6 +127,9 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
 
     # Define the parameter spaces
+    period                      = IntParameter(10, 30, default=14, space="buy", optimize=False)  # Lookback period for RSI
+    smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
+    SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=True)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=True)
     buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
@@ -275,12 +278,9 @@ class fibbo(IStrategy):
         #stoch_rsi = ta.STOCHRSI(dataframe)
         #dataframe['fastd_rsi'] = stoch_rsi['fastd']
         #dataframe['fastk_rsi'] = stoch_rsi['fastk']
-        period = 14
-        smoothD = 3
-        SmoothK = 3
-        stoch_rsi  = (dataframe['rsi'] - dataframe['rsi'].rolling(period).min()) / (dataframe['rsi'].rolling(period).max() - dataframe['rsi'].rolling(period).min())
-        dataframe['srsi_k'] = (stoch_rsi * 100).rolling(SmoothK).mean()
-        dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(smoothD).mean()
+        stoch_rsi  = (dataframe['rsi'] - dataframe['rsi'].rolling(self.period).min()) / (dataframe['rsi'].rolling(self.period).max() - dataframe['rsi'].rolling(self.period).min())
+        dataframe['fastk_rsi'] = (stoch_rsi * 100).rolling(self.SmoothK).mean()
+        dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(self.smoothD).mean()
 
         # MACD (See Hyperopt Table)
         macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
