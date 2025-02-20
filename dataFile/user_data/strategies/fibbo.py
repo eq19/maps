@@ -118,13 +118,13 @@ class fibbo(IStrategy):
     fast_demas      = [5, 8, 13, 21]
     slow_emas       = [34, 55, 89, 144]
     sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
-    buy_indicators  = ["DEMA"] #["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
+    buy_indicators  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
     
     # Fibonacci-aligned periods only
     buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
     sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
     buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
-    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
+    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
     # Define the parameter spaces
     period                      = IntParameter(5, 50, default=14, space="buy", optimize=False)
@@ -134,8 +134,8 @@ class fibbo(IStrategy):
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
     buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=False)    
     sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=False)
-    buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=True)
-    buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=True)
+    buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
+    buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
     sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
     buy_swing_period            = IntParameter(30, 100, default=50, space="buy", optimize=False)
