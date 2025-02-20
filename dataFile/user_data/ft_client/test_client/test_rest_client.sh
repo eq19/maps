@@ -5,6 +5,7 @@
 # Ref: https://strat.ninja/ranking.php
 #
 hr='------------------------------------------------------------------------------------'
+SCORE=100
 FEE=0.003322
 STRATEGY=fibbo
 TIMEFRAMES='1m 15m'
@@ -93,6 +94,7 @@ calculate_score() {
     echo "No data found for key: $key"
     return 1
   else
+    echo "$json_data" | jq .
     rm -rf $dir/*
   fi
 
@@ -122,10 +124,7 @@ calculate_score() {
   trade_count_score=$(echo "scale=4; ($trade_count / 200) * 10" | bc)
 
   # Total Score Calculation
-  total_score=$(echo "scale=2; $winrate_score + $profit_total_score + $profit_factor_score + $max_drawdown_score + $trade_count_score" | bc)
-
-  # Return total score
-  echo "$total_score"
+  SCORE=$(echo "scale=2; $winrate_score + $profit_total_score + $profit_factor_score + $max_drawdown_score + $trade_count_score" | bc)
 }
 
 if [[ "$1" == "listing" ]]; then
@@ -171,7 +170,8 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
-  OLD_SCORE=$(calculate_score)
+  calculate_score
+  OLD_SCORE=$SCORE
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
@@ -183,7 +183,8 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
   
-  NEW_SCORE=$(calculate_score)
+  calculate_score
+  NEW_SCORE=$SCORE
   echo "NEW SCORE: $NEW_SCORE"
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
