@@ -127,13 +127,13 @@ class fibbo(IStrategy):
     sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=False)
 
     # Define the parameter spaces
-    period                      = IntParameter(5, 50, default=14, space="buy", optimize=False)
-    smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=True) # Smoothing for %D line
-    SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=True) # Smoothing for %K line.
+    period                      = IntParameter(5, 50, default=14, space="buy", optimize=True)
+    smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
+    SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
     buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
     sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=True)    
-    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=True)
+    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=False)    
+    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=False)
     buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
     buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
     buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
@@ -359,12 +359,12 @@ class fibbo(IStrategy):
         STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
 
         long_conditions.append(RSI)
-        long_conditions.append(DEMA)
+        long_conditions.append(ATR)
 
         if "BB" in self.buy_additional_indicator.value:
             long_conditions.append(BB)
-        if "ATR" in self.buy_additional_indicator.value:
-            long_conditions.append(ATR)
+        if "DEMA" in self.buy_additional_indicator.value:
+            long_conditions.append(DEMA)
         if "VWAP" in self.buy_additional_indicator.value:
             long_conditions.append(VWAP)
         if "MACD" in self.buy_additional_indicator.value:
