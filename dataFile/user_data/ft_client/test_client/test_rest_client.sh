@@ -44,7 +44,7 @@ printenv
 hyperopt() {
   # Load JSON and filter by given ID
   HYPERFILE=user_data/config_examples/config_hyperopt.example.json
-  jq -c --argjson ids "[$*]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
+  jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     id=$(echo "$pipeline" | jq -r '.id')
     days=$(echo "$pipeline" | jq -r '.days')
     epochs=$(echo "$pipeline" | jq -r '.epochs')
