@@ -11,7 +11,7 @@
     {
       "id": 1,
       "description": "Optimize buy and sell (use the last 30 days for robust results)",
-      "days": 3,
+      "days": 2,
       "epochs": 200,
       "parallel_jobs": 4,
       "spaces": ["buy", "sell"],
@@ -20,7 +20,7 @@
     {
       "id": 2,
       "description": "Optimize ROI and trailing for profit management (last 60 days)",
-      "days": 6,
+      "days": 3,
       "epochs": 500,
       "parallel_jobs": 4,
       "spaces": ["roi", "trailing"],
@@ -29,7 +29,7 @@
     {
       "id": 3,
       "description": "Optimize stoploss and trade parameters (last 90 days)",
-      "days": 9,
+      "days": 5,
       "epochs": 800,
       "parallel_jobs": 4,
       "spaces": ["stoploss", "trades"],
@@ -38,7 +38,7 @@
     {
       "id": 4,
       "description": "Refine protection and stoploss parameters for risk management (last 120 days)",
-      "days": 12,
+      "days": 7,
       "epochs": 1200,
       "parallel_jobs": 4,
       "spaces": ["protection", "stoploss"],
@@ -47,7 +47,7 @@
     {
       "id": 5,
       "description": "Comprehensive optimization with all parameters (last 180 days)",
-      "days": 18,
+      "days": 11,
       "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["all"],
