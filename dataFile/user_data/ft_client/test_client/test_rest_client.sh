@@ -175,7 +175,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
-  freqtrade hyperopt --help && hyperopt 2 3 4 5
+  freqtrade hyperopt --help && hyperopt 1 2 3 4 5
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
