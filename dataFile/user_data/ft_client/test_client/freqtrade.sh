@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Define the function to send a Telegram message
+LOG_FILE="/var/log/apt/freqtrade.log"
 send_telegram_message() {
     local message="$1"
     local bot_token="$WARNING_BOT_TOKEN"
@@ -14,18 +15,18 @@ send_telegram_message() {
 
     # Send the message via Telegram API
     curl -s -X POST "https://api.telegram.org/bot$bot_token/sendMessage" \
-        -d chat_id="$chat_id" \
+        -d chat_"$LOG_FILE"id="$chat_id" \
         -d text="$message" > /dev/null
 }
 
 # Check if the log file exists
-if [[ ! -f "/mnt/disks/deeplearning/var/log/apt/freqtrade.log" ]]; then
-    echo "Error: Log file not found at /mnt/disks/deeplearning/var/log/apt/freqtrade.log"
+if [[ ! -f "$LOG_FILE" ]]; then
+    echo "Error: Log file not found at $LOG_FILE"
     exit 1
 fi
 
 # Run the log monitoring command in the background
-tail -f "/mnt/disks/deeplearning/var/log/apt/freqtrade.log" | \
+tail -f "$LOG_FILE" | \
 grep --line-buffered -iE "WARNING|ERROR" | \
 while read -r line; do
     send_telegram_message "$line"
