@@ -6,6 +6,7 @@ send_telegram_message() {
     local message="$1"
     local bot_token="$WARNING_BOT_TOKEN"
     local chat_id="$TELEGRAM_CHAT_ID"
+    local log_file="$LOG_FILE"
 
     # Ensure required environment variables are set
     if [[ -z "$bot_token" || -z "$chat_id" ]]; then
@@ -15,7 +16,7 @@ send_telegram_message() {
 
     # Send the message via Telegram API
     curl -s -X POST "https://api.telegram.org/bot$bot_token/sendMessage" \
-        -d chat_"$LOG_FILE"id="$chat_id" \
+        -d chat_"$log_file"id="$chat_id" \
         -d text="$message" > /dev/null
 }
 
