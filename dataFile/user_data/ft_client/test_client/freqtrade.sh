@@ -2,6 +2,7 @@
 
 # Define the function to send a Telegram message
 LOG_FILE="/var/log/apt/freqtrade.log"
+rm -rf $LOG_FILE.*
 
 send_telegram_message() {
     local message="$1"
