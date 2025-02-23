@@ -18,18 +18,16 @@ else
   #curl -H "Authorization: Bearer $TOKEN" \
     #"https://secretmanager.googleapis.com/v1/projects/feedmapping/secrets/freqtrade-config/versions/latest:access" | \
     #jq -r '.payload.data' | base64 --decode > $CONFIG
+fi
 
-  # The line you want to add to the crontab
-  NEW_LINE="0 * * * * supervisorctl stop monitor_freqtrade && supervisorctl start monitor_freqtrade"
-
-  # Check if the line already exists in the crontab
-  if ! crontab -l | grep -Fxq "$NEW_LINE"; then
-    # If the line does not exist, add it
-    (crontab -l 2>/dev/null; echo "$NEW_LINE") | crontab -
-    echo "Crontab updated with the new line: $NEW_LINE"
-  else
-    echo "The line already exists in the crontab. No changes made."
-  fi
+# Check if the line already exists in the crontab
+NEW_LINE="0 * * * * supervisorctl stop monitor_freqtrade && supervisorctl start monitor_freqtrade"
+if ! crontab -l | grep -Fxq "$NEW_LINE"; then
+  # If the line does not exist, add it
+  (crontab -l 2>/dev/null; echo "$NEW_LINE") | crontab -
+  echo "Crontab updated with the new line: $NEW_LINE"
+else
+  echo "The line already exists in the crontab. No changes made."
 fi
 
 # Run PostgreSQL (autostart)
