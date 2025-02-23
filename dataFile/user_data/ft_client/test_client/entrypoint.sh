@@ -31,5 +31,5 @@ else
 fi
 
 # Run PostgreSQL (autostart)
-service cron start
 exec supervisord -c /etc/supervisor/supervisord.conf
+service cron start
