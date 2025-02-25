@@ -24,9 +24,11 @@ fi
 echo "Configure earlyoom"
 ARGS=/etc/default/earlyoom
 if [ -f /etc/default/earlyoom ]; then
+  sed -i 's|init|postgres|g' $ARGS
+  sed -i 's|X|supervisorctl|g' $ARGS
   sed -i 's|firefox|freqtrade|g' $ARGS
   # EARLYOOM_ARGS="--avoid '(^|/)(init|X|sshd|freqtrade)$'"
-  sed -i 's|# EARLYOOM_ARGS="--avoid|EARLYOOM_ARGS="--avoid|g' $ARGS
+  sed -i 's|# EARLYOOM_ARGS="--avoid|EARLYOOM_ARGS="-m 5 -s 10 --avoid|g' $ARGS
 fi
 
 echo "Setup freqtrade config.json"
