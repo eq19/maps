@@ -1,5 +1,28 @@
 #!/usr/bin/env bash
 
+# Enable swap in mydb container
+SWAPFILE="/swapfile"
+
+# Check if swap is already enabled
+if ! swapon --show | grep -q "$SWAPFILE"; then
+    echo "Creating and enabling swap file..."
+
+    # Create a 1GB swap file if it doesn't exist
+    if [ ! -f "$SWAPFILE" ]; then
+        fallocate -l 1G $SWAPFILE || dd if=/dev/zero of=$SWAPFILE bs=1M count=1024
+        chmod 600 $SWAPFILE
+        mkswap $SWAPFILE
+    fi
+
+    # Enable the swap file
+    swapon $SWAPFILE
+
+    # Adjust swappiness
+    sysctl vm.swappiness=10
+fi
+
+echo "Swap is enabled."
+
 ARGS=/etc/default/earlyoom
 if [ -f /etc/default/earlyoom ]; then
   sed -i 's|firefox|freqtrade|g' $ARGS
@@ -39,3 +62,6 @@ fi
 
 # Run PostgreSQL (autostart)
 exec supervisord -c /etc/supervisor/supervisord.conf
+
+# Continue with the original entrypoint process
+exec "$@"
