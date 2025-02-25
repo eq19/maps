@@ -35,6 +35,7 @@ while read -r line; do
 done
 
 # Capture the background process PID for later termination
+service earlyoom status > /dev/null 2>&1 || service earlyoom start
 TAIL_PID=$!
 
 # Keep the script running
