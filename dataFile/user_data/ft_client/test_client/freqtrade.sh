@@ -35,11 +35,10 @@ while read -r line; do
 done
 
 # Capture the background process PID for later termination
-service earlyoom status > /dev/null 2>&1 || service earlyoom start
 TAIL_PID=$!
 
-# Keep the script running
-#while true; do sleep 3600; done
+# Keep the freqtrade running using earlyoom
+service earlyoom status > /dev/null 2>&1 || service earlyoom start
 
 # Handle graceful termination
 trap "echo 'Terminating...'; kill $TAIL_PID; exit" SIGINT SIGTERM
