@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+ARGS=/etc/default/earlyoom
+if [ -f /etc/default/earlyoom ]; then
+  sed -i 's|firefox|freqtrade|g' $ARGS
+  # EARLYOOM_ARGS="--avoid '(^|/)(init|X|sshd|freqtrade)$'"
+  sed -i 's|# EARLYOOM_ARGS="--avoid|EARLYOOM_ARGS="--avoid|g' $ARGS
+fi
+
 CONFIG=/home/runner/user_data/config.json
 if [ -f /home/runner/user_data/config.json ]; then
   #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
