@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "Setup freqtrade config.json"
+# Setup freqtrade config.json
 CONFIG=/home/runner/user_data/config.json
 if [ -f /home/runner/user_data/config.json ]; then
   #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
@@ -12,8 +12,6 @@ fi
 
 # Enable swap in mydb container
 SWAPFILE="/swapfile"
-
-# Check if swap is already enabled
 if ! swapon --show | grep -q "$SWAPFILE"; then
   echo "Creating and enabling swap file..."
 
@@ -31,7 +29,7 @@ if ! swapon --show | grep -q "$SWAPFILE"; then
   sysctl vm.swappiness=10
 fi
 
-echo "Configure earlyoom"
+# Configure earlyoom
 if ! grep -q '^EARLYOOM_ARGS=' /etc/default/earlyoom; then
   echo "EARLYOOM_ARGS=\"-m 3 -s 20 --avoid '(^|/)(supervisorctl|postgres|sshd|freqtrade)$'\"" >> /etc/default/earlyoom
 fi
