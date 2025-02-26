@@ -30,8 +30,13 @@ if ! swapon --show | grep -q "$SWAPFILE"; then
 fi
 
 # Configure earlyoom
-if ! grep -q '^EARLYOOM_ARGS=' /etc/default/earlyoom; then
-  echo "EARLYOOM_ARGS=\"-m 3 -s 20 --avoid '(^|/)(supervisorctl|postgres|sshd|freqtrade)$'\"" >> /etc/default/earlyoom
+ARGS=/etc/default/earlyoom
+if [ -f /etc/default/earlyoom ]; then
+  sed -i 's|firefox|freqtrade|g' $ARGS
+  sed -i 's|X|postgres|g' $ARGS
+  sed -i 's|init|supervisorctl|g' $ARGS
+  # EARLYOOM_ARGS="--avoid '(^|/)(init|X|sshd|firefox)$'"
+  sed -i 's|# EARLYOOM_ARGS="--avoid|EARLYOOM_ARGS="-m 3 -s 20 --avoid|g' $ARGS
 fi
 
 # Check the Deeplearning 
