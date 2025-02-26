@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+echo "Setup freqtrade config.json"
+CONFIG=/home/runner/user_data/config.json
+if [ -f /home/runner/user_data/config.json ]; then
+  #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
+  #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
+  sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG
+  sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
+  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
+fi
+
 # Enable swap in mydb container
 SWAPFILE="/swapfile"
 
@@ -22,21 +32,8 @@ if ! swapon --show | grep -q "$SWAPFILE"; then
 fi
 
 echo "Configure earlyoom"
-ARGS=/etc/default/earlyoom
-if [ -f /etc/default/earlyoom ]; then
-  # EARLYOOM_ARGS="--avoid '(^|/)(init|X|sshd|firefox)$'"
-  sed -i 's/init|X|sshd|firefox/supervisorctl|postgres|sshd|freqtrade/g' $ARGS
-  sed -i 's|# EARLYOOM_ARGS="--avoid|EARLYOOM_ARGS="-m 5 -s 10 --avoid|g' $ARGS
-fi
-
-echo "Setup freqtrade config.json"
-CONFIG=/home/runner/user_data/config.json
-if [ -f /home/runner/user_data/config.json ]; then
-  #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
-  #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
-  sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG
-  sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
-  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
+if ! grep -q '^EARLYOOM_ARGS=' /etc/default/earlyoom; then
+  echo "EARLYOOM_ARGS=\"-m 3 -s 20 --avoid '(^|/)(supervisorctl|postgres|sshd|freqtrade)$'\"" >> /etc/default/earlyoom
 fi
 
 # Check the Deeplearning 
