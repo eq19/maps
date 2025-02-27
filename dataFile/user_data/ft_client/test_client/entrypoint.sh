@@ -15,9 +15,9 @@ SWAPFILE="/swapfile"
 if ! swapon --show | grep -q "$SWAPFILE"; then
   echo "Creating and enabling swap file..."
 
-  # Create a 1GB swap file if it doesn't exist
+  # Create a 2GB swap file if it doesn't exist
   if [ ! -f "$SWAPFILE" ]; then
-    fallocate -l 1G $SWAPFILE || dd if=/dev/zero of=$SWAPFILE bs=1M count=2048
+    fallocate -l 2G $SWAPFILE || dd if=/dev/zero of=$SWAPFILE bs=1M count=2048
     chmod 600 $SWAPFILE
     mkswap $SWAPFILE
   fi
