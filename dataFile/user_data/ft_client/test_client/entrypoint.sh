@@ -17,7 +17,7 @@ if [ -f /etc/default/earlyoom ]; then
   sed -i 's|X|postgres|g' $ARGS
   sed -i 's|init|supervisorctl|g' $ARGS
   # EARLYOOM_ARGS="--avoid '(^|/)(init|X|sshd|firefox)$'"
-  sed -i 's|# EARLYOOM_ARGS="--avoid|EARLYOOM_ARGS="-m 2 -s 30 --avoid|g' $ARGS
+  sed -i 's|# EARLYOOM_ARGS="--avoid|EARLYOOM_ARGS="-m 5 -s 20 --avoid|g' $ARGS
 fi
 
 # Check the Deeplearning 
