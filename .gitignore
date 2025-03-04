@@ -1,13 +1,17 @@
 # Folder config file
 Desktop.ini
+Dockerfile
+
 
 # Windows thumbnail cache files
 Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
 
+
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
+
 
 # Windows Installer files
 *.cab
@@ -17,18 +21,21 @@ $RECYCLE.BIN/
 *.sys
 *.vhd
 
+
 # Windows shortcuts
 *.lnk
 
+
 # jekyll
-#.jekyll-metadata
-#_site
 #.sass-cache
 #.jekyll-cache
+#.jekyll-metadata
 
 
 # bundler
 *.gem
+vendor/
+.bundle/
 Gemfile.lock
 
 
@@ -37,20 +44,26 @@ Gemfile.lock
 
 
 # npm
-node_modules
+node_modules/
 package-lock.json
 
 
 # lighthouse
 *.report.html
+gha-creds-*.json
+
+
+# build
+#.env
+#.github
+#.devcontainer/
+#.devcontainer.json
 
 
 # action
+#action.yml
 action.changelog.md
 
 
 # _sass
 _sass/@primer/css/**/*.md
-
-
-workdir/
