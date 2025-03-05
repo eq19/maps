@@ -4,6 +4,7 @@ import pathlib
 import subprocess
 import typing as t
 
+import cryptography.x509 as x509
 import psycopg
 import furl
 import pytest
@@ -87,6 +88,20 @@ def test_service_name(service_name: str):
     assert service_name == os.getenv("EXPECTED_SERVICE_NAME")
 
 
+def test_certificate_path():
+    """Test that CERTIFICATE_PATH points to the certificate."""
+
+    certificate_path = os.getenv("CERTIFICATE_PATH")
+
+    if os.getenv("EXPECTED_SSL") == "true":
+        assert certificate_path
+        certificate_bytes = pathlib.Path(certificate_path).read_bytes()
+        certificate = x509.load_pem_x509_certificate(certificate_bytes)
+        assert certificate.subject.rfc4514_string() == "CN=localhost"
+    else:
+        assert not certificate_path
+
+
 def test_server_encoding(connection: psycopg.Connection):
     """Test that PostgreSQL's encoding matches the one we passed to initdb."""
 
@@ -101,11 +116,19 @@ def test_locale(connection: psycopg.Connection, is_windows_server_2019: bool):
     if is_windows_server_2019:
         locale_exp = "en-US"
 
-    lc_collate = connection.execute("SHOW LC_COLLATE").fetchone()[0]
-    lc_ctype = connection.execute("SHOW LC_CTYPE").fetchone()[0]
+    record = connection \
+        .execute("SELECT datcollate, datctype FROM pg_database WHERE datname = 'template0'") \
+        .fetchone()
+    assert record
+    assert locale.normalize(record[0]) == locale_exp
+    assert locale.normalize(record[1]) == locale_exp
 
-    assert locale.normalize(lc_collate) == locale_exp
-    assert locale.normalize(lc_ctype) == locale_exp
+    record = connection \
+        .execute("SELECT datcollate, datctype FROM pg_database WHERE datname = 'template1'") \
+        .fetchone()
+    assert record
+    assert locale.normalize(record[0]) == locale_exp
+    assert locale.normalize(record[1]) == locale_exp
 
 
 def test_environment_variables(is_windows: bool):
@@ -130,6 +153,20 @@ def test_environment_variables(is_windows: bool):
     else:
         pg_environ_exp = {}
     assert pg_environ == pg_environ_exp
+
+
+def test_server_version(connection: psycopg.Connection):
+    """Test that PostgreSQL's version is expected."""
+
+    server_version = connection.execute("SHOW SERVER_VERSION").fetchone()[0]
+    assert server_version.split(".")[0] == os.getenv("EXPECTED_SERVER_VERSION")
+
+
+def test_server_ssl(connection: psycopg.Connection):
+    """Test that connection is SSL encrypted."""
+
+    expected = os.getenv("EXPECTED_SSL") == "true"
+    assert connection.info.pgconn.ssl_in_use is expected
 
 
 def test_user_permissions(connection: psycopg.Connection):

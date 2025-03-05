@@ -23,18 +23,18 @@ gh gist clone e84a0961dc7636c01d5953d19d65e30a $1/exponentiation/span17
 gh gist clone e9832026b5b78f694e4ad22c3eb6c3ef $1/exponentiation/span18
 
 find $1 -type f -name "README.md" -exec rm -rf {} \;
-rm -rf ${RUNNER_TEMP}/README.md
+rm -rf ${RUNNER_TEMP//\\//}/README.md
 
-mv -f ${RUNNER_TEMP}/wikidir/README.md ${RUNNER_TEMP}/README.md
-cp -R ${RUNNER_TEMP}/wikidir/* $1
+mv -f ${RUNNER_TEMP//\\//}/wikidir/README.md ${RUNNER_TEMP//\\//}/README.md
+cp -R ${RUNNER_TEMP//\\//}/wikidir/* $1
 
-rm -rf ${RUNNER_TEMP}/spin.txt && touch ${RUNNER_TEMP}/spin.txt
+rm -rf ${RUNNER_TEMP//\\//}/spin.txt && touch ${RUNNER_TEMP//\\//}/spin.txt
 find $1 -type f -name 'spin_*.txt' | sort -n -t _ -k 2  | while ((i++)); IFS= read -r f; do sort.sh $f $i; done
 
-rm -rf ${RUNNER_TEMP}/Sidebar.md && cp $1/_Sidebar.md ${RUNNER_TEMP}/Sidebar.md
-sed -i 's/0. \[\[//g' ${RUNNER_TEMP}/Sidebar.md && sed -i 's/\]\]//g' ${RUNNER_TEMP}/Sidebar.md
+rm -rf ${RUNNER_TEMP//\\//}/Sidebar.md && cp $1/_Sidebar.md ${RUNNER_TEMP//\\//}/Sidebar.md
+sed -i 's/0. \[\[//g' ${RUNNER_TEMP//\\//}/Sidebar.md && sed -i 's/\]\]//g' ${RUNNER_TEMP//\\//}/Sidebar.md
 
 find $1 -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'
 
 echo -e "\n$hr\nSPIN\n$hr"
-cat ${RUNNER_TEMP}/spin.txt
+cat ${RUNNER_TEMP//\\//}/spin.txt

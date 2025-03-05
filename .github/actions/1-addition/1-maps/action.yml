@@ -81,11 +81,9 @@ runs:
       shell: bash
       env:
         JOB_ID: ${{ inputs.id }}
-        GH_TOKEN: ${{ inputs.token }}
-        #TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
       run: |
         HEADER="Accept: application/vnd.github+json"
-        /home/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
+        /home/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh ${{ inputs.action_path }}
 
         #See: https://docs.github.com/en/rest/actions/self-hosted-runners
         TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
@@ -94,6 +92,8 @@ runs:
 
     - name: View context attributes
       uses: actions/github-script@v7
+      env:
+        JOB_ID: ${{ inputs.id }}
       with:
         script: console.log(context)
 
@@ -116,18 +116,32 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        python -m pip -q install --upgrade pip setuptools six wheel
-        python -m pip -q install -r ${{ inputs.action_path }}/requirements-dev.txt
+        #python -m pip -q install --upgrade pip
+        #python -m pip -q install -r ${{ inputs.action_path }}/dataFile/requirements.txt
+  
+        ##python -m pip -q install -e ./.github/entrypoint/artifact/python
+        ##iree-compile --iree-llvmcpu-list-targets && iree-run-module --list_drivers
 
+        ##Ref: https://github.com/iree-org/iree-experimental
+        ##python ${{ inputs.action_path }}/pythonCode/testIREE.py
+        
+        ##Ref: https://github.com/tsoding/JelloVM
+        #cd ${{ inputs.action_path }} && javac javaCode/Main.java
+        #python app.py output.txt && cat dataFile/results/output.txt
+
+        ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
+        ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
+        ##cd ${{ inputs.action_path }}/pythonCode && python npreader.py -h && python map.py -h
+        
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
       with:
         push: always
-        runCmd: ls -alR /data
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
         imageTag: target-${{ github.run_number }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
+        runCmd: ls -al /
 
     - name: 💎 Variables
       id: variables

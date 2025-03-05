@@ -81,39 +81,18 @@ runs:
   using: composite
   
   steps:
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-
-    - name: 💎 Set ID Token
-      id: 'auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        token_format: 'id_token'
-        create_credentials_file: false
-        credentials_json: ${{ inputs.credentials }}
-        id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
-
-    #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
     - name: Run identity  
       shell: bash
       env:
         JOB_ID: ${{ inputs.id }}
-        GH_TOKEN: ${{ inputs.token }}
-        WORKSPACE: ${{ inputs.workspace }}
-        TEMP_FOLDER: ${{ inputs.runner_temp }}
-        GCP_TOKEN: ${{ steps.auth.outputs.id_token }}
-        BASE_GIT: "/d/a/_actions/eq19/eq19/v1/.github"
-        BASE: "https://github.com/eq19/eq19.github.io.wiki.git"
-        WIKI: "https://github.com/${{ env.TARGET_REPOSITORY }}.wiki.git"
+        TOKEN: ${{ inputs.token }}
       run: |
-        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
-          -H "Authorization: Bearer ${GCP_TOKEN}" -H "Content-Type: application/json" \
-          --data @${{ inputs.workspace }}/docs/data.json | jq '.'
-        export PATH=$BASE_GIT/entrypoint:$PATH && init.sh
+        /d/a/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
         
     - name: View context attributes
       uses: actions/github-script@v7
+      env:
+        JOB_ID: ${{ inputs.id }}
+        GH_TOKEN: ${{ inputs.token }}
       with:
         script: console.log(context)

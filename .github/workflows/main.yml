@@ -33,6 +33,12 @@ permissions: write-all
         
 # 🕸️ Global Environment
 env:
+  GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+  ACCESS_API: ${{ secrets.ACCESS_API }}
+  ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
+  MESSAGE_API: ${{ secrets.MESSAGE_API }}
+  MESSAGE_TOKEN: ${{ secrets.MESSAGE_TOKEN }}
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
 
 jobs:
@@ -46,11 +52,11 @@ jobs:
           - { os: macos-latest, id: 2 }
     env:
       ID: ${{ matrix.config.id }}
+      DOC: '${{ vars.TARGET_REPOSITORY }}.wiki'
 
     # 🔧 Commutation relations
     runs-on: ${{ matrix.config.os }}
-    if: ${{ github.event_name == 'push' ||
-        github.event.workflow_run.conclusion == 'success' }}
+    continue-on-error: ${{ matrix.config.id != 1 && true || false }}
 
     steps:
       - name: 📂 Checkout
@@ -58,11 +64,10 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
-          ref: ${{ env.ID != 1 && 'gh-source' || '' }}
-          repository: ${{ env.ID != 1 && env.TARGET_REPOSITORY || '' }}
+          repository: ${{ env.ID != 1 && env.DOC || '' }}
 
       - name: ⚙️ Build Maps
-        uses: eq19/maps@v2
+        uses: eq19/maps@v4
         id: build-parser
         with:
           id: ${{ matrix.config.id }}
@@ -73,7 +78,7 @@ jobs:
           initiate_pauli_sum: ${{ toJSON(steps.set-lexering.outputs) }}
 
       - name: 🪂 Feed Mapping
-        uses: eq19/feed@v3
+        uses: eq19/feed@v4
         id: feed-mapping
         with:
           id: ${{ matrix.config.id }}
@@ -89,6 +94,7 @@ jobs:
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
+          config: ${{ secrets.CONFIG_JSON }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
@@ -128,18 +134,17 @@ jobs:
     # ✔️ Completeness status
     needs: lexering
     runs-on: ${{ matrix.config.os }}
-    if: ${{ (always() && contains(needs.*.result, 'success')) ||
-            (failure() && contains(needs.*.result, 'failure')) }}
+    if: ${{ contains(needs.*.result, 'success') }}
     continue-on-error: ${{ matrix.config.id == 3 && true || false }}
      
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v4
         with:
-          ref: 'gh-source'                  
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: ${{ env.TARGET_REPOSITORY }}
+          ref: ${{ matrix.config.id == 3 && 'gh-source' || 'gh-pages' }}                  
 
       - name: 🚀 Setup Parser
         if: ${{ env.PASS == 'true' }}

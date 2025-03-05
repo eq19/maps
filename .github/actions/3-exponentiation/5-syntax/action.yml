@@ -85,7 +85,7 @@ runs:
     - name: Run identity
       shell: bash
       run: |
-        TOKEN=$(/mnt/disks/platform/usr/bin/gcloud auth print-identity-token)
+        TOKEN=$(/mnt/disks/deeplearning/usr/bin/gcloud auth print-identity-token)
         curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
           -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
           --data @${{ github.workspace }}/docs/data.json | jq '.'
@@ -94,13 +94,14 @@ runs:
       # Runs a script that creates a Redis client, populates
       # the client with data, and retrieves data
       env:
-        # The hostname used to communicate with the Redis service container
+        # The hostname used to communicate with the Redis client service container
+        # Ref: https://gitlab.com/NamingThingsIsHard/crypto/freqtrade/clients
         # Ref: https://stackoverflow.com/a/48547074/4058484
         REDIS_PORT: 6379
         REDIS_HOST: 172.17.0.1
       shell: bash
       run: |
-        node /home/runner/scripts/main.js --output=/home/runner/templates/doxygen/doc/api-%s.md xml
+        npm run test
         echo '${{ inputs.pauli_sum }}'
     
     - name: 💎 Connect to postgres

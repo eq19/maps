@@ -87,28 +87,38 @@ runs:
     - name: ⏪ Rewind all jobs on failure
       shell: bash
       env:
+        GH_TOKEN: ${{ inputs.token }}
         BASE: "D:/a/_actions/eq19/eq19/v1/.github"
       run: |
         if [[ '${{ inputs.failure_status }}' == 'true' ]]; then
       
-          $BASE/entrypoint/init.sh
-          REMOTE_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/${{ github.repository }}.git"
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
+          REMOTE_REPO="https://$GITHUB_ACTOR:$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git"
           git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
           git add . && git commit --allow-empty -m "rerun due to job failure" && git push
   
         else
 
-          cd ${{ inputs.workspace }} && rm -rf .git .bundle vendor
-          TARGET_REPO="https://${{ github.actor }}:${{ inputs.token }}@github.com/$TARGET_REPOSITORY.git"
-          git clone --single-branch --branch gh-pages $TARGET_REPO ${{ inputs.runner_temp }}/gh-pages
+          cd ${GITHUB_WORKSPACE//\\//}
 
-          cd ${{ inputs.runner_temp }}/gh-pages
-          find -not -path "./.git/*" -not -name ".git" | grep git
-          find -not -path "./.git/*" -not -name ".git" -delete
-          
-          shopt -s dotglob && mv -f ${{ inputs.workspace }}/* .
-          #git fetch && git add . && git commit --allow-empty -m "$LATEST_COMMIT" && git rebase && git push
-          git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git push
+          echo -e "\n$hr\nConfig\n$hr"
+          cat _config.yml
+
+          echo -e "\n$hr\nSource Pages\n$hr"
+          ls -al ${GITHUB_WORKSPACE//\\//}
+
+          echo -e "\n$hr\nBuild Pages\n$hr"
+          #Jekyll Quick Reference https://gist.github.com/DrOctogon/bfb6e392aa5654c63d12
+          JEKYLL_GITHUB_TOKEN=${{ inputs.token }} DISABLE_WHITELIST=true bundle exec jekyll build --profile -t -p ${GITHUB_WORKSPACE//\\//}/_plugins -d ${GITHUB_WORKSPACE//\\//}/docs
+
+          if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "www.eq19.com" > ${GITHUB_WORKSPACE//\\//}/docs/CNAME; fi
+          rm -rf ${GITHUB_WORKSPACE//\\//}/docs/.nojekyll && touch ${GITHUB_WORKSPACE//\\//}/docs/.nojekyll
+
+          echo -e "\n$hr\nFinal Pages\n$hr"
+          ls -al ${GITHUB_WORKSPACE//\\//}/docs
+          git add . && git commit --allow-empty -m "${{ env.LATEST_COMMIT }}" && git push
 
         fi

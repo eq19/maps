@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "lgt"
+version = "0.1.3"
+description = "Python library for Lattice Gauge Theory"
+authors = ["Sam Foreman <saforem2@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+tensorflow = "^2.8.0"
+numpy = "^1.22.3"
+torch = "^1.11.0"
+scipy = "^1.8.0"
+itermplot = "^0.331"
+ipython = "^8.2.0"
+
+[tool.poetry.dev-dependencies]
+pyright = "^1.1.232"
+pynvim = "^0.4.3"
+ptipython = "^1.0.1"
+# ipdb = {version = "*", optional = true}
+pudb = {version = "*", optional = true}
+# ptipython = {optional = true}
+
+[tool.poetry.extras]
+dev_tools = ["pudb"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

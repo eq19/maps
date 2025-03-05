@@ -95,7 +95,7 @@ jekyll_build() {
   sed -i "1s|^|repository: ${OWNER}/$1\n|" ${RUNNER_TEMP}/_config.yml
   [[ $1 != *"github.io"* ]] && sed -i "1s|^|baseurl: /$1\n|" ${RUNNER_TEMP}/_config.yml
   
-  FOLDER="span$(( 17 - $3 ))"
+  FOLDER="span$(( 19 - $SITEID ))"
   TARGET_REPOSITORY=${OWNER}/$1
   gh variable set FOLDER --body "$FOLDER"
   echo 'FOLDER='${FOLDER} >> ${RUNNER_TEMP}/.env
@@ -115,7 +115,7 @@ jekyll_build() {
 
 # Get structure on gist files
 PATTERN='sort_by(.created_at)|.[] | select(.public == true).files.[] | select(.filename != "README.md").raw_url'
-HEADER="Accept: application/vnd.github+json" && echo ${GH_TOKEN} | gh auth login --with-token
+HEADER="Accept: application/vnd.github+json" #&& echo ${TOKEN} | gh auth login --with-token
 gh api -H "${HEADER}" "/users/eq19/gists" --jq "${PATTERN}" > ${RUNNER_TEMP}/gist_files
 
 # Capture the string and return status

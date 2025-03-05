@@ -20,7 +20,6 @@ inputs:
     required: true
   image_name:
     description: "Name for the container to be created. Example: nginx"
-    default: 'prime'
     required: false
   image_tag:
     description: Tag to use for the new image
@@ -32,13 +31,6 @@ inputs:
     description: Build args
     required: false
     default: ""
-  docker_hub_repo_short_description:
-    description: Short description text for the docker hub repo
-    required: true
-  docker_hub_repo_readme_file_path:
-    description: |
-      Path of the md file which will be used as the docker hub repo readme
-    required: true
   cache_src:
     description: Path for the docker cache source
     required: false
@@ -90,32 +82,35 @@ runs:
 
     - name: 💎 Setup Gcloud
       uses: 'google-github-actions/setup-gcloud@v2'
-      with:
-        install_components: 'alpha,cloud-datastore-emulator'
+      #with:
+        #install_components: 'alpha,cloud-datastore-emulator'
 
     # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
     - name: 💎 Remove Existing Self-Hosted Runner
       shell: bash
       env:
         JOB_ID: ${{ inputs.id }}
-        GH_TOKEN: ${{ inputs.token }}
-        #TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
+        TOKEN: ${{ inputs.token }}
       run: |
-        ${{ inputs.action_path }}/.github/entrypoint/init.sh
+        /Users/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
 
     - name: View context attributes
       uses: actions/github-script@v7
+      env:
+        JOB_ID: ${{ inputs.id }}
+        GH_TOKEN: ${{ inputs.token }}
       with:
         script: console.log(context)
         
     - name: Set Docker Hub description
       uses: peter-evans/dockerhub-description@v4
       with:
-        repository: 'eq19/prime'
-        username: ${{ inputs.hub_username }}
+        enable-url-completion: true
         password: ${{ inputs.hub_token }}
-        short-description: ${{ inputs.docker_hub_repo_short_description }}
-        readme-filepath: ${{ inputs.docker_hub_repo_readme_file_path }}
+        username: ${{ inputs.hub_username }}
+        repository: ${{ inputs.image_name }}
+        readme-filepath: ${{ inputs.action_path }}/README.md
+        short-description: ${{ github.event.repository.description }}
 
     - name: Build and Push my_awesome_microservice
       uses: mr-smithers-excellent/docker-build-push@v5

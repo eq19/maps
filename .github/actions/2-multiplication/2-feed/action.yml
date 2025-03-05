@@ -84,11 +84,13 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: 🪂 Get tag of existing image
+    - name: 🪂 Get tag of dependencies
       id: variables
       shell: bash
       run: |
-        brew install --quiet mosh pandoc doxygen     
+        #brew update --quiet
+        #brew install --quiet coreutils doxygen pandoc gsl cmake ninja lcov gcc@12 qt@5 texlive
+        #brew info qt@5 && brew info gsl
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
         for ((i=0; i < ${#array[@]}; i++)); do
           if [[ "${array[$i]}" != "latest" ]]; then
@@ -107,15 +109,12 @@ runs:
         users:
         - default
         - uid: 1000
-          name: vscode
-          groups: admin,adm,video,docker,google-sudoers
-        - uid: 2000
           name: runner
           groups: admin,adm,video,docker,google-sudoers
 
         write_files:
         - path: /etc/systemd/system/firewall.service
-          permissions: 0644
+          permissions: "0644"
           owner: root
           content: |
             [Unit]
@@ -127,7 +126,7 @@ runs:
             ExecStart=/sbin/iptables -A INPUT -p tcp --match multiport --dports 80,5432,6379 -j ACCEPT
 
         - path: /etc/systemd/system/redis.service
-          permissions: 0644
+          permissions: "0644"
           owner: root
           content: |
             [Unit]
@@ -137,11 +136,13 @@ runs:
 
             [Service]
             Restart=always
+            Environment="HOME=/home/runner"
             ExecStop=/usr/bin/docker exec myredis -s quit
-            ExecStart=/usr/bin/docker run --rm --name=myredis -p 6379:6379 --pull=always eq19/maps:target-${{ github.run_number }}
+            ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
+            ExecStart=/usr/bin/docker run --rm -v /mnt:/mnt --name=myredis -p 6379:6379 --pull=always eq19/maps:target-${{ github.run_number }}
 
         - path: /etc/systemd/system/postgres.service
-          permissions: 0644
+          permissions: "0644"
           owner: root
           content: |
             [Unit]
@@ -151,11 +152,13 @@ runs:
 
             [Service]
             Restart=always
+            Environment="HOME=/home/runner"
             ExecStop=/usr/bin/docker exec mydb -s quit
-            ExecStart=/usr/bin/docker run --rm -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
+            ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
+            ExecStart=/usr/bin/docker run --rm -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
 
         - path: /etc/systemd/system/runner.service
-          permissions: 0644
+          permissions: "0644"
           owner: root
           content: |
             [Unit]
@@ -166,23 +169,22 @@ runs:
             [Service]
             RestartSec=5s
             Restart=on-failure
-            Environment=HOME=/home/runner
+            Environment="HOME=/home/runner"
             ExecStop=/usr/bin/docker stop myrunner
             ExecStopPost=/usr/bin/docker rm myrunner
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=Google-optimized-instance -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/run/docker.sock:/var/run/docker.sock --name myrunner --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run --rm -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=Google-optimized-instance -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --name myrunner --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
 
         runcmd:
         - systemctl daemon-reload
         - systemctl start runner.service
-        - systemctl status runner.service
 
         bootcmd:
         - fsck.ext4 -tvy /dev/sdb1
-        - mkdir -p /mnt/disks/platform
-        - mount -o nosuid,nodev,commit=30,defaults -t ext4 /dev/sdb1 /mnt/disks/platform
+        - mkdir -p /mnt/disks/deeplearning
+        - mount -o nosuid,nodev,commit=30,defaults -t ext4 /dev/sdb1 /mnt/disks/deeplearning
         EOL
-
+        
     # Ref: https://stackoverflow.com/a/47018417/4058484
     - name: 🪂 Setup Runner by Gcloud
       id: instances
@@ -190,6 +192,7 @@ runs:
       run: >
         gcloud compute instances create grid-${{ env.IMAGE_TAG }}
         --service-account=project-owner@feedmapping.iam.gserviceaccount.com
+        --scopes=https://www.googleapis.com/auth/cloud-platform
         --zone=us-central1-a --machine-type=e2-micro --enable-display-device --tags=https-server
         --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
-        --create-disk=boot=no,auto-delete=no,name=tensorflow,device-name=deeplearning,mode=ro,size=50,type=pd-standard,image-project=deeplearning-platform-release,image-family=tf-ent-latest-gpu
+        --create-disk=boot=no,auto-delete=no,name=tensorflow,device-name=deeplearning,mode=rw,size=50,type=pd-standard,image=projects/ml-images/global/images/c0-deeplearning-common-cpu-v20241118-debian-11-py310
