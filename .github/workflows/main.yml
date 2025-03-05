@@ -1,22 +1,6 @@
 # 💎 Main Workflow: eQuantum MEC30
 name: COmpendium of RElations – Modulo 6
-#
-# The semantics for running shell commands in GitHub actions is non-obvious. Please read
-# https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
-# before modifying this file. 
-#
-# GitHub Actions files can be difficult to modify with confidence, because testing changes
-# often requires pushing to a branch and running CI remotely.
-#
-# To make this process easier, consider the following:
-#
-# 1) Use Visual Studio Code with the GitHub Actions Extension (github.vscode-github-actions).
-#    This allows you to check the validity of your action schema and syntax without pushing.
-# 2) Use https://github.com/nektos/act to run your CI steps locally. It will only work with
-#    steps run on Linux platforms, as `act` is implemented with Docker containers.
-#
-# For more information on these settings, see https://www.tensorflow.org/quantum/design.
-#
+
 on:
   #push:
   workflow_run:
@@ -35,10 +19,6 @@ permissions: write-all
 env:
   GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-  ACCESS_API: ${{ secrets.ACCESS_API }}
-  ACCESS_KEY: ${{ secrets.ACCESS_KEY }}
-  MESSAGE_API: ${{ secrets.MESSAGE_API }}
-  MESSAGE_TOKEN: ${{ secrets.MESSAGE_TOKEN }}
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
 
 jobs:
@@ -56,7 +36,7 @@ jobs:
 
     # 🔧 Commutation relations
     runs-on: ${{ matrix.config.os }}
-    continue-on-error: ${{ matrix.config.id != 1 && true || false }}
+    continue-on-error: ${{ matrix.config.id != 1 && false || true }}
 
     steps:
       - name: 📂 Checkout
@@ -67,29 +47,34 @@ jobs:
           repository: ${{ env.ID != 1 && env.DOC || '' }}
 
       - name: ⚙️ Build Maps
-        uses: eq19/maps@v4
+        uses: eq19/maps@v8
         id: build-parser
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
+          rerun_runner: ${{ vars.RERUN_RUNNER }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           initiate_pauli_sum: ${{ toJSON(steps.set-lexering.outputs) }}
 
       - name: 🪂 Feed Mapping
-        uses: eq19/feed@v4
+        uses: eq19/feed@v6
         id: feed-mapping
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
+          chat_id: ${{ secrets.MESSAGE_API }}
+          rerun_runner: ${{ vars.RERUN_RUNNER }}
+          bot_token: ${{ secrets.MONITOR_TOKEN }}
+          logs_token: ${{ secrets.WARNING_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
 
       - name: 🏃‍♂️ Lexering Runner
-        uses: eq19/lexer@v3
+        uses: eq19/lexer@v4
         id: set-lexering
         with:
           id: ${{ matrix.config.id }}
@@ -124,17 +109,17 @@ jobs:
           - { os: windows-latest, id: 4 }
 
       # 💢 Completeness relations
-      max-parallel: ${{ contains(needs.*.result, 'success') && 1 || 2 }}
-      fail-fast: ${{ contains(needs.*.result, 'success') && false || true }}
+      max-parallel: 1
+      fail-fast: true
 
     env:
       IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
-      PASS: ${{ contains(needs.*.result, 'success') && true || false }}
+      PASS: ${{ contains(needs.lexering.result, 'success') }}
 
-    # ✔️ Completeness status
+    ## ✔️ Completeness status
     needs: lexering
     runs-on: ${{ matrix.config.os }}
-    if: ${{ contains(needs.*.result, 'success') }}
+    #if: ${{ (needs.lexering.result == 'success') }}
     continue-on-error: ${{ matrix.config.id == 3 && true || false }}
      
     steps:
@@ -165,6 +150,8 @@ jobs:
         with:
           id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
+          api_key: ${{ secrets.ACCESS_API }}
+          api_secret: ${{ secrets.ACCESS_KEY }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ toJSON(steps.set-parser.outputs) }}
           failure_status: ${{ contains(steps.*.conclusion, 'failure') ||

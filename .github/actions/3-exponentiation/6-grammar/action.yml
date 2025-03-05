@@ -84,7 +84,7 @@ runs:
     - name: ⏩ Next wiki's jobs on applying
       shell: bash
       env:
-        BASE: "D:/a/_actions/eq19/eq19/v1/.github"
+        BASE: "D:/a/_actions/eq19/eq19/v2/.github"
       run: |
         if [[ '${{ inputs.failure_status }}' == 'false' ]]; then
 
@@ -120,9 +120,21 @@ runs:
           cd ${{ github.workspace }}
           find -not -path "./.git/*" -not -name ".git" | grep git
           find -not -path "./.git/*" -not -name ".git" -delete
-
           shopt -s dotglob && mv -f /home/runner/_site/* .
-          #git fetch && git add . && git commit --allow-empty -m ${{ env.LATEST_COMMIT }} && git rebase && git push
-          git add . && git commit --allow-empty -m "${{ env.LATEST_COMMIT }}" && git push
+
+          # Assign the environment variable correctly
+          COMMIT="${{ env.LATEST_COMMIT }}"
+
+          # Remove double quotes
+          MESSAGE=$(echo "$COMMIT" | tr -d '"')
+
+          # Debug output to verify
+          echo "Original: $COMMIT"
+          echo "Processed: $MESSAGE"
+
+          # Commit and push changes
+          git add . 
+          git commit --allow-empty -m "$MESSAGE" 
+          git push
  
         fi

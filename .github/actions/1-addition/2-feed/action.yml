@@ -53,8 +53,9 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
-  provider:
-    description: 'The deploy provider'
+  rerun_runner:
+    description: Redeploy hosted runner
+    default: 'false'
     required: true
   owner:
     description: 'The deploy owner'
@@ -136,10 +137,10 @@ runs:
         EXPECTED_SSL: true
       shell: bash
       run: |
-        ##cd /home/runner/work/_actions/eq19/eq19/v1/integrations/tensorflow
+        ##cd /home/runner/work/_actions/eq19/eq19/v2/integrations/tensorflow
         ##pip install -e python_projects/* && iree-import-tflite -h && iree-import-tf -h
 
-        ##cd /home/runner/work/_actions/eq19/eq19/v1/integrations/pjrt
+        ##cd /home/runner/work/_actions/eq19/eq19/v2/integrations/pjrt
         ##pip install -e ctstools python_packages/iree_cpu_plugin
   
         ##pip install -r requirements.txt && cd python_packages/iree_cpu_plugin/build/cmake && ninja
@@ -158,6 +159,12 @@ runs:
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
         configFile: _site/.devcontainer.json
+        env: |
+          TOKEN=${{ env.GH_TOKEN }}
+          REMOTE_REPO=${{ env.REMOTE_REPO }}
+          RERUN_RUNNER=${{ inputs.rerun_runner }}
+          BEARER=${{ steps.auth.outputs.id_token }}
+          TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
         runCmd: bash user_data/ft_client/test_client/test_rest_client.sh
 
     - name: 🪂 Remove existing images
@@ -165,13 +172,6 @@ runs:
       shell: bash
       run: |
         BASE_NAME=$(basename ${{ inputs.image_name }})
-        if [[ -f ${{ github.workspace }}/config.json ]]; then
-          sed -i "s|your_exchange_key|${ACCESS_API}|g" config.json
-          sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" config.json
-          sed -i "s|your_telegram_chat_id|${MESSAGE_API}|g" config.json
-          sed -i "s|your_telegram_token|${MESSAGE_TOKEN}|g" config.json
-          gh secret set CONFIG_JSON < config.json
-        fi
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
         for ((i=0; i < ${#array[@]}; i++)); do
           if [[ "${array[$i]}" != "latest" ]]; then

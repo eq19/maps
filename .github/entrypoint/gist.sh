@@ -1,7 +1,17 @@
 #!/usr/bin/env bash
 
+# Clean up
 rm -rf ${RUNNER_TEMP}/*dir
 
+# Clone wiki
+git clone $1 ${RUNNER_TEMP}/wikidir
+mv -f ${RUNNER_TEMP}/wikidir/Home.md ${RUNNER_TEMP}/wikidir/README.md
+
+# Take titles from _Sidebar.md of wiki
+sed -i 's/0. \[\[//g' ${RUNNER_TEMP}/wikidir/_Sidebar.md
+sed -i 's/\]\]//g' ${RUNNER_TEMP}/wikidir/_Sidebar.md
+
+# Clone gist to be put later on wiki's exponentiation and identition folders
 gh gist clone 0ce5848f7ad62dc46dedfaa430069857 ${RUNNER_TEMP}/gistdir/identition/span1
 gh gist clone b32915925d9d365e2e9351f0c4ed786e ${RUNNER_TEMP}/gistdir/identition/span2
 gh gist clone 88d09204b2e5986237bd66d062406fde ${RUNNER_TEMP}/gistdir/identition/span3
@@ -22,9 +32,16 @@ gh gist clone dc30497160f3389546d177da901537d9 ${RUNNER_TEMP}/gistdir/exponentia
 gh gist clone e84a0961dc7636c01d5953d19d65e30a ${RUNNER_TEMP}/gistdir/exponentiation/span17
 gh gist clone e9832026b5b78f694e4ad22c3eb6c3ef ${RUNNER_TEMP}/gistdir/exponentiation/span18
 
-rm -rf ${RUNNER_TEMP}/spin.txt && touch ${RUNNER_TEMP}/spin.txt
+# Clean up the gists collection
+find ${RUNNER_TEMP}/gistdir -type d -name .git -prune -exec rm -rf {} \;
 find ${RUNNER_TEMP}/gistdir -type f -name "README.md" -exec rm -rf {} \;
 
-git clone ${BASE} ${RUNNER_TEMP}/workdir
-mv -f ${RUNNER_TEMP}/workdir/Home.md ${RUNNER_TEMP}/workdir/README.md
-find ${RUNNER_TEMP}/gistdir -type f -name 'spin_*.txt' | sort -n -t _ -k 2  | while ((i++)); IFS= read -r f; do sort.sh $f $i; done
+# Collect and sort all spins on gistdir
+rm -rf ${RUNNER_TEMP}/spin.txt && touch ${RUNNER_TEMP}/spin.txt
+find ${RUNNER_TEMP}/gistdir -type f -name 'spin_*.txt' | sort -n -t _ -k 2  | \
+  while ((i++)); IFS= read -r f; do sort.sh $f $i; done
+cat ${RUNNER_TEMP}/spin.txt
+
+# Copy the gist to wiki
+cp -R ${RUNNER_TEMP}/gistdir/* ${RUNNER_TEMP}/wikidir/
+find ${RUNNER_TEMP}/wikidir -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'

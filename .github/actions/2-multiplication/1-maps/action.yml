@@ -39,8 +39,8 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
-  provider:
-    description: 'The deploy provider'
+  rerun_runner:
+    description: 'Redeploy of runner'
     required: true
   owner:
     description: 'The deploy owner'
@@ -92,7 +92,7 @@ runs:
         JOB_ID: ${{ inputs.id }}
         TOKEN: ${{ inputs.token }}
       run: |
-        /Users/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
+        /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
 
     - name: View context attributes
       uses: actions/github-script@v7
@@ -125,12 +125,14 @@ runs:
 
     # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
     - name: 💎 Remove Existing Self-Hosted Runner
+      if: inputs.rerun_runner == 'true'
       shell: bash
       run: |
         for instance_uri in $(gcloud compute instances list --uri 2> /dev/null); do
           instance_name=${instance_uri##*/}
           instance_zone_uri=${instance_uri/\/instances\/${instance_name}/}
           instance_zone=${instance_zone_uri##*/}
+          gcloud compute instances update "${instance_name}" --zone "${instance_zone}" --no-deletion-protection
           if [ -n "${instance_name}" ] && [ -n "${instance_zone}" ] && gcloud compute instances delete ${instance_name} --zone ${instance_zone} --quiet; then
             echo "deleted: ${instance_zone}/${instance_name}"
           fi

@@ -109,7 +109,11 @@ runs:
         imageName: ${{ inputs.image_name }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
         env: |
+          CXX=clang++
+          CC=clang
+          FC=gfortran
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
+          LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 
     - name: 💎 Variables
       id: variables

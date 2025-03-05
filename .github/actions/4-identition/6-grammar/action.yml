@@ -88,8 +88,9 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.token }}
-        BASE: "D:/a/_actions/eq19/eq19/v1/.github"
+        BASE: "D:/a/_actions/eq19/eq19/v2/.github"
       run: |
+        #gh variable set RERUN_RUNNER --body "false"
         if [[ '${{ inputs.failure_status }}' == 'true' ]]; then
       
           git config --global user.name "$GITHUB_ACTOR"
@@ -108,17 +109,35 @@ runs:
           cat _config.yml
 
           echo -e "\n$hr\nSource Pages\n$hr"
-          ls -al ${GITHUB_WORKSPACE//\\//}
+          ls -al .
+
+          FILE=$(find . -name "plugin_manager.rb")
+          sed -i 's|unless site.safe|if site.safe|g' $FILE
+          sed -i 's|plugins_path.each|Array(["./_plugins"]).each|g' $FILE
 
           echo -e "\n$hr\nBuild Pages\n$hr"
           #Jekyll Quick Reference https://gist.github.com/DrOctogon/bfb6e392aa5654c63d12
-          JEKYLL_GITHUB_TOKEN=${{ inputs.token }} DISABLE_WHITELIST=true bundle exec jekyll build --profile -t -p ${GITHUB_WORKSPACE//\\//}/_plugins -d ${GITHUB_WORKSPACE//\\//}/docs
+          JEKYLL_GITHUB_TOKEN=${{ inputs.token }} DISABLE_WHITELIST=true bundle exec jekyll build --profile --trace -t -d ./docs
 
-          if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "www.eq19.com" > ${GITHUB_WORKSPACE//\\//}/docs/CNAME; fi
-          rm -rf ${GITHUB_WORKSPACE//\\//}/docs/.nojekyll && touch ${GITHUB_WORKSPACE//\\//}/docs/.nojekyll
+          if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "www.eq19.com" > ./docs/CNAME; fi
+          rm -rf ./docs/.nojekyll && touch ./docs/.nojekyll
 
           echo -e "\n$hr\nFinal Pages\n$hr"
-          ls -al ${GITHUB_WORKSPACE//\\//}/docs
-          git add . && git commit --allow-empty -m "${{ env.LATEST_COMMIT }}" && git push
+          ls -al ./docs
+ 
+          # Assign the environment variable correctly
+          COMMIT="${{ env.LATEST_COMMIT }}"
 
+          # Remove double quotes
+          MESSAGE=$(echo "$COMMIT" | tr -d '"')
+
+          # Debug output to verify
+          echo "Original: $COMMIT"
+          echo "Processed: $MESSAGE"
+
+          # Commit and push changes
+          git add . 
+          git commit --allow-empty -m "$MESSAGE" 
+          git push
+ 
         fi

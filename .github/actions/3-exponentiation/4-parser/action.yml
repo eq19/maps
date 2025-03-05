@@ -84,7 +84,7 @@ runs:
       run: |
         if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
           export PAULI_SUM=$(echo -n "${{ inputs.pauli_sum }}" | base64 --decode);
-          export PATH=/home/runner/_work/_actions/eq19/eq19/v1/.github/entrypoint:$PATH && init.sh
+          export PATH=/home/runner/_work/_actions/eq19/eq19/v2/.github/entrypoint:$PATH && init.sh
         else
           exit 1
         fi

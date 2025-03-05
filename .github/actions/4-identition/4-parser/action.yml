@@ -87,7 +87,7 @@ runs:
         JOB_ID: ${{ inputs.id }}
         TOKEN: ${{ inputs.token }}
       run: |
-        /d/a/_actions/eq19/eq19/v1/.github/entrypoint/init.sh
+        /d/a/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
         
     - name: View context attributes
       uses: actions/github-script@v7

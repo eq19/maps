@@ -82,7 +82,7 @@ runs:
   using: composite
   steps:
     - name: configure
-      if: runner.os == 'Windows'
+      #if: runner.os == 'Windows'
       shell: bash
       env:
         CXX: g++-12
@@ -113,8 +113,11 @@ runs:
         cd ${{ inputs.action_path }} && doxygen > /dev/null 2>&1
         rm -rf ${{ github.workspace }}/xml && mv -f xml ${{ github.workspace }}/
 
+        COMMIT="${{ env.LATEST_COMMIT }}"  
         cd ${{ github.workspace }} && rm -rf cloud-config
-        git add . && git commit --allow-empty -m "${{ env.LATEST_COMMIT }}" && git push
+
+        # Remove double quotes using parameter extension
+        git add . && git commit --allow-empty -m "${COMMIT//\"/}" && git push
 
         #ssh-keygen -t rsa -b 3072 -N '' -f $HOME/.ssh/google_compute_engine -C root
         #sed -i.backup "1s|^|runner: |" $HOME/.ssh/google_compute_engine.pub && gh secret set GCP_ID_RSA < $HOME/.ssh/google_compute_engine
@@ -125,7 +128,7 @@ runs:
         #gcloud secrets versions add freqtrade-config --project feedmapping --data-file=config.json
 
         gcloud compute instances add-metadata grid-${{ env.IMAGE_TAG }} --zone=us-central1-a \
-          --metadata=startup-script=/home/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/startup.sh
+          --metadata=startup-script=/home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/startup.sh
 
         #gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(metadata.items)'
         #gcloud compute scp ${{ github.workspace }}/.github/entrypoint/artifact/python/manual_v2.ipynb grid-${{ env.IMAGE_TAG }}:/home/runner/.docker --zone=us-central1-a

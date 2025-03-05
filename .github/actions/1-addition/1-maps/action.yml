@@ -83,7 +83,7 @@ runs:
         JOB_ID: ${{ inputs.id }}
       run: |
         HEADER="Accept: application/vnd.github+json"
-        /home/runner/work/_actions/eq19/eq19/v1/.github/entrypoint/init.sh ${{ inputs.action_path }}
+        /home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh ${{ inputs.action_path }}
 
         #See: https://docs.github.com/en/rest/actions/self-hosted-runners
         TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
@@ -116,8 +116,8 @@ runs:
     - name: Install dependencies
       shell: bash
       run: |
-        #python -m pip -q install --upgrade pip
-        #python -m pip -q install -r ${{ inputs.action_path }}/dataFile/requirements.txt
+        python -m pip -q install --upgrade pip
+        python -m pip -q install -r ${{ inputs.action_path }}/dataFile/requirements.txt
   
         ##python -m pip -q install -e ./.github/entrypoint/artifact/python
         ##iree-compile --iree-llvmcpu-list-targets && iree-run-module --list_drivers
@@ -126,8 +126,8 @@ runs:
         ##python ${{ inputs.action_path }}/pythonCode/testIREE.py
         
         ##Ref: https://github.com/tsoding/JelloVM
-        #cd ${{ inputs.action_path }} && javac javaCode/Main.java
-        #python app.py output.txt && cat dataFile/results/output.txt
+        cd ${{ inputs.action_path }} && javac javaCode/Main.java
+        python app.py output.txt && cat dataFile/results/output.txt
 
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py

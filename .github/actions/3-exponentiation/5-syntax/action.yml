@@ -52,11 +52,11 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
-  provider:
-    description: 'The deploy provider'
+  api_key:
+    description: 'The api key'
     required: true
-  owner:
-    description: 'The deploy owner'
+  api_secret:
+    description: 'The api secret'
     required: false
   token:
     description: 'The deploy token'
@@ -89,6 +89,10 @@ runs:
         curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
           -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
           --data @${{ github.workspace }}/docs/data.json | jq '.'
+
+        # Bring GitHub Env Variables in to the config file on another container usong docker from the attached deeplearning image
+        /mnt/disks/deeplearning/usr/bin/docker exec mydb sed -i "s|your_exchange_key|${{ inputs.api_key }}|g" /home/runner/user_data/config.json
+        /mnt/disks/deeplearning/usr/bin/docker exec mydb sed -i "s|your_exchange_secret|${{ inputs.api_secret }}|g" /home/runner/user_data/config.json
 
     - name: 💎 Connect to Redis
       # Runs a script that creates a Redis client, populates

@@ -81,6 +81,7 @@ runs:
   using: composite
   
   steps:
+    # See: https://github.com/svopper/munaiah-analyser/blob/18cb09be3a343a051239d5b6378ed7524dad3147/out/groonga/grntest/.github_workflows_windows.yml#L50
     - name: 💎 Setup Ruby
       uses: ruby/setup-ruby@v1
       if: runner.os == 'Windows'
@@ -111,12 +112,7 @@ runs:
         JOB_ID: ${{ inputs.id }}
         GH_TOKEN: ${{ inputs.token }}
         GCP_TOKEN: ${{ steps.auth.outputs.id_token }}
-        BASE_GIT: "/d/a/_actions/eq19/eq19/v1/.github"
-        BASE: "https://github.com/eq19/eq19.github.io.wiki.git"
-        WIKI: "https://github.com/${{ env.TARGET_REPOSITORY }}.wiki.git"
       run: |
         curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
           -H "Authorization: Bearer ${GCP_TOKEN}" -H "Content-Type: application/json" \
-          --data @${{ inputs.workspace }}/docs/data.json | jq '.'
-        export PATH=$BASE_GIT/entrypoint:$PATH && github_pages.sh
-                
+          --data @${{ inputs.workspace }}/docs/data.json | jq '.'                
