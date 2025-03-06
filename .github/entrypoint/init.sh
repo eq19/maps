@@ -35,8 +35,8 @@ if [[ -z ${PASS} ]] || [[ "${PASS}" == "true" ]]; then
   echo 'TARGET_REPO='${TARGET_REPO} >> ${GITHUB_ENV}
   echo 'REMOTE_REPO='${REMOTE_REPO} >> ${GITHUB_ENV}
 
-  if [[ -f _config.yml ]]; then
-    FOLDER=$(yq '.span' _config.yml)
+  if [[ -f /home/runner/_site/_config.yml ]]; then
+    FOLDER=$(yq '.span' /home/runner/_site/_config.yml)
     export FOLDER=$(eval echo $FOLDER)
   elif [[ -f /home/runner/_site/.env ]]; then
     set -a && . /home/runner/_site/.env && set +a
@@ -75,7 +75,8 @@ elif [[ "${JOB_ID}" == "2" ]]; then
 elif [[ "${JOB_ID}" == "3" ]]; then
 
   cd /home/runner/_site && cat _config.yml
-  gist.sh ${BASE} > /dev/null && cat ${RUNNER_TEMP}/spin.txt && cp -R ${RUNNER_TEMP}/wikidir/* .
+  gist.sh ${BASE} > /dev/null && cat ${RUNNER_TEMP}/spin.txt
+  cp -R ${RUNNER_TEMP}/wikidir/* . && pwd && ls -al .
 
   if [[ "${WIKI}" != "${BASE}" ]]; then
     gist.sh ${WIKI} > /dev/null && cat ${RUNNER_TEMP}/spin.txt
