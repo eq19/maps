@@ -45,7 +45,7 @@ if [[ -z ${PASS} ]] || [[ "${PASS}" == "true" ]]; then
 
 fi
 
-echo -e "\n$hr\nWORKSPACE\n$hr"
+echo -e "\n$hr\nWORKSPACE: $FOLDER\n$hr"
 if [[ "${JOB_ID}" == "1" ]]; then
 
   #[[ "${LATEST_COMMIT}" == *"RERUN_RUNNER"* ]] && gh variable set RERUN_RUNNER --body "true"
@@ -75,8 +75,7 @@ elif [[ "${JOB_ID}" == "2" ]]; then
 elif [[ "${JOB_ID}" == "3" ]]; then
 
   cd /home/runner/_site && cat _config.yml
-  gist.sh ${BASE} > /dev/null && cat ${RUNNER_TEMP}/spin.txt
-  cp -R ${RUNNER_TEMP}/wikidir/* .
+  gist.sh ${BASE} > /dev/null && cat ${RUNNER_TEMP}/spin.txt && cp -R ${RUNNER_TEMP}/wikidir/* .
 
   if [[ "${WIKI}" != "${BASE}" ]]; then
     gist.sh ${WIKI} > /dev/null && cat ${RUNNER_TEMP}/spin.txt
