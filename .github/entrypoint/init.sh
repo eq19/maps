@@ -75,7 +75,7 @@ elif [[ "${JOB_ID}" == "2" ]]; then
 
 elif [[ "${JOB_ID}" == "3" ]]; then
 
-  cd /home/runner/_site && rm -rf docs && gist.sh ${BASE} $(pwd)
+  cd /home/runner/_site && rm -rf README.md docs && gist.sh ${BASE} $(pwd)
 
   if [[ "${WIKI}" != "${BASE}" ]]; then
     find . -type d -name "${FOLDER}" -prune -exec sh -c 'gist.sh ${WIKI} "$1"' sh {} \;
