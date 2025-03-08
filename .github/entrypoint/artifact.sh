@@ -102,6 +102,7 @@ jekyll_build() {
   echo 'repo='${TARGET_REPOSITORY} >> ${GITHUB_OUTPUT}
   gh variable set TARGET_REPOSITORY --body "$TARGET_REPOSITORY"
   echo 'TARGET_REPOSITORY='${TARGET_REPOSITORY} >> ${GITHUB_ENV}
+  sync.sh ${REPO} ${TARGET_REPOSITORY} ${GH_TOKEN} > /dev/null
 
   sed -i "1s|^|title: eQuantum\n|" ${RUNNER_TEMP}/_config.yml
   sed -i "1s|^|span: ${FOLDER}\n|" ${RUNNER_TEMP}/_config.yml
