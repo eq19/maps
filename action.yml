@@ -36,6 +36,9 @@ inputs:
   token:
     description: The Github personal token
     required: true
+  pypi_token:
+    description: The monitor token
+    required: true
   bot_token:
     description: The monitor token
     required: true
@@ -44,6 +47,12 @@ inputs:
     required: true
   chat_id:
     description: The telegram chat id
+    required: true
+  api_key:
+    description: The key of api application
+    required: true
+  api_secret:
+    description: The secret of api application
     required: true
   id:
     description: The id according to os
@@ -72,6 +81,12 @@ runs:
         credentials: ${{ inputs.credentials }}
         action_path: ${{ github.action_path }}
         image_name: ${{ inputs.image_name }}
+        api_secret: ${{ inputs.api_secret }}
+        api_key: ${{ inputs.api_key }}
+        chat_id: ${{ inputs.chat_id }}
+        pypi_token: ${{ inputs.pypi_token }}
+        logs_token: ${{ inputs.logs_token }}
+        bot_token: ${{ inputs.bot_token }}
         token: ${{ inputs.token }}
 
     - name: Profiling Feedback
