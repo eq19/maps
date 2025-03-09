@@ -164,6 +164,8 @@ W.D. Gann: “Stocks make important changes in trend every ***30, 60, 120, 150, 
 
 ## The Interchange Layers
 
+[![The Four Fundamental Forces](https://github.com/user-attachments/assets/731865b0-7033-4e1b-a587-0c75c0dcae36)](https://www.eq19.com/#prime-unit-identity)
+
 ```note
 That is, if the powers of 10 all returned with blue spin, or as a series of rainbows, or evenly alternating colors or other non-random results, ***then I’d say prime numbers appear to have a linkage to 10.  I may not know what the the linkage is, just that it appears to exist*** _([HexSpin](https://www.hexspin.com/minor-hexagons/))_.
 ```
