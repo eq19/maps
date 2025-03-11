@@ -19,7 +19,6 @@ permissions: write-all
 env:
   GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-  SPACE_PARAMETERS: ${{ vars.PARAMS_JSON }}
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
 
 jobs:
