@@ -46,7 +46,10 @@ if [[ -z ${PASS} ]] || [[ "${PASS}" == "true" ]]; then
 
 fi
 
-echo -e "\n$hr\nWORKSPACE: $FOLDER\n$hr"
+echo -e "\n$hr\nWORKSPACE\n$hr"
+PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
+
 if [[ "${JOB_ID}" == "1" ]]; then
 
   #[[ "${LATEST_COMMIT}" == *"RERUN_RUNNER"* ]] && gh variable set RERUN_RUNNER --body "true"
@@ -64,10 +67,7 @@ if [[ "${JOB_ID}" == "1" ]]; then
   else
     #PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     #mv -f ${GITHUB_WORKSPACE}/$PARAMS $1/dataFile/user_data/strategies/fibbo.json
-    curl -s -H "Authorization: token $GH_TOKEN" \
-      -H "Accept: application/vnd.github.v3+json" \
-      "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" \
-      | jq -r '.value' > $1/dataFile/user_data/strategies/fibbo.json
+    echo "${PARAMS_JSON}" | jq '.' > $1/dataFile/user_data/strategies/fibbo.json
 
     if jq empty < $1/dataFile/user_data/strategies/fibbo.json; then
       echo "Valid JSON" && cat $1/dataFile/user_data/strategies/fibbo.json
