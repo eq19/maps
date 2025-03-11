@@ -64,13 +64,14 @@ if [[ "${JOB_ID}" == "1" ]]; then
   else
     #PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     #mv -f ${GITHUB_WORKSPACE}/$PARAMS $1/dataFile/user_data/strategies/fibbo.json
-    curl -s -H "Authorization: token $GH_TOKEN" \
-      -H "Accept: application/vnd.github.v3+json" \
-      "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" \
-      | jq -r '.value' > $1/dataFile/user_data/strategies/fibbo.json
+    #curl -s -H "Authorization: token $GH_TOKEN" \
+      #-H "Accept: application/vnd.github.v3+json" \
+      #"https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" \
+      #| jq -r '.value' > $1/dataFile/user_data/strategies/fibbo.json
 
+    echo "${SPACE_PARAMETERS}" | jq '.' > $1/dataFile/user_data/strategies/fibbo.json
     if jq empty < $1/dataFile/user_data/strategies/fibbo.json; then
-      echo "Valid JSON" && cat $1/dataFile/user_data/strategies/fibbo.json
+      cat $1/dataFile/user_data/strategies/fibbo.json
     else
       echo "Invalid JSON"
     fi
