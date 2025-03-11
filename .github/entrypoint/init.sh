@@ -62,9 +62,19 @@ if [[ "${JOB_ID}" == "1" ]]; then
     git add . && git commit --allow-empty -m "rerun due to job update" && git push
     exit 1
   else
-    PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
-    mv -f ${GITHUB_WORKSPACE}/$PARAMS $1/dataFile/user_data/strategies/fibbo.json
-  
+    #PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
+    #mv -f ${GITHUB_WORKSPACE}/$PARAMS $1/dataFile/user_data/strategies/fibbo.json
+    curl -s -H "Authorization: token $GH_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" \
+      | jq -r '.value' > $1/dataFile/user_data/strategies/fibbo.json
+
+    if jq empty < $1/dataFile/user_data/strategies/fibbo.json; then
+      echo "Valid JSON" && cat $1/dataFile/user_data/strategies/fibbo.json
+    else
+      echo "Invalid JSON"
+    fi
+
     mv -f $1/dataFile/user_data ${GITHUB_WORKSPACE}/
     cd ${GITHUB_WORKSPACE} && ls -al ${GITHUB_WORKSPACE}
   fi
