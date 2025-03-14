@@ -244,14 +244,15 @@ else
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
-  rm -rf *.json freqtrade_pid.txt freqtrade.log
 
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
   git clone https://eq19:$TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
+  rm -rf *.json freqtrade_pid.txt freqtrade.log
   rm -rf /home/runner/user_data/build_helpers /tmp/wiki/_user
-  cd /tmp/wiki && mv -f /home/runner/user_data _user
+  mv -f /home/runner/user_data /tmp/wiki/_user && cd /tmp/wiki
+
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
   git add . && git commit --allow-empty -m "update params" && git push
   
