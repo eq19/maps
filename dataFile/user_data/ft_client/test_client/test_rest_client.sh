@@ -217,6 +217,8 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
 else
 
+  git clone https://eq19:$TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
+
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
 
