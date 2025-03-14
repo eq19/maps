@@ -1,0 +1,28 @@
+{
+  "strategy_name": "MACDStrategy_crossed",
+  "params": {
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 10
+    },
+    "buy": {},
+    "sell": {},
+    "protection": {},
+    "roi": {
+      "0": 0.279,
+      "3923": 0.134,
+      "8453": 0.088,
+      "36466": 0
+    },
+    "stoploss": {
+      "stoploss": -0.07
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2023-03-30 19:09:15.701321+00:00"
+}

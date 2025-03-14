@@ -1,0 +1,144 @@
+{
+    "$schema": "https://schema.freqtrade.io/schema.json",
+    "max_open_trades": 5,
+    "stake_currency": "EUR",
+    "stake_amount": 10,
+    "tradable_balance_ratio": 0.99,
+    "fiat_display_currency": "EUR",
+    "timeframe": "5m",
+    "dry_run": true,
+    "cancel_open_orders_on_exit": false,
+    "unfilledtimeout": {
+        "entry": 10,
+        "exit": 10,
+        "exit_timeout_count": 0,
+        "unit": "minutes"
+    },
+    "entry_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1,
+        "price_last_balance": 0.0,
+        "check_depth_of_market": {
+            "enabled": false,
+            "bids_to_ask_delta": 1
+        }
+    },
+    "exit_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1
+    },
+    "exchange": {
+        "name": "kraken",
+        "key": "your_exchange_key",
+        "secret": "your_exchange_key",
+        "ccxt_config": {},
+        "ccxt_async_config": {},
+        "pair_whitelist": [
+            "ADA/EUR",
+            "ATOM/EUR",
+            "BAT/EUR",
+            "BCH/EUR",
+            "BTC/EUR",
+            "DAI/EUR",
+            "DASH/EUR",
+            "EOS/EUR",
+            "ETC/EUR",
+            "ETH/EUR",
+            "LINK/EUR",
+            "LTC/EUR",
+            "QTUM/EUR",
+            "REP/EUR",
+            "WAVES/EUR",
+            "XLM/EUR",
+            "XMR/EUR",
+            "XRP/EUR",
+            "XTZ/EUR",
+            "ZEC/EUR"
+        ],
+        "pair_blacklist": []
+    },
+    "pairlists": [
+        {"method": "StaticPairList"}
+    ],
+    "telegram": {
+        "enabled": false,
+        "token": "your_telegram_token",
+        "chat_id": "your_telegram_chat_id"
+    },
+    "api_server": {
+        "enabled": false,
+        "listen_ip_address": "127.0.0.1",
+        "listen_port": 8080,
+        "verbosity": "error",
+        "jwt_secret_key": "somethingrandom",
+        "CORS_origins": [],
+        "username": "freqtrader",
+        "password": "SuperSecurePassword"
+    },
+    "bot_name": "freqtrade",
+    "initial_state": "running",
+    "force_entry_enable": false,
+    "internals": {
+        "process_throttle_secs": 5
+    },
+    "download_trades": true,
+    "freqai": {
+        "enabled": true,
+        "models": {
+            "default": {
+                "class": "FreqaiExampleStrategy",
+                "config": {}
+            }
+        },
+        "train_period": "90d",
+        "min_train_period": "30d",
+        "retrain_interval": "7d",
+        "lookahead_period": "1d",
+        "prediction_length": "3d",
+        "max_data_rows": 10000,
+        "feature_parameters": {
+            "target": "close",
+            "features": [
+                "close",
+                "open",
+                "high",
+                "low",
+                "volume"
+            ],
+            "normalize": true,
+            "include_timeframes": ["5m"],
+            "include_corr_pairlist": [
+                "ADA/EUR",
+                "BTC/EUR"
+            ],
+            "include_shifted_candles": 0,
+            "DI_threshold": 0,
+            "weight_factor": 0,
+            "principal_component_analysis": false,
+            "use_SVM_to_remove_outliers": false,
+            "plot_feature_importances": 0,
+            "shuffle_after_split": false,
+            "buffer_train_data_candles": 0
+        },
+        "data_split_parameters": {
+            "training_size": 0.8,
+            "shuffle": true,
+            "validation_size": 0.2
+        },
+        "feature_generation_parameters": {
+            "rolling_windows": [
+                {"feature": "close", "window_size": 14},
+                {"feature": "volume", "window_size": 7}
+            ]
+        },
+        "prediction_parameters": {
+            "method": "regression",
+            "thresholds": {
+                "buy": 0.5,
+                "sell": 0.5
+            }
+        }
+    }
+}

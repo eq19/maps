@@ -1,0 +1,28 @@
+{
+  "strategy_name": "Low_BB",
+  "params": {
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 10
+    },
+    "buy": {},
+    "sell": {},
+    "protection": {},
+    "roi": {
+      "0": 0.181,
+      "120": 0.083,
+      "288": 0.058,
+      "618": 0
+    },
+    "stoploss": {
+      "stoploss": -0.02
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2023-04-13 19:37:15.278886+00:00"
+}

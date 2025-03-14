@@ -1,0 +1,54 @@
+{
+  "strategy_name": "fibbo",
+  "params": {
+    "roi": {
+      "0": 0.0786,
+      "4": 0.0238,
+      "11": 0.006,
+      "19": 0
+    },
+    "stoploss": {
+      "stoploss": -0.137
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.099,
+      "trailing_stop_positive_offset": 0.178,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 1.7976931348623157e+308
+    },
+    "buy": {
+      "buy_additional_indicator": "NONE",
+      "buy_fast_dema": "13",
+      "buy_fib_level": "0.618",
+      "buy_rsi": 45,
+      "buy_slow_ema": "34",
+      "buy_swing_period": 50,
+      "period": 14,
+      "SmoothK": 2,
+      "buy_stoch_osc": 29,
+      "smoothD": 3
+    },
+    "sell": {
+      "sell_additional_indicator": "NONE",
+      "sell_fib_level": "0.382",
+      "sell_rsi": 70,
+      "sell_rsi_threshold": 64,
+      "sell_stoch_osc": 85
+    },
+    "protection": {
+      "cooldown_lookback": 7,
+      "low_profit_trade_limit": 6,
+      "max_drawdown_trade_limit": 4,
+      "stop_duration": 156,
+      "trade_limit": 9,
+      "use_low_profit": true,
+      "use_max_drawdown_protection": false,
+      "use_stop_protection": true
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2025-02-20 13:28:29.884316+00:00"
+}

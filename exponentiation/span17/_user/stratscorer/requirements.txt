@@ -1,0 +1,6 @@
+# contains all packagest that should be installed like this:
+# pip install -r requirements.txt
+prettytable # For Ubuntu users: sudo apt install python3-prettytable
+sqlalchemy
+psycopg2
+

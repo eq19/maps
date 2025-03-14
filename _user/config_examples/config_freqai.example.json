@@ -1,0 +1,37 @@
+{
+    "freqai": {
+        "enabled": false,
+        "purge_old_models": 2,
+        "train_period_days": 15,
+        "backtest_period_days": 7,
+        "live_retrain_hours": 0,
+        "identifier": "unique-id",
+        "feature_parameters": {
+            "include_timeframes": [
+                "1h",
+                "4h",
+                "1d"
+            ],
+            "include_corr_pairlist": [
+                "BTC/IDR",
+                "ETH/IDR"
+            ],
+            "label_period_candles": 20,
+            "include_shifted_candles": 2,
+            "DI_threshold": 0.9,
+            "weight_factor": 0.9,
+            "principal_component_analysis": false,
+            "use_SVM_to_remove_outliers": true,
+            "indicator_periods_candles": [
+                10,
+                20
+            ],
+            "plot_feature_importances": 0
+        },
+        "data_split_parameters": {
+            "test_size": 0.33,
+            "random_state": 1
+        },
+        "model_training_parameters": {}
+    }
+}
