@@ -217,8 +217,6 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
 else
 
-  git clone https://eq19:$TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
-
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
 
@@ -246,7 +244,13 @@ else
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
-
   rm -rf *.json freqtrade_pid.txt freqtrade.log
+
+  git config --global user.name eq19
+  git config --global user.email eq19@users.noreply.github.com
+  git clone https://eq19:$TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
+
+  cd /tmp/wiki && mv -f /home/runner/user_data .
+  git add . && git commit --allow-empty -m "update params" && git push
   
 fi
