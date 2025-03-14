@@ -109,7 +109,7 @@ runs:
           cat _config.yml
 
           echo -e "\n$hr\nSource Pages\n$hr"
-          ls -al .
+          rm -rf _user && ls -al .
 
           FILE=$(find . -name "plugin_manager.rb")
           sed -i 's|unless site.safe|if site.safe|g' $FILE

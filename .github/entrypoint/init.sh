@@ -70,7 +70,7 @@ if [[ "${JOB_ID}" == "1" ]]; then
     echo "${PARAMS_JSON}" | jq '.' > $1/dataFile/user_data/strategies/fibbo.json
 
     if jq empty < $1/dataFile/user_data/strategies/fibbo.json; then
-      echo "Valid JSON" && cat $1/dataFile/user_data/strategies/fibbo.json
+      cat $1/dataFile/user_data/strategies/fibbo.json
     else
       echo "Invalid JSON"
     fi
