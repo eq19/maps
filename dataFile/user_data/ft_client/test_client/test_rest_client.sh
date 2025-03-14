@@ -251,6 +251,7 @@ else
   git clone https://eq19:$TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
   cd /tmp/wiki && mv -f /home/runner/user_data .
+  rm -rf /home/runner/user_data/build_helpers
   git add . && git commit --allow-empty -m "update params" && git push
   
 fi
