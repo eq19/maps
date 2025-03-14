@@ -250,7 +250,8 @@ else
   git config --global user.email eq19@users.noreply.github.com
   git clone https://eq19:$TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
-  cd /tmp/wiki && mv -f /home/runner/user_data _user && rm -rf _user/build_helpers
+  rm -rf /home/runner/user_data/build_helpers
+  cd /tmp/wiki && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
   git add . && git commit --allow-empty -m "update params" && git push
   
