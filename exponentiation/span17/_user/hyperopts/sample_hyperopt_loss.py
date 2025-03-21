@@ -1,5 +1,6 @@
 from datetime import datetime
 from math import exp
+from typing import Dict
 
 from pandas import DataFrame
 
@@ -11,17 +12,17 @@ from freqtrade.optimize.hyperopt import IHyperOptLoss
 
 # set TARGET_TRADES to suit your number concurrent trades so its realistic
 # to the number of days
-TARGET_TRADES = 600
+TARGET_TRADES = 1500
 # This is assumed to be expected avg profit * expected trade count.
 # For example, for 0.35% avg per trade (or 0.0035 as ratio) and 1100 trades,
 # self.expected_max_profit = 3.85
 # Check that the reported Σ% values do not exceed this!
 # Note, this is ratio. 3.85 stated above means 385Σ%.
-EXPECTED_MAX_PROFIT = 3.0
+EXPECTED_MAX_PROFIT = 1.2
 
 # max average trade duration in minutes
 # if eval ends with higher value, we consider it a failed eval
-MAX_ACCEPTED_TRADE_DURATION = 300
+MAX_ACCEPTED_TRADE_DURATION = 900
 
 
 class SampleHyperOptLoss(IHyperOptLoss):
@@ -40,7 +41,7 @@ class SampleHyperOptLoss(IHyperOptLoss):
         min_date: datetime,
         max_date: datetime,
         config: Config,
-        processed: dict[str, DataFrame],
+        processed: Dict[str, DataFrame],
         *args,
         **kwargs,
     ) -> float:
