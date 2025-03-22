@@ -12,10 +12,10 @@
       "id": 1,
       "description": "Optimize buy and sell (use the last 30 days for robust results)",
       "days": 2,
-      "epochs": 200,
+      "epochs": 2,
       "parallel_jobs": 4,
       "spaces": ["buy", "sell"],
-      "hyperopt_loss": "SharpeHyperOptLoss"
+      "hyperopt_loss": "ComprehensiveTradeOptimizationLoss"
     },
     {
       "id": 2,
