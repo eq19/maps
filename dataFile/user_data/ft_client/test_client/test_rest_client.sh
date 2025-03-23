@@ -147,7 +147,8 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-strategies
   #freqtrade strategy-updater
 
-elif [[ "${RERUN_RUNNER}" != "true" ]]; then
+else
+#elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
@@ -215,7 +216,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   #freqtrade list-freqaimodels --help
   #freqtrade list-freqaimodels
 
-else
+#else
 
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
