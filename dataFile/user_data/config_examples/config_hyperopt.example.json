@@ -15,7 +15,7 @@
       "epochs": 2,
       "parallel_jobs": 4,
       "spaces": ["buy", "sell"],
-      "hyperopt_loss": "ComprehensiveTradeOptimizationLoss"
+      "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
     },
     {
       "id": 2,
