@@ -47,12 +47,10 @@ if [[ -z ${PASS} ]] || [[ "${PASS}" == "true" ]]; then
 fi
 
 echo -e "\n$hr\nWORKSPACE\n$hr"
-PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
+RERUN_RUNNER=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/RERUN_RUNNER" | jq -r '.value')
 
 if [[ "${JOB_ID}" == "1" ]]; then
-
-  #[[ "${LATEST_COMMIT}" == *"RERUN_RUNNER"* ]] && gh variable set RERUN_RUNNER --body "true"
 
   cd ${GITHUB_WORKSPACE} && rm -rf .github
   cp -r /home/runner/work/_actions/eq19/eq19/v2/.github .
@@ -60,13 +58,17 @@ if [[ "${JOB_ID}" == "1" ]]; then
 
   git remote set-url origin ${REMOTE_REPO}        
   git add . && git commit -m "update workflows" --quiet && git push --quiet
-  if [ $? -eq 0 ]; then
+
+  if [[ $? -eq 0 ]]; then
+
     git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
     git add . && git commit --allow-empty -m "rerun due to job update" && git push
     exit 1
+
   else
-    #PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
-    #mv -f ${GITHUB_WORKSPACE}/$PARAMS $1/dataFile/user_data/strategies/fibbo.json
+
+    PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
     echo "${PARAMS_JSON}" | jq '.' > $1/dataFile/user_data/strategies/fibbo.json
 
     if jq empty < $1/dataFile/user_data/strategies/fibbo.json; then
@@ -75,8 +77,9 @@ if [[ "${JOB_ID}" == "1" ]]; then
       echo "Invalid JSON"
     fi
 
-    mv -f $1/dataFile/user_data ${GITHUB_WORKSPACE}/
-    cd ${GITHUB_WORKSPACE} && ls -al ${GITHUB_WORKSPACE}
+    cd ${GITHUB_WORKSPACE} && mv -f $1/dataFile/user_data . && ls -al . 
+    if [[ "${RERUN_RUNNER}" != "false" ]]; then gh variable set RERUN_RUNNER --body "false"; fi
+
   fi
 
 elif [[ "${JOB_ID}" == "2" ]]; then

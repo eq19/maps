@@ -122,6 +122,7 @@ runs:
         id: ${{ inputs.id }}
         TARGET_REPOSITORY: ${{ env.TARGET_REPOSITORY }}
       run: |        
+        gh variable set RERUN_RUNNER --body "true"
         BASE_NAME=$(basename ${{ inputs.image_name }})
         echo 'output_${id}='${TARGET_REPOSITORY} >> ${GITHUB_OUTPUT}    
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g"))
