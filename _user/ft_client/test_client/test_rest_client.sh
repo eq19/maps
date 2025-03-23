@@ -147,7 +147,8 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-strategies
   #freqtrade strategy-updater
 
-elif [[ "${RERUN_RUNNER}" != "true" ]]; then
+else
+#elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
@@ -175,7 +176,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
-  freqtrade hyperopt --help && hyperopt 1 2 3 4 5
+  freqtrade hyperopt --help && hyperopt 1
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
@@ -215,7 +216,7 @@ elif [[ "${RERUN_RUNNER}" != "true" ]]; then
   #freqtrade list-freqaimodels --help
   #freqtrade list-freqaimodels
 
-else
+#else
 
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
