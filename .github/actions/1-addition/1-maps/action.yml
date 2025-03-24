@@ -8,9 +8,6 @@ branding:
   color: 'red'
 
 inputs:
-  id:
-    description: The deploy id
-    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}       
@@ -79,8 +76,6 @@ runs:
   steps:
     - name: Remove Existing Connection
       shell: bash
-      env:
-        JOB_ID: ${{ inputs.id }}
       run: |
         HEADER="Accept: application/vnd.github+json"
         /home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh ${{ inputs.action_path }}
@@ -92,8 +87,6 @@ runs:
 
     - name: View context attributes
       uses: actions/github-script@v7
-      env:
-        JOB_ID: ${{ inputs.id }}
       with:
         script: console.log(context)
 

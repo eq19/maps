@@ -8,9 +8,6 @@ branding:
   color: 'red'
 
 inputs:
-  id:
-    description: The deploy id
-    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}       
@@ -77,8 +74,6 @@ runs:
     - name: 💎 Reinvented
       shell: bash
       env:
-        JOB_ID: ${{ inputs.id }}
-        TOKEN: ${{ inputs.token }}
         BASE: "https://github.com/eq19/eq19.github.io.wiki.git"
         WIKI: "https://github.com/${{ env.TARGET_REPOSITORY }}.wiki.git"
       run: |
@@ -91,9 +86,6 @@ runs:
 
     - name: View context attributes
       uses: actions/github-script@v7
-      env:
-        JOB_ID: ${{ inputs.id }}
-        GH_TOKEN: ${{ inputs.token }}
       with:
         script: console.log(context)
 

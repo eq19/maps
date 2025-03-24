@@ -2,9 +2,6 @@ name: 'Docker Deploy Action'
 description: >
   🪂  A Github Action to deploy pages conveniently
 inputs:
-  id:
-    description: The deploy id
-    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}
@@ -88,17 +85,11 @@ runs:
     # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
     - name: 💎 Remove Existing Self-Hosted Runner
       shell: bash
-      env:
-        JOB_ID: ${{ inputs.id }}
-        TOKEN: ${{ inputs.token }}
       run: |
         /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
 
     - name: View context attributes
       uses: actions/github-script@v7
-      env:
-        JOB_ID: ${{ inputs.id }}
-        GH_TOKEN: ${{ inputs.token }}
       with:
         script: console.log(context)
         
