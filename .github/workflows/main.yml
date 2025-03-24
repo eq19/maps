@@ -18,7 +18,6 @@ permissions: write-all
 # 🕸️ Global Environment
 env:
   GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-  PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
 
 jobs:
@@ -28,15 +27,16 @@ jobs:
       fail-fast: true
       matrix:
         config:
-          - { os: ubuntu-latest, id: 1 }
-          - { os: macos-latest, id: 2 }
+          - { os: ubuntu-latest, jobs_id: 1 }
+          - { os: macos-latest, jobs_id: 2 }
     env:
-      ID: ${{ matrix.config.id }}
+      JOBS_ID: ${{ matrix.config.jobs_id }}
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       DOC: '${{ vars.TARGET_REPOSITORY }}.wiki'
 
     # 🔧 Commutation relations
     runs-on: ${{ matrix.config.os }}
-    continue-on-error: ${{ matrix.config.id != 1 && false || true }}
+    continue-on-error: ${{ matrix.config.jobs_id != 1 && false || true }}
 
     steps:
       - name: 📂 Checkout
@@ -44,13 +44,12 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
-          repository: ${{ env.ID != 1 && env.DOC || '' }}
+          repository: ${{ env.JOBS_ID != 1 && env.DOC || '' }}
 
       - name: ⚙️ Build Maps
         uses: eq19/maps@v8
         id: build-parser
         with:
-          id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           rerun_runner: ${{ vars.RERUN_RUNNER }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
@@ -62,7 +61,6 @@ jobs:
         uses: eq19/feed@v6
         id: feed-mapping
         with:
-          id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           chat_id: ${{ secrets.MESSAGE_API }}
           api_key: ${{ secrets.ACCESS_API }}
@@ -80,7 +78,6 @@ jobs:
         uses: eq19/lexer@v4
         id: set-lexering
         with:
-          id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           config: ${{ secrets.CONFIG_JSON }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
@@ -92,8 +89,7 @@ jobs:
         id: gen_outputs
         shell: bash
         run: |
-          id=${{ matrix.config.id }}
-          output=${{ matrix.config.id == 1 &&
+          output=${{ env.JOBS_ID == 1 &&
             steps.feed-mapping.outputs.addition ||
             steps.set-lexering.outputs.multiplication }}
           echo "output_${id}=${output}" >> "${GITHUB_OUTPUT}"
@@ -108,14 +104,15 @@ jobs:
     strategy:
       matrix:
         config:
-          - { os: self-hosted, id: 3 }
-          - { os: windows-latest, id: 4 }
+          - { os: self-hosted, jobs_id: 3 }
+          - { os: windows-latest, jobs_id: 4 }
 
       # 💢 Completeness relations
       max-parallel: 1
       fail-fast: true
 
     env:
+      JOBS_ID: ${{ matrix.config.jobs_id }}
       IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
       PASS: ${{ contains(needs.lexering.result, 'success') }}
 
@@ -123,7 +120,7 @@ jobs:
     needs: lexering
     runs-on: ${{ matrix.config.os }}
     #if: ${{ (needs.lexering.result == 'success') }}
-    continue-on-error: ${{ matrix.config.id == 3 && true || false }}
+    continue-on-error: ${{ matrix.config.jobs_id == 3 && true || false }}
      
     steps:
       - name: 📂 Checkout
@@ -132,42 +129,39 @@ jobs:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: ${{ env.TARGET_REPOSITORY }}
-          ref: ${{ matrix.config.id == 3 && 'gh-source' || 'gh-pages' }}                  
+          ref: ${{ env.JOBS_ID == 3 && 'gh-source' || 'gh-pages' }}                  
 
       - name: 🚀 Setup Parser
         if: ${{ env.PASS == 'true' }}
         uses: eq19/parser@v2
         id: set-parser
         with:
-          id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ needs.lexering.outputs.function }}
           failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
-            (matrix.config.id == 4 && contains(needs.*.result, 'failure')) }}
+            (env.JOBS_ID == 4 && contains(needs.*.result, 'failure')) }}
        
       - name: 🌀 Evaluate Syntax
         if: ${{ env.PASS == 'true' }}
         uses: eq19/syntax@v2
         id: eval-syntax
         with:
-          id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           api_key: ${{ secrets.ACCESS_API }}
           api_secret: ${{ secrets.ACCESS_KEY }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ toJSON(steps.set-parser.outputs) }}
           failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
-            (matrix.config.id == 4 && contains(needs.*.result, 'failure')) }}
+            (env.JOBS_ID == 4 && contains(needs.*.result, 'failure')) }}
   
       - name: ⚧️ Set Grammar Rules
         uses: eq19/grammar@v1
         id: grammar-rules
         if: always()
         with:
-          id: ${{ matrix.config.id }}
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ toJSON(steps.eval-syntax.outputs) }}
           failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
-            (matrix.config.id == 4 && contains(needs.*.result, 'failure')) }}
+            (env.JOBS_ID == 4 && contains(needs.*.result, 'failure')) }}
