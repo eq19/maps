@@ -54,9 +54,6 @@ inputs:
   api_secret:
     description: The secret of api application
     required: true
-  id:
-    description: The id according to os
-    required: true
 
 outputs:
   addition:
@@ -71,7 +68,7 @@ runs:
   steps:
     - name: Target Configuration
       uses: eq19/eq19/.github/actions/1-addition/2-feed@v2
-      if: inputs.id == 1
+      if: ${{ env.JOBS_ID == 1 }}
       id: addition
       with:
         hub_username: ${{ inputs.docker_hub_username }}
@@ -91,7 +88,7 @@ runs:
 
     - name: Profiling Feedback
       uses: eq19/eq19/.github/actions/2-multiplication/2-feed@v2
-      if: inputs.id == 2
+      if: ${{ env.JOBS_ID == 2 }}
       id: multiplication
       with:
         token: ${{ inputs.token }}
