@@ -11,8 +11,8 @@
     {
       "id": 1,
       "description": "Optimize buy and sell (use the last 30 days for robust results)",
-      "days": 2,
-      "epochs": 2,
+      "days": 5,
+      "epochs": 7,
       "parallel_jobs": 4,
       "spaces": ["buy", "sell"],
       "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
@@ -20,8 +20,8 @@
     {
       "id": 2,
       "description": "Optimize ROI and trailing for profit management (last 60 days)",
-      "days": 3,
-      "epochs": 500,
+      "days": 6,
+      "epochs": 11,
       "parallel_jobs": 4,
       "spaces": ["roi", "trailing"],
       "hyperopt_loss": "ShortTradeDurHyperOptLoss"
@@ -29,8 +29,8 @@
     {
       "id": 3,
       "description": "Optimize stoploss and trade parameters (last 90 days)",
-      "days": 5,
-      "epochs": 800,
+      "days": 7,
+      "epochs": 13,
       "parallel_jobs": 4,
       "spaces": ["stoploss", "trades"],
       "hyperopt_loss": "OnlyProfitHyperOptLoss"
@@ -38,17 +38,35 @@
     {
       "id": 4,
       "description": "Refine protection and stoploss parameters for risk management (last 120 days)",
-      "days": 7,
-      "epochs": 1200,
+      "days": 8,
+      "epochs": 17,
       "parallel_jobs": 4,
       "spaces": ["protection", "stoploss"],
       "hyperopt_loss": "MaxDrawDownHyperOptLoss"
     },
     {
       "id": 5,
+      "description": "Refine protection and stoploss parameters for risk management (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["protection", "stoploss"],
+      "hyperopt_loss": "MaxDrawDownHyperOptLoss"
+    },
+    {
+      "id": 6,
+      "description": "Refine protection and stoploss parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["default"],
+      "hyperopt_loss": "MaxDrawDownHyperOptLoss"
+    },
+    {
+      "id": 7,
       "description": "Comprehensive optimization with all parameters (last 180 days)",
       "days": 11,
-      "epochs": 2000,
+      "epochs": 31,
       "parallel_jobs": 4,
       "spaces": ["all"],
       "hyperopt_loss": "ExpectancyHyperOptLoss"
