@@ -190,7 +190,7 @@ else
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
-    git clone https://eq19:$TOKEN@github.com/eq19/eq19.git /tmp/eq19
+    git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.git /tmp/eq19
     cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
     #gh variable set RERUN_RUNNER --body "true"
 
@@ -248,7 +248,7 @@ else
 
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
-  git clone https://eq19:$TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
+  git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
   rm -rf *.json freqtrade_pid.txt freqtrade.log
   rm -rf /home/runner/user_data/build_helpers /tmp/wiki/_user
