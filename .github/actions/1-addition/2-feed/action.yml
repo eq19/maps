@@ -187,7 +187,8 @@ runs:
         imageName: ${{ inputs.image_name }}
         configFile: _site/.devcontainer.json
         env: |
-          TOKEN=${{ env.GH_TOKEN }}
+          ID=${{ env.ID }}
+          GH_TOKEN=${{ env.GH_TOKEN }}
           REMOTE_REPO=${{ env.REMOTE_REPO }}
           RERUN_RUNNER=${{ inputs.rerun_runner }}
           BEARER=${{ steps.auth.outputs.id_token }}
