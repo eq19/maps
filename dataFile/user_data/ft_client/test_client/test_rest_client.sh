@@ -246,13 +246,13 @@ else
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
 
+  rm -rf *.json freqtrade_pid.txt freqtrade.log
+  rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
+
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
   git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
-  rm -rf *.json freqtrade_pid.txt freqtrade.log
-  rm -rf /home/runner/user_data/build_helpers
-  
   cd /tmp/wiki
   rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
