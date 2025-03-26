@@ -251,9 +251,10 @@ else
   git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
   rm -rf *.json freqtrade_pid.txt freqtrade.log
-  rm -rf /home/runner/user_data/build_helpers /tmp/wiki/_user
-  mv -f /home/runner/user_data /tmp/wiki/_user && cd /tmp/wiki
-
+  rm -rf /home/runner/user_data/build_helpers
+  
+  cd /tmp/wiki
+  rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
   git add . && git commit --allow-empty -m "update params" && git push
   
