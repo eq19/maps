@@ -29,14 +29,14 @@
       "buy_swing_period": 50,
       "period": 14,
       "smoothD": 3,
-      "buy_additional_indicator": "BB"
+      "buy_additional_indicator": "BB, MACD"
     },
     "sell": {
       "sell_fib_level": "0.382",
       "sell_rsi": 70,
       "sell_rsi_threshold": 64,
       "sell_stoch_osc": 85,
-      "sell_additional_indicator": "TTM"
+      "sell_additional_indicator": "STOCHRSI, TTM"
     },
     "protection": {
       "cooldown_lookback": 7,
@@ -50,5 +50,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-03-25 07:15:00.497714+00:00"
+  "export_time": "2025-03-26 22:16:29.190943+00:00"
 }

@@ -176,7 +176,7 @@ else
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
-  freqtrade hyperopt --help && hyperopt 1
+  freqtrade hyperopt --help && hyperopt $ID
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
@@ -188,22 +188,22 @@ else
   NEW_SCORE=$SCORE
   echo "NEW SCORE: $NEW_SCORE"
 
-  if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
-    PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
-    git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.git /tmp/eq19
-    cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
+  #if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+    #PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
+    #git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.git /tmp/eq19
+    #cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
     #gh variable set RERUN_RUNNER --body "true"
 
-    cd /tmp/eq19
-    git config --global user.name eq19
-    git config --global user.email eq19@users.noreply.github.com
-    git add . && git commit --allow-empty -m "update params" && git push
+    #cd /tmp/eq19
+    #git config --global user.name eq19
+    #git config --global user.email eq19@users.noreply.github.com
+    #git add . && git commit --allow-empty -m "update params" && git push
 
-    git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
-    git add . && git commit --allow-empty -m "RERUN_RUNNER due to job update" && git push
+    #git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
+    #git add . && git commit --allow-empty -m "RERUN_RUNNER due to job update" && git push
     #cd /home/runner && rm -rf /tmp/eq19
-    exit 1
-  fi
+    #exit 1
+  #fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
@@ -246,14 +246,15 @@ else
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
 
+  rm -rf *.json freqtrade_pid.txt freqtrade.log
+  rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
+
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
   git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
-  rm -rf *.json freqtrade_pid.txt freqtrade.log
-  rm -rf /home/runner/user_data/build_helpers /tmp/wiki/_user
-  mv -f /home/runner/user_data /tmp/wiki/_user && cd /tmp/wiki
-
+  cd /tmp/wiki
+  rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
   git add . && git commit --allow-empty -m "update params" && git push
   
