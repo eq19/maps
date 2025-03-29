@@ -36,7 +36,7 @@
       "sell_rsi": 70,
       "sell_rsi_threshold": 64,
       "sell_stoch_osc": 85,
-      "sell_additional_indicator": "STOCHRSI, TTM"
+      "sell_additional_indicator": "MACD"
     },
     "protection": {
       "cooldown_lookback": 7,
@@ -50,5 +50,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-03-26 22:16:29.190943+00:00"
+  "export_time": "2025-03-29 16:05:47.087577+00:00"
 }
