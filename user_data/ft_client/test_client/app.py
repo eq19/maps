@@ -86,7 +86,7 @@ if __name__ == '__main__':
         #print(f"ERROR: no path to Main.class was provided")
         #exit(1)
     #file_path, *args = args
-    clazz = jello.parse_class_file('Main.class')
+    clazz = jello.parse_class_file('user_data/ft_client/test_client/Main.class')
     [main] = jello.find_methods_by_name(clazz, b'main')
     [code] = jello.find_attributes_by_name(clazz, main['attributes'], b'Code')
     code_attrib = jello.parse_code_info(code['info'])
