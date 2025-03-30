@@ -102,7 +102,7 @@ spin = {  (1,  1) : "blue",
 plists = glob.glob('prime_lists/*.txt')
 
 # lowest primes in each file
-lowest_primes = [int(p[21:-4]) for p in plists]
+lowest_primes = [int(p[13:-4]) for p in plists]
 
 # Maximum of the numbers
 # Will change later to be dynamic
