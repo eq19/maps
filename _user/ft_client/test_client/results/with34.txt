@@ -1,0 +1,20 @@
+2.05 blue blue
+2.15 blue blue
+2.25 blue purple yellow purple red purple yellow yellow
+2.35 blue purple yellow blue red cyan cyan
+2.45 blue purple green cyan yellow yellow
+2.55 blue purple green purple green blue blue
+2.65 blue red cyan yellow purple green red blue green yellow blue purple green purple green blue yellow cyan None Limit Reached
+2.75 blue red blue red yellow cyan yellow cyan green cyan purple green green
+2.85 blue red purple green blue yellow yellow
+2.95 blue red purple purple
+3.05 blue red purple yellow green purple cyan blue red blue cyan cyan
+3.15 blue red cyan purple purple
+3.25 blue red cyan yellow blue yellow purple yellow red yellow green purple green red red
+3.35 blue yellow blue red green purple cyan red cyan green yellow yellow
+3.45 blue yellow purple red purple cyan cyan
+3.55 blue yellow red yellow yellow
+3.65 blue green yellow green red blue cyan cyan
+3.75 blue green yellow yellow
+3.85 blue green red yellow blue purple green yellow purple purple
+3.95 blue green green
