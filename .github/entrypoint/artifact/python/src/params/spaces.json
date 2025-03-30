@@ -7,9 +7,6 @@
       "11": 0.006,
       "19": 0
     },
-    "stoploss": {
-      "stoploss": -0.137
-    },
     "trailing": {
       "trailing_stop": true,
       "trailing_stop_positive": 0.099,
@@ -20,15 +17,15 @@
       "max_open_trades": Infinity
     },
     "buy": {
+      "SmoothK": 2,
       "buy_additional_indicator": "NONE",
       "buy_fast_dema": "13",
       "buy_fib_level": "0.618",
       "buy_rsi": 45,
       "buy_slow_ema": "34",
+      "buy_stoch_osc": 29,
       "buy_swing_period": 50,
       "period": 14,
-      "SmoothK": 2,
-      "buy_stoch_osc": 29,
       "smoothD": 3
     },
     "sell": {
@@ -39,16 +36,19 @@
       "sell_stoch_osc": 85
     },
     "protection": {
-      "cooldown_lookback": 7,
-      "low_profit_trade_limit": 6,
-      "max_drawdown_trade_limit": 4,
-      "stop_duration": 156,
-      "trade_limit": 9,
+      "cooldown_lookback": 4,
+      "low_profit_trade_limit": 7,
+      "max_drawdown_trade_limit": 6,
+      "stop_duration": 36,
+      "trade_limit": 3,
       "use_low_profit": true,
       "use_max_drawdown_protection": false,
-      "use_stop_protection": true
+      "use_stop_protection": false
+    },
+    "stoploss": {
+      "stoploss": -0.104
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-02-20 13:28:29.884316+00:00"
+  "export_time": "2025-03-26 11:31:32.125452+00:00"
 }

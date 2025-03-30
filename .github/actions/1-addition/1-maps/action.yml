@@ -96,21 +96,21 @@ runs:
         username: ${{ inputs.hub_username }}
         password: ${{ inputs.hub_token }}
         
-    - uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
-        allow-prereleases: true
+    #- uses: actions/setup-python@v5
+      #with:
+        #python-version: 3.12
+        #allow-prereleases: true
 
-    - uses: actions/cache@v4
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip
+    #- uses: actions/cache@v4
+      #with:
+        #path: ~/.cache/pip
+        #key: ${{ runner.os }}-pip
 
-    - name: Install dependencies
-      shell: bash
-      run: |
-        python -m pip -q install --upgrade pip
-        python -m pip -q install -r ${{ inputs.action_path }}/dataFile/requirements.txt
+    #- name: Install dependencies
+      #shell: bash
+      #run: |
+        #python -m pip -q install --upgrade pip
+        #python -m pip -q install -r ${{ inputs.action_path }}/dataFile/requirements.txt
   
         ##python -m pip -q install -e ./.github/entrypoint/artifact/python
         ##iree-compile --iree-llvmcpu-list-targets && iree-run-module --list_drivers
@@ -119,8 +119,7 @@ runs:
         ##python ${{ inputs.action_path }}/pythonCode/testIREE.py
         
         ##Ref: https://github.com/tsoding/JelloVM
-        cd ${{ inputs.action_path }} && javac javaCode/Main.java
-        python app.py output.txt && cat dataFile/results/output.txt
+        #cd ${{ inputs.action_path }} && javac javaCode/Main.java
 
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
