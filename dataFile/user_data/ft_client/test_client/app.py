@@ -63,7 +63,7 @@ while (current.val <= upper_bound):
 # end of while loop
 
 # write contents to file/process etc.
-output_path = 'dataFile/results/{}'.format(output)
+output_path = 'results/{}'.format(output)
 results = open(output_path, 'w')
 results.truncate()
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
         #print(f"ERROR: no path to Main.class was provided")
         #exit(1)
     #file_path, *args = args
-    clazz = jello.parse_class_file('javaCode/Main.class')
+    clazz = jello.parse_class_file('Main.class')
     [main] = jello.find_methods_by_name(clazz, b'main')
     [code] = jello.find_attributes_by_name(clazz, main['attributes'], b'Code')
     code_attrib = jello.parse_code_info(code['info'])
