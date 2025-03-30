@@ -63,7 +63,7 @@ while (current.val <= upper_bound):
 # end of while loop
 
 # write contents to file/process etc.
-output_path = 'results/{}'.format(output)
+output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 results = open(output_path, 'w')
 results.truncate()
 
