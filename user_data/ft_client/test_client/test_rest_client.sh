@@ -150,7 +150,7 @@ if [[ "$1" == "listing" ]]; then
 else
 #elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
-  #cd user_data/ft_client/test_client && ls -al .
+  ls -al user_data/ft_client/test_client
   #python app.py output.txt && cat results/output.txt
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
