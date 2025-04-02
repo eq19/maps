@@ -123,7 +123,6 @@ runs:
         PYPI_TOKEN: ${{ inputs.pypi_token }}        
         ACTOR: ${{ github.triggering_actor }}
         OWNER: ${{ github.repository_owner }}
-        BEARER: ${{ steps.auth.outputs.id_token }}
         DOCKER_HUB_TOKEN: ${{ inputs.hub_token }}
         DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
         GCP_CREDENTIALS: ${{ inputs.credentials }}
