@@ -36,7 +36,7 @@
       "sell_rsi": 70,
       "sell_rsi_threshold": 64,
       "sell_stoch_osc": 85,
-      "sell_additional_indicator": "FIBBO, STOCHRSI"
+      "sell_additional_indicator": "FIBBO"
     },
     "protection": {
       "cooldown_lookback": 7,
@@ -50,5 +50,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-03-30 13:26:37.718317+00:00"
+  "export_time": "2025-04-02 06:47:49.660746+00:00"
 }
