@@ -7,8 +7,8 @@ q#!/usr/bin/env bash
 hr='------------------------------------------------------------------------------------'
 SCORE=100
 FEE=0.003322
-STRATEGY=fibbo
 TIMEFRAMES='1m 15m'
+STRATEGY=/home/runner/user_data/strategies/fibbo.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
@@ -152,6 +152,7 @@ else
 
   python user_data/ft_client/test_client/app.py output.txt
   cat user_data/ft_client/test_client/results/output.txt
+  curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @${STRATEGY} | jq '.'
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
@@ -194,7 +195,7 @@ else
   #if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     #PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
     #git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.git /tmp/eq19
-    #cat /home/runner/user_data/strategies/$STRATEGY.json > /tmp/eq19/$PARAMS
+    #cat $STRATEGY > /tmp/eq19/$PARAMS
     #gh variable set RERUN_RUNNER --body "true"
 
     #cd /tmp/eq19
