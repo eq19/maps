@@ -50,7 +50,7 @@
       "days": 9,
       "epochs": 23,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["trailing"],
       "hyperopt_loss": "CalmarHyperOptLoss"
     },
     {
@@ -59,7 +59,7 @@
       "days": 10,
       "epochs": 29,
       "parallel_jobs": 4,
-      "spaces": ["default"],
+      "spaces": ["trades"],
       "hyperopt_loss": "MaxDrawDownHyperOptLoss"
     },
     {
@@ -68,7 +68,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "ExpectancyHyperOptLoss"
     }
   ]
