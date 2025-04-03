@@ -10,12 +10,12 @@
   "pipelines": [
     {
       "id": 1,
-      "description": "Optimize buy and sell (use the last 30 days for robust results)",
+      "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
       "epochs": 11,
       "parallel_jobs": 4,
-      "spaces": ["buy", "sell"],
-      "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
     },
     {
       "id": 2,
