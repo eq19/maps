@@ -19,12 +19,12 @@
     },
     {
       "id": 2,
-      "description": "Optimize ROI and trailing for profit management (last 60 days)",
+      "description": "Optimize sell (last 60 days)",
       "days": 6,
       "epochs": 13,
       "parallel_jobs": 4,
-      "spaces": ["roi", "trailing"],
-      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
     },
     {
       "id": 3,
