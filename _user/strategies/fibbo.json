@@ -32,11 +32,11 @@
       "buy_additional_indicator": "MACD"
     },
     "sell": {
+      "sell_additional_indicator": "NONE",
       "sell_fib_level": "0.382",
       "sell_rsi": 70,
       "sell_rsi_threshold": 64,
-      "sell_stoch_osc": 85,
-      "sell_additional_indicator": "FIBBO"
+      "sell_stoch_osc": 85
     },
     "protection": {
       "cooldown_lookback": 7,
@@ -50,5 +50,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-04-02 06:47:49.660746+00:00"
+  "export_time": "2025-04-03 03:52:44.885199+00:00"
 }

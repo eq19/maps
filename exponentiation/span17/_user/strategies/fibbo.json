@@ -1,8 +1,20 @@
 {
   "strategy_name": "fibbo",
   "params": {
+    "roi": {
+      "0": 0.0786,
+      "4": 0.0238,
+      "11": 0.006,
+      "19": 0
+    },
     "stoploss": {
       "stoploss": -0.137
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.099,
+      "trailing_stop_positive_offset": 0.178,
+      "trailing_only_offset_is_reached": false
     },
     "max_open_trades": {
       "max_open_trades": Infinity
@@ -20,11 +32,11 @@
       "smoothD": 3
     },
     "sell": {
-      "sell_additional_indicator": "NONE",
       "sell_fib_level": "0.382",
       "sell_rsi": 70,
       "sell_rsi_threshold": 64,
-      "sell_stoch_osc": 85
+      "sell_stoch_osc": 85,
+      "sell_additional_indicator": "FIBBO"
     },
     "protection": {
       "cooldown_lookback": 7,
@@ -35,20 +47,8 @@
       "use_low_profit": true,
       "use_max_drawdown_protection": false,
       "use_stop_protection": true
-    },
-    "roi": {
-      "0": 0.027,
-      "2": 0.022,
-      "6": 0.011,
-      "9": 0
-    },
-    "trailing": {
-      "trailing_stop": true,
-      "trailing_stop_positive": 0.097,
-      "trailing_stop_positive_offset": 0.154,
-      "trailing_only_offset_is_reached": false
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-04-02 08:43:16.576157+00:00"
+  "export_time": "2025-04-03 05:44:47.560795+00:00"
 }
