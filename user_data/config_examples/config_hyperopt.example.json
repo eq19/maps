@@ -46,7 +46,7 @@
     },
     {
       "id": 5,
-      "description": "Refine protection (last 120 days)",
+      "description": "Refine trailing (last 120 days)",
       "days": 9,
       "epochs": 23,
       "parallel_jobs": 4,
@@ -55,7 +55,7 @@
     },
     {
       "id": 6,
-      "description": "Refine protection and stoploss parameters for risk management (last 120 days)",
+      "description": "Refine trades parameters for risk management (last 120 days)",
       "days": 10,
       "epochs": 29,
       "parallel_jobs": 4,
