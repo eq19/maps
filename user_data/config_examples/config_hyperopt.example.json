@@ -37,12 +37,12 @@
     },
     {
       "id": 4,
-      "description": "Refine protection and stoploss parameters for risk management (last 120 days)",
+      "description": "Refine stoploss (last 120 days)",
       "days": 8,
       "epochs": 19,
       "parallel_jobs": 4,
-      "spaces": ["protection", "stoploss"],
-      "hyperopt_loss": "MaxDrawDownHyperOptLoss"
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
     },
     {
       "id": 5,
