@@ -8,7 +8,7 @@
   "max_generated_candidates": 100,
   "max_parallel_backtest": 8,
   "built_in": ["ShortTradeDurHyperOptLoss", "OnlyProfitHyperOptLoss", "SharpeHyperOptLoss", "SharpeHyperOptLossDaily", "SortinoHyperOptLoss", "SortinoHyperOptLossDaily", "CalmarHyperOptLoss", "MaxDrawDownHyperOptLoss", "MaxDrawDownRelativeHyperOptLoss", "ProfitDrawDownHyperOptLoss", "MultiMetricHyperOptLoss"],
-  "custom_built": ["BuySpaceCombinedHyperOptLoss", "CombinedDrawDownProfitHyperOptLoss", "SharpeHyperOptLoss", "SharpeHyperOptLossDaily", "SortinoHyperOptLoss", "SortinoHyperOptLossDaily", "CalmarHyperOptLoss", "MaxDrawDownHyperOptLoss", "MaxDrawDownRelativeHyperOptLoss", "ProfitDrawDownHyperOptLoss", "MultiMetricHyperOptLoss"],
+  "custom_built": ["BuySpaceCombinedHyperOptLoss", "CombinedDrawDownProfitHyperOptLoss", "ComprehensiveTradeOptimizationLoss", "SharpeHyperOptLossDaily", "SortinoHyperOptLoss", "SortinoHyperOptLossDaily", "CalmarHyperOptLoss", "MaxDrawDownHyperOptLoss", "MaxDrawDownRelativeHyperOptLoss", "ProfitDrawDownHyperOptLoss", "MultiMetricHyperOptLoss"],
   "pipelines": [
     {
       "id": 1,
