@@ -179,11 +179,8 @@ else
   OLD_SCORE=$SCORE
   echo "SCORE: $OLD_SCORE"
 
-  echo -e "\n$hr\nRUN HYPEROPT\n$hr"
-  freqtrade list-hyperoptloss --help
-  freqtrade list-hyperoptloss
-  
-  freqtrade hyperopt --help && hyperopt $ID
+  echo -e "\n$hr\nRUN HYPEROPT\n$
+  freqtrade hyperopt --help && freqtrade list-hyperoptloss && hyperopt $ID
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
   echo -e "\n$hr\nRERUN BACKTEST\n$hr"
