@@ -1,9 +1,10 @@
-id: 1
+id: 2
 user: eq19
-span: span18
+span: span17
 title: eQuantum
-repository: eq19/eq19.github.io
-action: ZeroWeak/algorithms/actions/runs/14259302410
+baseurl: /maps
+repository: eq19/maps
+action: eq19/eq19.github.io/actions/runs/14264362328
 description: An attempt to discover the Final Theory
 
 #debug:
@@ -47,6 +48,6 @@ plugins:
   - jekyll-optional-front-matter
 
 track:
-  spin: [0, 0]
+  spin: [0, 1]
   pinned: [maps, feed, lexer, parser, syntax, grammar]
   organization: [Chetabahana, FeedMapping, GlobalZones, HybridModels, JunctionTerms, KernelPatterns, MappingSystem, NeuralSystem, ObjectModules, VirtualNetworks, WeakNegative, WeakPositive, ZeroWeak]
