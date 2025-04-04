@@ -5,7 +5,7 @@ freqtrade list-hyperoptloss
 BUILTIN_LOSSES=$(freqtrade list-hyperoptloss --print-json | jq -r '.hyperopt_loss | keys[]')
 
 # Get custom hyperopt losses from user_data/hyperopt
-CUSTOM_LOSSES=$(find user_data/hyperopt -type f -name "*.py" -exec grep -l "class.*HyperoptLoss" {} \; | \
+CUSTOM_LOSSES=$(find /home/runner/user_data/hyperopt -type f -name "*.py" -exec grep -l "class.*HyperoptLoss" {} \; | \
                 xargs -I {} basename {} .py | \
                 sed 's/_hyperopt_loss//g')
 
