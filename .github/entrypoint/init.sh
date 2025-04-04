@@ -78,7 +78,7 @@ if [[ "${JOBS_ID}" == "1" ]]; then
     fi
 
     if [[ "${RERUN_RUNNER}" != "false" ]]; then gh variable set RERUN_RUNNER --body "false"; fi
-    cd $1 && javac -d user_data/ft_client/test_client javaCode/Main.java && cd ${GITHUB_WORKSPACE}/
+    cd $1 && javac -d user_data/ft_client/test_client javaCode/Main.java && cd ${GITHUB_WORKSPACE}
     if [[ ! -d user_data ]]; then mv -f $1/user_data . && ls -al; fi
 
   fi
