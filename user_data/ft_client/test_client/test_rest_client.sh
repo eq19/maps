@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # Get built-in hyperopt losses
+freqtrade list-hyperopts
 BUILTIN_LOSSES=$(freqtrade list-hyperopts --print-json | jq -r '.hyperopt_loss | keys[]')
 
 # Get custom hyperopt losses from user_data/hyperopt
