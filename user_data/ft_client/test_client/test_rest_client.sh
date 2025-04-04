@@ -1,21 +1,4 @@
 #!/usr/bin/env bash
-
-# Get built-in hyperopt losses
-freqtrade list-hyperoptloss
-BUILTIN_LOSSES=$(freqtrade list-hyperoptloss --print-json | jq -r '.hyperopt_loss | keys[]')
-
-# Get custom hyperopt losses from user_data/hyperopt
-CUSTOM_LOSSES=$(find /home/runner/user_data/hyperopt -type f -name "*.py" -exec grep -l "class.*HyperoptLoss" {} \; | \
-                xargs -I {} basename {} .py | \
-                sed 's/_hyperopt_loss//g')
-
-# Combine and display
-echo "Available Hyperopt Loss Functions:"
-echo "Built-in:"
-echo "$BUILTIN_LOSSES" | sort
-echo ""
-echo "Custom:"
-echo "$CUSTOM_LOSSES" | sort
 #
 # Structure: Cell Types
 # Ref: https://www.freqtrade.io/
@@ -197,6 +180,9 @@ else
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
+  freqtrade list-hyperoptloss --help
+  freqtrade list-hyperoptloss
+  
   freqtrade hyperopt --help && hyperopt $ID
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
