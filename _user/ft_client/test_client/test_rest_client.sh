@@ -1,4 +1,4 @@
-q#!/usr/bin/env bash
+#!/usr/bin/env bash
 #
 # Structure: Cell Types
 # Ref: https://www.freqtrade.io/
@@ -180,6 +180,9 @@ else
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
+  freqtrade list-hyperoptloss --help
+  freqtrade list-hyperoptloss
+  
   freqtrade hyperopt --help && hyperopt $ID
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
 
