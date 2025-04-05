@@ -194,7 +194,13 @@ else
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     cat $STRATEGY && cat $GITHUB_ENV
-    #gh variable set PARAMS_JSON --body "true"
+    curl -L \
+      -X PUT \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      "https://api.github.com/repos/OWNER/REPO/actions/variables/PARAMS_JSON" \
+      -d "{\"name\":\"PARAMS_JSON\",\"value\":\"$(jq -r '.' $STRATEGY)\"}"
   fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
