@@ -192,22 +192,10 @@ else
   NEW_SCORE=$SCORE
   echo "NEW SCORE: $NEW_SCORE"
 
-  #if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
-    #PARAMS=.github/entrypoint/artifact/python/src/params/spaces.json
-    #git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.git /tmp/eq19
-    #cat $STRATEGY > /tmp/eq19/$PARAMS
+  if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+    cat $STRATEGY
     #gh variable set RERUN_RUNNER --body "true"
-
-    #cd /tmp/eq19
-    #git config --global user.name eq19
-    #git config --global user.email eq19@users.noreply.github.com
-    #git add . && git commit --allow-empty -m "update params" && git push
-
-    #git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
-    #git add . && git commit --allow-empty -m "RERUN_RUNNER due to job update" && git push
-    #cd /home/runner && rm -rf /tmp/eq19
-    #exit 1
-  #fi
+  fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
