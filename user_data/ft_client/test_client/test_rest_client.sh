@@ -194,18 +194,12 @@ else
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     cat $STRATEGY
-    curl -L -s \
-      -X PATCH \
+    curl -L -s -X PATCH \
       -H "Accept: application/vnd.github+json" \
       -H "Authorization: Bearer $GH_TOKEN" \
       -H "X-GitHub-Api-Version: 2022-11-28" \
       "https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON" \
-      --data-binary @- <<EOF
-{
-  "name": "PARAMS_JSON",
-  "value": $(jq -Rs '.' "$STRATEGY")
-}
-EOF
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
   fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
