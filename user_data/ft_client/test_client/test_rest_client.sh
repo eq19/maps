@@ -193,7 +193,7 @@ else
   echo "NEW SCORE: $NEW_SCORE"
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
-    cat $STRATEGY && cat $GITHUB_ENV
+    cat $STRATEGY
     curl -L -s \
       -X PATCH \
       -H "Accept: application/vnd.github+json" \
