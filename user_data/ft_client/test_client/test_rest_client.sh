@@ -193,7 +193,7 @@ else
   echo "NEW SCORE: $NEW_SCORE"
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
-    cat $STRATEGY
+    cat $STRATEGY && cat $GITHUB_ENV
     #gh variable set PARAMS_JSON --body "true"
   fi
 
