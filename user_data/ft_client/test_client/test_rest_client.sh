@@ -200,7 +200,12 @@ else
       -H "Authorization: Bearer $GH_TOKEN" \
       -H "X-GitHub-Api-Version: 2022-11-28" \
       "https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON" \
-      -d "{\"name\":\"PARAMS_JSON\",\"value\":\"$(jq -r '.' $STRATEGY)\"}"
+      --data-binary @- <<EOF
+{
+  "name": "PARAMS_JSON",
+  "value": $(jq -Rs '.' "$STRATEGY")
+}
+EOF
   fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
