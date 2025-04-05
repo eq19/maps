@@ -194,11 +194,68 @@ else
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     cat $STRATEGY
+    echo -e "\n$hr\n1"
     curl -L -s -X PATCH \
       -H "Accept: application/vnd.github+json" \
       -H "Authorization: Bearer $GH_TOKEN" \
       -H "X-GitHub-Api-Version: 2022-11-28" \
       "https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON" \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n2"
+    curl -L -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n3"
+    curl -L -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      "https://api.github.com/repos/eq19/feed/actions/variables/PARAMS_JSON" \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n4"
+    curl -L -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n5"
+    curl -L -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/eq19/feed/actions/variables/PARAMS_JSON \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n6"
+    curl -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n7"
+    curl -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n8"
+    curl -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/${TARGET_REPOSITORY}/actions/variables/PARAMS_JSON \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+    echo -e "\n$hr\n4"
+    curl -L -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/${TARGET_REPOSITORY}/actions/variables/PARAMS_JSON \
       -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
   fi
 
