@@ -194,7 +194,7 @@ else
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     cat $STRATEGY
-    #gh variable set RERUN_RUNNER --body "true"
+    #gh variable set PARAMS_JSON --body "true"
   fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
