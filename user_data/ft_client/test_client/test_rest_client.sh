@@ -194,8 +194,8 @@ else
 
   if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
     cat $STRATEGY && cat $GITHUB_ENV
-    curl -L \
-      -X PUT \
+    curl -L -s \
+      -X PATCH \
       -H "Accept: application/vnd.github+json" \
       -H "Authorization: Bearer $GH_TOKEN" \
       -H "X-GitHub-Api-Version: 2022-11-28" \
