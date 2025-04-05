@@ -36,7 +36,7 @@
       "sell_rsi": 70,
       "sell_rsi_threshold": 64,
       "sell_stoch_osc": 85,
-      "sell_additional_indicator": "FIBBO"
+      "sell_additional_indicator": "MACD"
     },
     "protection": {
       "cooldown_lookback": 7,
@@ -50,5 +50,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-04-04 12:23:02.696352+00:00"
+  "export_time": "2025-04-05 05:15:42.624900+00:00"
 }
