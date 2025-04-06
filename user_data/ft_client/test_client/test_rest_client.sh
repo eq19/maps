@@ -40,8 +40,8 @@ echo "Backtesting Timerange: $TB"
 echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 printenv
 
-# Function to calculate start and end date
 hyperopt() {
+
   # Load JSON and filter by given ID
   HYPERFILE=user_data/config_examples/config_hyperopt.example.json
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
