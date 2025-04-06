@@ -58,6 +58,7 @@ hyperopt() {
     all_losses=($(jq -r --arg loss "$hyperopt_loss" '[.built_in[], .custom_built[]] | map(select(. != $loss)) | [$loss] + . | .[]' $HYPERFILE))
 
     for losses in "${all_losses[@]}"; do
+      cat /tmp/store.json > $STRATEGY 
       echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     done
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
@@ -199,11 +200,13 @@ else
 
   echo -e "\n$hr\nRUN BACKTEST\n$hr"
   freqtrade backtesting --help
+  cat $STRATEGY > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   calculate_score
   OLD_SCORE=$SCORE
+  cat $STRATEGY > /tmp/store.json
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
