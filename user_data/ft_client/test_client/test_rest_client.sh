@@ -206,7 +206,6 @@ else
 
   calculate_score
   OLD_SCORE=$SCORE
-  cat $STRATEGY > /tmp/store.json
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
