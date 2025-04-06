@@ -57,7 +57,9 @@ hyperopt() {
     hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
     all_losses=($(jq -r '[.built_in[], .custom_built[]] | unique | sort_by(. != "$hyperopt_loss") | .[]' $HYPERFILE))
 
-    echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    for losses in "${all_losses[@]}"; do
+      echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    done
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
