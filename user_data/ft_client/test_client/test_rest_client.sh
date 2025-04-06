@@ -55,7 +55,7 @@ hyperopt() {
 
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
     hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
-    all_losses=($(jq -r '[.built_in[], .custom_built[]] | map(select(. != "$hyperopt_loss")) | ["$hyperopt_loss"] + . | .[]' $HYPERFILE))
+    all_losses=($(jq -r --arg loss "$hyperopt_loss" '[.built_in[], .custom_built[]] | map(select(. != $loss)) | [$loss] + . | .[]' $HYPERFILE))
 
     for losses in "${all_losses[@]}"; do
       echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
