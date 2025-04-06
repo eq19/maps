@@ -60,46 +60,41 @@ hyperopt() {
     for losses in "${all_losses[@]}"; do
       cat /tmp/store.json > $STRATEGY 
       echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    done
-    freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
-      --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
-      --enable-protections --analyze-per-epoch  --random-state ${id} \
-      --logfile /dev/null > /dev/null 2>&1
+      freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+        --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${losses} \
+        --enable-protections --analyze-per-epoch  --random-state ${id} \
+        --logfile /dev/null > /dev/null 2>&1
+      freqtrade hyperopt-list
 
-    #echo -e "\n$hr\nStep-$id: Hyperopt Result\n$hr"
-    #freqtrade hyperopt-list --help
-    freqtrade hyperopt-list
-    #echo -e "\n$hr\nStep-$id: Backtesting Results\n$hr"
-    #freqtrade hyperopt-show --best
-  done
-
-  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  freqtrade backtesting --help
-  rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+      echo -e "\n$hr\nRERUN BACKTEST\n$hr"
+      freqtrade backtesting --help
+      rm -rf /home/runner/user_data/backtest_results/*
+      freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
   
-  calculate_score
-  NEW_SCORE=$SCORE
-  echo "NEW SCORE: $NEW_SCORE"
+      calculate_score
+      NEW_SCORE=$SCORE
+      echo "NEW SCORE: $NEW_SCORE"
 
-  if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
-    cat $STRATEGY
-    curl -L -s -X PATCH \
-      -H "Accept: application/vnd.github+json" \
-      -H "Authorization: Bearer $GH_TOKEN" \
-      -H "X-GitHub-Api-Version: 2022-11-28" \
-      https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
-      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+      if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+        cat $STRATEGY
+        curl -L -s -X PATCH \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer $GH_TOKEN" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+           https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
+          -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
 
-    python user_data/ft_client/test_client/app.py output.txt
-    cat user_data/ft_client/test_client/results/output.txt
+        python user_data/ft_client/test_client/app.py output.txt
+        cat user_data/ft_client/test_client/results/output.txt
 
-    curl -s -X POST \
-      -H "Authorization: Bearer ${BEARER}" \
-      -H "Content-Type: application/json" \
-      https://us-central1-feedmapping.cloudfunctions.net/function \
-      --data @${STRATEGY} | jq '.'
-  fi
+        curl -s -X POST \
+          -H "Authorization: Bearer ${BEARER}" \
+          -H "Content-Type: application/json" \
+          https://us-central1-feedmapping.cloudfunctions.net/function \
+          --data @${STRATEGY} | jq '.'
+      fi
+    done
+  done
 }
 
 calculate_score() {
