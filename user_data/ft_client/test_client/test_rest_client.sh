@@ -92,6 +92,7 @@ hyperopt() {
           -H "Content-Type: application/json" \
           https://us-central1-feedmapping.cloudfunctions.net/function \
           --data @${STRATEGY} | jq '.'
+        break
       fi
     done
   done
