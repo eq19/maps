@@ -68,6 +68,34 @@ hyperopt() {
     #echo -e "\n$hr\nStep-$id: Backtesting Results\n$hr"
     #freqtrade hyperopt-show --best
   done
+
+  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
+  freqtrade backtesting --help
+  rm -rf /home/runner/user_data/backtest_results/*
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+  
+  calculate_score
+  NEW_SCORE=$SCORE
+  echo "NEW SCORE: $NEW_SCORE"
+
+  if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+    cat $STRATEGY
+    curl -L -s -X PATCH \
+      -H "Accept: application/vnd.github+json" \
+      -H "Authorization: Bearer $GH_TOKEN" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
+      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+
+    python user_data/ft_client/test_client/app.py output.txt
+    cat user_data/ft_client/test_client/results/output.txt
+
+    curl -s -X POST \
+      -H "Authorization: Bearer ${BEARER}" \
+      -H "Content-Type: application/json" \
+      https://us-central1-feedmapping.cloudfunctions.net/function \
+      --data @${STRATEGY} | jq '.'
+  fi
 }
 
 calculate_score() {
@@ -178,34 +206,6 @@ else
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
   freqtrade hyperopt --help && freqtrade list-hyperoptloss && hyperopt $ID
-
-  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  freqtrade backtesting --help
-  rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
-  
-  calculate_score
-  NEW_SCORE=$SCORE
-  echo "NEW SCORE: $NEW_SCORE"
-
-  if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
-    cat $STRATEGY
-    curl -L -s -X PATCH \
-      -H "Accept: application/vnd.github+json" \
-      -H "Authorization: Bearer $GH_TOKEN" \
-      -H "X-GitHub-Api-Version: 2022-11-28" \
-      https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
-      -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
-
-    python user_data/ft_client/test_client/app.py output.txt
-    cat user_data/ft_client/test_client/results/output.txt
-
-    curl -s -X POST \
-      -H "Authorization: Bearer ${BEARER}" \
-      -H "Content-Type: application/json" \
-      https://us-central1-feedmapping.cloudfunctions.net/function \
-      --data @${STRATEGY} | jq '.'
-  fi
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
