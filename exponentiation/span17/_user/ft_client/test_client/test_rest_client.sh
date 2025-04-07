@@ -40,8 +40,8 @@ echo "Backtesting Timerange: $TB"
 echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 printenv
 
-# Function to calculate start and end date
 hyperopt() {
+
   # Load JSON and filter by given ID
   HYPERFILE=user_data/config_examples/config_hyperopt.example.json
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
@@ -54,19 +54,46 @@ hyperopt() {
     timerange="$start_date-$end_date"
 
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
-    hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
+    all_losses=($(jq -r --arg loss "$hyperopt_loss" '[.built_in[], .custom_built[]] | map(select(. != $loss)) | [$loss] + . | .[]' $HYPERFILE))
 
-    echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    for losses in "${all_losses[@]}"; do
+      hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
+    done
+
+    echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
       --logfile /dev/null > /dev/null 2>&1
-
-    #echo -e "\n$hr\nStep-$id: Hyperopt Result\n$hr"
-    #freqtrade hyperopt-list --help
     freqtrade hyperopt-list
-    #echo -e "\n$hr\nStep-$id: Backtesting Results\n$hr"
-    #freqtrade hyperopt-show --best
+
+    echo -e "\n$hr\nRERUN BACKTEST\n$hr"
+    freqtrade backtesting --help
+    rm -rf /home/runner/user_data/backtest_results/*
+    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+  
+    calculate_score
+    NEW_SCORE=$SCORE
+    echo "NEW SCORE: $NEW_SCORE"
+
+    if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+      cat $STRATEGY
+      curl -L -s -X PATCH \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+         https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
+        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
+
+      python user_data/ft_client/test_client/app.py output.txt
+      cat user_data/ft_client/test_client/results/output.txt
+
+      curl -s -X POST \
+        -H "Authorization: Bearer ${BEARER}" \
+        -H "Content-Type: application/json" \
+          https://us-central1-feedmapping.cloudfunctions.net/function \
+        --data @${STRATEGY} | jq '.'
+    fi
   done
 }
 
@@ -150,10 +177,6 @@ if [[ "$1" == "listing" ]]; then
 else
 #elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
-  python user_data/ft_client/test_client/app.py output.txt
-  cat user_data/ft_client/test_client/results/output.txt
-  curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" --data @${STRATEGY} | jq '.'
-
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
 
@@ -172,6 +195,7 @@ else
 
   echo -e "\n$hr\nRUN BACKTEST\n$hr"
   freqtrade backtesting --help
+  cat $STRATEGY > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
@@ -180,28 +204,8 @@ else
   echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
-  freqtrade hyperopt --help && freqtrade list-hyperoptloss && hyperopt $ID
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
-
-  echo -e "\n$hr\nRERUN BACKTEST\n$hr"
-  freqtrade backtesting --help
-  rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
-  
-  calculate_score
-  NEW_SCORE=$SCORE
-  echo "NEW SCORE: $NEW_SCORE"
-
-  if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
-    cat $STRATEGY && cat $GITHUB_ENV
-    curl -L \
-      -X PUT \
-      -H "Accept: application/vnd.github+json" \
-      -H "Authorization: Bearer $GH_TOKEN" \
-      -H "X-GitHub-Api-Version: 2022-11-28" \
-      "https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON" \
-      -d "{\"name\":\"PARAMS_JSON\",\"value\":\"$(jq -r '.' $STRATEGY)\"}"
-  fi
+  freqtrade hyperopt --help && freqtrade list-hyperoptloss && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help

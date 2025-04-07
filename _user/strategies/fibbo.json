@@ -29,7 +29,7 @@
       "buy_swing_period": 50,
       "period": 14,
       "smoothD": 3,
-      "buy_additional_indicator": "BB"
+      "buy_additional_indicator": "MACD"
     },
     "sell": {
       "sell_additional_indicator": "NONE",
@@ -50,5 +50,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-04-05 03:28:49.746561+00:00"
+  "export_time": "2025-04-07 14:21:01.440428+00:00"
 }
