@@ -2,10 +2,10 @@
   "strategy_name": "fibbo",
   "params": {
     "roi": {
-      "0": 0.0786,
-      "4": 0.0238,
-      "11": 0.006,
-      "19": 0
+      "0": 0.05499999999999999,
+      "2": 0.011,
+      "11": 0.005,
+      "20": 0
     },
     "stoploss": {
       "stoploss": -0.137
@@ -36,7 +36,7 @@
       "sell_rsi": 70,
       "sell_rsi_threshold": 64,
       "sell_stoch_osc": 85,
-      "sell_additional_indicator": "MACD"
+      "sell_additional_indicator": "FIBBO"
     },
     "protection": {
       "cooldown_lookback": 7,
@@ -50,5 +50,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-04-07 16:15:48.335841+00:00"
+  "export_time": "2025-04-11 17:10:03.293346+00:00"
 }
