@@ -248,14 +248,14 @@ else
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
 
-  rm -rf *.json freqtrade_pid.txt freqtrade.log
+  rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki
   rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
 
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
 
   if git ls-remote "https://github.com/$TARGET_REPOSITORY.wiki.git" &>/dev/null; then
-    git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
+    git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki && cd /tmp/wiki
   else
     curl -X PATCH \
       -H "Authorization: token $GH_TOKEN" \
@@ -263,10 +263,10 @@ else
       "https://api.github.com/repos/$TARGET_REPOSITORY" \
       -d '{"has_wiki":true}' > /dev/null
     sleep 5
-    git remote add https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git
+    mkdir /tmp/wiki && cd /tmp/wiki && git init
+    git remote add origin https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git
   fi
   
-  cd /tmp/wiki
   rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
   git add . && git commit --allow-empty -m "update params" && git push
