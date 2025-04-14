@@ -248,11 +248,11 @@ else
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
 
-  rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki /tmp/dummy
-  rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
-
   git config --global user.name eq19
   git config --global user.email eq19@users.noreply.github.com
+
+  rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki /tmp/dummy
+  rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
 
   if git ls-remote "https://github.com/$TARGET_REPOSITORY.wiki.git" &>/dev/null; then
     git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki && cd /tmp/wiki
