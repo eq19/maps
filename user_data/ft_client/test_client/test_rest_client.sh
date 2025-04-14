@@ -254,7 +254,12 @@ else
   if git ls-remote "https://github.com/$TARGET_REPOSITORY.wiki.git" &>/dev/null; then
     git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
   else
-    git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
+    curl -X PATCH \
+        -H "Authorization: token $GH_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        "https://api.github.com/repos/$TARGET_REPOSITORY" \
+        -d '{"has_wiki":true}'
+     git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
   fi
   
   cd /tmp/wiki
