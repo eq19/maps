@@ -251,13 +251,20 @@ else
   rm -rf *.json freqtrade_pid.txt freqtrade.log
   rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
 
-  git config --global user.name eq19
-  git config --global user.email eq19@users.noreply.github.com
+  if git ls-remote "https://github.com/$TARGET_REPOSITORY.wiki.git" &>/dev/null; then
+    echo "Wiki repository exists for $REPO_OWNER/$REPO_NAME"
+  else
+    echo "No wiki repository found for $REPO_OWNER/$REPO_NAME"
+  fi
+  
   git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
   cd /tmp/wiki
   rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
+
+  git config --global user.name eq19
+  git config --global user.email eq19@users.noreply.github.com
   git add . && git commit --allow-empty -m "update params" && git push
   
 fi
