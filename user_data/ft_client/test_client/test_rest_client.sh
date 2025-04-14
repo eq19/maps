@@ -264,7 +264,7 @@ else
       -d '{"has_wiki":true}' > /dev/null
 
     git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.wiki.git /tmp/dummy
-    mkdir /tmp/wiki && cd /tmp/wiki && git init && mv -f /tmp/dummy/* .
+    rm -rf /tmp/dummy/.git && mkdir /tmp/wiki && cd /tmp/wiki && git init && mv -f /tmp/dummy/* .
     git remote add origin https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git
   fi
   
