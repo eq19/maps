@@ -259,7 +259,7 @@ else
       -H "Accept: application/vnd.github.v3+json" \
       "https://api.github.com/repos/$TARGET_REPOSITORY" \
       -d '{"has_wiki":true}' > /dev/null
-     git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
+    git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
   fi
   
   cd /tmp/wiki
