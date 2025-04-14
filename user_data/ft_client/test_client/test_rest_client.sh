@@ -264,5 +264,21 @@ else
   rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
   git add . && git commit --allow-empty -m "update params" && git push
-  
+
+  if git ls-remote "https://github.com/$TARGET_REPOSITORY.wiki.git" &>/dev/null; then
+    git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki && cd /tmp/wiki
+  else
+    curl -X PATCH \
+      -H "Authorization: token $GH_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/repos/$TARGET_REPOSITORY" \
+      -d '{"has_wiki":true}' > /dev/null
+
+    git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.wiki.git /tmp/dummy
+    rm -rf /tmp/dummy/.git && mkdir /tmp/wiki && cd /tmp/wiki && git init && mv -f /tmp/dummy/* .
+
+    git config --global --add --bool push.autoSetupRemote true
+    git remote add origin https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git
+  fi
+
 fi
