@@ -252,13 +252,11 @@ else
   rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
 
   if git ls-remote "https://github.com/$TARGET_REPOSITORY.wiki.git" &>/dev/null; then
-    echo "Wiki repository exists for $REPO_OWNER/$REPO_NAME"
+    git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
   else
-    echo "No wiki repository found for $REPO_OWNER/$REPO_NAME"
+    git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
   fi
   
-  git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
-
   cd /tmp/wiki
   rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
