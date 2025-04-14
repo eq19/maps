@@ -265,11 +265,13 @@ else
 
     git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.wiki.git /tmp/dummy
     rm -rf /tmp/dummy/.git && mkdir /tmp/wiki && cd /tmp/wiki && git init && mv -f /tmp/dummy/* .
+
+    git config --global --add --bool push.autoSetupRemote true
     git remote add origin https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git
   fi
   
   rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
-  git add . && git commit --allow-empty -m "update params" && git push --set-upstream origin master
+  git add . && git commit --allow-empty -m "update params" && git push
   
 fi
