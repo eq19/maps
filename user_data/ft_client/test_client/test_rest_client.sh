@@ -248,7 +248,7 @@ else
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
 
-  rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki
+  rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki /tmp/dummy
   rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
 
   git config --global user.name eq19
@@ -262,8 +262,9 @@ else
       -H "Accept: application/vnd.github.v3+json" \
       "https://api.github.com/repos/$TARGET_REPOSITORY" \
       -d '{"has_wiki":true}' > /dev/null
-    sleep 5
-    mkdir /tmp/wiki && cd /tmp/wiki && git init
+
+    git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.wiki.git /tmp/dummy
+    mkdir /tmp/wiki && cd /tmp/wiki && git init && mv -f /tmp/dummy/* .
     git remote add origin https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git
   fi
   
