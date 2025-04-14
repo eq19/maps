@@ -270,6 +270,6 @@ else
   
   rm -rf _user && mv -f /home/runner/user_data _user
   find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
-  git add . && git commit --allow-empty -m "update params" && git push
+  git add . && git commit --allow-empty -m "update params" && git push --set-upstream origin master
   
 fi
