@@ -2,8 +2,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG FROM=redis/redis-stack-server:latest
 FROM ${FROM}
 
-CMD ["/entrypoint.sh"]
-
 ENV RUNNER_NAME=""
 ENV RUNNER_TOKEN=""
 ENV RUNNER_LABELS=""
