@@ -1,5 +1,6 @@
 ARG DEBIAN_FRONTEND=noninteractive
-ARG FROM=redis/redis-stack-server:latest
+ARG FROM=node:lts-bookworm-slim
+#ARG FROM=redis/redis-stack-server:latest
 FROM ${FROM}
 
 ENV RUNNER_NAME=""
