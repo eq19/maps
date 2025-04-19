@@ -1,12 +1,8 @@
-FROM redis/redis-stack-server:latest
-
-# Copy the last database dump.
-COPY dataFile/dump.rdb /data/dump.rdb
+ARG DEBIAN_FRONTEND=noninteractive
+ARG FROM=redis/redis-stack-server:latest
+FROM ${FROM}
 
 CMD ["/entrypoint.sh"]
-ARG DEBIAN_FRONTEND=noninteractive
-ARG FROM=node:lts-bookworm-slim
-FROM ${FROM}
 
 ENV RUNNER_NAME=""
 ENV RUNNER_TOKEN=""
@@ -25,6 +21,7 @@ ADD . /home/runner
 WORKDIR /home/runner
 RUN chmod +x /home/runner/hooks/*.sh
 RUN chmod +x /home/runner/scripts/*.sh
+COPY dataFile/dump.rdb /data/dump.rdb
 COPY conf/*.conf /etc/supervisor/conf.d/
 RUN chmod 644 /etc/supervisor/conf.d/*.conf
 
