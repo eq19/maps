@@ -32,6 +32,24 @@ inputs:
   token:
     description: The Github personal token
     required: true
+  pypi_token:
+    description: The monitor token
+    required: true
+  bot_token:
+    description: The monitor token
+    required: true
+  logs_token:
+    description: The warning token
+    required: true
+  chat_id:
+    description: The telegram chat id
+    required: true
+  api_key:
+    description: The key of api application
+    required: true
+  api_secret:
+    description: The secret of api application
+    required: true
 
 outputs:
   all_outputs:
