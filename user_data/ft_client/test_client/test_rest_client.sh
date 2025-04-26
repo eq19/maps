@@ -85,9 +85,6 @@ hyperopt() {
          https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
 
-      python user_data/ft_client/test_client/app.py output.txt
-      cat user_data/ft_client/test_client/results/output.txt
-
       curl -s -X POST \
         -H "Authorization: Bearer ${BEARER}" \
         -H "Content-Type: application/json" \
@@ -205,6 +202,8 @@ else
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt/#solving-a-mystery
+  python user_data/ft_client/test_client/app.py output.txt
+  cat user_data/ft_client/test_client/results/output.txt
   freqtrade hyperopt --help && freqtrade list-hyperoptloss && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
