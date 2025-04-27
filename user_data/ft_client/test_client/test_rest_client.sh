@@ -223,11 +223,6 @@ else
   echo -e "\n$hr\nAI TRADES\n$hr"
   freqtrade trade --help
 
-  #sed -i "s|your_exchange_key|$ACCESS_API|g" config.json
-  #sed -i "s|your_exchange_secret|$ACCESS_KEY|g" config.json
-  #sed -i "s|your_telegram_chat_id|$MESSAGE_API|g" config.json
-  #sed -i "s|your_telegram_token|$MESSAGE_TOKEN|g" config.json
-
   echo "Starting freqtrade trade..."
   #freqtrade trade --freqaimodel LightGBMRegressor
   nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
