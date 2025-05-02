@@ -202,17 +202,7 @@ else
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
-  freqtrade hyperopt --help && freqtrade list-hyperoptloss
-  python user_data/ft_client/test_client/app.py output.txt
-  cat user_data/ft_client/test_client/results/output.txt
- 
-  curl -s -X POST \
-    -H "Authorization: Bearer ${BEARER}" \
-    -H "Content-Type: application/json" \
-    https://us-central1-feedmapping.cloudfunctions.net/function \
-    --data @${STRATEGY} | jq '.'
-
-  hyperopt $ID
+  freqtrade hyperopt --help && freqtrade list-hyperoptloss && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
