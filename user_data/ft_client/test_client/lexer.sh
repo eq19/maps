@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
 #
-ls -al $WORKSPACE
+git config --global user.name eq19
+git config --global user.email eq19@users.noreply.github.com
+git clone https://eq19:$GH_TOKEN@github.com/$TARGET_REPOSITORY.wiki.git /tmp/wiki
 
-cat $WORKSPACE/user_data/ft_client/test_client/results/output.txt
-ARTIFACT=$WORKSPACE/user_data/ft_client/test_client/results/orgs.json
-
-curl -s -X POST \
-  -H "Authorization: Bearer ${BEARER}" \
-  -H "Content-Type: application/json" \
-  https://us-central1-feedmapping.cloudfunctions.net/function \
-  --data @${ARTIFACT} | jq '.'
-
-curl -L -s -X PATCH \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $GH_TOKEN" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/ORGS_JSON \
-  -d "$(jq -n '{name:"ORGS_JSON", value:$value}' --arg value "$(cat "$ARTIFACT")")"
-        
+if [[ ! -d /tmp/wiki/_user ]]; then
+  git clone https://eq19:$GH_TOKEN@github.com/eq19/eq19.wiki.git /tmp/dummy
+  rm -rf /tmp/wiki/* /tmp/dummy/.git && mv -f /tmp/dummy/* /tmp/wiki/
+fi
+  
+cd /tmp/wiki
+rm -rf _user && mv -f /home/runner/user_data _user
+find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
+git add . && git commit --allow-empty -m "update params" && git push
