@@ -9,7 +9,6 @@ if [[ ! -d /tmp/wiki/_user ]]; then
   rm -rf /tmp/wiki/* /tmp/dummy/.git && mv -f /tmp/dummy/* /tmp/wiki/
 fi
   
-cd /tmp/wiki
-rm -rf _user && mv -f /home/runner/user_data _user
-find _user/strategies -mindepth 1 -type d -exec rm -rf {} +
-git add . && git commit --allow-empty -m "update params" && git push
+rm -rf /tmp/wiki/_user && mv -f user_data /tmp/wiki/_user
+find /tmp/wiki/_user/strategies -mindepth 1 -type d -exec rm -rf {} +
+cd /tmp/wiki && git add . && git commit --allow-empty -m "update params" && git push
