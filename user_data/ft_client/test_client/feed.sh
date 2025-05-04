@@ -240,4 +240,7 @@ else
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
 
+  rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki /tmp/dummy
+  rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
+
 fi
