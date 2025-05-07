@@ -6,6 +6,8 @@ on:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
+  repository_dispatch:
+    types: [trigger_action, retry_workflow]
 
 # 🕸️ Allow concurrent
 concurrency:
@@ -18,6 +20,7 @@ permissions: write-all
 # 🕸️ Global Environment
 env:
   GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  RUNNER_TITLE: "Google-optimized-instance"
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
 
 jobs:
@@ -42,20 +45,25 @@ jobs:
       - name: 📂 Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: ${{ env.JOBS_ID != 1 && env.DOC || '' }}
-
+          submodules: ${{ env.JOBS_ID != 1 && 'recursive' || false }}
+          
       - name: ⚙️ Build Maps
         uses: eq19/maps@v8
         id: build-parser
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          rerun_runner: ${{ vars.RERUN_RUNNER }}
+          chat_id: ${{ secrets.MESSAGE_API }}
+          api_key: ${{ secrets.ACCESS_API }}
+          api_secret: ${{ secrets.ACCESS_KEY }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          bot_token: ${{ secrets.MONITOR_TOKEN }}
+          logs_token: ${{ secrets.WARNING_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          initiate_pauli_sum: ${{ toJSON(steps.set-lexering.outputs) }}
+          initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
 
       - name: 🪂 Feed Mapping
         uses: eq19/feed@v6
@@ -65,7 +73,6 @@ jobs:
           chat_id: ${{ secrets.MESSAGE_API }}
           api_key: ${{ secrets.ACCESS_API }}
           api_secret: ${{ secrets.ACCESS_KEY }}
-          rerun_runner: ${{ vars.RERUN_RUNNER }}
           pypi_token: ${{ secrets.PYPI_TOKEN }}
           bot_token: ${{ secrets.MONITOR_TOKEN }}
           logs_token: ${{ secrets.WARNING_TOKEN }}
