@@ -82,7 +82,7 @@ runs:
   using: composite
   steps:
     - name: configure
-      #if: runner.os == 'Windows'
+      if: env.RERUN_RUNNER == 'true'
       shell: bash
       env:
         CXX: g++-12

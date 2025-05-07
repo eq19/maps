@@ -83,6 +83,7 @@ runs:
   steps:
     #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
     - name: Run identity
+      if: runner.os == 'Redis'
       shell: bash
       run: |
         TOKEN=$(/mnt/disks/deeplearning/usr/bin/gcloud auth print-identity-token)
@@ -97,6 +98,7 @@ runs:
     - name: 💎 Connect to Redis
       # Runs a script that creates a Redis client, populates
       # the client with data, and retrieves data
+      if: runner.os == 'Redis'
       env:
         # The hostname used to communicate with the Redis client service container
         # Ref: https://gitlab.com/NamingThingsIsHard/crypto/freqtrade/clients
@@ -109,6 +111,7 @@ runs:
         echo '${{ inputs.pauli_sum }}'
     
     - name: 💎 Connect to postgres
+      if: env.RERUN_RUNNER == 'true'
       env:
         # use the internal host here because we have specified a container for the job.
         # If we were running the job on the VM this would be localhost

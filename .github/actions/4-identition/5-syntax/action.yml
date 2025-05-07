@@ -103,7 +103,8 @@ runs:
         id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
 
     #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
-    - name: Run identity  
+    - name: Run identity
+      if: runner.os != 'Windows'
       shell: bash
       env:
         GCP_TOKEN: ${{ steps.auth.outputs.id_token }}

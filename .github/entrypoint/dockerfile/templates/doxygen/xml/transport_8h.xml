@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.14">
+  <compounddef id="transport_8h" kind="file" language="C++">
+    <compoundname>transport.h</compoundname>
+    <includes local="no">transport/bicycle.h</includes>
+    <includes local="no">transport/racingbike.h</includes>
+    <includes local="no">transport/mountainbike.h</includes>
+    <incdepgraph>
+      <node id="25">
+        <label>transport/racingbike.h</label>
+      </node>
+      <node id="26">
+        <label>transport/mountainbike.h</label>
+      </node>
+      <node id="23">
+        <label>src/transport.h</label>
+        <link refid="transport_8h"/>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>transport/bicycle.h</label>
+      </node>
+    </incdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="transport_8h_1afbbb18ca59257b9b19eced9dcb7c7973" prot="public" static="no">
+        <name>PEDAL_POWER_MODIFIER</name>
+        <initializer>9000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The modifier value if pedal power is used.</para><para>This definition exists in the default namespace and is ungrouped. It will <emphasis>not</emphasis> be displayed if the <computeroutput>groups</computeroutput> options is used. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/transport.h" line="47" column="9" bodyfile="src/transport.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="enum">
+      <memberdef kind="enum" id="transport_8h_1aca1e72535e7f260e54ed8bbf984dade9" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>TransportType</name>
+        <enumvalue id="transport_8h_1aca1e72535e7f260e54ed8bbf984dade9a8e8125cebd24bc06c2dbc178336da70f" prot="public">
+          <name>Bycicle</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Bycicle type </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="transport_8h_1aca1e72535e7f260e54ed8bbf984dade9ac34fdf94888bac1e847f369e76c9d15b" prot="public">
+          <name>RacingBike</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Racing bike type </para>          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="transport_8h_1aca1e72535e7f260e54ed8bbf984dade9ac34fdf94888bac1e847f369e76c9d15b" prot="public">
+          <name>RacingBike</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+<para>Mountain bike type </para>          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Enum class for transport types.</para><para>This definition exists in the default namespace and is ungrouped. It will <emphasis>not</emphasis> be displayed if the <computeroutput>groups</computeroutput> options is used. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="src/transport.h" line="35" column="1" bodyfile="src/transport.h" bodystart="35" bodyend="39"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#ifndef<sp/>__TRANSPORT_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__TRANSPORT_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="preprocessor">#include<sp/>&lt;transport/bicycle.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="preprocessor">#include<sp/>&lt;transport/racingbike.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="preprocessor">#include<sp/>&lt;transport/mountainbike.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="keyword">enum<sp/>class</highlight><highlight class="normal"><sp/>TransportType<sp/>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/>Bycicle,<sp/></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/>RacingBike,<sp/></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/>RacingBike<sp/></highlight></codeline>
+<codeline lineno="39"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="preprocessor">#define<sp/>PEDAL_POWER_MODIFIER<sp/>9000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight><highlight class="preprocessor">#endif<sp/></highlight><highlight class="comment">/*<sp/>__TRANSPORT_H__<sp/>*/</highlight><highlight class="preprocessor"></highlight></codeline>
+    </programlisting>
+    <location file="src/transport.h"/>
+  </compounddef>
+</doxygen>

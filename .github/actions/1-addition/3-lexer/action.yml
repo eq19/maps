@@ -81,39 +81,42 @@ runs:
     - name: 🪂 Adapt feed mapping
       shell: bash
       run: |
-        TARGET_REPO='https://github.com/${{ env.TARGET_REPOSITORY }}'
-        cd ${{ github.workspace }}/_site && rm -rf .git .devcontainer.json Dockerfile
-        git clone --single-branch -b gh-pages ${TARGET_REPO} ${{ inputs.action_path }}/_site &>/dev/null
+        gh variable set ORGS_JSON --body "$(cat $RUNNER_TEMP/orgs.json)"
+        mv -f .github/entrypoint/dockerfile/* ${{ inputs.action_path }}/
+        cd ${{ github.workspace }}/_site && rm -rf .git .devcontainer.json Dockerfile*
+        #git clone --single-branch -b gh-pages ${REMOTE_REPO} ${{ inputs.action_path }}/_site &>/dev/null
 
-        cd ${{ inputs.action_path }}/_site
-        shopt -s dotglob && rm -rf ${RUNNER_TEMP}/*
-        [[ -d docs ]] && mv -f docs ${RUNNER_TEMP}/
-        [[ -d .sass-cache ]] && mv -f .sass-cache ${RUNNER_TEMP}/
-        [[ -f .jekyll-metadata ]] && mv -f .jekyll-metadata ${RUNNER_TEMP}/
+        #cd ${{ inputs.action_path }}/_site
+        #shopt -s dotglob && rm -rf ${RUNNER_TEMP}/*
+        #[[ -d docs ]] && mv -f docs ${RUNNER_TEMP}/
+        #[[ -d .sass-cache ]] && mv -f .sass-cache ${RUNNER_TEMP}/
+        #[[ -f .jekyll-metadata ]] && mv -f .jekyll-metadata ${RUNNER_TEMP}/
 
-        rm -rf *
+        #rm -rf *
         #git rm -rfq .
         #git clean -fxd
-        mv -f ${RUNNER_TEMP}/* .   
-        mv -f ${{ github.workspace }}/_site/* .
+        #mv -f ${RUNNER_TEMP}/* .   
+        #mv -f ${{ github.workspace }}/_site/* .
+
+        mv -f ${{ github.workspace }}/_site ${{ inputs.action_path }}/
         cat ${{ inputs.action_path }}/Dockerfile
 
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
       id: artifact
       with:
-        push: always
         imageTag: id-${{ env.ID }}
         skipContainerUserIdUpdate: true
-        runCmd: ls -alR /home/runner/_site
         imageName: ${{ inputs.image_name }}
+        runCmd: bash user_data/ft_client/test_client/lexer.sh
         configFile: ${{ inputs.action_path }}/.devcontainer.json
+        push: ${{ env.RERUN_RUNNER == 'true' && 'always' || 'never' }}
         env: |
-          CXX=clang++
-          CC=clang
-          FC=gfortran
+          ID=${{ env.ID }}
+          GH_TOKEN=${{ env.GH_TOKEN }}
+          REMOTE_REPO=${{ env.REMOTE_REPO }}
+          BEARER=${{ steps.auth.outputs.id_token }}
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
-          LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/lib
 
     - name: 💎 Variables
       id: variables
@@ -122,7 +125,6 @@ runs:
         id: ${{ inputs.id }}
         TARGET_REPOSITORY: ${{ env.TARGET_REPOSITORY }}
       run: |        
-        gh variable set RERUN_RUNNER --body "true"
         BASE_NAME=$(basename ${{ inputs.image_name }})
         echo 'output_${id}='${TARGET_REPOSITORY} >> ${GITHUB_OUTPUT}    
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g"))

@@ -90,7 +90,6 @@ runs:
         GH_TOKEN: ${{ inputs.token }}
         BASE: "D:/a/_actions/eq19/eq19/v2/.github"
       run: |
-        #gh variable set RERUN_RUNNER --body "false"
         if [[ '${{ inputs.failure_status }}' == 'true' ]]; then
       
           git config --global user.name "$GITHUB_ACTOR"
@@ -102,11 +101,6 @@ runs:
           git add . && git commit --allow-empty -m "rerun due to job failure" && git push
   
         else
-
-          cd ${GITHUB_WORKSPACE//\\//}
-
-          echo -e "\n$hr\nConfig\n$hr"
-          cat _config.yml
 
           echo -e "\n$hr\nSource Pages\n$hr"
           rm -rf _user && ls -al .
@@ -136,8 +130,66 @@ runs:
           echo "Processed: $MESSAGE"
 
           # Commit and push changes
-          git add . 
-          git commit --allow-empty -m "$MESSAGE" 
-          git push
+          git add . && git commit --allow-empty -m "$MESSAGE" && git push
+
+          echo -e "\n$hr\nFinal Status\n$hr"
+          # Fetch all branches
+          git fetch --all
+
+          # Check if any branches (exclude tags) with 'v' suffix exist
+          if ! git branch -a | grep -E 'remotes/origin/v[0-9]*$' | grep -v 'HEAD'; then
+            # Get default branch name (usually main or master)
+            set -e  # Exit on error
+
+            DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+            git checkout $DEFAULT_BRANCH
+            git pull origin $DEFAULT_BRANCH
+
+            # Delete local v0 branch if it exists
+            git branch -D v0 || true
+
+            # Create new v0 branch
+            git checkout -b v0
+
+            # Update .github directory
+            rm -rf .github
+            cp -r /d/a/_actions/eq19/eq19/v2/.github .
+
+            git add .
+            git commit --allow-empty -m "Update GitHub workflows and configurations"
+            git push origin v0
+
+            #Change the setting of default brance
+            curl -s -X PATCH \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/$TARGET_REPOSITORY \
+              -d '{"default_branch":"v0"}' > /dev/null
+            echo "Created v0 branch and set it as default"
+          fi
+
+          if [[ "$TARGET_REPOSITORY" != *"eq19/"* ]]; then
+            # Unpublish existing GitHub Pages
+            curl -s -X DELETE \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/$TARGET_REPOSITORY/pages > /dev/null
+  
+            # Disable GitHub Pages
+            curl -s -X PATCH \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/$TARGET_REPOSITORY/pages \
+              -d '{"build_type":"legacy","source":null}' > /dev/null
+  
+            # Trigger a dispaches action
+            curl -s -X POST \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/$TARGET_REPOSITORY/dispatches \
+              -d '{"event_type": "trigger_action", "client_payload": {"env": "prod", "version": "1.0"}}'
+            echo -e "\nDispatched to https://github.com/${{ env.TARGET_REPOSITORY }}/actions"
+          fi
  
         fi

@@ -8,6 +8,9 @@ branding:
   color: 'red'
 
 inputs:
+  id:
+    description: The deploy id
+    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}       
@@ -26,6 +29,7 @@ inputs:
     required: true
   image_name:
     description: Tag to use for the new image
+    default: ${{ github.action_repository }}
     required: true
   dockerfile_path:
     description: Path to the dockerfile from which to build the image
@@ -49,9 +53,6 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
-  provider:
-    description: 'The deploy provider'
-    required: true
   owner:
     description: 'The deploy owner'
     required: false
@@ -62,6 +63,24 @@ inputs:
     description: 'The deploy repository'
     default: ${{ github.repository }}
     required: false
+  api_key:
+    description: The key of api application
+    required: true
+  api_secret:
+    description: The secret of api application
+    required: true
+  pypi_token:
+    description: The pypi token
+    required: true
+  bot_token:
+    description: The monitor token
+    required: true
+  logs_token:
+    description: The warning token
+    required: true
+  chat_id:
+    description: The telegram chat id
+    required: true
 
 outputs:
   artifact:
@@ -76,26 +95,38 @@ runs:
   steps:
     - name: Remove Existing Connection
       shell: bash
+      env:
+        RUN: ${{ github.run_id }}
+        USER: ${{ github.actor }}
+        REPO: ${{ github.repository }}
+        ACTOR: ${{ github.triggering_actor }}
+        OWNER: ${{ github.repository_owner }}
       run: |
-        HEADER="Accept: application/vnd.github+json"
-        /home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh ${{ inputs.action_path }}
+        gh variable set RERUN_RUNNER --body "false"
 
-        #See: https://docs.github.com/en/rest/actions/self-hosted-runners
+        HEADER="Accept: application/vnd.github+json"
+        RESPONSE=$(gh api -H "${HEADER}" repos/${{ github.repository }}/actions/runners)
         TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
-        RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
-        if (( $TOTAL_COUNT != 0 )); then gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}; fi 
+        STATUS=$(echo "$RESPONSE" | jq -r --arg NAME "${{ env.RUNNER_TITLE }}" '.runners[] | select(.name == $NAME).status')
+
+        if [[ "$TOTAL_COUNT" -eq 0 ]]; then
+          export "RUNNER_COUNT=$TOTAL_COUNT"
+          gh variable set RERUN_RUNNER --body "true"
+        elif [[ "$STATUS" == "offline" ]]; then
+          export "RUNNER_STATUS=$STATUS"
+          gh variable set RERUN_RUNNER --body "true"
+          RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
+          gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}
+        fi
+
+        /home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh ${{ inputs.action_path }}
+        mv -f /home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/dockerfile/* ${{ inputs.action_path }}/
 
     - name: View context attributes
       uses: actions/github-script@v7
       with:
         script: console.log(context)
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ inputs.hub_username }}
-        password: ${{ inputs.hub_token }}
-        
     #- uses: actions/setup-python@v5
       #with:
         #python-version: 3.12
@@ -106,9 +137,33 @@ runs:
         #path: ~/.cache/pip
         #key: ${{ runner.os }}-pip
 
-    #- name: Install dependencies
-      #shell: bash
-      #run: |
+    - name: 💎 Set ID Token
+      id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        token_format: 'id_token'
+        create_credentials_file: false
+        credentials_json: ${{ inputs.credentials }}
+        id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
+
+    - name: Install dependencies
+      shell: bash
+      env:
+        ACCESS_API: ${{ inputs.api_key }}
+        ACCESS_KEY: ${{ inputs.api_secret }}
+        ACCESS_TOKEN: ${{ inputs.token }}
+        MESSAGE_API: ${{ inputs.chat_id }}
+        MONITOR_TOKEN: ${{ inputs.bot_token }}
+        WARNING_TOKEN: ${{ inputs.logs_token }}
+        PYPI_TOKEN: ${{ inputs.pypi_token }}        
+        DOCKER_HUB_TOKEN: ${{ inputs.hub_token }}
+        DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
+        GCP_CREDENTIALS: ${{ inputs.credentials }}
+      run: |
+        # Get all secrets from source repository
+        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
+        for secret in $secrets; do gh secret set $secret --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"; done
+
         #python -m pip -q install --upgrade pip
         #python -m pip -q install -r ${{ inputs.action_path }}/dataFile/requirements.txt
   
@@ -120,31 +175,45 @@ runs:
         
         ##Ref: https://github.com/tsoding/JelloVM
         #cd ${{ inputs.action_path }} && javac javaCode/Main.java
+        python user_data/ft_client/test_client/app.py output.txt      
 
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
         ##cd ${{ inputs.action_path }}/pythonCode && python npreader.py -h && python map.py -h
-        
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.hub_username }}
+        password: ${{ inputs.hub_token }}
+
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
       with:
-        push: always
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
         imageTag: target-${{ github.run_number }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
-        runCmd: ls -al /
+        push: ${{ env.RERUN_RUNNER == 'true' && 'always' || 'never' }}
+        runCmd: bash user_data/ft_client/test_client/maps.sh            
+        env: |
+          ID=${{ env.ID }}
+          GH_TOKEN=${{ env.GH_TOKEN }}
+          REMOTE_REPO=${{ env.REMOTE_REPO }}
+          BEARER=${{ steps.auth.outputs.id_token }}
+          GITHUB_REPOSITORY=${{ github.repository }}
+          TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
+          WORKSPACE=/workspaces/${{ github.event.repository.name }}
+          OUTPUT=user_data/ft_client/test_client/results/output.txt
+          ARTIFACT=user_data/ft_client/test_client/results/orgs.json
 
-    - name: 💎 Variables
-      id: variables
+    - name: 🗑️ Delete Docker Tags AND Images
+      id: delete_images
       shell: bash
+      env:
+        IMAGE_NAME: "${{ inputs.image_name }}"
+        HUB_USERNAME: "${{ inputs.hub_username }}"
+        HUB_PASSWORD: "${{ inputs.hub_password }}"
+        MAX_DELETIONS: 15
       run: |
-        BASE_NAME=$(basename ${{ inputs.image_name }})
-        IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g"))
-        for ((i=0; i < ${#array[@]}; i++)); do
-          if [ "${array[$i]}" != "latest" ]; then
-            HUB_TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d "{\"username\": \"${{ inputs.hub_username }}\", \"password\": \"${{ inputs.hub_password }}\"}" https://hub.docker.com/v2/users/login/ | jq -r .token)
-            curl -s -i -X DELETE -H "Accept: application/json" -H "Authorization: JWT $HUB_TOKEN" https://hub.docker.com/v2/namespaces/${{ inputs.hub_username }}/repositories/$BASE_NAME/tags/${array[$i]}
-            echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
-          fi
-        done
+        ./.github/entrypoint/remote.sh

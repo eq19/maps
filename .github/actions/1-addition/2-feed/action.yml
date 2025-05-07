@@ -53,10 +53,6 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
-  rerun_runner:
-    description: Redeploy hosted runner
-    default: 'false'
-    required: true
   owner:
     description: 'The deploy owner'
     required: false
@@ -97,47 +93,12 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: 💎 Set ID Token
-      id: 'auth'
-      uses: 'google-github-actions/auth@v2'
-      with:
-        token_format: 'id_token'
-        create_credentials_file: false
-        credentials_json: ${{ inputs.credentials }}
-        id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
-
     - name: 💎 Set Artifact
       id: artifact
       shell: bash
-      env:
-        TMP: ${{ inputs.tmp }}
-        RUN: ${{ github.run_id }}
-        USER: ${{ github.actor }}
-        REPO: ${{ github.repository }}
-        ACCESS_API: ${{ inputs.api_key }}
-        ACCESS_KEY: ${{ inputs.api_secret }}
-        ACCESS_TOKEN: ${{ inputs.token }}
-        MESSAGE_API: ${{ inputs.chat_id }}
-        MONITOR_TOKEN: ${{ inputs.bot_token }}
-        WARNING_TOKEN: ${{ inputs.logs_token }}
-        PYPI_TOKEN: ${{ inputs.pypi_token }}        
-        ACTOR: ${{ github.triggering_actor }}
-        OWNER: ${{ github.repository_owner }}
-        DOCKER_HUB_TOKEN: ${{ inputs.hub_token }}
-        DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
-        GCP_CREDENTIALS: ${{ inputs.credentials }}
       run: |      
         shopt -s dotglob
         rm -rf ${{ inputs.action_path }}/.git
-
-        mv -f ${{ inputs.action_path }}/_config.yml ${RUNNER_TEMP}/
-        export PATH=$GITHUB_WORKSPACE/.github/entrypoint:$PATH && artifact.sh
-
-        mv -f ${RUNNER_TEMP}/.env ${{ inputs.action_path }}/
-        mv -f ${RUNNER_TEMP}/_config.yml ${{ inputs.action_path }}/
- 
-        mkdir -p ${{ inputs.action_path }}/_data
-        mv -f ${RUNNER_TEMP}/*.json ${{ inputs.action_path }}/_data/
 
         mv -f ${{ inputs.action_path }} ${{ github.workspace }}/_site
         mkdir -p ${{ inputs.action_path }} && cp -R ${{ github.workspace }}/_site/. ${{ inputs.action_path }}/
@@ -180,19 +141,18 @@ runs:
       uses: devcontainers/ci@v0.3
       id: set_output
       with:
-        push: always
         imageTag: spin-${{ env.ID }}
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
         configFile: _site/.devcontainer.json
+        runCmd: bash user_data/ft_client/test_client/feed.sh
+        push: ${{ env.RERUN_RUNNER == 'true' && 'always' || 'never' }}
         env: |
           ID=${{ env.ID }}
           GH_TOKEN=${{ env.GH_TOKEN }}
           REMOTE_REPO=${{ env.REMOTE_REPO }}
-          RERUN_RUNNER=${{ inputs.rerun_runner }}
           BEARER=${{ steps.auth.outputs.id_token }}
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
-        runCmd: bash user_data/ft_client/test_client/test_rest_client.sh
 
     - name: 🪂 Remove existing images
       id: variables

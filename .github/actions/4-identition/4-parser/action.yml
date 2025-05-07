@@ -81,7 +81,8 @@ runs:
     - name: Run identity  
       shell: bash
       run: |
-        /d/a/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
+        drive=/$(echo "$GITHUB_WORKSPACE" | cut -c1 | tr '[:upper:]' '[:lower:]')
+        $drive/a/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
         
     - name: View context attributes
       uses: actions/github-script@v7

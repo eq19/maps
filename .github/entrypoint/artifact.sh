@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Structure: Cell Types – Modulo 6
 # https://www.hexspin.com/proof-of-confinement/
 
@@ -72,6 +73,7 @@ set_target() {
     echo "  organization: [$(cat ${RUNNER_TEMP}/user_orgs)]" >> ${RUNNER_TEMP}/_config.yml
   fi
   return $(( $SPAN + $SPIN ))
+
 }
 
 jekyll_build() {
@@ -93,11 +95,12 @@ jekyll_build() {
   [[ $1 != *"github.io"* ]] && sed -i "1s|^|baseurl: /$1\n|" ${RUNNER_TEMP}/_config.yml
   
   FOLDER="span$(( 19 - $SITEID ))"
-  TARGET_REPOSITORY=${OWNER}/$1
+  export TARGET_REPOSITORY=${OWNER}/$1
   gh variable set FOLDER --body "$FOLDER"
+  gh variable set TARGET_REPOSITORY --body "$TARGET_REPOSITORY"
+  
   echo 'FOLDER='${FOLDER} >> ${RUNNER_TEMP}/.env
   echo 'repo='${TARGET_REPOSITORY} >> ${GITHUB_OUTPUT}
-  gh variable set TARGET_REPOSITORY --body "$TARGET_REPOSITORY"
   echo 'TARGET_REPOSITORY='${TARGET_REPOSITORY} >> ${GITHUB_ENV}
 
   sed -i "1s|^|title: eQuantum\n|" ${RUNNER_TEMP}/_config.yml
@@ -106,13 +109,66 @@ jekyll_build() {
   sed -i "1s|^|id: ${SITEID}\n|" ${RUNNER_TEMP}/_config.yml
 
   echo 'ID='${SITEID} >> ${GITHUB_ENV}
-
-  echo -e "\n$hr\nCONFIG\n$hr"
   cat ${RUNNER_TEMP}/_config.yml
 
-  echo -e "\n$hr\nSET TOKEN\n$hr"
-  sync.sh ${REPO} ${TARGET_REPOSITORY} ${GH_TOKEN}
-  
+  if [[ "${TARGET_REPOSITORY}" != *"eq19/"* ]]; then
+
+    echo -e "\nTest Module Structure:"
+    echo "1. ${OWNER}/maps → $(next_repo "${OWNER}/maps")"
+    echo "2. ${OWNER}/grammar → $(next_repo "${OWNER}/grammar")"
+    NEXT_REPOSITORY=$(next_repo "${OWNER}/$(yq -r '.track.pinned | .[-1]' ${RUNNER_TEMP}/_config.yml)")
+    echo "3. ${OWNER}/$(yq -r '.track.pinned | .[-1]' ${RUNNER_TEMP}/_config.yml) → ${NEXT_REPOSITORY}"
+    echo "4. ${NEXT_REPOSITORY} → $(next_repo "${NEXT_REPOSITORY}")"
+
+    NEXT_REPOSITORY=$(next_repo "${TARGET_REPOSITORY}")
+    gh variable set TARGET_REPOSITORY --repo $TARGET_REPOSITORY --body "$NEXT_REPOSITORY"
+
+  fi
+   
+}
+
+# Define the next repository function using jq
+next_repo() {
+
+  local target_repo="$1"
+  jq -r --arg target "$target_repo" '
+    ($target | split("/")) as $parts |
+    $parts[0] as $org |
+    $parts[1] as $repo |
+
+    (map(.login) | index($org)) as $org_index |
+    if $org_index == null then
+      "Organization not found: \($org)" | halt_error(1)
+    else 
+      .[$org_index] as $current_org |
+      (.[($org_index + 1) % length].login) as $next_org |
+
+      if $repo == "\($org).github.io" then
+        "\($org)/\($current_org.key1[0])"
+      else
+        ($current_org.key1 | index($repo)) as $key1_index |
+        if $key1_index != null then
+          if ($key1_index + 1) < ($current_org.key1 | length) then
+            "\($org)/\($current_org.key1[$key1_index + 1])"
+          else
+            "\($org)/\($current_org.key2[0])"
+          end
+        else
+          ($current_org.key2 | index($repo)) as $key2_index |
+          if $key2_index != null then
+            if ($key2_index + 1) < ($current_org.key2 | length) then
+              "\($org)/\($current_org.key2[$key2_index + 1])"
+            else
+              "\($next_org)/\($next_org).github.io"
+            end
+          else
+            "Repository not found: \($repo)" | halt_error(1)
+          end
+        end
+      end
+    end
+  ' ${RUNNER_TEMP}/orgs.json
+
 }
 
 # Get structure on gist files

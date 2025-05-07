@@ -1,0 +1,12 @@
+function (add_example_executable NAME)
+    add_executable(${NAME}.x ${NAME}.cpp)
+    target_link_libraries(${NAME}.x marty)
+endfunction()
+
+add_example_executable(gettingStarted)
+add_example_executable(sample2HDM)
+add_example_executable(samplePMSSM)
+add_example_executable(sampleQCDSextet)
+add_example_executable(sampleQED)
+add_example_executable(sampleSQED)
+add_example_executable(sampleScalar)

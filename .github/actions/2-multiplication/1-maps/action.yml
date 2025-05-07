@@ -1,7 +1,12 @@
 name: 'Docker Deploy Action'
+
 description: >
   🪂  A Github Action to deploy pages conveniently
+
 inputs:
+  id:
+    description: The deploy id
+    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}
@@ -28,6 +33,13 @@ inputs:
     description: Build args
     required: false
     default: ""
+  docker_hub_repo_short_description:
+    description: Short description text for the docker hub repo
+    required: true
+  docker_hub_repo_readme_file_path:
+    description: |
+      Path of the md file which will be used as the docker hub repo readme
+    required: true
   cache_src:
     description: Path for the docker cache source
     required: false
@@ -36,14 +48,23 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
-  rerun_runner:
-    description: 'Redeploy of runner'
+  provider:
+    description: 'The deploy provider'
     required: true
   owner:
     description: 'The deploy owner'
     required: false
   token:
     description: 'The deploy token'
+    required: false
+  chat_id:
+    description: 'The telegram chat id'
+    required: false
+  bot_token:
+    description: 'The monitor token'
+    required: false
+  logs_token:
+    description: 'The warning token'
     required: false
   action_path:
     description: 'The action path'
@@ -52,6 +73,10 @@ inputs:
     description: 'The deploy repository'
     default: ${{ github.repository }}
     required: false
+  initiate_pauli_sum:
+    description: Build args
+    required: false
+    default: ""
 
 branding:
   icon: 'command'
@@ -116,7 +141,7 @@ runs:
 
     # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
     - name: 💎 Remove Existing Self-Hosted Runner
-      #if: inputs.rerun_runner == 'true'
+      if: env.RERUN_RUNNER == 'true'
       shell: bash
       run: |
         for instance_uri in $(gcloud compute instances list --uri 2> /dev/null); do

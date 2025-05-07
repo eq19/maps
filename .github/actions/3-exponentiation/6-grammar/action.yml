@@ -85,13 +85,9 @@ runs:
       run: |
         if [[ '${{ inputs.failure_status }}' == 'false' ]]; then
 
-            TARGET_WIKI="https://${{ github.actor }}:${{ inputs.token }}@github.com/$TARGET_REPOSITORY.wiki.git"
-            git clone $TARGET_WIKI ${{ inputs.runner_temp }}/wiki
-            cd ${{ inputs.runner_temp }}/wiki
-            cat _Sidebar.md
-
-            #ls -alR /home/runner/xml
-            #ls -alR /home/runner/templates/doxygen/doc
+          TARGET_WIKI="https://${{ github.actor }}:${{ inputs.token }}@github.com/$TARGET_REPOSITORY.wiki.git"
+          rm -rf $RUNNER_TEMP/wiki && git clone $TARGET_WIKI $RUNNER_TEMP/wiki
+          cat $RUNNER_TEMP/wiki/_Sidebar.md
   
         fi
 
@@ -110,14 +106,7 @@ runs:
   
         else      
           
-          cd /home/runner/_site && rm -rf .git .github .env .ssh .cache node-modules
-
-          cd ${{ github.workspace }}
-          find -not -path "./.git/*" -not -name ".git" | grep git
-          find -not -path "./.git/*" -not -name ".git" -delete
-          shopt -s dotglob && mv -f /home/runner/_site/* .
-
-          # Assign the environment variable correctly
+        # Assign the environment variable correctly
           #COMMIT="${{ env.LATEST_COMMIT }}"
 
           # Remove double quotes
