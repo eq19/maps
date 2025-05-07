@@ -87,30 +87,6 @@ SU(5) fermions of standard model in 5+10 representations. The sterile neutrino s
 [![SU(5)_representation_of_fermions](https://github.com/eq19/maps/assets/8466209/1ea8dd1f-1675-47a0-a338-30ab5efb4c37)
 ](https://en.wikipedia.org/wiki/Grand_Unified_Theory)
 
-```txt
-$True Prime Pairs:
-(5,7), (11,13), (17,19)
-
-     |    168    |    618    |
------+-----+-----+-----+-----+                                             ---
- 19¨ |  3¨ |  4¨ |  6¨ |  6¨ | 4¤  ----->  assigned to "id:30"             19¨
------+-----+-----+-----+-----+                                             ---
- 17¨ |  5¨ |  3¨ | ..  |  .. | 4¤ ✔️ --->  assigned to "id:31"              |
-     +-----+-----+-----+-----+                                              |
-{12¨}|  .. |  .. |  2¤ (M & F)     ----->  assigned to "id:32"              |
-     +-----+-----+-----+                                                    |
- 11¨ |  .. |  .. |  .. | 3¤ ---->  Np(33)  assigned to "id:33"  ----->  👉 77¨
------+-----+-----+-----+-----+                                              |
- 19¨ |  .. |  .. |  .. |  .. | 4¤  ----->  assigned to "id:34"              |
-     +-----+-----+-----+-----+                                              |
-{18¨}|  .. |  .. |  .. | 3¤        ----->  assigned to "id:35"              |
-     +-----+-----+-----+-----+-----+-----+-----+-----+-----+               ---
- 43¨ |  .. |  .. |  .. |  .. |  .. |  .. |  .. |  .. |  .. | 9¤ (C1 & C2)  43¨
------+-----+-----+-----+-----+-----+-----+-----+-----+-----+               ---
-139¨ |  1     2     3  |  4     5     6  |  7     8     9  |
-                    Δ                 Δ                 Δ       
-```
-
 ```note
 Family Number Group +3, +6, +9 being activated by the Aetheron Flux Monopole Emanations, creating Negative Draft Counterspace, Motion and Nested Vortices.) _([RodinAerodynamics](https://rense.com/RodinAerodynamics.htm))_
 ```
@@ -141,6 +117,181 @@ More generally, the central problem is to determine when an equation in n-dimens
 ## Ricci Flow
 
 ![guest5](https://github.com/eq19/maps/assets/8466209/e92eeefe-808a-4b26-a83a-f1ada8950bca)
+
+```php
+0 (1, 1) blue_0  ◄--- 0
+1 (1, 1) blue_1
+2 (1, 1) blue_2
+3 (1, 1) blue_3
+4 (1, 1) blue_4
+5 (2, 1) purple_5
+6 (2, 1) purple_0
+7 (3, 1) red_1
+8 (3, 1) red_2
+9 (3, 1) red_3
+10 (3, 1) red_4
+11 (4, 1) yellow_5
+12 (4, 1) yellow_0
+13 (5, 1) green_1
+14 (5, 1) green_2
+15 (5, 1) green_3
+16 (5, 1) green_4
+17 (0, 1) cyan_5
+18 (0, 1) cyan_0  ◄---  18
+19 (1, 1) blue_1
+20 (1, 1) blue_2
+21 (1, 1) blue_3
+22 (1, 1) blue_4
+23 (2, 1) purple_5
+24 (2, 1) purple_0
+25 (2, 1) purple_1
+26 (2, 1) purple_2
+27 (2, 1) purple_3
+28 (2, 1) purple_4
+29 (2, -1) blue_5
+30 (2, -1) blue_0  ◄--- 30
+31 (1, -1) cyan_1
+32 (1, -1) cyan_2
+33 (1, -1) cyan_3
+34 (1, -1) cyan_4
+35 (1, -1) cyan_5
+36 (1, -1) cyan_0  ◄--- 36
+37 (1, 1) blue_1
+38 (1, 1) blue_2
+39 (1, 1) blue_3
+40 (1, 1) blue_4
+41 (2, 1) purple_5
+42 (2, 1) purple_0
+43 (3, 1) red_1
+44 (3, 1) red_2
+45 (3, 1) red_3
+46 (3, 1) red_4
+47 (4, 1) yellow_5
+48 (4, 1) yellow_0
+49 (4, 1) yellow_1
+50 (4, 1) yellow_2
+51 (4, 1) yellow_3
+52 (4, 1) yellow_4
+53 (4, -1) red_5
+54 (4, -1) red_0
+55 (4, -1) red_1
+56 (4, -1) red_2
+57 (4, -1) red_3
+58 (4, -1) red_4
+59 (4, 1) yellow_5
+60 (4, 1) yellow_0
+61 (5, 1) green_1
+62 (5, 1) green_2
+63 (5, 1) green_3
+64 (5, 1) green_4
+65 (5, 1) green_5
+66 (5, 1) green_0
+67 (5, -1) yellow_1
+68 (5, -1) yellow_2
+69 (5, -1) yellow_3
+70 (5, -1) yellow_4
+71 (4, -1) red_5
+72 (4, -1) red_0
+73 (3, -1) purple_1
+74 (3, -1) purple_2
+75 (3, -1) purple_3
+76 (3, -1) purple_4
+77 (3, -1) purple_5
+78 (3, -1) purple_0
+79 (3, 1) red_1
+80 (3, 1) red_2
+81 (3, 1) red_3
+82 (3, 1) red_4
+83 (4, 1) yellow_5
+84 (4, 1) yellow_0
+85 (4, 1) yellow_1
+86 (4, 1) yellow_2
+87 (4, 1) yellow_3
+88 (4, 1) yellow_4
+89 (4, -1) red_5
+90 (4, -1) red_0
+91 (4, -1) red_1
+92 (4, -1) red_2
+93 (4, -1) red_3
+94 (4, -1) red_4
+95 (4, -1) red_5
+96 (4, -1) red_0
+97 (3, -1) purple_1
+98 (3, -1) purple_2
+99 (3, -1) purple_3
+100 (3, -1) purple_4
+101 (2, -1) blue_5
+102 (2, -1) blue_0  ◄--- 102
+-----
+103 (1, -1) cyan_1
+104 (1, -1) cyan_2
+105 (1, -1) cyan_3
+106 (1, -1) cyan_4
+107 (0, -1) green_5
+108 (0, -1) green_0
+109 (5, -1) yellow_1
+110 (5, -1) yellow_2
+111 (5, -1) yellow_3
+112 (5, -1) yellow_4
+113 (4, -1) red_5
+114 (4, -1) red_0
+115 (4, -1) red_1
+116 (4, -1) red_2
+117 (4, -1) red_3
+118 (4, -1) red_4
+119 (4, -1) red_5
+120 (4, -1) red_0
+121 (4, -1) red_1
+122 (4, -1) red_2
+123 (4, -1) red_3
+124 (4, -1) red_4
+125 (4, -1) red_5
+126 (4, -1) red_0
+127 (3, -1) purple_1
+128 (3, -1) purple_2
+129 (3, -1) purple_3
+130 (3, -1) purple_4
+131 (2, -1) blue_5
+132 (2, -1) blue_0
+133 (2, -1) blue_1
+134 (2, -1) blue_2
+135 (2, -1) blue_3
+136 (2, -1) blue_4
+137 (2, 1) purple_5
+138 (2, 1) purple_0
+139 (3, 1) red_1
+140 (3, 1) red_2
+141 (3, 1) red_3
+142 (3, 1) red_4
+143 (3, 1) red_5
+144 (3, 1) red_0
+145 (3, 1) red_1
+146 (3, 1) red_2
+147 (3, 1) red_3
+148 (3, 1) red_4
+149 (4, 1) yellow_5
+150 (4, 1) yellow_0
+151 (5, 1) green_1
+152 (5, 1) green_2
+153 (5, 1) green_3
+154 (5, 1) green_4
+155 (5, 1) green_5
+156 (5, 1) green_0
+157 (5, -1) yellow_1
+158 (5, -1) yellow_2
+159 (5, -1) yellow_3
+160 (5, -1) yellow_4
+161 (5, -1) yellow_5
+162 (5, -1) yellow_0
+163 (5, 1) green_1
+164 (5, 1) green_2
+165 (5, 1) green_3
+166 (5, 1) green_4
+167 (0, 1) cyan_5
+168 (0, 1) cyan_0  ◄--- 168=π(1000)
+```
+
+![Scot_Number_Map_Diag](https://github.com/eq19/maps/assets/8466209/b2f5e516-ee1a-41b9-9d40-13f47e0d7183)
 
 ```php
 p r i m e s
@@ -319,8 +470,6 @@ p r i m e s
 170 997 3 1 -32 ∆71 ◄--- ∆∆∆19 ◄--- 9th ∆∆∆prime √
 ```
 
-![Scot_Number_Map_Diag](https://github.com/eq19/maps/assets/8466209/b2f5e516-ee1a-41b9-9d40-13f47e0d7183)
-
 The Ricci flow is a pde for evolving the metric tensor in a Riemannian manifold ***to make it rounder***, in the hope that one may draw topological conclusions from the existence of such “round” metrics.
 
 ```note
@@ -351,6 +500,29 @@ The basic ideas leading up to this result (including the dimension invariance th
 
 ## Spacetime Patterns
 
+***329 + 109 + 109 + 71 = 329 + 289 = 618 = 1000/1.618 = 1000/φ***
+
+[![default](https://user-images.githubusercontent.com/8466209/195963923-0796217c-7a87-4b2d-ba93-f47465304c03.png)](https://www.nausetschools.org/cms/lib/MA02212418/Centricity/Domain/204/Linkage%20Map%20Worksheet%20Genetics%202017.pdf)
+
+***2 + 60 + 40 = 102***
+
+```liquid
+1st layer:
+It has a total of 1000 numbers
+Total primes = π(1000) = 168 primes
+
+2nd layer:
+It will start by π(168)+1 as the 40th prime
+It has 100x100 numbers or π(π(10000)) = 201 primes
+Total cum primes = 168 + (201-40) = 168+161 = 329 primes
+
+3rd layer:
+Behave reversal to 2nd layer which has a total of 329 primes
+The primes will start by π(π(π(1000th prime)))+1 as the 40th prime
+This 1000 primes will become 1000 numbers by 1st layer of the next level
+Total of all primes = 329 + (329-40) = 329+289 = 618 = 619-1 = 619 primes - Δ1 
+```
+
 ![toroid_color](https://github.com/eq19/maps/assets/8466209/5669d857-a3f8-40e9-b92f-e15fafbfdbd1)
 
 In vector calculus, the Jacobian matrix of a vector-valued function of several variables is the matrix of all its first-order partial derivatives. 
@@ -370,6 +542,30 @@ When the subclasses of partitions are flatten out into a matrix, you want to tak
 [![Hessian matrix for Newton Method](https://user-images.githubusercontent.com/8466209/229297019-4583e9a7-273d-4489-ab87-37c88be16adb.png)](https://www.eq19.com/exponentiation/)
 
 ## Double Strands
+
+```txt
+$True Prime Pairs:
+(5,7), (11,13), (17,19)
+
+     |    168    |    618    |
+-----+-----+-----+-----+-----+                                             ---
+ 19¨ |  3¨ |  4¨ |  6¨ |  6¨ | 4¤  ----->  assigned to "id:30"             19¨
+-----+-----+-----+-----+-----+                                             ---
+ 17¨ |  5¨ |  3¨ | ..  |  .. | 4¤ ✔️ --->  assigned to "id:31"              |
+     +-----+-----+-----+-----+                                              |
+{12¨}|  .. |  .. |  2¤ (M & F)     ----->  assigned to "id:32"              |
+     +-----+-----+-----+                                                    |
+ 11¨ |  .. |  .. |  .. | 3¤ ---->  Np(33)  assigned to "id:33"  ----->  👉 77¨
+-----+-----+-----+-----+-----+                                              |
+ 19¨ |  .. |  .. |  .. |  .. | 4¤  ----->  assigned to "id:34"              |
+     +-----+-----+-----+-----+                                              |
+{18¨}|  .. |  .. |  .. | 3¤        ----->  assigned to "id:35"              |
+     +-----+-----+-----+-----+-----+-----+-----+-----+-----+               ---
+ 43¨ |  .. |  .. |  .. |  .. |  .. |  .. |  .. |  .. |  .. | 9¤ (C1 & C2)  43¨
+-----+-----+-----+-----+-----+-----+-----+-----+-----+-----+               ---
+139¨ |  1     2     3  |  4     5     6  |  7     8     9  |
+                    Δ                 Δ                 Δ       
+```
 
 Here we adopt an analysis of variance called _N/P-Integration_ that was applied to find the best set of environmental variables that describe the density out of distance matrices.
 

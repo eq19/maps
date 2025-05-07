@@ -47,6 +47,14 @@ Experiments have verified that the weak and electromagnetic force become identic
 
 ![weak-nuclear-force-1](https://github.com/eq19/maps/assets/8466209/62a25ce1-ecd3-4d62-91d0-fd52bed169cd)
 
+```note
+Electroweak theory added ψνe,ψνμ,nu mu e, and ψντ for the corresponding [neutrinos](https://en.wikipedia.org/wiki/Neutrino).
+- The [quarks](https://en.wikipedia.org/wiki/Quark) add still further components.
+- In order to be [four-spinors](https://en.wikipedia.org/wiki/Dirac_spinor#Four-spinor_for_particles) like the electron and other [lepton](https://en.wikipedia.org/wiki/Lepton) components, there must be one quark component for every combination of [flavor](https://en.wikipedia.org/wiki/Flavour_(particle_physics)) and [color](https://en.wikipedia.org/wiki/Color_charge), **bringing the total to 24 (3 for charged leptons, 3 for neutrinos, and 2·3·3 = 18 for quarks)**.
+
+Each of these is a four component [bispinor](https://en.wikipedia.org/wiki/Bispinor), **for a total of 96 complex-valued components** for the fermion field. _[Wikipedia](https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model)_
+```
+
 ```txt
   Fermion  | spinors | charged | neutrinos |   quark   | components | parameter
    Field   |   (s)   |   (c)   |    (n)    | (q=s.c.n) |  Σ(c+n+q   | (complex)
