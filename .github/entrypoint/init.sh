@@ -61,7 +61,7 @@ fi
 if [[ "${JOBS_ID}" == "1" ]]; then
 
   BASE_FOLDER="/home/runner/work/_actions/eq19/eq19/v2/.github"
-  if diff -qr ${GITHUB_WORKSPACE}/.github ${BASE_FOLDER} > /dev/null; then set_config $1; fi
+  #if diff -qr ${GITHUB_WORKSPACE}/.github ${BASE_FOLDER} > /dev/null; then set_config $1; fi
 
   cd ${GITHUB_WORKSPACE} && rm -rf .github
   cp -r /home/runner/work/_actions/eq19/eq19/v2/.github .
