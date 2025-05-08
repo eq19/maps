@@ -5,6 +5,7 @@ hr='----------------------------------------------------------------------------
 # Clean up
 rm -rf ${RUNNER_TEMP}/*dir
 rm -rf ${RUNNER_TEMP}/README.md
+echo -e "\n$hr\nWiki Dir: $2\n$hr"
 
 # Clone wiki
 git clone $1 ${RUNNER_TEMP}/wikidir
@@ -49,6 +50,5 @@ cat ${RUNNER_TEMP}/spin.txt
 cp -R ${RUNNER_TEMP}/gistdir/* ${RUNNER_TEMP}/wikidir/
 find ${RUNNER_TEMP}/wikidir -iname '*.md' -print0 | sort -zn | xargs -0 -I '{}' front.sh '{}'
 
-echo -e "\n$hr\nWiki Dir: $2\n$hr"
 cp -R ${RUNNER_TEMP}/wikidir/* $2/
-cat ${RUNNER_TEMP}/README.md >> $2/README.md && ls -al $2
+cat ${RUNNER_TEMP}/README.md >> $2/README.md

@@ -23,9 +23,6 @@ set_config() {
   else
     echo "Invalid JSON"
   fi
-    
-  echo -e "\n$hr\nENVIRONTMENT\n$hr"
-  printenv | sort
 }
 
 git config --global user.name "${GITHUB_ACTOR}"
@@ -87,8 +84,20 @@ if [[ "${JOBS_ID}" == "1" ]]; then
   else
 
     if [[ ! -f $RUNNER_TEMP/_config.yml ]]; then set_config $1; fi
-    cd $1 && javac -d user_data/ft_client/test_client javaCode/Main.java
+    if [[ "$(yq '.repository' $RUNNER_TEMP/_config.yml)" != "$TARGET_REPOSITORY" ]]; then
+      echo "$(yq '.repository' $RUNNER_TEMP/_config.yml) != $TARGET_REPOSITORY"
+      curl -s -X POST \
+        -H "Authorization: token $GH_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        "https://api.github.com/repos/${GITHUB_REPOSITORY}/dispatches" \
+        -d '{"event_type": "retry_workflow", "client_payload": {"original_run_id": "${GITHUB_RUN_ID}"}}'
+      exit 1
+    fi
 
+    echo -e "\n$hr\nENVIRONTMENT\n$hr"
+    printenv | sort
+
+    cd $1 && javac -d user_data/ft_client/test_client javaCode/Main.java
     cd $GITHUB_WORKSPACE && rm -rf user_data && mv -f $1/user_data .
     echo -e "\n$hr\nWORKSPACE\n$hr" && ls -al .
 
@@ -154,16 +163,21 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
 
   # Get the config value and save to file.json
   curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/JEKYLL_CONFIG" \
-    | jq -r '.value' > _config.yml
-  curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/ORGS_JSON" \
     | jq -r '.value' > _data/orgs.json
+  curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/JEKYLL_CONFIG" \
+    | jq -r '.value' > _config.yml
+
+  echo -e "\n$hr\nCONFIG\n$hr" && cat _config.yml
+  echo -e "\n$hr\nENVIRONTMENT\n$hr" && printenv | sort
 
   gist.sh ${BASE} $(pwd)
   if [[ "${WIKI}" != "${BASE}" ]]; then
     find . -type d -name "$(yq '.span' _config.yml)" -prune -exec sh -c 'gist.sh ${WIKI} "$1"' sh {} \;
   fi
+
+  echo -e "\n$hr\nWORKSPACE\n$hr" && ls -alR .
 
 else
 
@@ -178,7 +192,7 @@ else
 
   echo -e "\n$hr\nCONFIG\n$hr" && cat _config.yml
   echo -e "\n$hr\nENVIRONTMENT\n$hr" && printenv | sort
-  echo -e "\n$hr\nWORKSPACE\n$hr" && ls -lR .
+  echo -e "\n$hr\nWORKSPACE\n$hr" && ls -alR .
 
 fi
 
