@@ -9,8 +9,8 @@ import csv
 
 from sys import argv
 from decimal import *
-from datetime import datetime
 from pythonCode import *
+from datetime import datetime
 
 
 script, output = argv
