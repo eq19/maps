@@ -6,6 +6,7 @@
 
 import sys
 import csv
+import json
 
 from sys import argv
 from decimal import *
@@ -64,17 +65,42 @@ while (current.val <= upper_bound):
 
 # write contents to file/process etc.
 output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
-results = open(output_path, 'w')
-results.truncate()
+#results = open(output_path, 'w')
+#results.truncate()
 
 # write at what power a number rolls a double
-for num in finished:
-    if None in num.colors:
-        results.write("%s, %s Limit Reached\n" % (num.val, ' '.join([str(c) for c in num.colors])))
-    else:
-        results.write("%s, %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
+#for num in finished:
+#    if None in num.colors:
+#        results.write("%s, %s Limit Reached\n" % (num.val, ' '.join([str(c) for c in num.colors])))
+#    else:
+#        results.write("%s, %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
 
-results.close()
+#results.close()
+
+# Load the JSON file
+with open(output_path, "r") as f:
+    data = json.load(f)
+
+# 2. Promote Bob from Intern to Junior Developer
+for emp in data["employees"]:
+    if emp["name"] == "Bob":
+        emp["role"] = "Junior Developer"
+
+# 3. Remove "location" field from all employees
+for emp in data["employees"]:
+    if "location" in emp:
+        del emp["location"]
+
+# 4. Add a new employee
+data["employees"].append({
+    "name": "Charlie",
+    "age": 28,
+    "role": "QA Engineer"
+})
+
+# Save the updated JSON
+with open(output_path, "w") as f:
+    json.dump(data, f, indent=2)
 
 # Print how long it took
 #print(datetime.now() - start_time)
