@@ -78,7 +78,7 @@ output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 #results.close()
 
 # Load JSON data
-with open("input.json", "r") as f:
+with open(output_path, "r") as f:
     data = json.load(f)
 
 # Spin counter starting from 1
@@ -105,7 +105,7 @@ for org in data:
             spin_counter += len(org[key])
 
 # Save the modified JSON
-with open("output.json", "w") as f:
+with open(output_path, "w") as f:
     json.dump(data, f, indent=2)
 
 # Print how long it took
