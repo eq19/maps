@@ -120,3 +120,11 @@ def find_plist(n):
         if (n > lowest_primes[i]) and (lowest_primes[i] > lowest_primes[index]):
             index = i
     return index
+
+
+#Get vals and colors
+def get_val_spin(num):
+    if None in num.colors:
+        return("%s %s Limit Reached\n" % (num.val, ', '.join([str(c) for c in num.colors])))
+    elif num.roll_double:
+        return("%s %s\n" % (num.val, ', '.join([str(c) for c in num.colors])))
