@@ -63,11 +63,6 @@ while (current.val <= upper_bound):
 
 # end of while loop
 
-# write contents to file/process etc.
-output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
-#results = open(output_path, 'w')
-#results.truncate()
-
 # write at what power a number rolls a double
 #for num in finished:
 #    if None in num.colors:
@@ -75,7 +70,9 @@ output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 #    else:
 #        results.write("%s, %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
 
-#results.close()
+
+# write contents to file/process etc.
+output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 
 # Load your JSON data
 with open(output_path, "r") as f:
