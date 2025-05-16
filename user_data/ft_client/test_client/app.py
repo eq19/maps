@@ -72,7 +72,7 @@ for num in finished:
     if None in num.colors:
         results.write("%s %s Limit Reached\n" % (num.val, ' '.join([str(c) for c in num.colors])))
     else:
-        results.write("%s %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
+        results.write("%s %s\n" % (num.val, ', '.join([str(c) for c in num.colors])))
 
 results.close()
 
