@@ -22,7 +22,6 @@ upper_bound = 169#Decimal( str(input("What is the upper bound? ")) )
 range_slice = 1#Decimal( str(input("How fine a slice?        ")) )
 precision   = 15#int(     input("How many dec places?     ") )
 power_limit = 1#int(     input("How many powers?         ") )
-spin_counter = 0
 
 # Start the time
 start_time = datetime.now()
@@ -82,18 +81,19 @@ output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 with open(output_path, "r") as f:
     data = json.load(f)
 
+counter = 0
 for org in data:
     new_org = {}
     for key, value in org.items():
         # Insert 'spin' before 'key1'
         if key == "key1":
-            new_org["spin"] = spin_counter
-            spin_counter += 1
+            new_org["spin"] = counter
+            counter += 1
 
         # Handle key1 and key2 by wrapping each item with a spin
         if key in ["key1", "key2"] and isinstance(value, list):
-            new_org[key] = [{"name": item, "spin": spin_counter + i} for i, item in enumerate(value)]
-            spin_counter += len(value)
+            new_org[key] = [{"name": item, "spin": counter + i} for i, item in enumerate(value)]
+            counter += len(value)
         else:
             new_org[key] = value
 
