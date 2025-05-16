@@ -81,22 +81,23 @@ output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 with open(output_path, "r") as f:
     data = json.load(f)
 
-# 2. Promote Bob from Intern to Junior Developer
-for emp in data["employees"]:
-    if emp["name"] == "Bob":
-        emp["role"] = "Junior Developer"
+# Modify data
+for org in data:
+    # 1. Add 'spin' after 'login' field
+    org_items = list(org.items())
+    modified_items = []
+    for key, value in org_items:
+        modified_items.append((key, value))
+        if key == "login":
+            modified_items.append(("spin", f"spin_{value.lower()}"))
 
-# 3. Remove "location" field from all employees
-for emp in data["employees"]:
-    if "location" in emp:
-        del emp["location"]
+    org.clear()
+    org.update(dict(modified_items))
 
-# 4. Add a new employee
-data["employees"].append({
-    "name": "Charlie",
-    "age": 28,
-    "role": "QA Engineer"
-})
+    # 2. Modify key1 and key2 to list of dicts with 'spin'
+    for key in ["key1", "key2"]:
+        if key in org and isinstance(org[key], list):
+            org[key] = [{"name": item, "spin": f"spin_{item.lower()}"} for item in org[key]]
 
 # Save the updated JSON
 with open(output_path, "w") as f:
