@@ -130,4 +130,4 @@ def print_to_csv(lohexnum, csvfile):
         if None in num.colors:
             results.write("%s %s Limit Reached\n" % (num.val, ', '.join([str(c) for c in num.colors])))
         elif num.roll_double:
-            results.write("%s %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
+            results.write("%s %s\n" % (num.val, ', '.join([str(c) for c in num.colors])))
