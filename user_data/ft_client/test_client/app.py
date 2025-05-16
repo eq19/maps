@@ -77,9 +77,12 @@ output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 
 #results.close()
 
-# Load the JSON file
-with open(output_path, "r") as f:
+# Load JSON data
+with open("input.json", "r") as f:
     data = json.load(f)
+
+# Spin counter starting from 1
+spin_counter = 0
 
 # Modify data
 for org in data:
@@ -89,7 +92,8 @@ for org in data:
     for key, value in org_items:
         modified_items.append((key, value))
         if key == "login":
-            modified_items.append(("spin", f"spin_{value.lower()}"))
+            modified_items.append(("spin", spin_counter))
+            spin_counter += 1
 
     org.clear()
     org.update(dict(modified_items))
@@ -97,10 +101,11 @@ for org in data:
     # 2. Modify key1 and key2 to list of dicts with 'spin'
     for key in ["key1", "key2"]:
         if key in org and isinstance(org[key], list):
-            org[key] = [{"name": item, "spin": f"spin_{item.lower()}"} for item in org[key]]
+            org[key] = [{"name": item, "spin": spin_counter + i} for i, item in enumerate(org[key])]
+            spin_counter += len(org[key])
 
-# Save the updated JSON
-with open(output_path, "w") as f:
+# Save the modified JSON
+with open("output.json", "w") as f:
     json.dump(data, f, indent=2)
 
 # Print how long it took
