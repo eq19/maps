@@ -63,13 +63,6 @@ while (current.val <= upper_bound):
 
 # end of while loop
 
-# write at what power a number rolls a double
-#for num in finished:
-#    if None in num.colors:
-#        results.write("%s, %s Limit Reached\n" % (num.val, ' '.join([str(c) for c in num.colors])))
-#    else:
-#        results.write("%s, %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
-
 
 # write contents to file/process etc.
 output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
@@ -84,12 +77,12 @@ for org in data:
     for key, value in org.items():
         # Insert 'spin' before 'key1'
         if key == "key1":
-            new_org["spin"] = finished[counter].val
+            new_org["spin"] = utilities.get_val_spin(finished[counter].val)
             counter += 1
 
         # Handle key1 and key2 by wrapping each item with a spin
         if key in ["key1", "key2"] and isinstance(value, list):
-            new_org[key] = [{"name": item, "spin": finished[counter + i].val} for i, item in enumerate(value)]
+            new_org[key] = [{"name": item, "spin": utilities.get_val_spin(finished[counter + i].val)} for i, item in enumerate(value)]
             counter += len(value)
         else:
             new_org[key] = value
