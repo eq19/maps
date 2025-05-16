@@ -77,12 +77,12 @@ for org in data:
     for key, value in org.items():
         # Insert 'spin' before 'key1'
         if key == "key1":
-            new_org["spin"] = utilities.get_val_spin(finished[counter].val)
+            new_org["spin"] = utilities.get_val_spin(finished[counter])
             counter += 1
 
         # Handle key1 and key2 by wrapping each item with a spin
         if key in ["key1", "key2"] and isinstance(value, list):
-            new_org[key] = [{"name": item, "spin": utilities.get_val_spin(finished[counter + i].val)} for i, item in enumerate(value)]
+            new_org[key] = [{"name": item, "spin": utilities.get_val_spin(finished[counter + i])} for i, item in enumerate(value)]
             counter += len(value)
         else:
             new_org[key] = value
