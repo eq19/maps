@@ -10,12 +10,12 @@ ENV RUNNER_REPOSITORY_URL=""
 ENV RUNNER_ALLOW_RUNASROOT="1"     
 ENV RUNNER_WORK_DIRECTORY="_work"
 
+ARG IREE_VERSION
 ARG GH_RUNNER_VERSION
 ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV PIP_ROOT_USER_ACTION=ignore
-ARG IREE_VERSION=IREE_VERSION=3.4.0rc20250430
 
 ADD . /home/runner
 WORKDIR /home/runner
@@ -46,19 +46,14 @@ LABEL maintainer="me@eq19.com" \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN sed "s/#.*//" /home/runner/requirements.apt | xargs apt-get install -yq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-RUN cd /tmp && wget -qO iree-dist.tar.xz https://github.com/iree-org/iree/releases/download/iree-3.4.0rc20250430/iree-dist-3.4.0rc20250430-linux-x86_64.tar.xz && \
-    mkdir -p /usr/local/iree && tar xf iree-dist.tar.xz -C /usr/local/iree --strip-components=1 && rm iree-dist.tar.xz
-
-# Add IREE binaries to PATH
-ENV PATH="/usr/local/iree:${PATH}"
-
-# Verify installation
-RUN iree-run-module --help
 
 # Install dependencies
 #RUN cd /home/runner && mkdir xml && DOXYGEN=$(doxygen > /dev/null 2>&1)
 #RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./.install
 RUN npm install --package-lock-only redis talib pg mathjs gauss commander handlebars object-assign winston xml2js && npm ci
+RUN IREE_VERSION=${IREE_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
+    cd /tmp && wget -qO iree-dist.tar.xz https://github.com/iree-org/iree/releases/download/iree-3.4.0rc20250430/iree-dist-3.4.0rc20250430-linux-x86_64.tar.xz && \
+    mkdir -p /usr/local/iree && tar xf iree-dist.tar.xz -C /usr/local/iree --strip-components=1 && rm iree-dist.tar.xz
 RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.com/repos/actions/runner/releases/latest" | grep tag_name | sed -E 's/.*"v([^"]+)".*/\1/')} && \
     curl -L -O https://github.com/actions/runner/releases/download/v$GH_RUNNER_VERSION/actions-runner-linux-x64-$GH_RUNNER_VERSION.tar.gz && \
     tar -zxf actions-runner-linux-x64-$GH_RUNNER_VERSION.tar.gz && \
@@ -67,6 +62,10 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
     chown -R root: /home/runner && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Verify installation
+ENV PATH="/usr/local/iree:${PATH}"
+RUN iree-run-module --help
 
 ENTRYPOINT ["/home/runner/scripts/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
