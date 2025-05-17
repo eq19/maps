@@ -11,6 +11,8 @@ ENV RUNNER_ALLOW_RUNASROOT="1"
 ENV RUNNER_WORK_DIRECTORY="_work"
 
 ARG GH_RUNNER_VERSION
+ENV IREE_VERSION=2024.03.28
+ENV PATH="/iree/bin:$PATH"
 ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
@@ -23,6 +25,7 @@ RUN chmod +x /home/runner/scripts/*.sh
 COPY dataFile/dump.rdb /data/dump.rdb
 COPY conf/*.conf /etc/supervisor/conf.d/
 RUN chmod 644 /etc/supervisor/conf.d/*.conf
+#COPY add_module.vmfb /model/add_module.vmfb
 
 #ENV ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER=false
 #ENV ACTIONS_RUNNER_CONTAINER_HOOKS=/opt/runner/index.js
@@ -44,6 +47,8 @@ LABEL maintainer="me@eq19.com" \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN sed "s/#.*//" /home/runner/requirements.apt | xargs apt-get install -yq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+RUN cd /tmp && wget https://github.com/openxla/iree/releases/download/${IREE_VERSION}/iree-runtime-linux-x86_64.tar.xz && \
+    mkdir /iree && tar -xf iree-runtime-linux-x86_64.tar.xz -C /iree && rm iree-runtime-linux-x86_64.tar.xz
 
 # Install dependencies
 #RUN cd /home/runner && mkdir xml && DOXYGEN=$(doxygen > /dev/null 2>&1)
