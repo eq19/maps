@@ -46,7 +46,7 @@ LABEL maintainer="me@eq19.com" \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN sed "s/#.*//" /home/runner/requirements.apt | xargs apt-get install -yq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-RUN cd /tmp && wget -qO iree-runtime.tgz https://github.com/iree-org/iree/releases/download/iree-3.5.0rc20250517/iree-dist-3.5.0rc20250517-linux-x86_64.tar.xz && \
+RUN cd /tmp && wget -qO iree-runtime.tgz https://github.com/iree-org/iree/releases/download/iree-3.4.0rc20250430/iree-dist-3.4.0rc20250430-linux-x86_64.tar.xz && \
     mkdir -p /usr/local/iree && tar xzf /tmp/iree-runtime.tgz -C /usr/local/iree --strip-components=1 && rm iree-runtime.tgz
 
 # Add IREE binaries to PATH
