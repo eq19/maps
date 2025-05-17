@@ -11,12 +11,11 @@ ENV RUNNER_ALLOW_RUNASROOT="1"
 ENV RUNNER_WORK_DIRECTORY="_work"
 
 ARG GH_RUNNER_VERSION
-ENV PATH="/iree/bin:$PATH"
 ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV PIP_ROOT_USER_ACTION=ignore
-ENV IREE_VERSION=IREE_VERSION=3.4.0rc20250430
+ARG IREE_VERSION=IREE_VERSION=3.4.0rc20250430
 
 ADD . /home/runner
 WORKDIR /home/runner
@@ -47,8 +46,14 @@ LABEL maintainer="me@eq19.com" \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN sed "s/#.*//" /home/runner/requirements.apt | xargs apt-get install -yq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
 RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-RUN cd /tmp && wget https://github.com/iree-org/iree/releases/download/iree-3.5.0rc20250517/iree-dist-3.5.0rc20250517-linux-x86_64.tar.xz && \
-    mkdir /iree && tar -xf iree-runtime-linux-x86_64.tar.xz -C /iree && rm iree-runtime-linux-x86_64.tar.xz
+RUN cd /tmp && wget -qO iree-runtime.tgz https://github.com/iree-org/iree/releases/download/iree-3.5.0rc20250517/iree-dist-3.5.0rc20250517-linux-x86_64.tar.xz && \
+    mkdir -p /usr/local/iree && tar xzf /tmp/iree-runtime.tgz -C /usr/local/iree --strip-components=1 && rm iree-runtime.tgz
+
+# Add IREE binaries to PATH
+ENV PATH="/usr/local/iree/bin:${PATH}"
+
+# Verify installation
+RUN iree-benchmark-module --help
 
 # Install dependencies
 #RUN cd /home/runner && mkdir xml && DOXYGEN=$(doxygen > /dev/null 2>&1)
