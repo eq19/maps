@@ -50,10 +50,10 @@ RUN cd /tmp && wget -qO iree-dist.tar.xz https://github.com/iree-org/iree/releas
     mkdir -p /usr/local/iree && tar xf iree-dist.tar.xz -C /usr/local/iree --strip-components=1 && rm iree-dist.tar.xz
 
 # Add IREE binaries to PATH
-ENV PATH="/usr/local/iree/bin:${PATH}"
+ENV PATH="/usr/local/iree:${PATH}"
 
 # Verify installation
-RUN iree-benchmark-module --help
+RUN iree-run-module --help
 
 # Install dependencies
 #RUN cd /home/runner && mkdir xml && DOXYGEN=$(doxygen > /dev/null 2>&1)
