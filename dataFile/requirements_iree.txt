@@ -17,7 +17,6 @@ iree-compiler
 #transformers
 jax[cpu]
 
-
 # tflitehub dependencies.
 Pillow
 
