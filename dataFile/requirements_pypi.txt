@@ -28,8 +28,8 @@ scipy
 #sparse
 #statsmodels
 #sympy
-#tensorflow
-torch
+tensorflow
+#torch
 #tweepy
 # yulewalker  # uncomment once audio_filters/equal_loudness_filter.py is fixed
 #typing_extensions
