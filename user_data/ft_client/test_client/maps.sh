@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-# Step 1: Convert TensorFlow SavedModel to MLIR
-iree-import-tf \
-  --savedmodel_dir=add_model \
-  --output_file=add_model.mlir
-
-# Step 2: Compile MLIR to IREE's VMFB (executable binary format)
 iree-compile \
   --iree-input-type=stablehlo \
   --iree-hal-target-backends=llvm-cpu \
