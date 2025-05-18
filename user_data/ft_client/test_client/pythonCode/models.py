@@ -1,10 +1,13 @@
-import torch
+import tensorflow as tf
 
-class AddModel(torch.nn.Module):
-    def forward(self, a, b):
+def export_model():
+    @tf.function(
+        input_signature=[
+            tf.TensorSpec([None], tf.float32),
+            tf.TensorSpec([None], tf.float32),
+        ]
+    )
+    def add(a, b):
         return a + b
 
-def build_and_save_model(output_path="add_model.pt"):
-    model = AddModel()
-    scripted = torch.jit.trace(model, (torch.tensor([1.0]), torch.tensor([2.0])))
-    scripted.save(output_path)
+    tf.saved_model.save(add, "add_model")
