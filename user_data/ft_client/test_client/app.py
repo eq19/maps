@@ -91,6 +91,8 @@ for org in data:
     org.update(new_org)
 
 # Save the modified JSON
+model.build_and_save_model("add_model.pt")
+print("Model saved to add_model.pt")
 with open(output_path, "w") as f:
     json.dump(data, f, indent=2)
 
