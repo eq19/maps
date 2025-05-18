@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 iree-compile \
-  --iree-input-type=mhlo \
+  --iree-input-type=tosa \
   --iree-hal-target-backends=llvm-cpu \
   add_model.mlir -o add_module.vmfb
   
