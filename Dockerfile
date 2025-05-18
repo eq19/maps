@@ -25,7 +25,6 @@ RUN chmod +x /home/runner/scripts/*.sh
 COPY dataFile/dump.rdb /data/dump.rdb
 COPY conf/*.conf /etc/supervisor/conf.d/
 RUN chmod 644 /etc/supervisor/conf.d/*.conf
-#COPY add_module.vmfb /model/add_module.vmfb
 
 #ENV ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER=false
 #ENV ACTIONS_RUNNER_CONTAINER_HOOKS=/opt/runner/index.js
@@ -61,8 +60,8 @@ RUN GH_RUNNER_VERSION=${GH_RUNNER_VERSION:-$(curl --silent "https://api.github.c
 RUN IREE_VERSION=${IREE_VERSION:-$(curl -s https://api.github.com/repos/iree-org/iree/releases | jq -r 'map(select(.prerelease == true)) | .[0].tag_name' | sed 's/^iree-//')} && \
     cd /tmp && wget -qO iree-dist.tar.xz https://github.com/iree-org/iree/releases/download/iree-$IREE_VERSION/iree-dist-$IREE_VERSION-linux-x86_64.tar.xz && \
     mkdir -p /usr/local/iree && tar xf iree-dist.tar.xz -C /usr/local/iree --strip-components=1 && rm iree-dist.tar.xz
-#RUN iree-compile --iree-input-type=mhlo --iree-mlir-to-vm-bytecode-module --iree-hal-target-backends=llvm-cpu \
-    #/model/add_model/saved_model.pb -o /model/add_module.vmfb
+RUN iree-compile --iree-input-type=torch --iree-mlir-to-vm-bytecode-module --iree-hal-target-backends=llvm-cpu \
+    add_model.pt -o add_module.vmfb
 RUN iree-run-module --help
 
 ENTRYPOINT ["/home/runner/scripts/entrypoint.sh"]
