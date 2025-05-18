@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+tensorflow-export-stablehlo \
+  --saved_model_dir=add_model \
+  --output_file=add_model.mlir
+  
 iree-compile \
   --iree-input-type=stablehlo \
   --iree-hal-target-backends=llvm-cpu \
