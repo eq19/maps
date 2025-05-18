@@ -1,5 +1,4 @@
 import tensorflow as tf
-from stablehlo.experimental.tensorflow import export_saved_model
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -10,9 +9,12 @@ class AddModule(tf.Module):
         return a + b
 
 def export_model():
-    # Save the model
     model = AddModule()
-    tf.saved_model.save(model, "add_model", signatures=model.add)
+    tf.saved_model.save(
+        model,
+        export_dir="add_model",
+        signatures=model.add.get_concrete_function()
+    )
 
-    # Export to StableHLO using Python API
-    export_saved_model("add_model", "add_model.mlir")
+if __name__ == "__main__":
+    export_model()
