@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Check if the MLIR contains valid StableHLO
+mlir-opt add_model.mlir --verify
+
 iree-compile \
   --iree-input-type=tosa \
   --iree-hal-target-backends=llvm-cpu \
