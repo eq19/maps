@@ -3,8 +3,7 @@
 iree-compile \
   --iree-input-type=mhlo \
   --iree-hal-target-backends=llvm-cpu \
-  add_model.mlir \
-  -o add_module.vmfb
+  add_model.mlir -o add_module.vmfb
   
 iree-run-module \
   --module=add_module.vmfb \
