@@ -1,5 +1,4 @@
 import tensorflow as tf
-from tensorflow.python.trackable import autotrackable
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
