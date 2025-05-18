@@ -12,24 +12,47 @@ def export_model():
     model = AddModule()
     concrete_fn = model.add.get_concrete_function()
     
-    # 1. Save as SavedModel (optional, for reference)
-    tf.saved_model.save(
-        model,
-        export_dir="add_model",
-        signatures={"serving_default": model.add}
-    )
+    # Option 1: Try standard pipeline first
+    try:
+        mlir_text = tf.mlir.experimental.convert_function(
+            concrete_fn,
+            pass_pipeline='tf-standard-pipeline'
+        )
+        
+        # Convert to StableHLO format if needed
+        if 'tf.' in mlir_text:  # If output contains TensorFlow ops
+            import subprocess
+            with open("temp_tf.mlir", "w") as f:
+                f.write(mlir_text)
+            
+            # Convert TF dialect to StableHLO
+            subprocess.run([
+                "mlir-opt", "temp_tf.mlir",
+                "--tf-to-hlo-pipeline",
+                "-o", "add_model_stablehlo.mlir"
+            ], check=True)
+            
+            with open("add_model_stablehlo.mlir", "r") as f:
+                mlir_text = f.read()
     
-    # 2. Convert directly to StableHLO format
-    mlir_text = tf.mlir.experimental.convert_function(
-        concrete_fn,
-        pass_pipeline='tf-stablehlo-pipeline'  # Changed to StableHLO pipeline
-    )
-    
-    # 3. Save MLIR
+    except Exception as e:
+        print(f"Standard pipeline failed: {e}")
+        # Option 2: Fallback to XLA export
+        try:
+            from tensorflow.compiler.mlir.tensorflow import translate
+            mlir_text = translate.tf_function_to_mlir(
+                concrete_fn,
+                pass_pipeline='tf-standard-pipeline'
+            )
+        except Exception as e:
+            print(f"XLA export failed: {e}")
+            raise
+
+    # Save final MLIR
     with open("add_model_stablehlo.mlir", "w") as f:
         f.write(mlir_text)
     
-    print("Successfully exported to StableHLO MLIR: add_model_stablehlo.mlir")
+    print(f"Successfully exported to: add_model_stablehlo.mlir")
 
 if __name__ == "__main__":
     export_model()
