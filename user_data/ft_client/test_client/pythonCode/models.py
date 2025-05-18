@@ -1,4 +1,5 @@
 import tensorflow as tf
+from iree.compiler.tf import compile_module  # From iree-tools-tf
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -10,49 +11,30 @@ class AddModule(tf.Module):
 
 def export_model():
     model = AddModule()
-    concrete_fn = model.add.get_concrete_function()
     
-    # Option 1: Try standard pipeline first
-    try:
-        mlir_text = tf.mlir.experimental.convert_function(
-            concrete_fn,
-            pass_pipeline='tf-standard-pipeline'
-        )
-        
-        # Convert to StableHLO format if needed
-        if 'tf.' in mlir_text:  # If output contains TensorFlow ops
-            import subprocess
-            with open("temp_tf.mlir", "w") as f:
-                f.write(mlir_text)
-            
-            # Convert TF dialect to StableHLO
-            subprocess.run([
-                "mlir-opt", "temp_tf.mlir",
-                "--tf-to-hlo-pipeline",
-                "-o", "add_model_stablehlo.mlir"
-            ], check=True)
-            
-            with open("add_model_stablehlo.mlir", "r") as f:
-                mlir_text = f.read()
+    # 1. Convert directly to IREE-compatible format
+    compiled_module = compile_module(
+        model,
+        target_backends=["llvm-cpu"],
+        output_file="add_module.vmfb",  # Direct to final compiled format
+        input_type="auto",  # Automatically detect input type
+        export_only=False  # Perform full compilation
+    )
     
-    except Exception as e:
-        print(f"Standard pipeline failed: {e}")
-        # Option 2: Fallback to XLA export
-        try:
-            from tensorflow.compiler.mlir.tensorflow import translate
-            mlir_text = translate.tf_function_to_mlir(
-                concrete_fn,
-                pass_pipeline='tf-standard-pipeline'
-            )
-        except Exception as e:
-            print(f"XLA export failed: {e}")
-            raise
-
-    # Save final MLIR
-    with open("add_model_stablehlo.mlir", "w") as f:
+    # 2. Also save the intermediate MLIR (optional)
+    mlir_text = compile_module(
+        model,
+        target_backends=["llvm-cpu"],
+        output_file=None,  # Get MLIR as string
+        input_type="auto",
+        export_only=True  # Only export to MLIR
+    )
+    with open("add_model.mlir", "w") as f:
         f.write(mlir_text)
     
-    print(f"Successfully exported to: add_model_stablehlo.mlir")
+    print("Successfully compiled to:")
+    print("- Binary: add_module.vmfb")
+    print("- MLIR: add_model.mlir")
 
 if __name__ == "__main__":
     export_model()
