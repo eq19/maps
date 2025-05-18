@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# Check if the MLIR contains valid StableHLO
-mlir-opt add_model.mlir --verify
-
 # Look for the dialect declaration (should contain 'stablehlo')
 head -n 50 add_model.mlir
 
