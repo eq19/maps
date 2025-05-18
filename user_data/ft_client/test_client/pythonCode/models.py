@@ -1,6 +1,5 @@
 import tensorflow as tf
-import os
-import subprocess
+from stablehlo.experimental.tensorflow import export_saved_model
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -11,18 +10,9 @@ class AddModule(tf.Module):
         return a + b
 
 def export_model():
+    # Save the model
     model = AddModule()
     tf.saved_model.save(model, "add_model", signatures=model.add)
 
-    # Export to StableHLO using CLI
-    result = subprocess.run([
-        "tensorflow-export-stablehlo",
-        "--saved_model_dir=add_model",
-        "--output_mlir=add_model.mlir"
-    ], capture_output=True, text=True)
-
-    if result.returncode != 0:
-        print("Export to StableHLO failed:")
-        print(result.stderr)
-    else:
-        print("Exported to add_model.mlir successfully.")
+    # Export to StableHLO using Python API
+    export_saved_model("add_model", "add_model.mlir")
