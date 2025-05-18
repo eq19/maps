@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 #
 
+iree-compile --iree-input-type=torch --iree-mlir-to-vm-bytecode-module --iree-hal-target-backends=llvm-cpu \
+  add_model.pt -o add_module.vmfb
+#iree-run-module --help
+
 cat $ARTIFACT
 curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
