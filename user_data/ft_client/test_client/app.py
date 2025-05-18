@@ -92,7 +92,6 @@ for org in data:
 
 # Save the modified JSON
 models.export_model()
-print("Model saved")
 with open(output_path, "w") as f:
     json.dump(data, f, indent=2)
 
