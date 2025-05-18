@@ -26,7 +26,7 @@ def export_model():
     )
     
     # 3. Save MLIR
-    with open("add_model.mlir", "w") as f:
+    with open("add_model_stablehlo.mlir", "w") as f:
         f.write(mlir_text)
     
     print("Successfully exported to StableHLO MLIR: add_model_stablehlo.mlir")
