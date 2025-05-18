@@ -1,4 +1,5 @@
 import tensorflow as tf
+from iree.compiler.tools import tf as iree_tf
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -10,4 +11,8 @@ class AddModule(tf.Module):
 
 def export_model():
     model = AddModule()
-    tf.saved_model.save(model, "add_model", signatures=model.add)
+    iree_tf.compile_saved_model(
+        saved_model_dir="add_model",
+        output_file="add_model.mlir",
+        import_only=True
+    )
