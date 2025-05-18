@@ -10,9 +10,9 @@ iree-compile \
   --iree-input-type=stablehlo \
   --iree-hal-target-backends=llvm-cpu \
   --iree-llvmcpu-target-cpu-features=host \
-  --iree-opt-optimization-level=0 \
+  --iree-global-optimization-opt-level=0 \
   --mlir-print-ir-after-all \
-  --mlir-print-ir-on-failure \
+  --mlir-print-ir-after-failure \
   add_model.mlir \
   -o add_module.vmfb
   
