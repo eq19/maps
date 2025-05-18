@@ -1,5 +1,6 @@
 import tensorflow as tf
-from iree.compiler.tools import tf as iree_tf
+import os
+import subprocess
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -11,8 +12,17 @@ class AddModule(tf.Module):
 
 def export_model():
     model = AddModule()
-    iree_tf.compile_saved_model(
-        saved_model_dir="add_model",
-        output_file="add_model.mlir",
-        import_only=True
-    )
+    tf.saved_model.save(model, "add_model", signatures=model.add)
+
+    # Export to StableHLO using CLI
+    result = subprocess.run([
+        "tensorflow-export-stablehlo",
+        "--saved_model_dir=add_model",
+        "--output_mlir=add_model.mlir"
+    ], capture_output=True, text=True)
+
+    if result.returncode != 0:
+        print("Export to StableHLO failed:")
+        print(result.stderr)
+    else:
+        print("Exported to add_model.mlir successfully.")
