@@ -8,6 +8,8 @@ iree-compiler
 #iree-tools-tflite
 #iree-tools-xla
 iree-tools-tf
+iree-base-compiler
+#iree-base-runtime
 
 # TensorFlow and JAX.
 #gin-config
