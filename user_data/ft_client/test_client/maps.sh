@@ -6,7 +6,11 @@ iree-compile \
   add_model.mlir \
   -o add_module.vmfb
   
-#iree-run-module --help
+iree-run-module \
+  --module=add_module.vmfb \
+  --function=add \
+  --input=2.0 \
+  --input=3.0
 
 cat $ARTIFACT
 curl -s -X POST \
