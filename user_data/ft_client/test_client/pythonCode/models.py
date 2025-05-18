@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.python.compiler.mlir import tf2xla
+from tensorflow.python.trackable import autotrackable
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -19,15 +19,17 @@ def export_model():
         signatures=model.add.get_concrete_function()
     )
     
-    # Convert to MLIR and save
-    mlir_str = tf2xla.experimental.export_saved_model_to_mlir(
-        "add_model",
-        exported_names=["serving_default"],
-        show_debug_info=False
-    )
+    # Convert to MLIR
+    converter = tf.lite.TFLiteConverter.from_saved_model("add_model")
+    converter.target_spec.supported_ops = [
+        tf.lite.OpsSet.TFLITE_BUILTINS,
+        tf.lite.OpsSet.SELECT_TF_OPS
+    ]
+    tflite_model = converter.convert()
     
-    with open("add_model.mlir", "w") as f:
-        f.write(mlir_str)
+    # Save MLIR (TFLite flatbuffer)
+    with open('add_model.mlir', 'wb') as f:
+        f.write(tflite_model)
 
 if __name__ == "__main__":
     export_model()
