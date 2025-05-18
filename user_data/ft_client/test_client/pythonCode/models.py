@@ -30,3 +30,12 @@ def export_model():
 
 if __name__ == "__main__":
     export_model()
+
+
+
+# Directly export as StableHLO
+concrete_fn = AddModule().add.get_concrete_function()
+mlir_text = tf.mlir.experimental.convert_function(
+    concrete_fn,
+    pass_pipeline='tf-stablehlo-pipeline'
+)
