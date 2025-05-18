@@ -1,5 +1,5 @@
 import tensorflow as tf
-from iree.compiler.tf import compile_module  # From iree-tools-tf
+from iree.compiler.tf import compile_saved_model  # From iree-tools-tf
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -12,28 +12,33 @@ class AddModule(tf.Module):
 def export_model():
     model = AddModule()
     
-    # 1. Convert directly to IREE-compatible format
-    compiled_module = compile_module(
+    # 1. First save as SavedModel (required by compile_saved_model)
+    tf.saved_model.save(
         model,
-        target_backends=["llvm-cpu"],
-        output_file="add_module.vmfb",  # Direct to final compiled format
-        input_type="auto",  # Automatically detect input type
-        export_only=False  # Perform full compilation
+        export_dir="add_model",
+        signatures={"serving_default": model.add}
     )
     
-    # 2. Also save the intermediate MLIR (optional)
-    mlir_text = compile_module(
-        model,
+    # 2. Compile to VM FlatBuffer format
+    compile_saved_model(
+        "add_model",
+        output_file="add_module.vmfb",
         target_backends=["llvm-cpu"],
-        output_file=None,  # Get MLIR as string
-        input_type="auto",
-        export_only=True  # Only export to MLIR
+        import_only=True  # Only imports to MLIR without full compilation
     )
-    with open("add_model.mlir", "w") as f:
-        f.write(mlir_text)
     
-    print("Successfully compiled to:")
-    print("- Binary: add_module.vmfb")
+    # 3. For MLIR export, use import_only and output_format
+    mlir_bytes = compile_saved_model(
+        "add_model",
+        output_format="mlir-ir",
+        target_backends=["llvm-cpu"],
+        import_only=True
+    )
+    with open("add_model.mlir", "wb") as f:
+        f.write(mlir_bytes)
+    
+    print("Successfully exported:")
+    print("- Compiled module: add_module.vmfb")
     print("- MLIR: add_model.mlir")
 
 if __name__ == "__main__":
