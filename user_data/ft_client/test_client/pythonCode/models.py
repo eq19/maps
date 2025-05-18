@@ -1,13 +1,13 @@
 import tensorflow as tf
 
-def export_model():
-    @tf.function(
-        input_signature=[
-            tf.TensorSpec([None], tf.float32),
-            tf.TensorSpec([None], tf.float32),
-        ]
-    )
-    def add(a, b):
+class AddModule(tf.Module):
+    @tf.function(input_signature=[
+        tf.TensorSpec([None], tf.float32),
+        tf.TensorSpec([None], tf.float32),
+    ])
+    def add(self, a, b):
         return a + b
 
-    tf.saved_model.save(add, "add_model")
+def export_model():
+    model = AddModule()
+    tf.saved_model.save(model, "add_model", signatures=model.add)
