@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-iree-compile --iree-input-type=torch --iree-hal-target-backends=llvm-cpu \
-  add_model.pt -o add_module.vmfb
+iree-compile \
+  --iree-input-type=mhlo \
+  --iree-hal-target-backends=llvm-cpu \
+  add_model/saved_model.pb \
+  -o add_module.vmfb
 #iree-run-module --help
 
 cat $ARTIFACT
