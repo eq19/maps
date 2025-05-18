@@ -11,24 +11,22 @@ class AddModule(tf.Module):
 def export_model():
     model = AddModule()
     
-    # Save as SavedModel
+    # 1. Save as SavedModel
     tf.saved_model.save(
         model,
         export_dir="add_model",
-        signatures=model.add.get_concrete_function()
+        signatures={"serving_default": model.add}
     )
     
-    # Convert to MLIR
-    converter = tf.lite.TFLiteConverter.from_saved_model("add_model")
-    converter.target_spec.supported_ops = [
-        tf.lite.OpsSet.TFLITE_BUILTINS,
-        tf.lite.OpsSet.SELECT_TF_OPS
-    ]
-    tflite_model = converter.convert()
+    # 2. Convert to MLIR using public API
+    mlir_text = tf.mlir.experimental.convert_function(
+        model.add.get_concrete_function(),
+        pass_pipeline='tf-standard-pipeline'
+    )
     
-    # Save MLIR (TFLite flatbuffer)
-    with open('add_model.mlir', 'wb') as f:
-        f.write(tflite_model)
+    # 3. Save MLIR
+    with open("add_model.mlir", "w") as f:
+        f.write(mlir_text)
 
 if __name__ == "__main__":
     export_model()
