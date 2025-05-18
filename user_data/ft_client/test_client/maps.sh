@@ -7,9 +7,12 @@ mlir-opt add_model.mlir --verify
 head -n 50 add_model.mlir
 
 iree-compile \
-  --iree-input-type=tosa \
+  --iree-input-type=stablehlo \
   --iree-hal-target-backends=llvm-cpu \
-  add_model.mlir -o add_module.vmfb
+  --iree-llvmcpu-target-cpu-features=host \
+  --iree-opt-optimization-level=0 \
+  add_model.mlir \
+  -o add_module.vmfb
   
 iree-run-module \
   --module=add_module.vmfb \
