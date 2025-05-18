@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 iree-compile \
-  --iree-input-type=mhlo \
+  --iree-input-type=stablehlo \
   --iree-hal-target-backends=llvm-cpu \
-  add_model/saved_model.pb \
+  add_model \
   -o add_module.vmfb
 #iree-run-module --help
 
