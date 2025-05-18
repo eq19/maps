@@ -26,7 +26,6 @@ requests
 scikit-learn
 scipy
 #sparse
-stablehlo
 #statsmodels
 #sympy
 tensorflow
