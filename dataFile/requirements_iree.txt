@@ -1,6 +1,8 @@
 # IREE Python API
 # Use nightly releases instead of PyPi
 -f https://iree.dev/pip-release-links.html
+--extra-index-url https://iree.dev/pypi/simple/
+
 iree-compiler
 #iree-runtime
 #iree-tools-tflite
