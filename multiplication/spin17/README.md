@@ -118,6 +118,8 @@ More generally, the central problem is to determine when an equation in n-dimens
 
 ![guest5](https://github.com/eq19/maps/assets/8466209/e92eeefe-808a-4b26-a83a-f1ada8950bca)
 
+***102 - 36 = 168 - 102***
+
 ```php
 0 (1, 1) blue_0  ◄--- 0
 1 (1, 1) blue_1
