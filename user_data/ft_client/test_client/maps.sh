@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Look for the dialect declaration (should contain 'stablehlo')
-head -n 50 add_model_stablehlo.mlir
+head -n 50 add_model.mlir
 
 #iree-compile \
 #  --iree-input-type=stablehlo \
