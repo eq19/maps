@@ -14,7 +14,8 @@ iree-tools-tf
 # TensorFlow and JAX.
 #torch
 jax[cpu]
-tensorflow
+#tensorflow
+tensorflow-cpu
 #gin-config
 #tf-nightly
 #tf-models-nightly
