@@ -30,6 +30,7 @@ def export_model():
     
     # 3. Compile to VM FlatBuffer format
     compile_saved_model(
+        import_only=True,
         saved_model_dir="add_model",
         output_file="add_module.vmfb",
         target_backends=["llvm-cpu"],
