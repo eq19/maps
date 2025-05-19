@@ -30,10 +30,10 @@ def export_model():
     
     # 3. Compile to VM FlatBuffer format
     compile_saved_model(
-        "add_model",
+        saved_model_dir="add_model",
         output_file="add_module.vmfb",
         target_backends=["llvm-cpu"],
-        import_only=True  # Only imports to MLIR without full compilation
+        exported_names=["serving_default"]
     )
     
     print("Successfully exported:")
