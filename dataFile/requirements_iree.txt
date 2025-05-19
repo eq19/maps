@@ -3,12 +3,9 @@
 -f https://iree.dev/pip-release-links.html
 --extra-index-url https://iree.dev/pypi/simple/
 
-iree-compiler==20241107.1071
-iree-tools-tf==20241107.1071
-
-#iree-base-compiler
-#iree-base-runtime
-#iree-tools-tf
+iree-base-compiler --pre
+iree-base-runtime --pre
+iree-tools-tf --pre
 #iree-compiler
 #iree-runtime
 #iree-tools-tflite
