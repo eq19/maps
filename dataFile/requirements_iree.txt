@@ -12,6 +12,7 @@ iree-tools-tf
 #iree-tools-xla
 
 # TensorFlow and JAX.
+#torch
 jax[cpu]
 tensorflow
 #gin-config
