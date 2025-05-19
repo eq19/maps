@@ -19,15 +19,7 @@ def export_model():
         signatures={"serving_default": model.add}
     )
     
-    # 2. Compile to VM FlatBuffer format
-    compile_saved_model(
-        "add_model",
-        output_file="add_module.vmfb",
-        target_backends=["llvm-cpu"],
-        import_only=True  # Only imports to MLIR without full compilation
-    )
-    
-    # 3. For MLIR export, use import_only and output_format
+    # 2. For MLIR export, use import_only and output_format
     mlir_bytes = compile_saved_model(
         "add_model",
         output_format="mlir-ir",
@@ -37,9 +29,17 @@ def export_model():
     with open("add_model.mlir", "wb") as f:
         f.write(mlir_bytes)
     
+    # 3. Compile to VM FlatBuffer format
+    compile_saved_model(
+        "add_model",
+        output_file="add_module.vmfb",
+        target_backends=["llvm-cpu"],
+        import_only=True  # Only imports to MLIR without full compilation
+    )
+    
     print("Successfully exported:")
-    print("- Compiled module: add_module.vmfb")
     print("- MLIR: add_model.mlir")
+    print("- Compiled module: add_module.vmfb")
 
 if __name__ == "__main__":
     export_model()
