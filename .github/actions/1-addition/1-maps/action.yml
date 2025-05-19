@@ -127,15 +127,15 @@ runs:
       with:
         script: console.log(context)
 
-    #- uses: actions/setup-python@v5
-      #with:
-        #python-version: 3.12
-        #allow-prereleases: true
+    - uses: actions/setup-python@v5
+      with:
+        python-version: 3.12
+        allow-prereleases: true
 
-    #- uses: actions/cache@v4
-      #with:
-        #path: ~/.cache/pip
-        #key: ${{ runner.os }}-pip
+    - uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip
 
     - name: 💎 Set ID Token
       id: 'auth'
@@ -160,12 +160,8 @@ runs:
         DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
         GCP_CREDENTIALS: ${{ inputs.credentials }}
       run: |
-        # Get all secrets from source repository
-        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
-        for secret in $secrets; do gh secret set $secret --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"; done
-
-        #python -m pip -q install --upgrade pip
-        #python -m pip -q install -r ${{ inputs.action_path }}/dataFile/requirements.txt
+        python -m pip -q install --upgrade pip
+        python -m pip -qqq install -r ${{ inputs.action_path }}/dataFile/requirements.txt
   
         ##python -m pip -q install -e ./.github/entrypoint/artifact/python
         ##iree-compile --iree-llvmcpu-list-targets && iree-run-module --list_drivers
@@ -173,13 +169,22 @@ runs:
         ##Ref: https://github.com/iree-org/iree-experimental
         ##python ${{ inputs.action_path }}/pythonCode/testIREE.py
         
-        ##Ref: https://github.com/tsoding/JelloVM
-        #cd ${{ inputs.action_path }} && javac javaCode/Main.java
-        python user_data/ft_client/test_client/app.py output.txt      
+        pip freeze | grep iree
+        sudo apt-get update > /dev/null
+        sudo apt-get install llvm-17 llvm-17-dev clang-17 mlir-17-tools > /dev/null
+        export IREE_LLVM_ENABLE_BACKTRACE=1
+        export LLVM_SYMBOLIZER_PATH=$(which llvm-symbolizer)
+
+        ##Ref: https://iree.dev/guides/ml-frameworks/tensorflow/
+        python user_data/ft_client/test_client/app.py orgs.json ${{ inputs.action_path }}
 
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
         ##cd ${{ inputs.action_path }}/pythonCode && python npreader.py -h && python map.py -h
+
+        # Get all secrets from source repository
+        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
+        for secret in $secrets; do gh secret set $secret --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"; done
 
     - name: Login to DockerHub
       uses: docker/login-action@v3
@@ -204,7 +209,6 @@ runs:
           GITHUB_REPOSITORY=${{ github.repository }}
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
           WORKSPACE=/workspaces/${{ github.event.repository.name }}
-          OUTPUT=user_data/ft_client/test_client/results/output.txt
           ARTIFACT=user_data/ft_client/test_client/results/orgs.json
 
     - name: 🗑️ Delete Docker Tags AND Images

@@ -221,4 +221,4 @@ runs:
         --scopes=https://www.googleapis.com/auth/cloud-platform --deletion-protection
         --zone=us-central1-a --machine-type=e2-micro --enable-display-device --tags=https-server
         --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
-        --create-disk=boot=no,auto-delete=yes,name=tensorflow,device-name=deeplearning,mode=rw,size=50,type=pd-standard,image=projects/ml-images/global/images/c1-deeplearning-tf-2-11-cu113-v20230925-debian-10-py37
+        --create-disk=boot=no,auto-delete=yes,name=tensorflow,device-name=deeplearning,mode=rw,size=50,type=pd-standard,image=projects/ml-images/global/images/c0-deeplearning-common-cpu-v20250325-debian-11-py310-conda

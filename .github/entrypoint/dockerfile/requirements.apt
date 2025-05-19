@@ -42,4 +42,5 @@ supervisor
 unzip
 wget
 yq
+xz-utils
 zlib1g-dev

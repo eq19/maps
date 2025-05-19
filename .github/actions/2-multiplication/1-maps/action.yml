@@ -111,7 +111,7 @@ runs:
     - name: 💎 Remove Existing Self-Hosted Runner
       shell: bash
       run: |
-        /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
+        bash /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
 
     - name: View context attributes
       uses: actions/github-script@v7

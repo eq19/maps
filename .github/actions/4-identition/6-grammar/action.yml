@@ -129,9 +129,6 @@ runs:
           echo "Original: $LATEST_COMMIT"
           echo "Processed: $MESSAGE"
 
-          # Commit and push changes
-          git add . && git commit --allow-empty -m "$MESSAGE" && git push
-
           echo -e "\n$hr\nFinal Status\n$hr"
           # Fetch all branches
           git fetch --all
@@ -169,27 +166,48 @@ runs:
             echo "Created v0 branch and set it as default"
           fi
 
-          if [[ "$TARGET_REPOSITORY" != *"eq19/"* ]]; then
-            # Unpublish existing GitHub Pages
-            curl -s -X DELETE \
-              -H "Authorization: token $GH_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-               https://api.github.com/repos/$TARGET_REPOSITORY/pages > /dev/null
-  
-            # Disable GitHub Pages
-            curl -s -X PATCH \
-              -H "Authorization: token $GH_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/$TARGET_REPOSITORY/pages \
-              -d '{"build_type":"legacy","source":null}' > /dev/null
-  
-            # Trigger a dispaches action
+          AUTH="Authorization: Bearer $GH_TOKEN"
+          VERSION="X-GitHub-Api-Version: 2022-11-28"
+          ACCEPT="Accept: application/vnd.github+json"
+          RESPONSE=$(curl -s -L -H "$AUTH" -H "$VERSION" -H "$ACCEPT" "https://api.github.com/repos/$TARGET_REPOSITORY/actions/runners")
+          STATUS=$(echo "$RESPONSE" | jq -r --arg NAME "$RUNNER_TITLE" '.runners[] | select(.name == $NAME).status')
+
+          if [[ "$STATUS" != "online" ]]; then
+ 
             curl -s -X POST \
               -H "Authorization: token $GH_TOKEN" \
               -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/$TARGET_REPOSITORY/dispatches \
-              -d '{"event_type": "trigger_action", "client_payload": {"env": "prod", "version": "1.0"}}'
-            echo -e "\nDispatched to https://github.com/${{ env.TARGET_REPOSITORY }}/actions"
-          fi
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches" \
+              -d '{"event_type": "retry_workflow", "client_payload": {"original_run_id": "$GITHUB_RUN_ID"}}'
+              echo -e "\nDispatched to https://github.com/${{ env.GITHUB_REPOSITORY }}/actions"
+            exit 1
  
+          else
+   
+            # Commit and push changes
+            git add . && git commit --allow-empty -m "$MESSAGE" && git push
+
+            if [[ "$TARGET_REPOSITORY" != *"eq19/"* ]]; then
+              # Unpublish existing GitHub Pages
+              curl -s -X DELETE \
+                -H "Authorization: token $GH_TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                https://api.github.com/repos/$TARGET_REPOSITORY/pages > /dev/null
+  
+              # Disable GitHub Pages
+              curl -s -X PATCH \
+                -H "Authorization: token $GH_TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                https://api.github.com/repos/$TARGET_REPOSITORY/pages \
+                -d '{"build_type":"legacy","source":null}' > /dev/null
+
+              # Trigger a dispaches action
+              curl -s -X POST \
+                -H "Authorization: token $GH_TOKEN" \
+                -H "Accept: application/vnd.github.v3+json" \
+                "https://api.github.com/repos/$TARGET_REPOSITORY/dispatches" \
+                -d '{"event_type": "trigger_action", "client_payload": {"env": "prod", "version": "1.0"}}'
+              echo -e "\nDispatched to https://github.com/${{ env.TARGET_REPOSITORY }}/actions"
+            fi  
+          fi
         fi
