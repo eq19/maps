@@ -122,12 +122,9 @@ def find_plist(n):
     return index
 
 
-# print_to_csv : [Listof Hexnum] CSVFile
-#prints the vals and colors to a csv file
-def print_to_csv(lohexnum, csvfile):
-    #numwriter = csv.writer(csvfile, )
-    for num in lohexnum:
-        if None in num.colors:
-            results.write("%s %s Limit Reached\n" % (num.val, ' '.join([str(c) for c in num.colors])))
-        elif num.roll_double:
-            results.write("%s %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
+#Get vals and colors
+def get_val_spin(num):
+    if None in num.colors:
+        return "%s %s Limit Reached" % (num.val, ', '.join([str(c) for c in num.colors]))
+    else:
+        return "%s %s" % (num.val, ', '.join([str(c) for c in num.colors]))

@@ -6,14 +6,15 @@
 
 import sys
 import csv
+import json
 
 from sys import argv
 from decimal import *
-from datetime import datetime
 from pythonCode import *
+from datetime import datetime
 
 
-script, output = argv
+script, output, action_path = argv
 
 # Number parameters for the range of numbers to be tested
 lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
@@ -62,19 +63,37 @@ while (current.val <= upper_bound):
 
 # end of while loop
 
+
 # write contents to file/process etc.
 output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
-results = open(output_path, 'w')
-results.truncate()
 
-# write at what power a number rolls a double
-for num in finished:
-    if None in num.colors:
-        results.write("%s %s Limit Reached\n" % (num.val, ' '.join([str(c) for c in num.colors])))
-    else:
-        results.write("%s %s\n" % (num.val, ' '.join([str(c) for c in num.colors])))
+# Load your JSON data
+with open(output_path, "r") as f:
+    data = json.load(f)
 
-results.close()
+counter = 0
+for org in data:
+    new_org = {}
+    for key, value in org.items():
+        # Insert 'spin' before 'key1'
+        if key == "key1":
+            new_org["spin"] = utilities.get_val_spin(finished[counter])
+            counter += 1
+
+        # Handle key1 and key2 by wrapping each item with a spin
+        if key in ["key1", "key2"] and isinstance(value, list):
+            new_org[key] = [{"name": item, "spin": utilities.get_val_spin(finished[counter + i])} for i, item in enumerate(value)]
+            counter += len(value)
+        else:
+            new_org[key] = value
+
+    org.clear()
+    org.update(new_org)
+
+# Save the modified JSON
+models.export_model()
+with open(output_path, "w") as f:
+    json.dump(data, f, indent=2)
 
 # Print how long it took
 #print(datetime.now() - start_time)

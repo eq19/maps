@@ -1,8 +1,11 @@
 {
   "strategy_name": "fibbo",
   "params": {
-    "stoploss": {
-      "stoploss": -0.137
+    "roi": {
+      "0": 0.05499999999999999,
+      "2": 0.011,
+      "11": 0.005,
+      "20": 0
     },
     "trailing": {
       "trailing_stop": true,
@@ -42,13 +45,10 @@
       "use_max_drawdown_protection": false,
       "use_stop_protection": true
     },
-    "roi": {
-      "0": 0.05499999999999999,
-      "2": 0.011,
-      "11": 0.005,
-      "20": 0
+    "stoploss": {
+      "stoploss": -0.067
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-04-06 11:22:03.531697+00:00"
+  "export_time": "2025-05-09 02:48:18.565728+00:00"
 }

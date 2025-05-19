@@ -1,1093 +1,1562 @@
 [
-{
-  "login": "Chetabahana",
-  "id": 36441664,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjM2NDQxNjY0",
-  "url": "https://api.github.com/orgs/Chetabahana",
-  "repos_url": "https://api.github.com/orgs/Chetabahana/repos",
-  "events_url": "https://api.github.com/orgs/Chetabahana/events",
-  "hooks_url": "https://api.github.com/orgs/Chetabahana/hooks",
-  "issues_url": "https://api.github.com/orgs/Chetabahana/issues",
-  "members_url": "https://api.github.com/orgs/Chetabahana/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/Chetabahana/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/36441664?v=4",
-  "description": null,
-  "name": "Chetabahana",
-  "company": null,
-  "blog": "chetabahana.com",
-  "location": "Chetabahana - Indonesia",
-  "email": null,
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 27,
-  "public_gists": 3,
-  "followers": 3,
-  "following": 0,
-  "html_url": "https://github.com/Chetabahana",
-  "created_at": "2018-02-13T10:37:18Z",
-  "updated_at": "2025-04-16T12:00:27Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 1896,
-  "collaborators": 0,
-  "billing_email": "montysridara@gmail.com",
-  "default_repository_permission": "read",
-  "members_can_create_repositories": true,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "all",
-  "members_can_create_public_repositories": true,
-  "members_can_create_private_repositories": true,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 1
+  {
+    "login": "Chetabahana",
+    "id": 36441664,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjM2NDQxNjY0",
+    "url": "https://api.github.com/orgs/Chetabahana",
+    "repos_url": "https://api.github.com/orgs/Chetabahana/repos",
+    "events_url": "https://api.github.com/orgs/Chetabahana/events",
+    "hooks_url": "https://api.github.com/orgs/Chetabahana/hooks",
+    "issues_url": "https://api.github.com/orgs/Chetabahana/issues",
+    "members_url": "https://api.github.com/orgs/Chetabahana/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/Chetabahana/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/36441664?v=4",
+    "description": null,
+    "name": "Chetabahana",
+    "company": null,
+    "blog": "chetabahana.com",
+    "location": "Chetabahana - Indonesia",
+    "email": null,
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 27,
+    "public_gists": 3,
+    "followers": 3,
+    "following": 0,
+    "html_url": "https://github.com/Chetabahana",
+    "created_at": "2018-02-13T10:37:18Z",
+    "updated_at": "2025-05-15T11:44:09Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 1896,
+    "collaborators": 0,
+    "billing_email": "montysridara@gmail.com",
+    "default_repository_permission": "read",
+    "members_can_create_repositories": true,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "all",
+    "members_can_create_public_repositories": true,
+    "members_can_create_private_repositories": true,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 1
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "0 blue_0",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "1 blue_1"
+      },
+      {
+        "name": "feed",
+        "spin": "2 blue_2"
+      },
+      {
+        "name": "lexer",
+        "spin": "3 blue_3"
+      },
+      {
+        "name": "parser",
+        "spin": "4 blue_4"
+      },
+      {
+        "name": "syntax",
+        "spin": "5 purple_5"
+      },
+      {
+        "name": "grammar",
+        "spin": "6 purple_0"
+      }
+    ],
+    "key2": [
+      {
+        "name": "artifacts",
+        "spin": "7 red_1"
+      },
+      {
+        "name": "attribute",
+        "spin": "8 red_2"
+      },
+      {
+        "name": "method",
+        "spin": "9 red_3"
+      },
+      {
+        "name": "model",
+        "spin": "10 red_4"
+      },
+      {
+        "name": "trace",
+        "spin": "11 yellow_5"
+      },
+      {
+        "name": "track",
+        "spin": "12 yellow_0"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "artifacts",
-    "attribute",
-    "method",
-    "model",
-    "trace",
-    "track"
-  ]
-}
-,
-{
-  "login": "FeedMapping",
-  "id": 11927583,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTI3NTgz",
-  "url": "https://api.github.com/orgs/FeedMapping",
-  "repos_url": "https://api.github.com/orgs/FeedMapping/repos",
-  "events_url": "https://api.github.com/orgs/FeedMapping/events",
-  "hooks_url": "https://api.github.com/orgs/FeedMapping/hooks",
-  "issues_url": "https://api.github.com/orgs/FeedMapping/issues",
-  "members_url": "https://api.github.com/orgs/FeedMapping/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/FeedMapping/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11927583?v=4",
-  "description": "eQuantum Project - Assign Prime Identity",
-  "name": "Everything is Connected",
-  "company": null,
-  "blog": "https://eq19.com/feed",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 31,
-  "public_gists": 0,
-  "followers": 1,
-  "following": 0,
-  "html_url": "https://github.com/FeedMapping",
-  "created_at": "2015-04-13T15:42:55Z",
-  "updated_at": "2024-05-09T04:51:13Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 2,
-  "owned_private_repos": 1,
-  "private_gists": 0,
-  "disk_usage": 452224,
-  "collaborators": 0,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 0
+  {
+    "login": "FeedMapping",
+    "id": 11927583,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTI3NTgz",
+    "url": "https://api.github.com/orgs/FeedMapping",
+    "repos_url": "https://api.github.com/orgs/FeedMapping/repos",
+    "events_url": "https://api.github.com/orgs/FeedMapping/events",
+    "hooks_url": "https://api.github.com/orgs/FeedMapping/hooks",
+    "issues_url": "https://api.github.com/orgs/FeedMapping/issues",
+    "members_url": "https://api.github.com/orgs/FeedMapping/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/FeedMapping/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11927583?v=4",
+    "description": "eQuantum Project - Assign Prime Identity",
+    "name": "Everything is Connected",
+    "company": null,
+    "blog": "https://eq19.com/feed",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 33,
+    "public_gists": 0,
+    "followers": 1,
+    "following": 0,
+    "html_url": "https://github.com/FeedMapping",
+    "created_at": "2015-04-13T15:42:55Z",
+    "updated_at": "2024-05-09T04:51:13Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 2,
+    "owned_private_repos": 1,
+    "private_gists": 0,
+    "disk_usage": 452224,
+    "collaborators": 0,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "13 green_1",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "14 green_2"
+      },
+      {
+        "name": "feed",
+        "spin": "15 green_3"
+      },
+      {
+        "name": "lexer",
+        "spin": "16 green_4"
+      },
+      {
+        "name": "parser",
+        "spin": "17 cyan_5"
+      },
+      {
+        "name": "syntax",
+        "spin": "18 cyan_0"
+      },
+      {
+        "name": "grammar",
+        "spin": "19 blue_1"
+      }
+    ],
+    "key2": [
+      {
+        "name": "primify",
+        "spin": "20 blue_2"
+      },
+      {
+        "name": "corpus",
+        "spin": "21 blue_3"
+      },
+      {
+        "name": "depot",
+        "spin": "22 blue_4"
+      },
+      {
+        "name": "build",
+        "spin": "23 purple_5"
+      },
+      {
+        "name": "factory",
+        "spin": "24 purple_0"
+      },
+      {
+        "name": "headings",
+        "spin": "25 purple_1"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "primify",
-    "corpus",
-    "depot",
-    "build",
-    "factory",
-    "headings"
-  ]
-}
-,
-{
-  "login": "GlobalZones",
-  "id": 11951874,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxODc0",
-  "url": "https://api.github.com/orgs/GlobalZones",
-  "repos_url": "https://api.github.com/orgs/GlobalZones/repos",
-  "events_url": "https://api.github.com/orgs/GlobalZones/events",
-  "hooks_url": "https://api.github.com/orgs/GlobalZones/hooks",
-  "issues_url": "https://api.github.com/orgs/GlobalZones/issues",
-  "members_url": "https://api.github.com/orgs/GlobalZones/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/GlobalZones/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951874?v=4",
-  "description": "₠Quantum Project",
-  "name": "Elementary Particles",
-  "company": null,
-  "blog": "https://eq19.com/feed",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 13,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/GlobalZones",
-  "created_at": "2015-04-14T22:56:23Z",
-  "updated_at": "2023-11-17T14:10:36Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 68113,
-  "collaborators": 0,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 0
+  {
+    "login": "GlobalZones",
+    "id": 11951874,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxODc0",
+    "url": "https://api.github.com/orgs/GlobalZones",
+    "repos_url": "https://api.github.com/orgs/GlobalZones/repos",
+    "events_url": "https://api.github.com/orgs/GlobalZones/events",
+    "hooks_url": "https://api.github.com/orgs/GlobalZones/hooks",
+    "issues_url": "https://api.github.com/orgs/GlobalZones/issues",
+    "members_url": "https://api.github.com/orgs/GlobalZones/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/GlobalZones/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951874?v=4",
+    "description": "\u20a0Quantum Project",
+    "name": "Elementary Particles",
+    "company": null,
+    "blog": "https://eq19.com/feed",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 13,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/GlobalZones",
+    "created_at": "2015-04-14T22:56:23Z",
+    "updated_at": "2023-11-17T14:10:36Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 69565,
+    "collaborators": 0,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "26 purple_2",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "27 purple_3"
+      },
+      {
+        "name": "feed",
+        "spin": "28 purple_4"
+      },
+      {
+        "name": "lexer",
+        "spin": "29 blue_5"
+      },
+      {
+        "name": "parser",
+        "spin": "30 blue_0"
+      },
+      {
+        "name": "syntax",
+        "spin": "31 cyan_1"
+      },
+      {
+        "name": "grammar",
+        "spin": "32 cyan_2"
+      }
+    ],
+    "key2": [
+      {
+        "name": "rapidjson",
+        "spin": "33 cyan_3"
+      },
+      {
+        "name": "ventoy",
+        "spin": "34 cyan_4"
+      },
+      {
+        "name": "magisk",
+        "spin": "35 cyan_5"
+      },
+      {
+        "name": "duckdb",
+        "spin": "36 cyan_0"
+      },
+      {
+        "name": "ci",
+        "spin": "37 blue_1"
+      },
+      {
+        "name": "templates",
+        "spin": "38 blue_2"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "rapidjson",
-    "ventoy",
-    "magisk",
-    "duckdb",
-    "ci",
-    "templates"
-  ]
-}
-,
-{
-  "login": "HybridModels",
-  "id": 11951641,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNjQx",
-  "url": "https://api.github.com/orgs/HybridModels",
-  "repos_url": "https://api.github.com/orgs/HybridModels/repos",
-  "events_url": "https://api.github.com/orgs/HybridModels/events",
-  "hooks_url": "https://api.github.com/orgs/HybridModels/hooks",
-  "issues_url": "https://api.github.com/orgs/HybridModels/issues",
-  "members_url": "https://api.github.com/orgs/HybridModels/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/HybridModels/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951641?v=4",
-  "description": "₠Quantum Project",
-  "name": "Symmetric Expansion",
-  "company": null,
-  "blog": "https://eq19.com/maps",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 18,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/HybridModels",
-  "created_at": "2015-04-14T22:32:05Z",
-  "updated_at": "2025-04-23T04:55:01Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 142776,
-  "collaborators": 0,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 2,
-    "seats": 0
+  {
+    "login": "HybridModels",
+    "id": 11951641,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNjQx",
+    "url": "https://api.github.com/orgs/HybridModels",
+    "repos_url": "https://api.github.com/orgs/HybridModels/repos",
+    "events_url": "https://api.github.com/orgs/HybridModels/events",
+    "hooks_url": "https://api.github.com/orgs/HybridModels/hooks",
+    "issues_url": "https://api.github.com/orgs/HybridModels/issues",
+    "members_url": "https://api.github.com/orgs/HybridModels/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/HybridModels/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951641?v=4",
+    "description": "\u20a0Quantum Project",
+    "name": "Symmetric Expansion",
+    "company": null,
+    "blog": "https://eq19.com/maps",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 17,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/HybridModels",
+    "created_at": "2015-04-14T22:32:05Z",
+    "updated_at": "2025-04-23T04:55:01Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 144948,
+    "collaborators": 0,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 2,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "39 blue_3",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "40 blue_4"
+      },
+      {
+        "name": "feed",
+        "spin": "41 purple_5"
+      },
+      {
+        "name": "lexer",
+        "spin": "42 purple_0"
+      },
+      {
+        "name": "parser",
+        "spin": "43 red_1"
+      },
+      {
+        "name": "syntax",
+        "spin": "44 red_2"
+      },
+      {
+        "name": "grammar",
+        "spin": "45 red_3"
+      }
+    ],
+    "key2": [
+      {
+        "name": "falcon",
+        "spin": "46 red_4"
+      },
+      {
+        "name": "webpack",
+        "spin": "47 yellow_5"
+      },
+      {
+        "name": "wikibox",
+        "spin": "48 yellow_0"
+      },
+      {
+        "name": "transparency",
+        "spin": "49 yellow_1"
+      },
+      {
+        "name": "flavio",
+        "spin": "50 yellow_2"
+      },
+      {
+        "name": "ta-lib",
+        "spin": "51 yellow_3"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "falcon",
-    "webpack",
-    "wikibox",
-    "transparency",
-    "flavio",
-    "ta-lib"
-  ]
-}
-,
-{
-  "login": "JunctionTerms",
-  "id": 11951714,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNzE0",
-  "url": "https://api.github.com/orgs/JunctionTerms",
-  "repos_url": "https://api.github.com/orgs/JunctionTerms/repos",
-  "events_url": "https://api.github.com/orgs/JunctionTerms/events",
-  "hooks_url": "https://api.github.com/orgs/JunctionTerms/hooks",
-  "issues_url": "https://api.github.com/orgs/JunctionTerms/issues",
-  "members_url": "https://api.github.com/orgs/JunctionTerms/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/JunctionTerms/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951714?v=4",
-  "description": "₠Quantum Project",
-  "name": "Multiple Universes",
-  "company": null,
-  "blog": "https://eq19.com/parser",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 17,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/JunctionTerms",
-  "created_at": "2015-04-14T22:38:47Z",
-  "updated_at": "2024-05-04T08:53:09Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 0,
-  "collaborators": 0,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 4,
-    "seats": 0
+  {
+    "login": "JunctionTerms",
+    "id": 11951714,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNzE0",
+    "url": "https://api.github.com/orgs/JunctionTerms",
+    "repos_url": "https://api.github.com/orgs/JunctionTerms/repos",
+    "events_url": "https://api.github.com/orgs/JunctionTerms/events",
+    "hooks_url": "https://api.github.com/orgs/JunctionTerms/hooks",
+    "issues_url": "https://api.github.com/orgs/JunctionTerms/issues",
+    "members_url": "https://api.github.com/orgs/JunctionTerms/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/JunctionTerms/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951714?v=4",
+    "description": "\u20a0Quantum Project",
+    "name": "Multiple Universes",
+    "company": null,
+    "blog": "https://eq19.com/parser",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 14,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/JunctionTerms",
+    "created_at": "2015-04-14T22:38:47Z",
+    "updated_at": "2024-05-04T08:53:09Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 0,
+    "collaborators": 0,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 4,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "52 yellow_4",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "53 red_5"
+      },
+      {
+        "name": "feed",
+        "spin": "54 red_0"
+      },
+      {
+        "name": "lexer",
+        "spin": "55 red_1"
+      },
+      {
+        "name": "parser",
+        "spin": "56 red_2"
+      },
+      {
+        "name": "syntax",
+        "spin": "57 red_3"
+      },
+      {
+        "name": "grammar",
+        "spin": "58 red_4"
+      }
+    ],
+    "key2": [
+      {
+        "name": "flakes",
+        "spin": "59 yellow_5"
+      },
+      {
+        "name": "jsonix",
+        "spin": "60 yellow_0"
+      },
+      {
+        "name": "lanyon",
+        "spin": "61 green_1"
+      },
+      {
+        "name": "wiki",
+        "spin": "62 green_2"
+      },
+      {
+        "name": "wikitemplate",
+        "spin": "63 green_3"
+      },
+      {
+        "name": "progit",
+        "spin": "64 green_4"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "flakes",
-    "jsonix",
-    "lanyon",
-    "wiki",
-    "sitemap",
-    "wikitemplate"
-  ]
-}
-,
-{
-  "login": "KernelPatterns",
-  "id": 11951861,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxODYx",
-  "url": "https://api.github.com/orgs/KernelPatterns",
-  "repos_url": "https://api.github.com/orgs/KernelPatterns/repos",
-  "events_url": "https://api.github.com/orgs/KernelPatterns/events",
-  "hooks_url": "https://api.github.com/orgs/KernelPatterns/hooks",
-  "issues_url": "https://api.github.com/orgs/KernelPatterns/issues",
-  "members_url": "https://api.github.com/orgs/KernelPatterns/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/KernelPatterns/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951861?v=4",
-  "description": "eQuantum Project",
-  "name": "Hidden Dimensions",
-  "company": null,
-  "blog": "https://eq19.com/syntax",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 20,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/KernelPatterns",
-  "created_at": "2015-04-14T22:54:25Z",
-  "updated_at": "2025-04-26T23:38:29Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 0,
-  "collaborators": 0,
-  "billing_email": "admin@tophyips.info",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 0
+  {
+    "login": "KernelPatterns",
+    "id": 11951861,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxODYx",
+    "url": "https://api.github.com/orgs/KernelPatterns",
+    "repos_url": "https://api.github.com/orgs/KernelPatterns/repos",
+    "events_url": "https://api.github.com/orgs/KernelPatterns/events",
+    "hooks_url": "https://api.github.com/orgs/KernelPatterns/hooks",
+    "issues_url": "https://api.github.com/orgs/KernelPatterns/issues",
+    "members_url": "https://api.github.com/orgs/KernelPatterns/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/KernelPatterns/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951861?v=4",
+    "description": "eQuantum Project",
+    "name": "Hidden Dimensions",
+    "company": null,
+    "blog": "https://eq19.com/syntax",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 20,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/KernelPatterns",
+    "created_at": "2015-04-14T22:54:25Z",
+    "updated_at": "2025-04-26T23:38:29Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 0,
+    "collaborators": 0,
+    "billing_email": "admin@tophyips.info",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "65 green_5",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "66 green_0"
+      },
+      {
+        "name": "feed",
+        "spin": "67 yellow_1"
+      },
+      {
+        "name": "lexer",
+        "spin": "68 yellow_2"
+      },
+      {
+        "name": "parser",
+        "spin": "69 yellow_3"
+      },
+      {
+        "name": "syntax",
+        "spin": "70 yellow_4"
+      },
+      {
+        "name": "grammar",
+        "spin": "71 red_5"
+      }
+    ],
+    "key2": [
+      {
+        "name": "ccxt",
+        "spin": "72 red_0"
+      },
+      {
+        "name": "superalgos",
+        "spin": "73 purple_1"
+      },
+      {
+        "name": "indodax",
+        "spin": "74 purple_2"
+      },
+      {
+        "name": "advance",
+        "spin": "75 purple_3"
+      },
+      {
+        "name": "core",
+        "spin": "76 purple_4"
+      },
+      {
+        "name": "freqtrade",
+        "spin": "77 purple_5"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "ccxt",
-    "superalgos",
-    "indodax",
-    "advance",
-    "core",
-    "freqtrade"
-  ]
-}
-,
-{
-  "login": "MappingSystem",
-  "id": 36441943,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjM2NDQxOTQz",
-  "url": "https://api.github.com/orgs/MappingSystem",
-  "repos_url": "https://api.github.com/orgs/MappingSystem/repos",
-  "events_url": "https://api.github.com/orgs/MappingSystem/events",
-  "hooks_url": "https://api.github.com/orgs/MappingSystem/hooks",
-  "issues_url": "https://api.github.com/orgs/MappingSystem/issues",
-  "members_url": "https://api.github.com/orgs/MappingSystem/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/MappingSystem/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/36441943?v=4",
-  "description": "₠Quantum Project",
-  "name": "Basic Transformation",
-  "company": null,
-  "blog": "https://eq19.com/grammar",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 75,
-  "public_gists": 0,
-  "followers": 1,
-  "following": 0,
-  "html_url": "https://github.com/MappingSystem",
-  "created_at": "2018-02-13T10:49:15Z",
-  "updated_at": "2025-04-30T01:27:23Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 15,
-  "owned_private_repos": 14,
-  "private_gists": 0,
-  "disk_usage": 378660,
-  "collaborators": 2,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": true,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "all",
-  "members_can_create_public_repositories": true,
-  "members_can_create_private_repositories": true,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": false,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 12,
-    "seats": 0
+  {
+    "login": "MappingSystem",
+    "id": 36441943,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjM2NDQxOTQz",
+    "url": "https://api.github.com/orgs/MappingSystem",
+    "repos_url": "https://api.github.com/orgs/MappingSystem/repos",
+    "events_url": "https://api.github.com/orgs/MappingSystem/events",
+    "hooks_url": "https://api.github.com/orgs/MappingSystem/hooks",
+    "issues_url": "https://api.github.com/orgs/MappingSystem/issues",
+    "members_url": "https://api.github.com/orgs/MappingSystem/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/MappingSystem/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/36441943?v=4",
+    "description": "\u20a0Quantum Project",
+    "name": "Basic Transformation",
+    "company": null,
+    "blog": "https://eq19.com/grammar",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 75,
+    "public_gists": 0,
+    "followers": 1,
+    "following": 0,
+    "html_url": "https://github.com/MappingSystem",
+    "created_at": "2018-02-13T10:49:15Z",
+    "updated_at": "2025-05-15T11:44:10Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 15,
+    "owned_private_repos": 14,
+    "private_gists": 0,
+    "disk_usage": 380144,
+    "collaborators": 2,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": true,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "all",
+    "members_can_create_public_repositories": true,
+    "members_can_create_private_repositories": true,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": false,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 12,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "78 purple_0",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "79 red_1"
+      },
+      {
+        "name": "feed",
+        "spin": "80 red_2"
+      },
+      {
+        "name": "lexer",
+        "spin": "81 red_3"
+      },
+      {
+        "name": "parser",
+        "spin": "82 red_4"
+      },
+      {
+        "name": "syntax",
+        "spin": "83 yellow_5"
+      },
+      {
+        "name": "grammar",
+        "spin": "84 yellow_0"
+      }
+    ],
+    "key2": [
+      {
+        "name": "flowchart",
+        "spin": "85 yellow_1"
+      },
+      {
+        "name": "sequence",
+        "spin": "86 yellow_2"
+      },
+      {
+        "name": "tree",
+        "spin": "87 yellow_3"
+      },
+      {
+        "name": "route",
+        "spin": "88 yellow_4"
+      },
+      {
+        "name": "channel",
+        "spin": "89 red_5"
+      },
+      {
+        "name": "skema",
+        "spin": "90 red_0"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "flowchart",
-    "sequence",
-    "tree",
-    "route",
-    "channel",
-    "skema"
-  ]
-}
-,
-{
-  "login": "NeuralSystem",
-  "id": 11951884,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxODg0",
-  "url": "https://api.github.com/orgs/NeuralSystem",
-  "repos_url": "https://api.github.com/orgs/NeuralSystem/repos",
-  "events_url": "https://api.github.com/orgs/NeuralSystem/events",
-  "hooks_url": "https://api.github.com/orgs/NeuralSystem/hooks",
-  "issues_url": "https://api.github.com/orgs/NeuralSystem/issues",
-  "members_url": "https://api.github.com/orgs/NeuralSystem/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/NeuralSystem/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951884?v=4",
-  "description": "₠Quantum Project",
-  "name": "Fundamental Forces",
-  "company": null,
-  "blog": "https://eq19.com/grammar",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 13,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/NeuralSystem",
-  "created_at": "2015-04-14T22:57:31Z",
-  "updated_at": "2024-05-04T08:44:14Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 0,
-  "collaborators": 0,
-  "billing_email": "admin@tophyips.info",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 2,
-    "seats": 0
+  {
+    "login": "NeuralSystem",
+    "id": 11951884,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxODg0",
+    "url": "https://api.github.com/orgs/NeuralSystem",
+    "repos_url": "https://api.github.com/orgs/NeuralSystem/repos",
+    "events_url": "https://api.github.com/orgs/NeuralSystem/events",
+    "hooks_url": "https://api.github.com/orgs/NeuralSystem/hooks",
+    "issues_url": "https://api.github.com/orgs/NeuralSystem/issues",
+    "members_url": "https://api.github.com/orgs/NeuralSystem/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/NeuralSystem/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951884?v=4",
+    "description": "\u20a0Quantum Project",
+    "name": "Fundamental Forces",
+    "company": null,
+    "blog": "https://eq19.com/grammar",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 13,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/NeuralSystem",
+    "created_at": "2015-04-14T22:57:31Z",
+    "updated_at": "2024-05-04T08:44:14Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 0,
+    "collaborators": 0,
+    "billing_email": "admin@tophyips.info",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 2,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "91 red_1",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "92 red_2"
+      },
+      {
+        "name": "feed",
+        "spin": "93 red_3"
+      },
+      {
+        "name": "lexer",
+        "spin": "94 red_4"
+      },
+      {
+        "name": "parser",
+        "spin": "95 red_5"
+      },
+      {
+        "name": "syntax",
+        "spin": "96 red_0"
+      },
+      {
+        "name": "grammar",
+        "spin": "97 purple_1"
+      }
+    ],
+    "key2": [
+      {
+        "name": "collab",
+        "spin": "98 purple_2"
+      },
+      {
+        "name": "now",
+        "spin": "99 purple_3"
+      },
+      {
+        "name": "wheel",
+        "spin": "100 purple_4"
+      },
+      {
+        "name": "prefixfree",
+        "spin": "101 blue_5"
+      },
+      {
+        "name": "slick",
+        "spin": "102 blue_0"
+      },
+      {
+        "name": "query",
+        "spin": "103 cyan_1"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "collab",
-    "now",
-    "wheel",
-    "prefixfree",
-    "slick",
-    "query"
-  ]
-}
-,
-{
-  "login": "ObjectModules",
-  "id": 11951330,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxMzMw",
-  "url": "https://api.github.com/orgs/ObjectModules",
-  "repos_url": "https://api.github.com/orgs/ObjectModules/repos",
-  "events_url": "https://api.github.com/orgs/ObjectModules/events",
-  "hooks_url": "https://api.github.com/orgs/ObjectModules/hooks",
-  "issues_url": "https://api.github.com/orgs/ObjectModules/issues",
-  "members_url": "https://api.github.com/orgs/ObjectModules/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/ObjectModules/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951330?v=4",
-  "description": "₠Quantum Project",
-  "name": "Vibrating Strings",
-  "company": null,
-  "blog": "https://eq19.com/lexer",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 14,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/ObjectModules",
-  "created_at": "2015-04-14T22:01:01Z",
-  "updated_at": "2024-05-21T09:49:06Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 109287,
-  "collaborators": 0,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "read",
-  "members_can_create_repositories": true,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "all",
-  "members_can_create_public_repositories": true,
-  "members_can_create_private_repositories": true,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 0
+  {
+    "login": "ObjectModules",
+    "id": 11951330,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxMzMw",
+    "url": "https://api.github.com/orgs/ObjectModules",
+    "repos_url": "https://api.github.com/orgs/ObjectModules/repos",
+    "events_url": "https://api.github.com/orgs/ObjectModules/events",
+    "hooks_url": "https://api.github.com/orgs/ObjectModules/hooks",
+    "issues_url": "https://api.github.com/orgs/ObjectModules/issues",
+    "members_url": "https://api.github.com/orgs/ObjectModules/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/ObjectModules/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951330?v=4",
+    "description": "\u20a0Quantum Project",
+    "name": "Vibrating Strings",
+    "company": null,
+    "blog": "https://eq19.com/lexer",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 14,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/ObjectModules",
+    "created_at": "2015-04-14T22:01:01Z",
+    "updated_at": "2024-05-21T09:49:06Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 110980,
+    "collaborators": 0,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "read",
+    "members_can_create_repositories": true,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "all",
+    "members_can_create_public_repositories": true,
+    "members_can_create_private_repositories": true,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "104 cyan_2",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "105 cyan_3"
+      },
+      {
+        "name": "feed",
+        "spin": "106 cyan_4"
+      },
+      {
+        "name": "lexer",
+        "spin": "107 green_5"
+      },
+      {
+        "name": "parser",
+        "spin": "108 green_0"
+      },
+      {
+        "name": "syntax",
+        "spin": "109 yellow_1"
+      },
+      {
+        "name": "grammar",
+        "spin": "110 yellow_2"
+      }
+    ],
+    "key2": [
+      {
+        "name": "steps",
+        "spin": "111 yellow_3"
+      },
+      {
+        "name": "bash",
+        "spin": "112 yellow_4"
+      },
+      {
+        "name": "store",
+        "spin": "113 red_5"
+      },
+      {
+        "name": "gtm",
+        "spin": "114 red_0"
+      },
+      {
+        "name": "jekyll",
+        "spin": "115 red_1"
+      },
+      {
+        "name": "alzheimer",
+        "spin": "116 red_2"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "steps",
-    "bash",
-    "store",
-    "gtm",
-    "jekyll",
-    "alzheimer"
-  ]
-}
-,
-{
-  "login": "VirtualNetworks",
-  "id": 11951705,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNzA1",
-  "url": "https://api.github.com/orgs/VirtualNetworks",
-  "repos_url": "https://api.github.com/orgs/VirtualNetworks/repos",
-  "events_url": "https://api.github.com/orgs/VirtualNetworks/events",
-  "hooks_url": "https://api.github.com/orgs/VirtualNetworks/hooks",
-  "issues_url": "https://api.github.com/orgs/VirtualNetworks/issues",
-  "members_url": "https://api.github.com/orgs/VirtualNetworks/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/VirtualNetworks/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951705?v=4",
-  "description": "We develop an Integrated Scripts under The eQuantum Project",
-  "name": "Virtual Community",
-  "company": null,
-  "blog": null,
-  "location": "Indonesia",
-  "email": null,
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 14,
-  "public_gists": 0,
-  "followers": 1,
-  "following": 0,
-  "html_url": "https://github.com/VirtualNetworks",
-  "created_at": "2015-04-14T22:37:57Z",
-  "updated_at": "2024-05-19T04:46:13Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 0,
-  "collaborators": 0,
-  "billing_email": "admin@tophyips.info",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 2,
-    "seats": 0
+  {
+    "login": "VirtualNetworks",
+    "id": 11951705,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNzA1",
+    "url": "https://api.github.com/orgs/VirtualNetworks",
+    "repos_url": "https://api.github.com/orgs/VirtualNetworks/repos",
+    "events_url": "https://api.github.com/orgs/VirtualNetworks/events",
+    "hooks_url": "https://api.github.com/orgs/VirtualNetworks/hooks",
+    "issues_url": "https://api.github.com/orgs/VirtualNetworks/issues",
+    "members_url": "https://api.github.com/orgs/VirtualNetworks/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/VirtualNetworks/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951705?v=4",
+    "description": "We develop an Integrated Scripts under The eQuantum Project",
+    "name": "Virtual Community",
+    "company": null,
+    "blog": null,
+    "location": "Indonesia",
+    "email": null,
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 14,
+    "public_gists": 0,
+    "followers": 1,
+    "following": 0,
+    "html_url": "https://github.com/VirtualNetworks",
+    "created_at": "2015-04-14T22:37:57Z",
+    "updated_at": "2024-05-19T04:46:13Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 0,
+    "collaborators": 0,
+    "billing_email": "admin@tophyips.info",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 2,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "117 red_3",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "118 red_4"
+      },
+      {
+        "name": "feed",
+        "spin": "119 red_5"
+      },
+      {
+        "name": "lexer",
+        "spin": "120 red_0"
+      },
+      {
+        "name": "parser",
+        "spin": "121 red_1"
+      },
+      {
+        "name": "syntax",
+        "spin": "122 red_2"
+      },
+      {
+        "name": "grammar",
+        "spin": "123 red_3"
+      }
+    ],
+    "key2": [
+      {
+        "name": "boulder",
+        "spin": "124 red_4"
+      },
+      {
+        "name": "imdisk",
+        "spin": "125 red_5"
+      },
+      {
+        "name": "liquid",
+        "spin": "126 red_0"
+      },
+      {
+        "name": "jib",
+        "spin": "127 purple_1"
+      },
+      {
+        "name": "cerbot",
+        "spin": "128 purple_2"
+      },
+      {
+        "name": "raphael",
+        "spin": "129 purple_3"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "boulder",
-    "imdisk",
-    "liquid",
-    "jib",
-    "cerbot",
-    "raphael"
-  ]
-}
-,
-{
-  "login": "WeakNegative",
-  "id": 11951695,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNjk1",
-  "url": "https://api.github.com/orgs/WeakNegative",
-  "repos_url": "https://api.github.com/orgs/WeakNegative/repos",
-  "events_url": "https://api.github.com/orgs/WeakNegative/events",
-  "hooks_url": "https://api.github.com/orgs/WeakNegative/hooks",
-  "issues_url": "https://api.github.com/orgs/WeakNegative/issues",
-  "members_url": "https://api.github.com/orgs/WeakNegative/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/WeakNegative/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/11951695?v=4",
-  "description": "eQuantum Project - Weak Negative Boson",
-  "name": "Quadratic Polynomials",
-  "company": null,
-  "blog": "https://eq19.com/syntax",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 14,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/WeakNegative",
-  "created_at": "2015-04-14T22:37:11Z",
-  "updated_at": "2024-05-04T08:32:51Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 0,
-  "collaborators": 0,
-  "billing_email": "admin@tophyips.info",
-  "default_repository_permission": "none",
-  "members_can_create_repositories": false,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "none",
-  "members_can_create_public_repositories": false,
-  "members_can_create_private_repositories": false,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 0
+  {
+    "login": "WeakNegative",
+    "id": 11951695,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjExOTUxNjk1",
+    "url": "https://api.github.com/orgs/WeakNegative",
+    "repos_url": "https://api.github.com/orgs/WeakNegative/repos",
+    "events_url": "https://api.github.com/orgs/WeakNegative/events",
+    "hooks_url": "https://api.github.com/orgs/WeakNegative/hooks",
+    "issues_url": "https://api.github.com/orgs/WeakNegative/issues",
+    "members_url": "https://api.github.com/orgs/WeakNegative/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/WeakNegative/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/11951695?v=4",
+    "description": "eQuantum Project - Weak Negative Boson",
+    "name": "Quadratic Polynomials",
+    "company": null,
+    "blog": "https://eq19.com/syntax",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 14,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/WeakNegative",
+    "created_at": "2015-04-14T22:37:11Z",
+    "updated_at": "2024-05-04T08:32:51Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 0,
+    "collaborators": 0,
+    "billing_email": "admin@tophyips.info",
+    "default_repository_permission": "none",
+    "members_can_create_repositories": false,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "none",
+    "members_can_create_public_repositories": false,
+    "members_can_create_private_repositories": false,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "130 purple_4",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "131 blue_5"
+      },
+      {
+        "name": "feed",
+        "spin": "132 blue_0"
+      },
+      {
+        "name": "lexer",
+        "spin": "133 blue_1"
+      },
+      {
+        "name": "parser",
+        "spin": "134 blue_2"
+      },
+      {
+        "name": "syntax",
+        "spin": "135 blue_3"
+      },
+      {
+        "name": "grammar",
+        "spin": "136 blue_4"
+      }
+    ],
+    "key2": [
+      {
+        "name": "ohmyzsh",
+        "spin": "137 purple_5"
+      },
+      {
+        "name": "grub",
+        "spin": "138 purple_0"
+      },
+      {
+        "name": "scrapy",
+        "spin": "139 red_1"
+      },
+      {
+        "name": "screen",
+        "spin": "140 red_2"
+      },
+      {
+        "name": "wpt",
+        "spin": "141 red_3"
+      },
+      {
+        "name": "slickmap",
+        "spin": "142 red_4"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "ohmyzsh",
-    "grub",
-    "scrapy",
-    "screen",
-    "wpt",
-    "slickmap"
-  ]
-}
-,
-{
-  "login": "WeakPositive",
-  "id": 17930497,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjE3OTMwNDk3",
-  "url": "https://api.github.com/orgs/WeakPositive",
-  "repos_url": "https://api.github.com/orgs/WeakPositive/repos",
-  "events_url": "https://api.github.com/orgs/WeakPositive/events",
-  "hooks_url": "https://api.github.com/orgs/WeakPositive/hooks",
-  "issues_url": "https://api.github.com/orgs/WeakPositive/issues",
-  "members_url": "https://api.github.com/orgs/WeakPositive/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/WeakPositive/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/17930497?v=4",
-  "description": "eQuantum Project - Weak Positive Boson",
-  "name": "Truncated Perturbation",
-  "company": null,
-  "blog": "https://eq19.com/parser",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 13,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/WeakPositive",
-  "created_at": "2016-03-18T15:02:55Z",
-  "updated_at": "2024-05-04T08:31:35Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 0,
-  "collaborators": 0,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "write",
-  "members_can_create_repositories": true,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "all",
-  "members_can_create_public_repositories": true,
-  "members_can_create_private_repositories": true,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 0
+  {
+    "login": "WeakPositive",
+    "id": 17930497,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjE3OTMwNDk3",
+    "url": "https://api.github.com/orgs/WeakPositive",
+    "repos_url": "https://api.github.com/orgs/WeakPositive/repos",
+    "events_url": "https://api.github.com/orgs/WeakPositive/events",
+    "hooks_url": "https://api.github.com/orgs/WeakPositive/hooks",
+    "issues_url": "https://api.github.com/orgs/WeakPositive/issues",
+    "members_url": "https://api.github.com/orgs/WeakPositive/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/WeakPositive/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/17930497?v=4",
+    "description": "eQuantum Project - Weak Positive Boson",
+    "name": "Truncated Perturbation",
+    "company": null,
+    "blog": "https://eq19.com/parser",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 13,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/WeakPositive",
+    "created_at": "2016-03-18T15:02:55Z",
+    "updated_at": "2024-05-04T08:31:35Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 0,
+    "collaborators": 0,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "write",
+    "members_can_create_repositories": true,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "all",
+    "members_can_create_public_repositories": true,
+    "members_can_create_private_repositories": true,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "143 red_5",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "144 red_0"
+      },
+      {
+        "name": "feed",
+        "spin": "145 red_1"
+      },
+      {
+        "name": "lexer",
+        "spin": "146 red_2"
+      },
+      {
+        "name": "parser",
+        "spin": "147 red_3"
+      },
+      {
+        "name": "syntax",
+        "spin": "148 red_4"
+      },
+      {
+        "name": "grammar",
+        "spin": "149 yellow_5"
+      }
+    ],
+    "key2": [
+      {
+        "name": "openoffice",
+        "spin": "150 yellow_0"
+      },
+      {
+        "name": "mtkimg",
+        "spin": "151 green_1"
+      },
+      {
+        "name": "ace",
+        "spin": "152 green_2"
+      },
+      {
+        "name": "buildozer",
+        "spin": "153 green_3"
+      },
+      {
+        "name": "firadisk",
+        "spin": "154 green_4"
+      },
+      {
+        "name": "underscore",
+        "spin": "155 green_5"
+      }
+    ]
   },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "openoffice",
-    "mtkimg",
-    "ace",
-    "buildozer",
-    "firadisk",
-    "underscore"
-  ]
-}
-,
-{
-  "login": "ZeroWeak",
-  "id": 18101900,
-  "node_id": "MDEyOk9yZ2FuaXphdGlvbjE4MTAxOTAw",
-  "url": "https://api.github.com/orgs/ZeroWeak",
-  "repos_url": "https://api.github.com/orgs/ZeroWeak/repos",
-  "events_url": "https://api.github.com/orgs/ZeroWeak/events",
-  "hooks_url": "https://api.github.com/orgs/ZeroWeak/hooks",
-  "issues_url": "https://api.github.com/orgs/ZeroWeak/issues",
-  "members_url": "https://api.github.com/orgs/ZeroWeak/members{/member}",
-  "public_members_url": "https://api.github.com/orgs/ZeroWeak/public_members{/member}",
-  "avatar_url": "https://avatars.githubusercontent.com/u/18101900?v=4",
-  "description": "eQuantum Project - Zero Weak Boson",
-  "name": "Wormhole Theory",
-  "company": null,
-  "blog": "https://eq19.com/lexer",
-  "location": "Indonesia",
-  "email": "admin@eq19.com",
-  "twitter_username": null,
-  "is_verified": false,
-  "has_organization_projects": true,
-  "has_repository_projects": true,
-  "public_repos": 28,
-  "public_gists": 0,
-  "followers": 0,
-  "following": 0,
-  "html_url": "https://github.com/ZeroWeak",
-  "created_at": "2016-03-27T15:30:20Z",
-  "updated_at": "2024-05-09T04:50:17Z",
-  "archived_at": null,
-  "type": "Organization",
-  "total_private_repos": 0,
-  "owned_private_repos": 0,
-  "private_gists": 0,
-  "disk_usage": 234920,
-  "collaborators": 0,
-  "billing_email": "admin@eq19.com",
-  "default_repository_permission": "read",
-  "members_can_create_repositories": true,
-  "two_factor_requirement_enabled": false,
-  "members_allowed_repository_creation_type": "all",
-  "members_can_create_public_repositories": true,
-  "members_can_create_private_repositories": true,
-  "members_can_create_internal_repositories": false,
-  "members_can_create_pages": true,
-  "members_can_fork_private_repositories": false,
-  "web_commit_signoff_required": false,
-  "deploy_keys_enabled_for_repositories": false,
-  "members_can_create_public_pages": true,
-  "members_can_create_private_pages": true,
-  "plan": {
-    "name": "free",
-    "space": 976562499,
-    "private_repos": 10000,
-    "filled_seats": 1,
-    "seats": 0
-  },
-  "advanced_security_enabled_for_new_repositories": false,
-  "dependabot_alerts_enabled_for_new_repositories": false,
-  "dependabot_security_updates_enabled_for_new_repositories": false,
-  "dependency_graph_enabled_for_new_repositories": false,
-  "secret_scanning_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_enabled_for_new_repositories": false,
-  "secret_scanning_push_protection_custom_link_enabled": false,
-  "secret_scanning_push_protection_custom_link": null,
-  "secret_scanning_validity_checks_enabled": false,
-  "key1": [
-    "maps",
-    "feed",
-    "lexer",
-    "parser",
-    "syntax",
-    "grammar"
-  ],
-  "key2": [
-    "pysme",
-    "numqi",
-    "pyrate",
-    "nthmc",
-    "spectral",
-    "algorithms"
-  ]
-}
+  {
+    "login": "ZeroWeak",
+    "id": 18101900,
+    "node_id": "MDEyOk9yZ2FuaXphdGlvbjE4MTAxOTAw",
+    "url": "https://api.github.com/orgs/ZeroWeak",
+    "repos_url": "https://api.github.com/orgs/ZeroWeak/repos",
+    "events_url": "https://api.github.com/orgs/ZeroWeak/events",
+    "hooks_url": "https://api.github.com/orgs/ZeroWeak/hooks",
+    "issues_url": "https://api.github.com/orgs/ZeroWeak/issues",
+    "members_url": "https://api.github.com/orgs/ZeroWeak/members{/member}",
+    "public_members_url": "https://api.github.com/orgs/ZeroWeak/public_members{/member}",
+    "avatar_url": "https://avatars.githubusercontent.com/u/18101900?v=4",
+    "description": "eQuantum Project - Zero Weak Boson",
+    "name": "Wormhole Theory",
+    "company": null,
+    "blog": "https://eq19.com/lexer",
+    "location": "Indonesia",
+    "email": "admin@eq19.com",
+    "twitter_username": null,
+    "is_verified": false,
+    "has_organization_projects": true,
+    "has_repository_projects": true,
+    "public_repos": 28,
+    "public_gists": 0,
+    "followers": 0,
+    "following": 0,
+    "html_url": "https://github.com/ZeroWeak",
+    "created_at": "2016-03-27T15:30:20Z",
+    "updated_at": "2024-05-09T04:50:17Z",
+    "archived_at": null,
+    "type": "Organization",
+    "total_private_repos": 0,
+    "owned_private_repos": 0,
+    "private_gists": 0,
+    "disk_usage": 234920,
+    "collaborators": 0,
+    "billing_email": "admin@eq19.com",
+    "default_repository_permission": "read",
+    "members_can_create_repositories": true,
+    "two_factor_requirement_enabled": false,
+    "members_allowed_repository_creation_type": "all",
+    "members_can_create_public_repositories": true,
+    "members_can_create_private_repositories": true,
+    "members_can_create_internal_repositories": false,
+    "members_can_create_pages": true,
+    "members_can_fork_private_repositories": false,
+    "web_commit_signoff_required": false,
+    "deploy_keys_enabled_for_repositories": false,
+    "members_can_create_public_pages": true,
+    "members_can_create_private_pages": true,
+    "plan": {
+      "name": "free",
+      "space": 976562499,
+      "private_repos": 10000,
+      "filled_seats": 1,
+      "seats": 0
+    },
+    "advanced_security_enabled_for_new_repositories": false,
+    "dependabot_alerts_enabled_for_new_repositories": false,
+    "dependabot_security_updates_enabled_for_new_repositories": false,
+    "dependency_graph_enabled_for_new_repositories": false,
+    "secret_scanning_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_enabled_for_new_repositories": false,
+    "secret_scanning_push_protection_custom_link_enabled": false,
+    "secret_scanning_push_protection_custom_link": null,
+    "secret_scanning_validity_checks_enabled": false,
+    "spin": "156 green_0",
+    "key1": [
+      {
+        "name": "maps",
+        "spin": "157 yellow_1"
+      },
+      {
+        "name": "feed",
+        "spin": "158 yellow_2"
+      },
+      {
+        "name": "lexer",
+        "spin": "159 yellow_3"
+      },
+      {
+        "name": "parser",
+        "spin": "160 yellow_4"
+      },
+      {
+        "name": "syntax",
+        "spin": "161 yellow_5"
+      },
+      {
+        "name": "grammar",
+        "spin": "162 yellow_0"
+      }
+    ],
+    "key2": [
+      {
+        "name": "pysme",
+        "spin": "163 green_1"
+      },
+      {
+        "name": "numqi",
+        "spin": "164 green_2"
+      },
+      {
+        "name": "pyrate",
+        "spin": "165 green_3"
+      },
+      {
+        "name": "nthmc",
+        "spin": "166 green_4"
+      },
+      {
+        "name": "spectral",
+        "spin": "167 cyan_5"
+      },
+      {
+        "name": "algorithms",
+        "spin": "168 cyan_0"
+      }
+    ]
+  }
 ]
