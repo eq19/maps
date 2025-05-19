@@ -1,3 +1,4 @@
+import subprocess
 import tensorflow as tf
 from iree.compiler.tf import compile_saved_model  # From iree-tools-tf
 
@@ -20,14 +21,12 @@ def export_model():
     )
     
     # 2. For MLIR export, use import_only and output_format
-    mlir_bytes = compile_saved_model(
-        "add_model",
-        output_format="mlir-ir",
-        target_backends=["llvm-cpu"],
-        import_only=True
-    )
-    with open("add_model.mlir", "wb") as f:
-        f.write(mlir_bytes)
+    subprocess.run([
+        "iree-import-tf",
+        "--tf-savedmodel-exported-names=serving_default",
+        "--output-format=mlir-ir",
+        "add_model", "-o", "add_model.mlir"
+    ], check=True)
     
     # 3. Compile to VM FlatBuffer format
     compile_saved_model(
