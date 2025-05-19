@@ -3,8 +3,8 @@
 -f https://iree.dev/pip-release-links.html
 --extra-index-url https://iree.dev/pypi/simple/
 
-iree-base-compiler==3.4.0
-iree-tools-tf==3.4.0
+iree-compiler==20241107.1071
+iree-tools-tf==20241107.1071
 
 #iree-base-compiler
 #iree-base-runtime
