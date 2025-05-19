@@ -13,4 +13,4 @@ psycopg2
 setuptools
 cryptography
 -r requirements_iree.txt
--r requirements_pypi.txt
+#-r requirements_pypi.txt
