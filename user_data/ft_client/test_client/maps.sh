@@ -1,18 +1,5 @@
 #!/usr/bin/env bash
 
-# Look for the dialect declaration (should contain 'stablehlo')
-head -n 50 add_model.mlir
-
-#iree-compile \
-#  --iree-input-type=stablehlo \
-#  --iree-hal-target-backends=llvm-cpu \
-#  --iree-llvmcpu-target-cpu-features=host \
-#  --iree-global-optimization-opt-level=0 \
-#  --mlir-print-ir-after-all \
-#  --mlir-print-ir-after-failure \
-#  add_model_stablehlo.mlir \
-#  -o add_module.vmfb
-  
 iree-run-module \
   --module=add_module.vmfb \
   --function=add \
