@@ -1,7 +1,8 @@
+import os
+os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"  # Critical for CPU-only environments
+
 import tensorflow as tf
-from iree.compiler.tools import tf as iree_tf_compiler
-from iree.compiler.tools import compile_str
-from iree.compiler.ir import Context
+from iree.compiler.tools import compile_file
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -12,7 +13,7 @@ class AddModule(tf.Module):
         return a + b
 
 def export_model():
-    # Save the model
+    # Save model
     model = AddModule()
     tf.saved_model.save(
         model,
@@ -20,25 +21,16 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Convert to StableHLO and compile
-    with Context():
-        # Step 1: Get MLIR in StableHLO dialect
-        mlir_text = iree_tf_compiler.compile_saved_model(
-            "add_model",
-            import_type="STABLEHLO",
-            exported_names=["serving_default"],
-            output_format="mlir-text"
-        )
+    # Direct compilation
+    compile_file(
+        "add_model",
+        input_type="tf_saved_model",
+        output_file="add_module.vmfb",
+        target_backends=["llvm-cpu"],
+        exported_names=["serving_default"]
+    )
 
-        # Step 2: Compile to IREE VM bytecode
-        compile_str(
-            mlir_text,
-            input_type="stablehlo",
-            target_backends=["llvm-cpu"],
-            output_file="add_module.vmfb"
-        )
-
-    print("Compiled successfully to add_module.vmfb")
+    print("Successfully compiled to add_module.vmfb")
 
 if __name__ == "__main__":
     export_model()
