@@ -34,8 +34,8 @@ def export_model():
         extra_args=[
             # Essential flags for IREE 3.5.0rc
             "--iree-input-demote-i64-to-i32",
-            "--iree-flow-enable-pad-handling"
-        ]
+            "--iree-flow-enable-pad-handling",
+            "--iree-llvmcpu-target-cpu=generic"        ]
     )
 
     print("Successfully compiled model")
