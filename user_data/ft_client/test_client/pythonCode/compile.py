@@ -7,12 +7,12 @@ from iree.compiler.tools import tf as iree_tf_compiler
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
-        tf.TensorSpec([None], tf.float32),  # Dynamic shape
-        tf.TensorSpec([None], tf.float32),  # Dynamic shape
+        tf.TensorSpec([10], tf.float32),  # Changed to fixed shape
+        tf.TensorSpec([10], tf.float32),  # Changed to fixed shape
     ])
     def add(self, a, b):
-        # Simple addition - let IREE handle broadcasting
-        return tf.add(a, b)
+        # Simple addition - no dynamic broadcasting
+        return a + b
 
 def export_model():
     # Save model
@@ -23,7 +23,7 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Compile with optimized settings
+    # Compile with minimal required flags
     iree_tf_compiler.compile_saved_model(
         "add_model",
         exported_names=["serving_default"],
@@ -34,17 +34,11 @@ def export_model():
         extra_args=[
             # Essential flags for IREE 3.5.0rc
             "--iree-input-demote-i64-to-i32",
-            "--iree-flow-enable-pad-handling",
-            
-            # Dynamic shape support
-            "--iree-stream-resource-index-bits=32",
-            
-            # New in 3.5.0rc - enables dynamic broadcasting
-            "--iree-flow-enable-fuse-padding-into-linalg"
+            "--iree-flow-enable-pad-handling"
         ]
     )
 
-    print("Successfully compiled dynamic shape model")
+    print("Successfully compiled model")
 
 if __name__ == "__main__":
     export_model()
