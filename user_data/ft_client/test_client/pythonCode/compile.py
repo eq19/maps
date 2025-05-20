@@ -27,11 +27,11 @@ def export_model():
     # Compile with minimal required flags
     tfc.compile_saved_model(
         "add_model",
-        exported_names=["serving_default"],
-        output_file="add_module.vmfb",
-        target_backends=["llvm-cpu"],
-        import_type="SIGNATURE_DEF",
         saved_model_tags={"serve"},
+        import_type="SIGNATURE_DEF",
+        target_backends=["llvm-cpu"],
+        output_file="add_module.vmfb",
+        exported_names=["serving_default"],
         extra_args=[
             # Essential flags for IREE 3.5.0rc
             "--iree-input-demote-i64-to-i32",
