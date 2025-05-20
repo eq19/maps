@@ -5,7 +5,9 @@ iree-run-module \
   --function=serving_default \
   --input="10xf32=[1,2,3,4,5,6,7,8,9,10]" \
   --input="10xf32=[2,3,4,5,6,7,8,9,10,11]"
-  
+
+lscpu | grep Flags
+        
 cat $ARTIFACT
 curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
