@@ -2,10 +2,10 @@
 
 iree-run-module \
   --module=add_module.vmfb \
-  --function=add \
-  --input=2.0 \
-  --input=3.0
-
+  --function=serving_default \
+  --input="10xf32=[1,2,3,4,5,6,7,8,9,10]" \
+  --input="10xf32=[2,3,4,5,6,7,8,9,10,11]"
+  
 cat $ARTIFACT
 curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
