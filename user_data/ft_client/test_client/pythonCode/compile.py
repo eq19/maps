@@ -1,6 +1,6 @@
 import os
 os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"
-os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"
+os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"  # For debugging
 
 import tensorflow as tf
 from iree.compiler.tools import tf as iree_tf_compiler
@@ -11,8 +11,10 @@ class AddModule(tf.Module):
         tf.TensorSpec([None], tf.float32),  # Dynamic shape
     ])
     def add(self, a, b):
-        # Let TensorFlow handle broadcasting automatically
-        return a + b
+        # Ensure both tensors have the same shape before adding
+        shape = tf.shape(a)
+        b_reshaped = tf.broadcast_to(b, shape)
+        return a + b_reshaped
 
 def export_model():
     # Save model
@@ -23,7 +25,7 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Compile with only supported flags for IREE 3.5.0rc
+    # Compile with minimal required flags
     iree_tf_compiler.compile_saved_model(
         "add_model",
         exported_names=["serving_default"],
@@ -32,15 +34,12 @@ def export_model():
         import_type="SIGNATURE_DEF",
         saved_model_tags={"serve"},
         extra_args=[
-            # Essential flags that work in 3.5.0rc
+            # Essential flags for IREE 3.5.0rc
             "--iree-input-demote-i64-to-i32",
             "--iree-flow-enable-pad-handling",
             
-            # Dynamic shape support
-            "--iree-stream-resource-index-bits=32",
-            
-            # Disable problematic optimizations
-            "--iree-opt-const-expr-hoisting=false"
+            # Minimal dynamic shape support
+            "--iree-stream-resource-index-bits=32"
         ]
     )
 
