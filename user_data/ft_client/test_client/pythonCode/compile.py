@@ -42,7 +42,6 @@ def export_model():
     except Exception as e:
         print(f"Failed: {str(e)}")
         raise
-    print("Successfully compiled to add_module.vmfb")
 
 if __name__ == "__main__":
     export_model()
