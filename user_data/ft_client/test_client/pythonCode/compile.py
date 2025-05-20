@@ -13,23 +13,35 @@ class AddModule(tf.Module):
         return a + b
 
 def export_model():
-    # Save model
-    model = AddModule()
-    tf.saved_model.save(
-        model,
-        export_dir="add_model",
-        signatures={"serving_default": model.add}
-    )
+    try:
+        model = AddModule()
+        tf.saved_model.save(
+            model,
+            "add_model",
+            tags=["serve"],
+            signatures={
+                "serving_default": model.add.get_concrete_function(
+                    tf.TensorSpec([None], tf.float32),
+                    tf.TensorSpec([None], tf.float32))
+            }
+        )
+        
+        # Double verification
+        loaded = tf.saved_model.load("add_model", tags=["serve"])
+        assert "serving_default" in loaded.signatures
 
-    # Correct compilation call
-    iree_tf_compiler.compile_saved_model(
-        "add_model",
-        exported_names=["serving_default"],
-        output_file="add_module.vmfb",
-        target_backends=["llvm-cpu"],
-        import_type="SIGNATURE_DEF"  # Correct import type for SavedModel
-    )
-
+        iree_tf_compiler.compile_saved_model(
+            "add_model",
+            exported_names=["serving_default"],
+            output_file="add_module.vmfb",
+            target_backends=["llvm-cpu"],
+            import_type="SIGNATURE_DEF",
+            saved_model_tags="serve"
+        )
+        print("Compilation successful")
+    except Exception as e:
+        print(f"Failed: {str(e)}")
+        raise
     print("Successfully compiled to add_module.vmfb")
 
 if __name__ == "__main__":
