@@ -11,13 +11,8 @@ class AddModule(tf.Module):
         tf.TensorSpec([None], tf.float32),  # Dynamic shape
     ])
     def add(self, a, b):
-        # Correct broadcasting implementation
-        max_length = tf.maximum(tf.shape(a)[0], tf.shape(b)[0])
-        # Create a proper shape tensor [max_length] instead of scalar max_length
-        output_shape = tf.stack([max_length])
-        a_broadcast = tf.broadcast_to(a, output_shape)
-        b_broadcast = tf.broadcast_to(b, output_shape)
-        return a_broadcast + b_broadcast
+        # Let TensorFlow handle broadcasting automatically
+        return a + b
 
 def export_model():
     # Save model
@@ -28,7 +23,7 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Compile with dynamic shape support
+    # Compile with only supported flags for IREE 3.5.0rc
     iree_tf_compiler.compile_saved_model(
         "add_model",
         exported_names=["serving_default"],
@@ -37,7 +32,7 @@ def export_model():
         import_type="SIGNATURE_DEF",
         saved_model_tags={"serve"},
         extra_args=[
-            # Essential for dynamic shapes
+            # Essential flags that work in 3.5.0rc
             "--iree-input-demote-i64-to-i32",
             "--iree-flow-enable-pad-handling",
             
@@ -45,11 +40,7 @@ def export_model():
             "--iree-stream-resource-index-bits=32",
             
             # Disable problematic optimizations
-            "--iree-opt-const-expr-hoisting=false",
-            "--iree-opt-const-eval=false",
-            
-            # Improved broadcast handling
-            "--iree-flow-enable-fuse-padding-into-linalg"
+            "--iree-opt-const-expr-hoisting=false"
         ]
     )
 
