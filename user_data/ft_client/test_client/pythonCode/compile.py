@@ -1,6 +1,6 @@
 import os
-os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"  # Disable GPU support
-os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"    # Save intermediate files
+os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"
+os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"
 
 import tensorflow as tf
 from iree.compiler.tools import tf as iree_tf_compiler
@@ -11,13 +11,16 @@ class AddModule(tf.Module):
         tf.TensorSpec([None], tf.float32),  # Dynamic shape
     ])
     def add(self, a, b):
-        # Explicit broadcasting to help the compiler
-        a = tf.broadcast_to(a, tf.maximum(tf.shape(a)[0], tf.shape(b)[0]))
-        b = tf.broadcast_to(b, tf.maximum(tf.shape(a)[0], tf.shape(b)[0]))
-        return a + b
+        # Correct broadcasting implementation
+        max_length = tf.maximum(tf.shape(a)[0], tf.shape(b)[0])
+        # Create a proper shape tensor [max_length] instead of scalar max_length
+        output_shape = tf.stack([max_length])
+        a_broadcast = tf.broadcast_to(a, output_shape)
+        b_broadcast = tf.broadcast_to(b, output_shape)
+        return a_broadcast + b_broadcast
 
 def export_model():
-    # Save the model with dynamic shapes
+    # Save model
     model = AddModule()
     tf.saved_model.save(
         model,
@@ -25,7 +28,7 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Compile with optimized settings for dynamic shapes
+    # Compile with dynamic shape support
     iree_tf_compiler.compile_saved_model(
         "add_model",
         exported_names=["serving_default"],
@@ -38,14 +41,14 @@ def export_model():
             "--iree-input-demote-i64-to-i32",
             "--iree-flow-enable-pad-handling",
             
-            # Improved dynamic shape support
+            # Dynamic shape support
             "--iree-stream-resource-index-bits=32",
             
-            # Disable optimizations that conflict with dynamic shapes
+            # Disable problematic optimizations
             "--iree-opt-const-expr-hoisting=false",
             "--iree-opt-const-eval=false",
             
-            # New in IREE 3.5+ for broadcasting
+            # Improved broadcast handling
             "--iree-flow-enable-fuse-padding-into-linalg"
         ]
     )
