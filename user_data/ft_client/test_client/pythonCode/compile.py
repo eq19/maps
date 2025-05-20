@@ -1,5 +1,6 @@
 import os
 os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"
+os.environ["MLIR_CRASH_REPRODUCER_DIRECTORY"] = "1"
 os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"  # For debugging
 
 import tensorflow as tf
