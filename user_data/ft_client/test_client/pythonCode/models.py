@@ -1,5 +1,5 @@
 import tensorflow as tf
-from iree.compiler.tools.tf import tf_saved_model_to_stablehlo
+from iree.compiler.tf import tf_saved_model_to_stablehlo
 from iree.compiler.api import compile_str
 from iree.compiler.ir import Context
 
