@@ -4,7 +4,7 @@ os.environ["MLIR_CRASH_REPRODUCER_DIRECTORY"] = "1"
 os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"  # For debugging
 
 import tensorflow as tf
-from iree.compiler.tools import tf as iree_tf_compiler
+from iree.compiler.tools import tf as tfc
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -25,7 +25,7 @@ def export_model():
     )
 
     # Compile with minimal required flags
-    iree_tf_compiler.compile_saved_model(
+    tfc.compile_saved_model(
         "add_model",
         exported_names=["serving_default"],
         output_file="add_module.vmfb",
