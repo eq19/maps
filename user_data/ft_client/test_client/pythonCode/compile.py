@@ -1,6 +1,6 @@
 import tensorflow as tf
-from iree.compiler.tf import tf_saved_model_to_stablehlo
-from iree.compiler.api import compile_str
+from iree.compiler.tools import tf as iree_tf_compiler
+from iree.compiler.tools import compile_str
 from iree.compiler.ir import Context
 
 class AddModule(tf.Module):
@@ -22,14 +22,18 @@ def export_model():
 
     # Convert to StableHLO and compile
     with Context():
-        stablehlo = tf_saved_model_to_stablehlo(
-            saved_model_dir="add_model",
-            exported_names=["serving_default"]
+        # Step 1: Get MLIR in StableHLO dialect
+        mlir_text = iree_tf_compiler.compile_saved_model(
+            "add_model",
+            import_type="STABLEHLO",
+            exported_names=["serving_default"],
+            output_format="mlir-text"
         )
 
+        # Step 2: Compile to IREE VM bytecode
         compile_str(
-            stablehlo,
-            input_type="stablehlo_xla",
+            mlir_text,
+            input_type="stablehlo",
             target_backends=["llvm-cpu"],
             output_file="add_module.vmfb"
         )
