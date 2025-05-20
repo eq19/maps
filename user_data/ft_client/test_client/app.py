@@ -95,7 +95,7 @@ with open(output_path, "w") as f:
     json.dump(data, f, indent=2)
 
 # Print how long it took
-add_models.export_model()
+models.export_model()
 #print(datetime.now() - start_time)
 
 if __name__ == '__main__':
