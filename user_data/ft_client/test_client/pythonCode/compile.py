@@ -24,7 +24,7 @@ def export_model():
     # Correct compilation call
     compile_file(
         "add_model",
-        input_type="tf_saved_model",
+        input_type="stablehlo",
         output_file="add_module.vmfb",
         target_backends=["llvm-cpu"],
         # New way to specify exported names:
