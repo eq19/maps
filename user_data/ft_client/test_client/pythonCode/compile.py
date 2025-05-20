@@ -11,10 +11,8 @@ class AddModule(tf.Module):
         tf.TensorSpec([None], tf.float32),  # Dynamic shape
     ])
     def add(self, a, b):
-        # Ensure both tensors have the same shape before adding
-        shape = tf.shape(a)
-        b_reshaped = tf.broadcast_to(b, shape)
-        return a + b_reshaped
+        # Simple addition - let IREE handle broadcasting
+        return tf.add(a, b)
 
 def export_model():
     # Save model
@@ -25,7 +23,7 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Compile with minimal required flags
+    # Compile with optimized settings
     iree_tf_compiler.compile_saved_model(
         "add_model",
         exported_names=["serving_default"],
@@ -38,8 +36,11 @@ def export_model():
             "--iree-input-demote-i64-to-i32",
             "--iree-flow-enable-pad-handling",
             
-            # Minimal dynamic shape support
-            "--iree-stream-resource-index-bits=32"
+            # Dynamic shape support
+            "--iree-stream-resource-index-bits=32",
+            
+            # New in 3.5.0rc - enables dynamic broadcasting
+            "--iree-flow-enable-fuse-padding-into-linalg"
         ]
     )
 
