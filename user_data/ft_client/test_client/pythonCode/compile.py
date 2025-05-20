@@ -1,8 +1,8 @@
 import os
-os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"  # Still important for CPU targets
+os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"  # Still needed for CPU targets
 
 import tensorflow as tf
-from iree.compiler.tools import compile_file
+from iree.compiler.tools import tf as iree_tf_compiler
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
@@ -21,14 +21,13 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Correct compilation call
-    compile_file(
+    # Single-step compilation with PROPER ARGS
+    iree_tf_compiler.compile_saved_model(
         "add_model",
-        input_type="stablehlo",
+        exported_names=["serving_default"],
         output_file="add_module.vmfb",
         target_backends=["llvm-cpu"],
-        # New way to specify exported names:
-        extra_args=["--tf-saved-model-exported-names=serving_default"]
+        import_type="STABLEHLO"  # Explicit StableHLO conversion
     )
 
     print("Successfully compiled to add_module.vmfb")
