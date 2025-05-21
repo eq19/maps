@@ -1,4 +1,4 @@
-#!/bin/bash
+##!/bin/bash
 
 # Run IREE and capture ALL output
 RAW_OUTPUT=$(iree-run-module \
@@ -14,7 +14,7 @@ cat iree_output.txt
 echo "--------------------"
 
 # Pass to decoder
-./user_data/ft_client/test_client/decoder "$RAW_OUTPUT"
+./float_decoder "$RAW_OUTPUT"
 
 cat $ARTIFACT
 curl -s -X POST \
