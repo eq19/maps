@@ -8,12 +8,11 @@ from iree.compiler.tools import tf as tfc
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
-        tf.TensorSpec([10], tf.float32),  # Changed to fixed shape
-        tf.TensorSpec([10], tf.float32),  # Changed to fixed shape
+        tf.TensorSpec([10], tf.float32),  # Single input tensor
     ])
-    def add(self, a, b):
-        # Simple addition - no dynamic broadcasting
-        return a + b
+    def add(self, a):
+        # Return complex value a + ia
+        return tf.complex(a, a)  # Creates complex numbers with real=a, imag=a
 
 def export_model():
     # Save model
