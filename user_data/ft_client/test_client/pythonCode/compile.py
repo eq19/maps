@@ -8,11 +8,14 @@ from iree.compiler.tools import tf as tfc
 
 class ComplexAddModule(tf.Module):
     @tf.function(input_signature=[
-        tf.TensorSpec([13], tf.float32),  # Single input tensor of 13 elements
+        tf.TensorSpec([13], tf.float32),
     ])
     def add(self, a):
-        # Create explicit real/imaginary pairs in [13,2] shape
-        return tf.stack([a, a], axis=1)  # Stack as [[r1,i1], [r2,i2], ...]
+        # Create complex numbers using tf.complex (documentation-style)
+        complex_numbers = tf.complex(a, a)  # a + ai
+        # Convert to explicit real/imag pairs for IREE compatibility
+        return tf.stack([tf.math.real(complex_numbers), 
+                        tf.math.imag(complex_numbers)], axis=1)
 
 def export_model():
     # Create and save the model
@@ -23,7 +26,7 @@ def export_model():
         signatures={"serving_default": model.add}
     )
 
-    # Compile with explicit output shaping
+    # Compile with standard flags
     tfc.compile_saved_model(
         "complex_add_model",
         saved_model_tags={"serve"},
@@ -36,11 +39,9 @@ def export_model():
             "--iree-flow-enable-pad-handling",
             "--iree-llvmcpu-target-cpu=generic",
             "--iree-stream-resource-index-bits=64",
-            "--iree-vm-target-index-bits=64",
-            "--iree-io-parameter-export-shape=13x2xf32"  # Explicit output shape
+            "--iree-vm-target-index-bits=64"
         ]
     )
-
     print("Model compiled successfully to complex_add_module.vmfb")
 
 def test_model():
