@@ -10,38 +10,43 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Find the start of the hex data
-    const char *hex_start = strstr(argv[1], "13xcf64=");
-    if (!hex_start) {
-        fprintf(stderr, "Error: Couldn't find hex data marker\n");
+    // Find hex data by scanning for pattern
+    const char *p = argv[1];
+    while (*p) {
+        if (strncmp(p, "13xcf64=", 8) == 0) {
+            p += 8; // Skip marker
+            break;
+        }
+        p++;
+    }
+
+    if (!*p) {
+        fprintf(stderr, "ERROR: Hex data marker not found in:\n%s\n", argv[1]);
         return 1;
     }
-    hex_start += 8; // Skip past "13xcf64="
 
-    // Extract exactly 208 hex characters
-    char clean_hex[209] = {0}; // 208 chars + null terminator
-    int hex_chars = 0;
-    
-    while (*hex_start && hex_chars < 208) {
-        if (isxdigit(*hex_start)) {
-            clean_hex[hex_chars++] = *hex_start;
+    // Extract exactly 208 hex chars
+    char hex[209] = {0};
+    int count = 0;
+    while (*p && count < 208) {
+        if (isxdigit(*p)) {
+            hex[count++] = *p;
         }
-        hex_start++;
+        p++;
     }
 
-    if (hex_chars != 208) {
-        fprintf(stderr, "Error: Expected 208 hex chars, got %d\n", hex_chars);
-        fprintf(stderr, "Hex data: %s\n", clean_hex);
+    if (count != 208) {
+        fprintf(stderr, "ERROR: Need 208 hex chars, found %d\nHex data: %s\n", count, hex);
         return 1;
     }
 
     printf("Decoded complex numbers:\n");
     for (int i = 0; i < 13; i++) {
-        // Get 8 bytes for real and imag parts
+        // Extract each complex number
         char real_hex[9] = {0};
         char imag_hex[9] = {0};
-        memcpy(real_hex, clean_hex + i*16, 8);
-        memcpy(imag_hex, clean_hex + i*16 + 8, 8);
+        strncpy(real_hex, hex + i*16, 8);
+        strncpy(imag_hex, hex + i*16 + 8, 8);
 
         // Convert to floats
         uint32_t real_int = strtoul(real_hex, NULL, 16);
