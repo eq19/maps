@@ -8,7 +8,7 @@ from iree.compiler.tools import tf as tfc
 
 class AddModule(tf.Module):
     @tf.function(input_signature=[
-        tf.TensorSpec([10], tf.float32),  # Single input tensor
+        tf.TensorSpec([13], tf.float32),  # Single input tensor
     ])
     def add(self, a):
         # Return complex value a + ia
