@@ -10,36 +10,38 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Find the hex data in the IREE output
-    const char *p = strstr(argv[1], "13xcf64=");
-    if (!p) {
-        fprintf(stderr, "Error: Couldn't find hex data in input\n");
+    // Find the start of the hex data
+    const char *hex_start = strstr(argv[1], "13xcf64=");
+    if (!hex_start) {
+        fprintf(stderr, "Error: Couldn't find hex data marker\n");
         return 1;
     }
-    p += 8; // Skip past "13xcf64="
+    hex_start += 8; // Skip past "13xcf64="
 
-    // Extract and clean hex string
-    char clean_hex[256] = {0};
-    int j = 0;
-    for (int i = 0; p[i] && j < 208; i++) {
-        if (isxdigit(p[i])) {
-            clean_hex[j++] = p[i];
+    // Extract exactly 208 hex characters
+    char clean_hex[209] = {0}; // 208 chars + null terminator
+    int hex_chars = 0;
+    
+    while (*hex_start && hex_chars < 208) {
+        if (isxdigit(*hex_start)) {
+            clean_hex[hex_chars++] = *hex_start;
         }
+        hex_start++;
     }
-    clean_hex[j] = '\0';
 
-    if (strlen(clean_hex) != 208) {
-        fprintf(stderr, "Error: Need exactly 208 hex chars (got %zu)\n", strlen(clean_hex));
+    if (hex_chars != 208) {
+        fprintf(stderr, "Error: Expected 208 hex chars, got %d\n", hex_chars);
+        fprintf(stderr, "Hex data: %s\n", clean_hex);
         return 1;
     }
 
     printf("Decoded complex numbers:\n");
     for (int i = 0; i < 13; i++) {
-        // Extract real and imag parts
+        // Get 8 bytes for real and imag parts
         char real_hex[9] = {0};
         char imag_hex[9] = {0};
-        strncpy(real_hex, clean_hex + i*16, 8);
-        strncpy(imag_hex, clean_hex + i*16 + 8, 8);
+        memcpy(real_hex, clean_hex + i*16, 8);
+        memcpy(imag_hex, clean_hex + i*16 + 8, 8);
 
         // Convert to floats
         uint32_t real_int = strtoul(real_hex, NULL, 16);
