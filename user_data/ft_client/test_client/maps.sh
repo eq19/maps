@@ -1,5 +1,7 @@
 ##!/bin/bash
 
+cat $ARTIFACT
+
 # Run IREE and capture ALL output
 RAW_OUTPUT=$(iree-run-module \
   --module=complex_module.vmfb \
@@ -16,7 +18,6 @@ echo "--------------------"
 # Pass to decoder
 ./float_decoder "$RAW_OUTPUT"
 
-cat $ARTIFACT
 curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
   -H "Content-Type: application/json" \
