@@ -16,7 +16,7 @@ ENV GITHUB_ACCESS_TOKEN=""
 ENV PGLOG log_statement=all
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
 ENV PIP_ROOT_USER_ACTION=ignore
-ENV PATH="/usr/local/iree:${PATH}"
+#ENV PATH="/usr/local/iree:${PATH}"
 
 ADD . /home/runner
 WORKDIR /home/runner
