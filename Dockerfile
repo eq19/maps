@@ -58,9 +58,11 @@ RUN npm install --package-lock-only redis talib pg mathjs gauss commander handle
 
 RUN IREE_VERSION=${IREE_VERSION:-$(curl -s https://api.github.com/repos/iree-org/iree/releases | jq -r 'map(select(.prerelease == true)) | .[0].tag_name' | sed 's/^iree-//')} && \
     cd /tmp && \
-    wget -qO iree-run-module https://github.com/iree-org/iree/releases/download/iree-$IREE_VERSION/iree-run-module-$IREE_VERSION-linux-x86_64 && \
-    chmod +x iree-run-module && \
-    mv iree-run-module /usr/local/bin/ && \
+    wget -qO iree-dist.tar.xz https://github.com/iree-org/iree/releases/download/iree-$IREE_VERSION/iree-dist-$IREE_VERSION-linux-x86_64.tar.xz && \
+    mkdir -p /usr/local/bin && \
+    tar -xJf iree-dist.tar.xz --wildcards --no-anchored 'iree-run-module' -O > /usr/local/bin/iree-run-module && \
+    chmod +x /usr/local/bin/iree-run-module && \
+    rm iree-dist.tar.xz && \
     # Optional: Verify the installation
     iree-run-module --help
     
