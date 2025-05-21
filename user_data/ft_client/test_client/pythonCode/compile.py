@@ -1,7 +1,7 @@
 import os
+os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"
 os.environ["IREE_LLVMAOT_DISABLE_NVPTX"] = "1"
 os.environ["MLIR_CRASH_REPRODUCER_DIRECTORY"] = "1"
-os.environ["IREE_SAVE_TEMPS"] = "/tmp/iree"
 
 import tensorflow as tf
 from iree.compiler.tools import tf as tfc
