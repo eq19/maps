@@ -11,8 +11,11 @@ class AddModule(tf.Module):
         tf.TensorSpec([13], tf.float32),
     ])
     def add(self, a):
-        # Return a dictionary with real and imag parts
-        return {"result": tf.stack([a, a], axis=1)}  # Shape: [13, 2]
+        # Return real and imag as separate tensors
+        return {
+            "real": a,
+            "imag": a
+        }
 
 def export_model():
     model = AddModule()
@@ -33,7 +36,8 @@ def export_model():
             "--iree-input-demote-i64-to-i32",
             "--iree-flow-enable-pad-handling",
             "--iree-llvmcpu-target-cpu=generic",
-            "--iree-hal-dump-output-formats=full"  # For debugging
+            "--iree-stream-resource-index-bits=64",
+            "--iree-vm-target-index-bits=64"
         ]
     )
 
