@@ -10,28 +10,27 @@ RAW_OUTPUT=$(iree-run-module \
 # Extract the hex data after "13xcf64="
 HEX_DATA=$(echo "$RAW_OUTPUT" | grep -oP '13xcf64=\K[^ ]+')
 
-# Hex to Float conversion using pure bash
+# Simplified hex-to-float decoder using awk only
 hex_to_float() {
-    local hex=$1
-    # Reverse byte order (little-endian to big-endian)
-    local reversed=$(echo "$hex" | sed -r 's/(..)(..)(..)(..)/\4\3\2\1/')
-    # Convert to binary IEEE 754 float
-    local sign=$((0x${reversed:0:1} >> 3))
-    local exponent=$(( (0x${reversed:0:2} & 0x7F) << 1 | 0x${reversed:2:1} >> 7 ))
-    local mantissa=$(( (0x${reversed:2:1} & 0x7F) << 16 | 0x${reversed:3:1} << 8 ))
-    exponent=$((exponent - 127))
-    printf "%.1f" $(echo "scale=2; (-1)^$sign * (1 + $mantissa/8388608) * 2^$exponent" | bc)
+    echo "$1" | awk '{
+        # Convert little-endian hex to float (simplified)
+        split($0, bytes, /../)
+        sign = (strtonum("0x" bytes[4]) > 127 ? -1 : 1
+        exponent = (strtonum("0x" bytes[4] "%128")*2 + int(strtonum("0x" bytes[3])/128)
+        mantissa = (strtonum("0x" bytes[3] "%128")*65536 + strtonum("0x" bytes[2])*256 + strtonum("0x" bytes[1])
+        printf "%.1f", sign * (2^(exponent-127)) * (1 + mantissa/8388608)
+    }'
 }
 
 # Decode each complex number
 echo "Decoded complex numbers:"
 i=1
 for chunk in $HEX_DATA; do
-    # Process real and imaginary parts
+    # Split into real and imag parts
     REAL_HEX=${chunk:0:8}
     IMAG_HEX=${chunk:8:8}
     
-    # Hex to float conversion
+    # Decode using awk
     REAL=$(hex_to_float "$REAL_HEX")
     IMAG=$(hex_to_float "$IMAG_HEX")
     
