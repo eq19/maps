@@ -12,7 +12,7 @@ HEX_DATA=$(echo "$RAW_OUTPUT" | grep -oP '13xcf64=\K[0-9A-F]+' | tr -d ' ')
 
 # Use our C decoder
 echo "Decoded complex numbers:"
-./decoder "$HEX_DATA"
+./user_data/ft_client/test_client//decoder "$HEX_DATA"
 
 cat $ARTIFACT
 curl -s -X POST \
