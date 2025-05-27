@@ -1,6 +1,6 @@
 ##!/bin/bash
 
-cat $ARTIFACT
+#cat $ARTIFACT
 
 # Run IREE and capture ALL output
 RAW_OUTPUT=$(iree-run-module \
