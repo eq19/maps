@@ -226,6 +226,44 @@ A second order tensor boson (***spin = 2***) called the [graviton](https://en.wi
 
 [![Beyond the standard model](https://github.com/eq19/maps/assets/8466209/770d6abc-86d1-4195-b102-53e18fca3c10)](https://github.com/eq19/maps/files/13793234/the-physics-of-the-standard-model-and-beyond.pdf)
 
+```
+W^\pm = \frac{1}{\sqrt{2}}(W^1 \mp iW^2)
+ | Charged weak current |
+| **Z⁰**         |  
+\[
+Z = \cos\theta_W W^3 - \sin\theta_W B
+ | Neutral weak current |
+| **γ (photon)** |  
+\[
+\gamma = \sin\theta_W W^3 + \cos\theta_W B
+ | Electromagnetism (QED) |
+
+Here, **θₜ (Weinberg angle)** determines the mixing between W³ and B.
+
+## **4. What Each Boson Does**
+
+| Boson     | Source Fields    | Interacts With            | Mass    |
+|-----------|------------------|---------------------------|---------|
+| **W⁺, W⁻** | W¹, W²           | Left-handed fermions      | Massive |
+| **Z⁰**     | W³ and B⁰        | Left-handed + some right-handed fermions | Massive |
+| **γ**      | W³ and B⁰        | All electrically charged particles | Massless |
+
+## **5. Final Picture**
+
+SU(2)_L × U(1)_Y
+        |
+  (Spontaneous symmetry breaking via Higgs field)
+        ↓
+W⁺  W⁻  Z⁰   γ
+↘   ↙         ↓
+Weak force   QED
+
+- **W⁺/W⁻/Z⁰**: Responsible for weak interactions (short-range, massive)
+- **γ (photon)**: Responsible for electromagnetism (long-range, massless)
+```
+
+![Symmetry Breaking](https://github.com/user-attachments/assets/e4d223e5-cc71-487e-beb7-c64d2fdc6eb0)
+
 ```note
 The diagram shows the elementary particles of the Standard Model (the Higgs boson, the three generations of quarks and leptons, and the gauge bosons), including their names, masses, spins, charges, chiralities, and interactions with the strong, weak and electromagnetic forces. It also depicts the crucial role of the Higgs boson in ***[Electroweak Symmetry Breaking](https://www.mpi-hd.mpg.de/lin/events/group_seminar/EW-SUSY/index.html)***, and shows how the properties of the various particles differ in the (high-energy) symmetric phase (top) and the (low-energy) broken-symmetry phase (bottom). _([Wikipedia](https://en.wikipedia.org/wiki/Mathematical_formulation_of_the_Standard_Model))_
 ```
