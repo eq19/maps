@@ -47,7 +47,7 @@ while (current.val <= upper_bound):
 
         #get the color that corresponds to that multiplication
         color = utilities.spin.get(mult, None) + "_" + str(num % 6)
-        print(num,mult,color)
+        #print(num,mult,color)
         current.add_color(color) #add on the power and its associated color
         current.set_roll_double() # set_roll_double(current)
         #see if there were any doubles and set the roll_double field
@@ -91,11 +91,11 @@ for org in data:
     org.update(new_org)
 
 # Save the modified JSON
-models.export_model()
 with open(output_path, "w") as f:
     json.dump(data, f, indent=2)
 
 # Print how long it took
+compile.export_model()
 #print(datetime.now() - start_time)
 
 if __name__ == '__main__':

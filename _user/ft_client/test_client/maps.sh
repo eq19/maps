@@ -1,25 +1,23 @@
-#!/usr/bin/env bash
+##!/bin/bash
 
-# Look for the dialect declaration (should contain 'stablehlo')
-head -n 50 add_model_stablehlo.mlir
+#cat $ARTIFACT
 
-#iree-compile \
-#  --iree-input-type=stablehlo \
-#  --iree-hal-target-backends=llvm-cpu \
-#  --iree-llvmcpu-target-cpu-features=host \
-#  --iree-global-optimization-opt-level=0 \
-#  --mlir-print-ir-after-all \
-#  --mlir-print-ir-after-failure \
-#  add_model_stablehlo.mlir \
-#  -o add_module.vmfb
-  
-iree-run-module \
-  --module=add_module.vmfb \
-  --function=add \
-  --input=2.0 \
-  --input=3.0
+# Run IREE and capture ALL output
+RAW_OUTPUT=$(iree-run-module \
+  --module=complex_module.vmfb \
+  --function=serving_default \
+  --input="13xf32=[1,2,3,4,5,6,7,8,9,10,11,12,13]" \
+  --print_statistics=false 2>&1)
 
-cat $ARTIFACT
+# Debug: Save output to file
+echo "$RAW_OUTPUT" > iree_output.txt
+echo "---- RAW OUTPUT ----"
+cat iree_output.txt
+echo "--------------------"
+
+# Pass to decoder
+./float_decoder "$RAW_OUTPUT"
+
 curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
   -H "Content-Type: application/json" \
