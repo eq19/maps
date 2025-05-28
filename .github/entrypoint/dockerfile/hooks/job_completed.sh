@@ -2,6 +2,8 @@
 # Structure: Cell Types – Modulo 6
 
 hr='------------------------------------------------------------------------------------'
+CONTAINER="mydb"
+APP="freqtrade"
 
 echo -e "\n$hr\nFinal Space\n$hr"
 df -h
@@ -28,14 +30,23 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
   if [[ "$RERUN_RUNNER" == "true" ]]; then
     /mnt/disks/deeplearning/usr/bin/docker exec mydb supervisorctl start freqtrade
     /mnt/disks/deeplearning/usr/bin/docker exec mydb service cron start
-  else
+
+  #Check if ✅ $APP is running inside $CONTAINER
+  elif /mnt/disks/deeplearning/usr/bin/docker ps --format '{{.Names}}' | grep -q "^${CONTAINER}$" && \
+    /mnt/disks/deeplearning/usr/bin/docker exec "$CONTAINER" supervisorctl status "$APP" | grep -q "RUNNING"; then
+
     if [[ "$CONTAINER_NAME" == "runner1" ]]; then
       /mnt/disks/deeplearning/usr/bin/docker exec runner2 /home/runner/scripts/exitpoint.sh $TARGET_REPOSITORY
     elif [[ "$CONTAINER_NAME" == "runner2" ]]; then
       /mnt/disks/deeplearning/usr/bin/docker exec runner1 /home/runner/scripts/exitpoint.sh $TARGET_REPOSITORY
     fi
-  fi
 
+  else
+    echo "❌ $APP is NOT running (either container is down or process crashed)."
+    # Optionally restart:
+    # docker start "$CONTAINER" && docker exec "$CONTAINER" supervisorctl start "$APP"
+
+  fi
 fi
 
 echo -e "\njob completed"

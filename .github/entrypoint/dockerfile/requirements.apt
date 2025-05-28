@@ -1,4 +1,5 @@
 apt-transport-https
+bc
 build-essential
 ca-certificates
 #clang
