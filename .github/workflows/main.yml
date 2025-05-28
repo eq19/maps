@@ -9,12 +9,10 @@ on:
   repository_dispatch:
     types: [trigger_action, retry_workflow]
 
-# 🕸️ Allow concurrent
 concurrency:
-  group: "pages"
   cancel-in-progress: true
+  group: ${{ github.workflow }}
 
-# ⚠️ Set token permissions
 permissions: write-all
         
 # 🕸️ Global Environment
@@ -132,6 +130,7 @@ jobs:
     steps:
       - name: 📂 Checkout
         uses: actions/checkout@v4
+        id: check-out
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
@@ -146,8 +145,8 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ needs.lexering.outputs.function }}
-          failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
-            (env.JOBS_ID == 4 && contains(needs.*.result, 'failure')) }}
+          failure_status: ${{ contains(steps.check-out.conclusion, 'failure') ||
+            (env.JOBS_ID == 4 && contains(needs.lexering.result, 'failure')) }}
        
       - name: 🌀 Evaluate Syntax
         if: ${{ env.PASS == 'true' }}
@@ -159,8 +158,8 @@ jobs:
           api_secret: ${{ secrets.ACCESS_KEY }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ toJSON(steps.set-parser.outputs) }}
-          failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
-            (env.JOBS_ID == 4 && contains(needs.*.result, 'failure')) }}
+          failure_status: ${{ contains(steps.set-parser.conclusion, 'failure') ||
+            (env.JOBS_ID == 4 && contains(needs.lexering.result, 'failure')) }}
   
       - name: ⚧️ Set Grammar Rules
         uses: eq19/grammar@v1
@@ -170,5 +169,5 @@ jobs:
           token: ${{ secrets.ACCESS_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ toJSON(steps.eval-syntax.outputs) }}
-          failure_status: ${{ contains(steps.*.conclusion, 'failure') ||
-            (env.JOBS_ID == 4 && contains(needs.*.result, 'failure')) }}
+          failure_status: ${{ contains(steps.eval-syntax.conclusion, 'failure') ||
+            (env.JOBS_ID == 4 && contains(needs.lexering.result, 'failure')) }}
