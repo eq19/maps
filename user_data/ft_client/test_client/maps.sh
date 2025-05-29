@@ -1,7 +1,5 @@
 ##!/bin/bash
 
-#cat $ARTIFACT
-
 # Run IREE and capture ALL output
 RAW_OUTPUT=$(iree-run-module \
   --module=complex_module.vmfb \
@@ -23,3 +21,5 @@ curl -s -X POST \
   -H "Content-Type: application/json" \
   https://us-central1-feedmapping.cloudfunctions.net/function \
   --data @${ARTIFACT} | jq '.'
+
+cat $OUTPUT
