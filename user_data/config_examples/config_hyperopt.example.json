@@ -659,7 +659,214 @@
       "hyperopt_loss": "ProfitDrawDownHyperOptLoss"
     },
     {
-      "id": 4,
+      "id": 73,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 74,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 75,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 76,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 77,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 78,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 79,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 80,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 81,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 82,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 83,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 84,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 85,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 86,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 87,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 88,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 89,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 90,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 91,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 92,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 93,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 94,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 95,
+      "description": "Refine stoploss (last 120 days)",
+      "days": 8,
+      "epochs": 19,
+      "parallel_jobs": 4,
+      "spaces": ["stoploss"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+    },
+    {
+      "id": 96,
       "description": "Refine stoploss (last 120 days)",
       "days": 8,
       "epochs": 19,
