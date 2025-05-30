@@ -20,6 +20,6 @@ curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
   -H "Content-Type: application/json" \
   https://us-central1-feedmapping.cloudfunctions.net/function \
-  --data @${ARTIFACT} | jq '.'
+  --data @${ARTIFACT} | jq '.' > $OUTPUT
 
 cat $OUTPUT
