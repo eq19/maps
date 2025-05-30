@@ -227,7 +227,214 @@
       "hyperopt_loss": "SharpeHyperOptLoss"
     },
     {
-      "id": 2,
+      "id": 25,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 26,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 27,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 28,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 29,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 30,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 31,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 32,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 33,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 34,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 35,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 36,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 37,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 38,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 39,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 40,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 41,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 42,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 43,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 44,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 45,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 46,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 47,
+      "description": "Optimize sell (last 60 days)",
+      "days": 6,
+      "epochs": 13,
+      "parallel_jobs": 4,
+      "spaces": ["sell"],
+      "hyperopt_loss": "SortinoHyperOptLoss"
+    },
+    {
+      "id": 48,
       "description": "Optimize sell (last 60 days)",
       "days": 6,
       "epochs": 13,
