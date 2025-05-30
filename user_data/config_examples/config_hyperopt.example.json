@@ -21,6 +21,213 @@
     },
     {
       "id": 2,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 3,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 4,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 5,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 6,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 7,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 8,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 9,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 10,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 11,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 12,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 14,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 15,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 16,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 17,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 18,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 19,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 20,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 21,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 22,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 23,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 24,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 5,
+      "epochs": 11,
+      "parallel_jobs": 4,
+      "spaces": ["buy"],
+      "hyperopt_loss": "SharpeHyperOptLoss"
+    },
+    {
+      "id": 2,
       "description": "Optimize sell (last 60 days)",
       "days": 6,
       "epochs": 13,
