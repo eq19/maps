@@ -19,6 +19,7 @@ from freqtrade.persistence import Trade
 
 # --------------------------------
 # Add your lib to import here
+import json
 import random
 import logging
 from itertools import product, chain
