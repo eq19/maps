@@ -25,6 +25,7 @@ import logging
 from itertools import product, chain
 from datetime import datetime
 from functools import reduce
+from pathlib import Path
 import talib.abstract as ta
 import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
