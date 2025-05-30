@@ -1091,7 +1091,7 @@
       "hyperopt_loss": "CalmarHyperOptLoss"
     },
     {
-      "id": 6,
+      "id": 121,
       "description": "Refine trades parameters for risk management (last 120 days)",
       "days": 10,
       "epochs": 29,
@@ -1100,7 +1100,421 @@
       "hyperopt_loss": "ShortTradeDurHyperOptLoss"
     },
     {
-      "id": 7,
+      "id": 122,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 123,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 124,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 125,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 126,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 127,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 128,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 129,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 130,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 131,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 132,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 133,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 134,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 135,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 136,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 137,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 138,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 139,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 140,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 141,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 142,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 143,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 144,
+      "description": "Refine trades parameters for risk management (last 120 days)",
+      "days": 10,
+      "epochs": 29,
+      "parallel_jobs": 4,
+      "spaces": ["trades"],
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+    },
+    {
+      "id": 145,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 146,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 147,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 148,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 149,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 150,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 151,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 152,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 153,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 154,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 155,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 156,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 157,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 158,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 159,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 160,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 161,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 162,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 163,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 164,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 165,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 166,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 167,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["protection"],
+      "hyperopt_loss": "ExpectancyHyperOptLoss"
+    },
+    {
+      "id": 168,
       "description": "Comprehensive optimization with all parameters (last 180 days)",
       "days": 11,
       "epochs": 31,
