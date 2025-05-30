@@ -7,7 +7,7 @@
   "print_all": true,
   "max_generated_candidates": 100,
   "max_parallel_backtest": 8,
-  "built_in": ["ShortTradeDurHyperOptLoss", "OnlyProfitHyperOptLoss", "SharpeHyperOptLoss", "SharpeHyperOptLossDaily", "SortinoHyperOptLoss", "SortinoHyperOptLossDaily", "CalmarHyperOptLoss", "MaxDrawDownHyperOptLoss", "MaxDrawDownRelativeHyperOptLoss", "ProfitDrawDownHyperOptLoss", "MultiMetricHyperOptLoss"],
+  "built_in": ["ShortTradeDurHyperOptLoss", "OnlyProfitHyperOptLoss", "SharpeHyperOptLoss", "SharpeHyperOptLossDaily", "SortinoHyperOptLoss", "SortinoHyperOptLossDaily", "CalmarHyperOptLoss", "MaxDrawDownHyperOptLoss", "MaxDrawDownPerPairHyperOptLoss", "MaxDrawDownRelativeHyperOptLoss", "ProfitDrawDownHyperOptLoss", "MultiMetricHyperOptLoss"],
   "custom_built": ["BuySpaceCombinedHyperOptLoss", "CombinedDrawDownProfitHyperOptLoss", "ComprehensiveTradeOptimizationLoss", "DefaultSpaceCombinedHyperOptLoss", "MaxDrawDownRelativeHyperOptLossWithTradePenalty", "ProfitDrawDownHyperOptLossWithTradePenalty", "ROISpaceCombinedHyperOptLoss", "SellSpaceCombinedHyperOptLoss", "SharpeSortinoCombinedHyperOptLoss", "SharpeSortinoProfitDrawdownHyperOptLoss", "TradesSpaceCombinedHyperOptLoss"],
   "pipelines": [
     {
