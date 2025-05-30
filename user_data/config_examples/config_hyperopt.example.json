@@ -875,7 +875,214 @@
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
     },
     {
-      "id": 5,
+      "id": 97,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 98,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 99,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 100,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 101,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 102,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 103,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 104,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 105,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 106,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 107,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 108,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 109,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 110,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 111,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 112,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 113,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 114,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 115,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 116,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 117,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 118,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 119,
+      "description": "Refine trailing (last 120 days)",
+      "days": 9,
+      "epochs": 23,
+      "parallel_jobs": 4,
+      "spaces": ["trailing"],
+      "hyperopt_loss": "CalmarHyperOptLoss"
+    },
+    {
+      "id": 120,
       "description": "Refine trailing (last 120 days)",
       "days": 9,
       "epochs": 23,
