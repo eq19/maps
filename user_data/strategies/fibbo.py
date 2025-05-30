@@ -51,6 +51,11 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
 
 class fibbo(IStrategy):
 
+    # Load the JSON parameters at class level
+    param_file = Path(__file__).parent/"params.json"
+    with open(param_file) as f:
+        param_config = json.load(f)
+
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
