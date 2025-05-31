@@ -9,7 +9,7 @@ TARGET_TRADES = 1500
 EXPECTED_MAX_PROFIT = 1.2
 MAX_ACCEPTED_TRADE_DURATION = 900
 
-class TradeDurDrawDownCombinedHyperOptLoss(IHyperOptLoss):
+class TradesSpaceCombinedHyperOptLoss(IHyperOptLoss):
     """
     Defines a combined loss function for hyperopt, optimizing for profit while controlling
     for both maximum drawdown and Calmar Ratio.
