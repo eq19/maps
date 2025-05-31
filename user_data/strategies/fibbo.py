@@ -5,7 +5,7 @@
 import numpy as np  # noqa
 import pandas as pd  # noqa
 from pandas import DataFrame
-from typing import Optional, Union
+from typing import Optional, Union, List, Dict
 
 from freqtrade.strategy import (
     BooleanParameter,
