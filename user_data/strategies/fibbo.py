@@ -5,6 +5,7 @@
 import numpy as np  # noqa
 import pandas as pd  # noqa
 from pandas import DataFrame
+from skopt.space import Dimension, Integer
 from typing import Optional, Union, List, Dict
 
 from freqtrade.strategy import (
