@@ -197,7 +197,7 @@
       "epochs": 11,
       "parallel_jobs": 4,
       "spaces": ["buy"],
-      "hyperopt_loss": "SharpeHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 22,
@@ -206,7 +206,7 @@
       "epochs": 11,
       "parallel_jobs": 4,
       "spaces": ["buy"],
-      "hyperopt_loss": "SharpeHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 23,
@@ -413,7 +413,7 @@
       "epochs": 13,
       "parallel_jobs": 4,
       "spaces": ["sell"],
-      "hyperopt_loss": "SortinoHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 46,
@@ -422,7 +422,7 @@
       "epochs": 13,
       "parallel_jobs": 4,
       "spaces": ["sell"],
-      "hyperopt_loss": "SortinoHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 47,
@@ -629,7 +629,7 @@
       "epochs": 17,
       "parallel_jobs": 4,
       "spaces": ["roi"],
-      "hyperopt_loss": "ProfitDrawDownHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 70,
@@ -638,7 +638,7 @@
       "epochs": 17,
       "parallel_jobs": 4,
       "spaces": ["roi"],
-      "hyperopt_loss": "ProfitDrawDownHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 71,
@@ -845,7 +845,7 @@
       "epochs": 19,
       "parallel_jobs": 4,
       "spaces": ["stoploss"],
-      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 94,
@@ -854,7 +854,7 @@
       "epochs": 19,
       "parallel_jobs": 4,
       "spaces": ["stoploss"],
-      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 95,
@@ -1061,7 +1061,7 @@
       "epochs": 23,
       "parallel_jobs": 4,
       "spaces": ["trailing"],
-      "hyperopt_loss": "CalmarHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 118,
@@ -1070,7 +1070,7 @@
       "epochs": 23,
       "parallel_jobs": 4,
       "spaces": ["trailing"],
-      "hyperopt_loss": "CalmarHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 119,
@@ -1277,7 +1277,7 @@
       "epochs": 29,
       "parallel_jobs": 4,
       "spaces": ["trades"],
-      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 142,
@@ -1286,7 +1286,7 @@
       "epochs": 29,
       "parallel_jobs": 4,
       "spaces": ["trades"],
-      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 143,
@@ -1493,7 +1493,7 @@
       "epochs": 31,
       "parallel_jobs": 4,
       "spaces": ["protection"],
-      "hyperopt_loss": "ExpectancyHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 166,
@@ -1502,7 +1502,7 @@
       "epochs": 31,
       "parallel_jobs": 4,
       "spaces": ["protection"],
-      "hyperopt_loss": "ExpectancyHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 167,
