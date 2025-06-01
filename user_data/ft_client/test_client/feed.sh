@@ -69,6 +69,7 @@ hyperopt() {
       --config $CONFIG --logfile /dev/null > /dev/null 2>&1
     freqtrade hyperopt-list
     cat $PARAMETERS
+    cat user_data/strategies/fibbo.json
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
     freqtrade backtesting --help
