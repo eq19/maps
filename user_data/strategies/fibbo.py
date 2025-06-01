@@ -89,7 +89,7 @@ class fibbo(IStrategy):
 
     ############################################################################
     # Creating and using a custom loss function
-    # Ref: https://www.freqtrade.io/en/stable/advanced-hyperopt/#overriding-pre-defined-spaces
+    # Ref: https://www.freqtrade.io/en/stable/advanced-hyperopt/
 
     # ROI table:
     minimal_roi = {
