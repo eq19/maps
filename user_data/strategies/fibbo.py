@@ -87,6 +87,8 @@ class fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
 
     ############################################################################
+    # Creating and using a custom loss function
+    #
 
     # ROI table:
     minimal_roi = {
