@@ -68,6 +68,7 @@ hyperopt() {
       --enable-protections --analyze-per-epoch  --random-state ${id} \
       --logfile /dev/null > /dev/null 2>&1
     freqtrade hyperopt-list
+    cat $PARAMETERS
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
     freqtrade backtesting --help
