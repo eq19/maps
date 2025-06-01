@@ -82,6 +82,7 @@ class fibbo(IStrategy):
     use_custom_stoploss = True
 
     # These values can be overridden in the config.
+    # Ref: https://www.freqtrade.io/en/stable/configuration/
     use_exit_signal = True
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
