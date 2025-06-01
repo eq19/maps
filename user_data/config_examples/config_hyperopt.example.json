@@ -674,7 +674,7 @@
       "epochs": 19,
       "parallel_jobs": 4,
       "spaces": ["stoploss"],
-      "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
+      "hyperopt_loss": "ShortTradeDurHyperOptLoss"
     },
     {
       "id": 75,
