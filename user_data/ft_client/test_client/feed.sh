@@ -64,8 +64,8 @@ hyperopt() {
     echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
-      --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies \
-      --enable-protections --analyze-per-epoch  --random-state ${id} \
+      --config $CONFIG --strategy-path /home/runner/user_data/strategies \
+      #--enable-protections --analyze-per-epoch  --random-state ${id} \
       --logfile /dev/null > /dev/null 2>&1
     freqtrade hyperopt-list
     cat $PARAMETERS
