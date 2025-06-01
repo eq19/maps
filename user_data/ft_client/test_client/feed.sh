@@ -13,6 +13,7 @@ PARAMETERS=/home/runner/user_data/strategies/fibbo.json
 EDGEFILE=/home/runner/user_data/config_examples/config_edge.example.json
 CONFIG=/home/runner/user_data/config_examples/config_exchange.example.json
 PAIRFILE=/home/runner/user_data/config_examples/config_pairlist.example.json
+HYPERFILE=/home/runner/user_data/config_examples/config_hyperopt.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -44,7 +45,6 @@ printenv
 hyperopt() {
 
   # Load JSON and filter by given ID
-  HYPERFILE=user_data/config_examples/config_hyperopt.example.json
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     id=$(echo "$pipeline" | jq -r '.id')
     days=$(echo "$pipeline" | jq -r '.days')
