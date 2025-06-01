@@ -55,7 +55,7 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
 class fibbo(IStrategy):
 
     # Load the JSON parameters at class level
-    param_file = Path(__file__).parent/"params.json"
+    param_file = Path(__file__).parent/'params.json'
     with open(param_file) as f:
         param_config = json.load(f)
 
@@ -86,6 +86,15 @@ class fibbo(IStrategy):
     use_exit_signal = True
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
+
+    # Trailing stop
+    trailing_stop = True
+    trailing_stop_positive = 0.236
+    trailing_stop_positive_offset = 0.786
+    trailing_only_offset_is_reached = True
+
+    # Optional order time in force.
+    order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
     ############################################################################
     # Creating and using a custom loss function
@@ -162,15 +171,6 @@ class fibbo(IStrategy):
             "signal": 9
         },
     }
-
-    # Trailing stop
-    trailing_stop = True
-    trailing_stop_positive = 0.236
-    trailing_stop_positive_offset = 0.786
-    trailing_only_offset_is_reached = True
-
-    # Optional order time in force.
-    order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
     fast_demas      = [5, 8, 13, 21]
     slow_emas       = [34, 55, 89, 144]
