@@ -8,7 +8,8 @@ hr='----------------------------------------------------------------------------
 SCORE=100
 FEE=0.003322
 TIMEFRAMES='1m 15m'
-STRATEGY=/home/runner/user_data/strategies/fibbo.json
+STRATEGY=/home/runner/user_data/strategies/fibbo.py
+PARAMETERS=/home/runner/user_data/strategies/fibbo.json
 EDGEFILE=/home/runner/user_data/config_examples/config_edge.example.json
 CONFIG=/home/runner/user_data/config_examples/config_exchange.example.json
 PAIRFILE=/home/runner/user_data/config_examples/config_pairlist.example.json
@@ -193,7 +194,7 @@ else
 
   echo -e "\n$hr\nRUN BACKTEST\n$hr"
   freqtrade backtesting --help
-  cat $STRATEGY > /tmp/store.json
+  cat $PARAMETERS > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
