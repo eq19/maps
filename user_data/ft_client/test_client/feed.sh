@@ -9,9 +9,9 @@ SCORE=100
 FEE=0.003322
 TIMEFRAMES='1m 15m'
 STRATEGY=/home/runner/user_data/strategies/fibbo.json
-EDGEFILE=user_data/config_examples/config_edge.example.json
-CONFIG=user_data/config_examples/config_exchange.example.json
-PAIRFILE=user_data/config_examples/config_pairlist.example.json
+EDGEFILE=/home/runner/user_data/config_examples/config_edge.example.json
+CONFIG=/home/runner/user_data/config_examples/config_exchange.example.json
+PAIRFILE=/home/runner/user_data/config_examples/config_pairlist.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -63,6 +63,7 @@ hyperopt() {
     echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
+      --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
       --logfile /dev/null > /dev/null 2>&1
     freqtrade hyperopt-list
