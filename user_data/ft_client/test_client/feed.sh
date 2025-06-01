@@ -61,12 +61,12 @@ hyperopt() {
       hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
     done
 
-    echo -e "\n$hr\nID: $id 👉 Running $losses | Spaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+    echo -e "\n$hr\nID: $id 👉 Spaces: $spaces | $losses | Days: $days | Epochs: $epochs\n$hr"
+    freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
-      --config $CONFIG --strategy-path /home/runner/user_data/strategies \
-      #--enable-protections --analyze-per-epoch  --random-state ${id} \
-      --logfile /dev/null > /dev/null 2>&1
+      --strategy $STRATEGY --strategy-path /home/runner/user_data/strategies \
+      #--enable-protections --analyze-per-epoch  --random-state ${id} -j 4 \
+      --config $CONFIG --logfile /dev/null > /dev/null 2>&1
     freqtrade hyperopt-list
     cat $PARAMETERS
 
