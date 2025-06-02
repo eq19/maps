@@ -78,23 +78,34 @@ class fibbo(IStrategy):
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
 
-    # Hyperoptable ROI parameters
+    # Hyperoptable ROI parameters - keep these as class variables
     roi_t1 = IntParameter(50, 600, default=115, space='roi', optimize=True)
     roi_t2 = IntParameter(30, 300, default=280, space='roi', optimize=True)
     roi_t3 = IntParameter(10, 200, default=507, space='roi', optimize=True)
     roi_p1 = DecimalParameter(0.01, 0.20, default=0.298, decimals=3, space='roi', optimize=True)
     roi_p2 = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
     roi_p3 = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
-    
-    @property
-    def minimal_roi(self):
-        roi = {
+
+    # Keep minimal_roi as a regular dictionary but make it dynamic
+    minimal_roi = {
+        "0": 0.298,
+        "115": 0.144,
+        "280": 0.055,
+        "507": 0
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.update_roi()
+
+    def update_roi(self):
+        """Update ROI based on current parameter values"""
+        self.minimal_roi = {
             "0": float(self.roi_p1.value),
             str(int(self.roi_t1.value)): float(self.roi_p2.value),
             str(int(self.roi_t2.value)): float(self.roi_p3.value),
             str(int(self.roi_t3.value)): 0
         }
-        return roi
 
     # Hyperoptable parameters
     macd_profiles = {
