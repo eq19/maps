@@ -108,9 +108,9 @@ class fibbo(IStrategy):
 
     # Trailing stop
     trailing_stop = True
-    trailing_stop_positive = 0.236
-    trailing_stop_positive_offset = 0.786
-    trailing_only_offset_is_reached = True
+    trailing_stop_positive = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
+    trailing_stop_positive_offset = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
+    trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
 
     # Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
