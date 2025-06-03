@@ -197,8 +197,9 @@ class fibbo(IStrategy):
         if cls._param_config is None:
             param_file = Path(__file__).parent/'hyperopt_params.json'
             try:
-                with open(param_file) as f:
-                    cls._param_config = json.load(f)
+                with open(param_file) as file:
+                    cls._param_config = json.load(file)
+                    logger.debug(f"Load params file: {param_file}")
             except FileNotFoundError:
                 logger.warning(f"Params file not found: {param_file}")
                 cls._param_config = {}
