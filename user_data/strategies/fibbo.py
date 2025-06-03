@@ -53,9 +53,21 @@ class fibbo(IStrategy):
     # Class variable to hold parameters
     _param_config = None
     
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.load_params()  # Ensure params are loaded
+    def __init__(self, config: dict) -> None:
+        # Initialize parent class first
+        super().__init__(config)
+    
+        # Load parameters (if using lazy-loading)
+        if hasattr(self, 'load_params'):
+            self.load_params()
+    
+        # Update ROI dynamically (if needed)
+        if hasattr(self, 'update_roi'):
+            self.update_roi()
+    
+        # Apply max_open_trades optimization
+        if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
+            self.config['max_open_trades'] = self.max_open_trades.value
 
     @classmethod
     def load_params(cls):
@@ -117,10 +129,6 @@ class fibbo(IStrategy):
         "280": 0.055,
         "507": 0
     }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.update_roi()
 
     def update_roi(self):
         """Update ROI based on current parameter values"""
@@ -195,12 +203,6 @@ class fibbo(IStrategy):
     atr_stoploss_multiplier     = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
     max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
 
-
-    def __init__(self, config: dict) -> None:
-        super().__init__(config)
-        # This ensures the parameter affects actual trading
-        if self.max_open_trades.value != -1:
-            self.config['max_open_trades'] = self.max_open_trades_param.value
 
     @property
     def protections(self):
