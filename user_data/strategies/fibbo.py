@@ -196,9 +196,11 @@ class fibbo(IStrategy):
     max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
 
 
-    #@property
-    #def max_open_trades(self) -> int:
-        #return self.max_open_trades_param.value
+    def __init__(self, config: dict) -> None:
+        super().__init__(config)
+        # This ensures the parameter affects actual trading
+        if self.max_open_trades.value != -1:
+            self.config['max_open_trades'] = self.max_open_trades_param.value
 
     @property
     def protections(self):
