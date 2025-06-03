@@ -25,7 +25,7 @@ EXPECTED_MAX_PROFIT = 1.2
 MAX_ACCEPTED_TRADE_DURATION = 900
 
 
-class SampleHyperOptLoss(IHyperOptLoss):
+class TradeDurDrawDownCombinedHyperOptLoss(IHyperOptLoss):
     """
     Defines the default loss function for hyperopt
     This is intended to give you some inspiration for your own loss function.
