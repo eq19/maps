@@ -197,6 +197,10 @@ class fibbo(IStrategy):
 
 
     @property
+    def max_open_trades(self) -> int:
+        return self.max_open_trades.value
+
+    @property
     def protections(self):
         prot = []
 
