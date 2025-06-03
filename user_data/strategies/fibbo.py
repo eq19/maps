@@ -120,49 +120,53 @@ class fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Optional
-    fast_demas          = [5, 8, 13, 21]
-    slow_emas           = [34, 55, 89, 144]
-    order_time_in_force = {"entry": "GTC", "exit": "GTC"}
-    sell_indicators     = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
-    buy_indicators      = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
+    fast_demas                      = [5, 8, 13, 21]
+    slow_emas                       = [34, 55, 89, 144]
+    order_time_in_force             = {"entry": "GTC", "exit": "GTC"}
+    sell_indicators                 = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
+    buy_indicators                  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
     
     # Hyperoptable ROI parameters - keep these as class variables
-    roi_t1 = IntParameter(50, 600, default=115, space='roi', optimize=True)
-    roi_t2 = IntParameter(30, 300, default=280, space='roi', optimize=True)
-    roi_t3 = IntParameter(10, 200, default=507, space='roi', optimize=True)
-    roi_p1 = DecimalParameter(0.01, 0.20, default=0.298, decimals=3, space='roi', optimize=True)
-    roi_p2 = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
-    roi_p3 = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
+    roi_t1                          = IntParameter(50, 600, default=115, space='roi', optimize=True)
+    roi_t2                          = IntParameter(30, 300, default=280, space='roi', optimize=True)
+    roi_t3                          = IntParameter(10, 200, default=507, space='roi', optimize=True)
+    roi_p1                          = DecimalParameter(0.01, 0.20, default=0.298, decimals=3, space='roi', optimize=True)
+    roi_p2                          = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
+    roi_p3                          = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
 
-    # Define the parameter spaces
-    period                      = IntParameter(5, 50, default=14, space="buy", optimize=False)
-    smoothD                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
-    SmoothK                     = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
-    buy_rsi                     = IntParameter(10, 45, default=25, space="buy", optimize=False)
-    sell_rsi                    = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    buy_stoch_osc               = IntParameter(0, 30, default=10, space="buy", optimize=False)    
-    sell_stoch_osc              = IntParameter(70, 100, default=77, space="sell", optimize=False)
-    buy_slow_ema                = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
-    buy_fast_dema               = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
-    buy_fib_level               = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
-    sell_fib_level              = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
-    buy_swing_period            = IntParameter(30, 100, default=50, space="buy", optimize=False)
-    sell_rsi_threshold          = IntParameter(60, 80, default=75, space="sell", optimize=False)
-    cooldown_lookback           = IntParameter(2, 48, default=30, space="protection", optimize=True)
-    low_profit_trade_limit      = IntParameter(2, 10, default=9, space="protection", optimize=True)
-    max_drawdown_trade_limit    = IntParameter(2, 10, default=3, space="protection", optimize=True)
-    stop_duration               = IntParameter(12, 200, default=43, space="protection", optimize=True)
-    trade_limit                 = IntParameter(2, 10, default=5, space="protection", optimize=True)
-    use_low_profit              = BooleanParameter(default=False, space="protection", optimize=True)
-    use_max_drawdown_protection = BooleanParameter(default=False, space="protection", optimize=True)
-    use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
-    atr_stoploss_multiplier     = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
-    max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
+    # Hyperoptable buy and sell parameters
+    period                          = IntParameter(5, 50, default=14, space="buy", optimize=False)
+    smoothD                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
+    SmoothK                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
+    buy_rsi                         = IntParameter(10, 45, default=25, space="buy", optimize=False)
+    sell_rsi                        = IntParameter(70, 100, default=89, space="sell", optimize=False)
+    buy_stoch_osc                   = IntParameter(0, 30, default=10, space="buy", optimize=False)    
+    sell_stoch_osc                  = IntParameter(70, 100, default=77, space="sell", optimize=False)
+    buy_slow_ema                    = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
+    buy_fast_dema                   = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
+    buy_fib_level                   = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
+    sell_fib_level                  = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
+    buy_swing_period                = IntParameter(30, 100, default=50, space="buy", optimize=False)
+    sell_rsi_threshold              = IntParameter(60, 80, default=75, space="sell", optimize=False)
+
+    # Protection
+    cooldown_lookback               = IntParameter(2, 48, default=30, space="protection", optimize=True)
+    low_profit_trade_limit          = IntParameter(2, 10, default=9, space="protection", optimize=True)
+    max_drawdown_trade_limit        = IntParameter(2, 10, default=3, space="protection", optimize=True)
+    stop_duration                   = IntParameter(12, 200, default=43, space="protection", optimize=True)
+    trade_limit                     = IntParameter(2, 10, default=5, space="protection", optimize=True)
+    use_low_profit                  = BooleanParameter(default=False, space="protection", optimize=True)
+    use_max_drawdown_protection     = BooleanParameter(default=False, space="protection", optimize=True)
+    use_stop_protection             = BooleanParameter(default=True, space="protection", optimize=True)
 
     # Trailing stop
     trailing_stop_positive.         = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
     trailing_stop_positive_offset   = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
     trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
+
+    # Singular Optimation
+    atr_stoploss_multiplier         = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
+    max_open_trades_param           = IntParameter(1, 10, default=2, space='trade', optimize=True)
 
     # Indicator permutations
     buy_additional_indicators       = indicator_permutations(buy_indicators, max_indicators=2)
