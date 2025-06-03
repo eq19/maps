@@ -67,7 +67,7 @@ class fibbo(IStrategy):
     
         # Apply max_open_trades optimization
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
-            self.config['max_open_trades'] = self.max_open_trades.value
+            self.config['max_open_trades'] = self.max_open_trades_param.value
 
     @classmethod
     def load_params(cls):
