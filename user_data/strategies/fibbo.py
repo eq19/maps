@@ -53,6 +53,10 @@ class fibbo(IStrategy):
     # Class variable to hold parameters
     _param_config = None
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.load_params()  # Ensure params are loaded
+
     @classmethod
     def load_params(cls):
         """Lazy-load parameters when first needed"""
@@ -71,10 +75,6 @@ class fibbo(IStrategy):
                 logger.error(f"Error loading params: {str(e)}")
                 cls._param_config = {}
     
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.load_params()  # Ensure params are loaded
-
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
