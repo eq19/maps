@@ -1,6 +1,4 @@
-##!/bin/bash
-
-#cat $ARTIFACT
+#!/bin/bash
 
 # Run IREE and capture ALL output
 RAW_OUTPUT=$(iree-run-module \
@@ -22,4 +20,6 @@ curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
   -H "Content-Type: application/json" \
   https://us-central1-feedmapping.cloudfunctions.net/function \
-  --data @${ARTIFACT} | jq '.'
+  --data @${ARTIFACT} | jq '.' > $OUTPUT
+
+cat $OUTPUT
