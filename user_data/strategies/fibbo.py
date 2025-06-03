@@ -54,41 +54,7 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
 class fibbo(IStrategy):
     # Class variable to hold parameters
     _param_config = None
-    
-    def __init__(self, config: dict) -> None:
-        # Initialize parent class first
-        super().__init__(config)
-    
-        # Load parameters (if using lazy-loading)
-        if hasattr(self, 'load_params'):
-            self.load_params()
-    
-        # Update ROI dynamically (if needed)
-        if hasattr(self, 'update_roi'):
-            self.update_roi()
-    
-        # Apply max_open_trades optimization
-        if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
-            self.config['max_open_trades'] = self.max_open_trades_param.value
 
-    @classmethod
-    def load_params(cls):
-        """Lazy-load parameters when first needed"""
-        if cls._param_config is None:
-            param_file = Path(__file__).parent/'hyperopt_params.json'
-            try:
-                with open(param_file) as f:
-                    cls._param_config = json.load(f)
-            except FileNotFoundError:
-                logger.warning(f"Params file not found: {param_file}")
-                cls._param_config = {}
-            except json.JSONDecodeError:
-                logger.error(f"Invalid JSON in params file: {param_file}")
-                cls._param_config = {}
-            except Exception as e:
-                logger.error(f"Error loading params: {str(e)}")
-                cls._param_config = {}
-    
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
@@ -131,15 +97,6 @@ class fibbo(IStrategy):
         "280": 0.055,
         "507": 0
     }
-
-    def update_roi(self):
-        """Update ROI based on current parameter values"""
-        self.minimal_roi = {
-            "0": float(self.roi_p1.value),
-            str(int(self.roi_t1.value)): float(self.roi_p2.value),
-            str(int(self.roi_t2.value)): float(self.roi_p3.value),
-            str(int(self.roi_t3.value)): 0
-        }
 
     # Hyperoptable parameters
     macd_profiles = {
@@ -206,7 +163,50 @@ class fibbo(IStrategy):
     max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
 
 
-    @property
+    def __init__(self, config: dict) -> None:
+        # Initialize parent class first
+        super().__init__(config)
+    
+        # Load parameters (if using lazy-loading)
+        if hasattr(self, 'load_params'):
+            self.load_params()
+    
+        # Update ROI dynamically (if needed)
+        if hasattr(self, 'update_roi'):
+            self.update_roi()
+    
+        # Apply max_open_trades optimization
+        if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
+            self.config['max_open_trades'] = self.max_open_trades_param.value
+
+    @classmethod
+    def load_params(cls):
+        """Lazy-load parameters when first needed"""
+        if cls._param_config is None:
+            param_file = Path(__file__).parent/'hyperopt_params.json'
+            try:
+                with open(param_file) as f:
+                    cls._param_config = json.load(f)
+            except FileNotFoundError:
+                logger.warning(f"Params file not found: {param_file}")
+                cls._param_config = {}
+            except json.JSONDecodeError:
+                logger.error(f"Invalid JSON in params file: {param_file}")
+                cls._param_config = {}
+            except Exception as e:
+                logger.error(f"Error loading params: {str(e)}")
+                cls._param_config = {}
+    
+    def update_roi(self):
+        """Update ROI based on current parameter values"""
+        self.minimal_roi = {
+            "0": float(self.roi_p1.value),
+            str(int(self.roi_t1.value)): float(self.roi_p2.value),
+            str(int(self.roi_t2.value)): float(self.roi_p3.value),
+            str(int(self.roi_t3.value)): 0
+        }
+
+@property
     def protections(self):
         prot = []
 
