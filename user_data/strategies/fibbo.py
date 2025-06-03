@@ -50,6 +50,30 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
 
 
 class fibbo(IStrategy):
+    # Class variable to hold parameters
+    _param_config = None
+    
+    @classmethod
+    def load_params(cls):
+        """Lazy-load parameters when first needed"""
+        if cls._param_config is None:
+            param_file = Path(__file__).parent/'hyperopt_params.json'
+            try:
+                with open(param_file) as f:
+                    cls._param_config = json.load(f)
+            except FileNotFoundError:
+                logger.warning(f"Params file not found: {param_file}")
+                cls._param_config = {}
+            except json.JSONDecodeError:
+                logger.error(f"Invalid JSON in params file: {param_file}")
+                cls._param_config = {}
+            except Exception as e:
+                logger.error(f"Error loading params: {str(e)}")
+                cls._param_config = {}
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.load_params()  # Ensure params are loaded
 
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
