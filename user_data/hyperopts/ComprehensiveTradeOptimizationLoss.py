@@ -84,6 +84,3 @@ class ComprehensiveTradeOptimizationLoss(IHyperOptLoss):
         )
         #combined_score = profit_drawdown_score + duration_penalty + trade_loss + profit_loss + trade_distribution_penalty
         return combined_score
-
-# Create an alias for this loss function to use in hyperopt
-DefaultHyperOptLoss = ComprehensiveTradeOptimizationLoss
