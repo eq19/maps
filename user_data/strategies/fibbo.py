@@ -52,7 +52,40 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
 
 
 class fibbo(IStrategy):
-    # Keep minimal_roi as a regular dictionary but make it dynamic
+    # Strategy interface version - allow new iterations of the strategy interface.
+    # Check the documentation or the Sample strategy to get the latest version.
+    INTERFACE_VERSION = 3
+
+    # Can this strategy go short?
+    can_short: bool = False
+
+    # Optimal timeframe for the strategy.
+    timeframe = "1m"
+    informative_timeframe = "15m"
+
+    # Number of candles the strategy requires before producing valid signals
+    startup_candle_count: int = 200
+
+    # Class variable to hold parameters
+    _param_config = None
+    plot_config = {
+        "main_plot": {
+            "tema": {},
+            "sar": {"color": "white"},
+        },
+        "subplots": {
+            "MACD": {
+                "macd": {"color": "blue"},
+                "macdsignal": {"color": "orange"},
+            },
+            "RSI": {
+                "rsi": {"color": "red"},
+            },
+        },
+    }
+
+    # Hyperoptable parameters
+    stoploss = -0.1
     minimal_roi = {
         "0": 0.298,
         "115": 0.144,
@@ -60,7 +93,6 @@ class fibbo(IStrategy):
         "507": 0
     }
 
-    # Hyperoptable parameters
     macd_profiles = {
         "1m": {
             "fast": 6,
@@ -79,51 +111,13 @@ class fibbo(IStrategy):
         },
     }
 
-    # Class variable to hold parameters
-    _param_config = None
-
-    # Strategy interface version - allow new iterations of the strategy interface.
-    # Check the documentation or the Sample strategy to get the latest version.
-    INTERFACE_VERSION = 3
-
-    # Can this strategy go short?
-    can_short: bool = False
-
-    # Optimal timeframe for the strategy.
-    timeframe = "1m"
-    informative_timeframe = "15m"
-
-    # Run "populate_indicators()" only for new candle.
-    process_only_new_candles = True
-
-    # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 200
-
-    # Optimal stoploss designed for the strategy.
-    stoploss = -0.1
-    use_custom_stoploss = True
-
-    # These values can be overridden in the config.
+    # See the config
     trailing_stop = True
     use_exit_signal = True
     exit_profit_only = False
+    use_custom_stoploss = True
+    process_only_new_candles = True
     ignore_roi_if_entry_signal = False
-
-    plot_config = {
-        "main_plot": {
-            "tema": {},
-            "sar": {"color": "white"},
-        },
-        "subplots": {
-            "MACD": {
-                "macd": {"color": "blue"},
-                "macdsignal": {"color": "orange"},
-            },
-            "RSI": {
-                "rsi": {"color": "red"},
-            },
-        },
-    }
 
     # Optional
     fast_demas          = [5, 8, 13, 21]
@@ -166,15 +160,15 @@ class fibbo(IStrategy):
     max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
 
     # Trailing stop
-    trailing_stop_positive = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
-    trailing_stop_positive_offset = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
+    trailing_stop_positive.         = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
+    trailing_stop_positive_offset   = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
     trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
 
-    # Fibonacci-aligned periods only
-    buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
-    sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
-    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
-    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
+    # Indicator permutations
+    buy_additional_indicators       = indicator_permutations(buy_indicators, max_indicators=2)
+    sell_additional_indicators      = indicator_permutations(sell_indicators, max_indicators=2)
+    buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
+    sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
 
     def __init__(self, config: dict) -> None:
