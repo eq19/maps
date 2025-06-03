@@ -192,8 +192,8 @@ class fibbo(IStrategy):
     use_low_profit              = BooleanParameter(default=False, space="protection", optimize=True)
     use_max_drawdown_protection = BooleanParameter(default=False, space="protection", optimize=True)
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
-    atr_stoploss_multiplier     = IntParameter(1, 3, default=1.5, space='stoploss', optimize=True)
-    #max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
+    atr_stoploss_multiplier     = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
+    max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
 
 
     #@property
