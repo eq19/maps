@@ -73,22 +73,14 @@ class fibbo(IStrategy):
     startup_candle_count: int = 200
 
     # Optimal stoploss designed for the strategy.
-    # This attribute will be overridden if the config file contains "stoploss".
     stoploss = -0.1
     use_custom_stoploss = True
 
     # These values can be overridden in the config.
+    trailing_stop = True
     use_exit_signal = True
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
-
-    # Hyperoptable ROI parameters - keep these as class variables
-    roi_t1 = IntParameter(50, 600, default=115, space='roi', optimize=True)
-    roi_t2 = IntParameter(30, 300, default=280, space='roi', optimize=True)
-    roi_t3 = IntParameter(10, 200, default=507, space='roi', optimize=True)
-    roi_p1 = DecimalParameter(0.01, 0.20, default=0.298, decimals=3, space='roi', optimize=True)
-    roi_p2 = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
-    roi_p3 = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
 
     # Keep minimal_roi as a regular dictionary but make it dynamic
     minimal_roi = {
@@ -117,13 +109,23 @@ class fibbo(IStrategy):
         },
     }
 
-    # Trailing stop
-    trailing_stop = True
-    trailing_stop_positive = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
-    trailing_stop_positive_offset = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
-    trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
+    plot_config = {
+        "main_plot": {
+            "tema": {},
+            "sar": {"color": "white"},
+        },
+        "subplots": {
+            "MACD": {
+                "macd": {"color": "blue"},
+                "macdsignal": {"color": "orange"},
+            },
+            "RSI": {
+                "rsi": {"color": "red"},
+            },
+        },
+    }
 
-    # Optional order time in force.
+# Optional order time in force.
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
     fast_demas      = [5, 8, 13, 21]
@@ -131,11 +133,13 @@ class fibbo(IStrategy):
     sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
     buy_indicators  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
     
-    # Fibonacci-aligned periods only
-    buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
-    sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
-    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
-    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
+    # Hyperoptable ROI parameters - keep these as class variables
+    roi_t1 = IntParameter(50, 600, default=115, space='roi', optimize=True)
+    roi_t2 = IntParameter(30, 300, default=280, space='roi', optimize=True)
+    roi_t3 = IntParameter(10, 200, default=507, space='roi', optimize=True)
+    roi_p1 = DecimalParameter(0.01, 0.20, default=0.298, decimals=3, space='roi', optimize=True)
+    roi_p2 = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
+    roi_p3 = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
 
     # Define the parameter spaces
     period                      = IntParameter(5, 50, default=14, space="buy", optimize=False)
@@ -161,6 +165,17 @@ class fibbo(IStrategy):
     use_stop_protection         = BooleanParameter(default=True, space="protection", optimize=True)
     atr_stoploss_multiplier     = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
     max_open_trades_param       = IntParameter(1, 10, default=2, space='trade', optimize=True)
+
+    # Trailing stop
+    trailing_stop_positive = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
+    trailing_stop_positive_offset = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
+    trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
+
+    # Fibonacci-aligned periods only
+    buy_additional_indicators   = indicator_permutations(buy_indicators, max_indicators=2)
+    sell_additional_indicators  = indicator_permutations(sell_indicators, max_indicators=2)
+    buy_additional_indicator    = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
+    sell_additional_indicator   = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
 
     def __init__(self, config: dict) -> None:
@@ -262,22 +277,6 @@ class fibbo(IStrategy):
         if current_rate < stoploss_price:
             return -1  # stop out
         return 1  # continue
-
-    plot_config = {
-        "main_plot": {
-            "tema": {},
-            "sar": {"color": "white"},
-        },
-        "subplots": {
-            "MACD": {
-                "macd": {"color": "blue"},
-                "macdsignal": {"color": "orange"},
-            },
-            "RSI": {
-                "rsi": {"color": "red"},
-            },
-        },
-    }
 
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
