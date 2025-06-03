@@ -52,6 +52,33 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
 
 
 class fibbo(IStrategy):
+    # Keep minimal_roi as a regular dictionary but make it dynamic
+    minimal_roi = {
+        "0": 0.298,
+        "115": 0.144,
+        "280": 0.055,
+        "507": 0
+    }
+
+    # Hyperoptable parameters
+    macd_profiles = {
+        "1m": {
+            "fast": 6,
+            "slow": 13,
+            "signal": 4
+        },
+        "15m": {
+            "fast": 8,
+            "slow": 17,
+            "signal": 9
+        },
+        "1h": {
+            "fast": 12,
+            "slow": 26,
+            "signal": 9
+        },
+    }
+
     # Class variable to hold parameters
     _param_config = None
 
@@ -81,33 +108,6 @@ class fibbo(IStrategy):
     use_exit_signal = True
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
-
-    # Keep minimal_roi as a regular dictionary but make it dynamic
-    minimal_roi = {
-        "0": 0.298,
-        "115": 0.144,
-        "280": 0.055,
-        "507": 0
-    }
-
-    # Hyperoptable parameters
-    macd_profiles = {
-        "1m": {
-            "fast": 6,
-            "slow": 13,
-            "signal": 4
-        },
-        "15m": {
-            "fast": 8,
-            "slow": 17,
-            "signal": 9
-        },
-        "1h": {
-            "fast": 12,
-            "slow": 26,
-            "signal": 9
-        },
-    }
 
     plot_config = {
         "main_plot": {
