@@ -160,7 +160,7 @@ class fibbo(IStrategy):
     use_stop_protection             = BooleanParameter(default=True, space="protection", optimize=True)
 
     # Trailing stop
-    trailing_stop_positive.         = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
+    trailing_stop_positive          = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
     trailing_stop_positive_offset   = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
     trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
 
