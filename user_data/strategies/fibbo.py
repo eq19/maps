@@ -125,13 +125,12 @@ class fibbo(IStrategy):
         },
     }
 
-# Optional order time in force.
+  # Optional
+    fast_demas          = [5, 8, 13, 21]
+    slow_emas           = [34, 55, 89, 144]
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
-
-    fast_demas      = [5, 8, 13, 21]
-    slow_emas       = [34, 55, 89, 144]
-    sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
-    buy_indicators  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
+    sell_indicators     = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
+    buy_indicators      = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
     
     # Hyperoptable ROI parameters - keep these as class variables
     roi_t1 = IntParameter(50, 600, default=115, space='roi', optimize=True)
