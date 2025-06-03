@@ -220,7 +220,7 @@ class fibbo(IStrategy):
             str(int(self.roi_t3.value)): 0
         }
 
-@property
+    @property
     def protections(self):
         prot = []
 
