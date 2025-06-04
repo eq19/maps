@@ -35,7 +35,7 @@ from itertools import permutations
 logger = logging.getLogger(__name__)
 
 # ✅ 1. Load span config from JSON
-with open('my_config.json') as f:
+with open('user_data/config_examples/config_params.example.json') as f:
     span = json.load(f)["span"]
 
 # ✅ 2. Helper function to construct parameters
