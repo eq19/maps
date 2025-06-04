@@ -134,20 +134,19 @@ class fibbo(IStrategy):
     
 
     def __init__(self, config: dict) -> None:
-        # Initialize parent class first
+        # 1. Initialize parent class (mandatory)
         super().__init__(config)
     
-        # Load parameters (if using lazy-loading)
-        if hasattr(self, 'load_params'):
-            self.load_params()
+        # 2. Load parameters (class-level operation)
+        self.__class__.load_params()  # Uses classmethod version
     
-        # Update ROI dynamically (if needed)
+        # 3. Update ROI if dynamic ROI is enabled
         if hasattr(self, 'update_roi'):
             self.update_roi()
     
-        # Apply max_open_trades optimization
+        # 4. Handle max_open_trades (fixed variable name consistency)
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
-            self.config['max_open_trades'] = self.max_open_trades_param.value
+            self.config['max_open_trades'] = self.max_open_trades.value  # Fixed: removed '_param' suffix
 
     @classmethod
     def load_params(cls):
