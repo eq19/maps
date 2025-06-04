@@ -150,7 +150,6 @@ class fibbo(IStrategy):
             self.config['max_open_trades'] = self.max_open_trades_param.value
 
     @classmethod
-    @classmethod
     def load_params(cls):
         """Lazy-load hyperopt parameters from JSON file"""
         if cls._param_config is None:
