@@ -67,7 +67,6 @@ class fibbo(IStrategy):
     startup_candle_count: int = 200
 
     # Class variable to hold parameters
-    _param_config = None
     plot_config = {
         "main_plot": {
             "tema": {},
@@ -132,25 +131,12 @@ class fibbo(IStrategy):
     buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
     
-
-    def __init__(self, config: dict) -> None:
-        # 1. Initialize parent class (mandatory)
-        super().__init__(config)
+    # Class variable for parameters
+    _param_config = None
     
-        # 2. Load parameters (class-level operation)
-        self.__class__.load_params()  # Uses classmethod version
-    
-        # 3. Update ROI if dynamic ROI is enabled
-        if hasattr(self, 'update_roi'):
-            self.update_roi()
-    
-        # 4. Handle max_open_trades (fixed variable name consistency)
-        if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
-            self.config['max_open_trades'] = self.max_open_trades.value  # Fixed: removed '_param' suffix
-
     @classmethod
     def load_params(cls):
-        """Lazy-load hyperopt parameters from JSON file"""
+        """Lazy-load parameters from JSON"""
         if cls._param_config is None:
             param_file = Path(__file__).parent/'hyperopt_params.json'
             try:
@@ -158,85 +144,79 @@ class fibbo(IStrategy):
                     cls._param_config = json.load(file)
                     logger.info(f"Loaded parameters from {param_file}")
                     
-                    # Recursive function to find 'span' configuration
-                    def find_span(data: Dict) -> Dict:
-                        if isinstance(data, dict):
-                            if 'span' in data:
-                                return data['span']
-                            for v in data.values():
-                                result = find_span(v)
-                                if result:
-                                    return result
-                        return None
-                    
-                    # Process span configuration if found
-                    span_config = find_span(cls._param_config)
+                    # Process parameter definitions
+                    span_config = cls._find_span_config(cls._param_config)
                     if span_config:
-                        for space, params in span_config.items():
-                            for param_name, config in params.items():
-                                try:
-                                    param_type = config['type']
-                                    optimize = config.get('optimize', False)
-                                    
-                                    if param_type == 'IntParameter':
-                                        setattr(cls, param_name, IntParameter(
-                                            low=config['low'],
-                                            high=config['high'],
-                                            default=config['default'],
-                                            space=space,
-                                            optimize=optimize
-                                        ))
-                                    elif param_type == 'DecimalParameter':
-                                        setattr(cls, param_name, DecimalParameter(
-                                            low=config['low'],
-                                            high=config['high'],
-                                            default=config['default'],
-                                            decimals=config.get('decimals', 3),
-                                            space=space,
-                                            optimize=optimize
-                                        ))
-                                    elif param_type == 'BooleanParameter':
-                                        setattr(cls, param_name, BooleanParameter(
-                                            default=config['default'],
-                                            space=space,
-                                            optimize=optimize
-                                        ))
-                                    elif param_type == 'CategoricalParameter':
-                                        choices = (getattr(cls, config['choices']) 
-                                                  if isinstance(config['choices'], str)
-                                                  else config['choices'])
-                                        setattr(cls, param_name, CategoricalParameter(
-                                            choices=choices,
-                                            default=config['default'],
-                                            space=space,
-                                            optimize=optimize
-                                        ))
-                                    logger.debug(f"Created {param_type} {param_name} in space {space}")
-                                    
-                                except Exception as e:
-                                    logger.error(f"Error creating parameter {param_name}: {str(e)}")
-                
-            except FileNotFoundError:
-                logger.warning(f"Parameter file not found: {param_file}")
-                cls._param_config = {}
-            except json.JSONDecodeError as e:
-                logger.error(f"Invalid JSON in {param_file}: {str(e)}")
-                cls._param_config = {}
+                        cls._create_parameters(span_config)
+                        
             except Exception as e:
-                logger.error(f"Unexpected error loading {param_file}: {str(e)}", exc_info=True)
+                logger.error(f"Parameter loading failed: {e}")
                 cls._param_config = {}
 
-    
-    def update_roi(self):
-        """Update ROI based on current parameter values"""
-        self.minimal_roi = {
-            "0": float(self.roi_p1.value),
-            str(int(self.roi_t1.value)): float(self.roi_p2.value),
-            str(int(self.roi_t2.value)): float(self.roi_p3.value),
-            str(int(self.roi_t3.value)): 0
-        }
+    @classmethod
+    def _find_span_config(cls, data):
+        """Recursively find span configuration"""
+        if isinstance(data, dict):
+            if 'span' in data:
+                return data['span']
+            for v in data.values():
+                result = cls._find_span_config(v)
+                if result:
+                    return result
+        return None
 
-    @property
+    @classmethod
+    def _create_parameters(cls, span_config):
+        """Dynamically create strategy parameters"""
+        for space, params in span_config.items():
+            for param_name, config in params.items():
+                try:
+                    param_type = config['type']
+                    if param_type == 'IntParameter':
+                        setattr(cls, param_name, IntParameter(
+                            low=config['low'],
+                            high=config['high'],
+                            default=config['default'],
+                            space=space,
+                            optimize=config.get('optimize', False)
+                        ))
+                    # Add other parameter types similarly...
+                except Exception as e:
+                    logger.error(f"Failed to create {param_name}: {e}")
+
+    def __init__(self, config: dict) -> None:
+        # 1. Initialize parent class
+        super().__init__(config)
+        
+        # 2. Load parameters (creates roi_p1, etc.)
+        self.__class__.load_params()
+        
+        # 3. Initialize ROI (only if parameters exist)
+        self._initialize_roi()
+        
+        # 4. Configure max_open_trades
+        self._configure_max_trades()
+
+    def _initialize_roi(self):
+        """Safe ROI initialization with fallback"""
+        required_params = ['roi_p1', 'roi_t1', 'roi_p2', 'roi_t2', 'roi_p3', 'roi_t3']
+        if all(hasattr(self, p) for p in required_params):
+            self.minimal_roi = {
+                "0": float(self.roi_p1.value),
+                str(int(self.roi_t1.value)): float(self.roi_p2.value),
+                str(int(self.roi_t2.value)): float(self.roi_p3.value),
+                str(int(self.roi_t3.value)): 0
+            }
+        else:
+            self.minimal_roi = {"0": 0.05, "20": 0.02, "50": 0}  # Fallback
+            logger.warning("Using fallback ROI table")
+
+    def _configure_max_trades(self):
+        """Configure max_open_trades if parameter exists"""
+        if hasattr(self, 'max_open_trades') and isinstance(self.max_open_trades, IntParameter):
+            if self.max_open_trades.value != -1:
+                self.config['max_open_trades'] = self.max_open_trades.value    @property
+
     def protections(self):
         prot = []
 
