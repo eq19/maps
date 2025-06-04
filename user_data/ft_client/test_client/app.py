@@ -66,6 +66,7 @@ while (current.val <= upper_bound):
 
 # write contents to file/process etc.
 output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
+params_path = 'user_data/config_examples/config_params.example.json'
 
 # Load your JSON data
 with open(output_path, "r") as f:
