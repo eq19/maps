@@ -53,6 +53,21 @@ def get_param_config(span: dict, space: str, name: str):
             space=space,
             optimize=optimize
         )
+    elif param_type == "DecimalParameter":
+        return DecimalParameter(
+            low=config['low'],
+            high=config['high'],
+            default=default,
+            decimals=config.get('decimals', 3),
+            space=space,
+            optimize=optimize
+        )
+    elif param_type == "BooleanParameter":
+        return BooleanParameter(
+            default=default,
+            space=space,
+            optimize=optimize
+        )
     elif param_type == "CategoricalParameter":
         choices = config["choices"]
         if isinstance(choices, str):
