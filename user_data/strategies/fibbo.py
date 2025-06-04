@@ -144,9 +144,9 @@ class fibbo(IStrategy):
 
     @classmethod
     def load_params(cls):
-        """Lazy-load parameters from JSON and create class attributes"""
+        """Lazy-load parameters from JSON"""
         if cls._param_config is not None:
-            return  # Already loaded
+            return
 
         param_file = Path(__file__).parent / 'hyperopt_params.json'
 
@@ -154,61 +154,78 @@ class fibbo(IStrategy):
             with open(param_file, 'r', encoding='utf-8') as file:
                 cls._param_config = json.load(file)
                 logger.info(f"Loaded parameters from {param_file}")
-                cls._create_parameters(cls._param_config)
+
+                # Extract span config from loaded structure
+                span_config = cls._find_span_config(cls._param_config)
+                if span_config:
+                    cls._create_parameters(span_config)
+                else:
+                    logger.warning("No 'span' field found in parameter config")
 
         except Exception as e:
             logger.error(f"Parameter loading failed: {e}")
             cls._param_config = {}
 
     @classmethod
-    def _create_parameters(cls, config):
-        """Create Freqtrade parameters from config (grouped by space only)"""
-        for space, params in config.items():
-            for param_name, param_def in params.items():
+    def _find_span_config(cls, data):
+        """Recursively find and return the 'span' field"""
+        if isinstance(data, dict):
+            if 'span' in data:
+                return data['span']
+            for v in data.values():
+                result = cls._find_span_config(v)
+                if result:
+                    return result
+        return None
+
+    @classmethod
+    def _create_parameters(cls, span_config):
+        """Dynamically create parameters grouped by space (buy/sell/etc.)"""
+        for space, params in span_config.items():
+            for param_name, config in params.items():
                 try:
-                    param_type = param_def.get('type')
+                    param_type = config.get('type')
                     if param_type not in PARAM_CLASSES:
                         raise ValueError(f"Unknown parameter type: {param_type}")
 
                     param_cls = PARAM_CLASSES[param_type]
-                    optimize = param_def.get('optimize', False)
+                    optimize = config.get('optimize', False)
 
                     if param_cls == IntParameter:
                         param = param_cls(
-                            low=param_def['low'],
-                            high=param_def['high'],
-                            default=param_def['default'],
+                            low=config['low'],
+                            high=config['high'],
+                            default=config['default'],
                             space=space,
                             optimize=optimize
                         )
                     elif param_cls == DecimalParameter:
                         param = param_cls(
-                            low=param_def['low'],
-                            high=param_def['high'],
-                            default=param_def['default'],
-                            decimals=param_def.get('decimals', 3),
+                            low=config['low'],
+                            high=config['high'],
+                            default=config['default'],
+                            decimals=config.get('decimals', 3),
                             space=space,
                             optimize=optimize
                         )
                     elif param_cls == BooleanParameter:
                         param = param_cls(
-                            default=param_def['default'],
+                            default=config['default'],
                             space=space,
                             optimize=optimize
                         )
                     elif param_cls == CategoricalParameter:
-                        choices = param_def['choices']
+                        choices = config['choices']
                         if isinstance(choices, str):
-                            # Reference to class variable (e.g., "slow_emas")
                             choices = getattr(cls, choices)
                         param = param_cls(
                             choices=choices,
-                            default=param_def['default'],
+                            default=config['default'],
                             space=space,
                             optimize=optimize
                         )
                     else:
-                        raise ValueError(f"Unsupported parameter class: {param_cls}")
+                        raise ValueError(f"Unsupported parameter type: {param_type}")
 
                     setattr(cls, param_name, param)
                     logger.debug(f"Created {param_type} '{param_name}' in space '{space}'")
@@ -223,9 +240,9 @@ class fibbo(IStrategy):
         self._configure_max_trades()
 
     def _initialize_roi(self):
-        """Initialize minimal_roi using dynamically loaded parameters or fallback"""
-        required_params = ['roi_p1', 'roi_t1', 'roi_p2', 'roi_t2', 'roi_p3', 'roi_t3']
-        if all(hasattr(self, p) for p in required_params):
+        """Initialize ROI table using parameters or fallback"""
+        required = ['roi_p1', 'roi_t1', 'roi_p2', 'roi_t2', 'roi_p3', 'roi_t3']
+        if all(hasattr(self, p) for p in required):
             self.minimal_roi = {
                 "0": float(self.roi_p1.value),
                 str(int(self.roi_t1.value)): float(self.roi_p2.value),
@@ -237,7 +254,7 @@ class fibbo(IStrategy):
             logger.warning("Using fallback ROI table")
 
     def _configure_max_trades(self):
-        """Set max_open_trades if parameter exists"""
+        """Configure max_open_trades if present"""
         if hasattr(self, 'max_open_trades') and isinstance(self.max_open_trades, IntParameter):
             if self.max_open_trades.value != -1:
                 self.config['max_open_trades'] = self.max_open_trades.value
