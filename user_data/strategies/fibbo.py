@@ -125,6 +125,12 @@ class fibbo(IStrategy):
     order_time_in_force             = {"entry": "GTC", "exit": "GTC"}
     sell_indicators                 = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
     buy_indicators                  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
+
+    # Indicator permutations
+    buy_additional_indicators       = indicator_permutations(buy_indicators, max_indicators=2)
+    sell_additional_indicators      = indicator_permutations(sell_indicators, max_indicators=2)
+    buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
+    sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
     
     # Hyperoptable buy parameters
     period                          = IntParameter(5, 50, default=14, space="buy", optimize=False)
@@ -161,20 +167,16 @@ class fibbo(IStrategy):
     roi_p2                          = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
     roi_p3                          = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
 
+    # Stoploss (Singular Optimation)
+    atr_stoploss_multiplier         = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
+
     # Trailing stop
     trailing_stop_positive          = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
     trailing_stop_positive_offset   = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
     trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
 
-    # Singular Optimation
-    atr_stoploss_multiplier         = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
+    # Trades (Singular Optimation)
     max_open_trades_param           = IntParameter(1, 10, default=2, space='trade', optimize=True)
-
-    # Indicator permutations
-    buy_additional_indicators       = indicator_permutations(buy_indicators, max_indicators=2)
-    sell_additional_indicators      = indicator_permutations(sell_indicators, max_indicators=2)
-    buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
-    sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
 
 
     def __init__(self, config: dict) -> None:
