@@ -33,7 +33,44 @@ from itertools import permutations
 
 
 logger = logging.getLogger(__name__)
-    
+
+# ✅ 1. Load span config from JSON
+with open('my_config.json') as f:
+    span = json.load(f)["span"]
+
+# ✅ 2. Helper function to construct parameters
+def get_param_config(span: dict, space: str, name: str):
+    config = span[space][name]
+    param_type = config["type"]
+    optimize = config.get("optimize", False)
+    default = config["default"]
+
+    if param_type == "IntParameter":
+        return IntParameter(
+            low=config["low"],
+            high=config["high"],
+            default=default,
+            space=space,
+            optimize=optimize
+        )
+    elif param_type == "CategoricalParameter":
+        choices = config["choices"]
+        if isinstance(choices, str):
+            # Replace placeholder names like "slow_emas" with actual list
+            # You must define these somewhere
+            if choices == "slow_emas":
+                choices = [21, 34, 55]
+            elif choices == "fast_demas":
+                choices = [8, 13, 21]
+        return CategoricalParameter(
+            choices=choices,
+            default=default,
+            space=space,
+            optimize=optimize
+        )
+    else:
+        raise ValueError(f"Unknown parameter type: {param_type}")
+
 def indicator_permutations(profiles, max_indicators=1, include_none=False):
     profile_permutations = set()
     if include_none:
@@ -133,7 +170,7 @@ class fibbo(IStrategy):
     sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
     
     # Hyperoptable buy parameters
-    period                          = IntParameter(5, 50, default=14, space="buy", optimize=False)
+    period = get_param_config(span, "buy", "period")
     smoothD                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
     SmoothK                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
     buy_rsi                         = IntParameter(10, 45, default=25, space="buy", optimize=False)
