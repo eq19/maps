@@ -181,9 +181,9 @@ class fibbo(IStrategy):
     buy_fib_level                   = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
 
     # Hyperoptable sell parameters
-    sell_rsi                        = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    sell_stoch_osc                  = IntParameter(70, 100, default=77, space="sell", optimize=False)
-    sell_rsi_threshold              = IntParameter(60, 80, default=75, space="sell", optimize=False)
+    sell_rsi = get_param_config(span, "sell ", "sell_rsi")
+    sell_stoch_osc = get_param_config(span, "sell", "sell_stoch_osc")
+    sell_rsi_threshold = get_param_config(span, "sell", "sell_rsi_threshold")
     sell_fib_level                  = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
 
     # Protection
