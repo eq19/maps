@@ -197,7 +197,7 @@ class fibbo(IStrategy):
                         ))
                     elif param_type == 'CategoricalParameter':
                         choices = (getattr(cls, config['choices']) 
-                            if isinstance(config['choices'], str)
+                                if isinstance(config['choices'], str)
                                 else config['choices'])
                         setattr(cls, param_name, CategoricalParameter(
                             choices=choices,
