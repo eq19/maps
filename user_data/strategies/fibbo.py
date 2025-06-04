@@ -171,11 +171,11 @@ class fibbo(IStrategy):
     
     # Hyperoptable buy parameters
     period = get_param_config(span, "buy", "period")
-    smoothD                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
-    SmoothK                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
-    buy_rsi                         = IntParameter(10, 45, default=25, space="buy", optimize=False)
-    buy_stoch_osc                   = IntParameter(0, 30, default=10, space="buy", optimize=False)    
-    buy_swing_period                = IntParameter(30, 100, default=50, space="buy", optimize=False)
+    smoothD = get_param_config(span, "buy", "smoothD")
+    SmoothK = get_param_config(span, "buy", "SmoothK")
+    buy_rsi = get_param_config(span, "buy", "buy_rsi")
+    buy_stoch_osc = get_param_config(span, "buy", "buy_stoch_osc")
+    buy_swing_period = get_param_config(span, "buy", "buy_swing_period")
     buy_slow_ema                    = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
     buy_fast_dema                   = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
     buy_fib_level                   = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
