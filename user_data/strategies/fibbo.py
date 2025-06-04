@@ -197,9 +197,9 @@ class fibbo(IStrategy):
     use_stop_protection             = BooleanParameter(default=True, space="protection", optimize=True)
 
     # Hyperoptable ROI parameters - keep these as class variables
-    roi_t1                          = IntParameter(50, 600, default=115, space='roi', optimize=True)
-    roi_t2                          = IntParameter(30, 300, default=280, space='roi', optimize=True)
-    roi_t3                          = IntParameter(10, 200, default=507, space='roi', optimize=True)
+    roi_t1 = get_param_config(span, "roi ", "roi_t1")
+    roi_t2 = get_param_config(span, "roi", "roi_t2")
+    roi_t3 = get_param_config(span, "roi", "roi_t3")
     roi_p1                          = DecimalParameter(0.01, 0.20, default=0.298, decimals=3, space='roi', optimize=True)
     roi_p2                          = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
     roi_p3                          = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
