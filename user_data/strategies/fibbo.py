@@ -33,7 +33,15 @@ from itertools import permutations
 
 
 logger = logging.getLogger(__name__)
-    
+
+# Mapping from string type to Freqtrade parameter class
+PARAM_CLASSES = {
+    'IntParameter': IntParameter,
+    'DecimalParameter': DecimalParameter,
+    'BooleanParameter': BooleanParameter,
+    'CategoricalParameter': CategoricalParameter,
+}
+
 def indicator_permutations(profiles, max_indicators=1, include_none=False):
     profile_permutations = set()
     if include_none:
@@ -131,100 +139,91 @@ class fibbo(IStrategy):
     buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
     
-    # Class variable for parameters
+    # Class variable for loaded parameters
     _param_config = None
-    
+
     @classmethod
     def load_params(cls):
-        """Lazy-load parameters from JSON"""
-        if cls._param_config is None:
-            param_file = Path(__file__).parent/'hyperopt_params.json'
-            try:
-                with open(param_file, 'r', encoding='utf-8') as file:
-                    cls._param_config = json.load(file)
-                    logger.info(f"Loaded parameters from {param_file}")
-                    
-                    # Process parameter definitions
-                    span_config = cls._find_span_config(cls._param_config)
-                    if span_config:
-                        cls._create_parameters(span_config)
-                        
-            except Exception as e:
-                logger.error(f"Parameter loading failed: {e}")
-                cls._param_config = {}
+        """Lazy-load parameters from JSON and create class attributes"""
+        if cls._param_config is not None:
+            return  # Already loaded
+
+        param_file = Path(__file__).parent / 'hyperopt_params.json'
+
+        try:
+            with open(param_file, 'r', encoding='utf-8') as file:
+                cls._param_config = json.load(file)
+                logger.info(f"Loaded parameters from {param_file}")
+                cls._create_parameters(cls._param_config)
+
+        except Exception as e:
+            logger.error(f"Parameter loading failed: {e}")
+            cls._param_config = {}
 
     @classmethod
-    def _find_span_config(cls, data):
-        """Recursively find span configuration"""
-        if isinstance(data, dict):
-            if 'span' in data:
-                return data['span']
-            for v in data.values():
-                result = cls._find_span_config(v)
-                if result:
-                    return result
-        return None
-
-    @classmethod
-    def _create_parameters(cls, span_config):
-        """Dynamically create strategy parameters"""
-        for space, params in span_config.items():
-            for param_name, config in params.items():
+    def _create_parameters(cls, config):
+        """Create Freqtrade parameters from config (grouped by space only)"""
+        for space, params in config.items():
+            for param_name, param_def in params.items():
                 try:
-                    param_type = config['type']
-                    if param_type == 'IntParameter':
-                        setattr(cls, param_name, IntParameter(
-                            low=config['low'],
-                            high=config['high'],
-                            default=config['default'],
-                            space=space,
-                            optimize=config.get('optimize', False)
-                        ))
-                    elif param_type == 'DecimalParameter':
-                        setattr(cls, param_name, DecimalParameter(
-                            low=config['low'],
-                            high=config['high'],
-                            default=config['default'],
-                            decimals=config.get('decimals', 3),
+                    param_type = param_def.get('type')
+                    if param_type not in PARAM_CLASSES:
+                        raise ValueError(f"Unknown parameter type: {param_type}")
+
+                    param_cls = PARAM_CLASSES[param_type]
+                    optimize = param_def.get('optimize', False)
+
+                    if param_cls == IntParameter:
+                        param = param_cls(
+                            low=param_def['low'],
+                            high=param_def['high'],
+                            default=param_def['default'],
                             space=space,
                             optimize=optimize
-                        ))
-                    elif param_type == 'BooleanParameter':
-                        setattr(cls, param_name, BooleanParameter(
-                            default=config['default'],
+                        )
+                    elif param_cls == DecimalParameter:
+                        param = param_cls(
+                            low=param_def['low'],
+                            high=param_def['high'],
+                            default=param_def['default'],
+                            decimals=param_def.get('decimals', 3),
                             space=space,
                             optimize=optimize
-                        ))
-                    elif param_type == 'CategoricalParameter':
-                        choices = (getattr(cls, config['choices']) 
-                                  if isinstance(config['choices'], str)
-                                  else config['choices'])
-                        setattr(cls, param_name, CategoricalParameter(
+                        )
+                    elif param_cls == BooleanParameter:
+                        param = param_cls(
+                            default=param_def['default'],
+                            space=space,
+                            optimize=optimize
+                        )
+                    elif param_cls == CategoricalParameter:
+                        choices = param_def['choices']
+                        if isinstance(choices, str):
+                            # Reference to class variable (e.g., "slow_emas")
+                            choices = getattr(cls, choices)
+                        param = param_cls(
                             choices=choices,
-                            default=config['default'],
+                            default=param_def['default'],
                             space=space,
                             optimize=optimize
-                        ))
-                    logger.debug(f"Created {param_type} {param_name} in space {space}")
-  
+                        )
+                    else:
+                        raise ValueError(f"Unsupported parameter class: {param_cls}")
+
+                    setattr(cls, param_name, param)
+                    logger.debug(f"Created {param_type} '{param_name}' in space '{space}'")
+
                 except Exception as e:
-                    logger.error(f"Failed to create {param_name}: {e}")
+                    logger.error(f"Failed to create parameter '{param_name}': {e}")
 
     def __init__(self, config: dict) -> None:
-        # 1. Initialize parent class
         super().__init__(config)
-        
-        # 2. Load parameters (creates roi_p1, etc.)
         self.__class__.load_params()
-        
-        # 3. Initialize ROI (only if parameters exist)
         self._initialize_roi()
-        
-        # 4. Configure max_open_trades
         self._configure_max_trades()
 
     def _initialize_roi(self):
-        """Safe ROI initialization with fallback"""
+        """Initialize minimal_roi using dynamically loaded parameters or fallback"""
         required_params = ['roi_p1', 'roi_t1', 'roi_p2', 'roi_t2', 'roi_p3', 'roi_t3']
         if all(hasattr(self, p) for p in required_params):
             self.minimal_roi = {
@@ -234,14 +233,14 @@ class fibbo(IStrategy):
                 str(int(self.roi_t3.value)): 0
             }
         else:
-            self.minimal_roi = {"0": 0.05, "20": 0.02, "50": 0}  # Fallback
+            self.minimal_roi = {"0": 0.05, "20": 0.02, "50": 0}
             logger.warning("Using fallback ROI table")
 
     def _configure_max_trades(self):
-        """Configure max_open_trades if parameter exists"""
+        """Set max_open_trades if parameter exists"""
         if hasattr(self, 'max_open_trades') and isinstance(self.max_open_trades, IntParameter):
             if self.max_open_trades.value != -1:
-                self.config['max_open_trades'] = self.max_open_trades.value    @property
+                self.config['max_open_trades'] = self.max_open_trades.value
 
     def protections(self):
         prot = []
