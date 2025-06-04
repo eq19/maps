@@ -68,9 +68,12 @@ while (current.val <= upper_bound):
 output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 params_path = 'user_data/config_examples/config_params.example.json'
 
-# Load your JSON data
-with open(output_path, "r") as f:
-    data = json.load(f)
+# First load the params JSON file
+with open(params_path, "r") as params_file:
+    params = json.load(params_file)
+
+with open(output_path, "r") as output_file:
+    data = json.load(output_file)
 
 counter = 0
 for org in data:
@@ -81,7 +84,7 @@ for org in data:
             new_org["spin"] = utilities.get_val_spin(finished[counter])
             # Add span field if counter matches id
             if counter == int(id):
-                new_org["span"] = "params"
+                new_org["span"] = params  # Use loaded JSON content
             counter += 1
 
         # Handle key1 and key2 by wrapping each item with a spin
@@ -91,7 +94,7 @@ for org in data:
                 item_dict = {"name": item, "spin": utilities.get_val_spin(finished[counter + i])}
                 # Add span field if counter matches id
                 if (counter + i) == int(id):
-                    item_dict["span"] = "params"
+                    item_dict["span"] = params  # Use loaded JSON content
                 new_items.append(item_dict)
             new_org[key] = new_items
             counter += len(value)
