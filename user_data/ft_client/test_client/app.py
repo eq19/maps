@@ -14,7 +14,7 @@ from pythonCode import *
 from datetime import datetime
 
 
-script, output, action_path = argv
+script, output, id = argv
 
 # Number parameters for the range of numbers to be tested
 lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
@@ -78,11 +78,21 @@ for org in data:
         # Insert 'spin' before 'key1'
         if key == "key1":
             new_org["spin"] = utilities.get_val_spin(finished[counter])
+            # Add span field if counter matches id
+            if counter == int(id):
+                new_org["span"] = "params"
             counter += 1
 
         # Handle key1 and key2 by wrapping each item with a spin
         if key in ["key1", "key2"] and isinstance(value, list):
-            new_org[key] = [{"name": item, "spin": utilities.get_val_spin(finished[counter + i])} for i, item in enumerate(value)]
+            new_items = []
+            for i, item in enumerate(value):
+                item_dict = {"name": item, "spin": utilities.get_val_spin(finished[counter + i])}
+                # Add span field if counter matches id
+                if (counter + i) == int(id):
+                    item_dict["span"] = "params"
+                new_items.append(item_dict)
+            new_org[key] = new_items
             counter += len(value)
         else:
             new_org[key] = value
