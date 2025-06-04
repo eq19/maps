@@ -1,43 +1,233 @@
 {
-  "strategy_name": "fibbo",
-  "params": {
-    "buy": {
-      "buy_additional_indicator": "MACD, STOCH_OSC",
-      "buy_rsi": 42
+  "buy": {
+    "period": {
+      "type": "IntParameter",
+      "low": 5,
+      "high": 50,
+      "default": 14,
+      "optimize": false
     },
-    "sell": {
-      "sell_additional_indicator": "MACD",
-      "sell_rsi": 70
+    "smoothD": {
+      "type": "IntParameter",
+      "low": 2,
+      "high": 5,
+      "default": 3,
+      "optimize": false
     },
-    "protection": {
-      "cooldown_lookback": 5,
-      "low_profit_trade_limit": 4,
-      "max_drawdown_trade_limit": 10,
-      "stop_duration": 160,
-      "trade_limit": 6,
-      "use_low_profit": true,
-      "use_max_drawdown_protection": true,
-      "use_stop_protection": true
+    "SmoothK": {
+      "type": "IntParameter",
+      "low": 2,
+      "high": 5,
+      "default": 3,
+      "optimize": false
     },
-    "roi": {
-      "0": 0.06999999999999999,
-      "7": 0.011,
-      "17": 0.003,
-      "28": 0
+    "buy_rsi": {
+      "type": "IntParameter",
+      "low": 10,
+      "high": 45,
+      "default": 25,
+      "optimize": false
     },
-    "stoploss": {
-      "stoploss": -0.149
+    "buy_stoch_osc": {
+      "type": "IntParameter",
+      "low": 0,
+      "high": 30,
+      "default": 10,
+      "optimize": false
     },
-    "trailing": {
-      "trailing_stop": true,
-      "trailing_stop_positive": 0.124,
-      "trailing_stop_positive_offset": 0.197,
-      "trailing_only_offset_is_reached": false
+    "buy_swing_period": {
+      "type": "IntParameter",
+      "low": 30,
+      "high": 100,
+      "default": 50,
+      "optimize": false
     },
-    "max_open_trades": {
-      "max_open_trades": -1
+    "buy_slow_ema": {
+      "type": "CategoricalParameter",
+      "choices": "slow_emas",
+      "default": 34,
+      "optimize": false
+    },
+    "buy_fast_dema": {
+      "type": "CategoricalParameter",
+      "choices": "fast_demas",
+      "default": 13,
+      "optimize": false
+    },
+    "buy_fib_level": {
+      "type": "CategoricalParameter",
+      "choices": ["0.236", "0.382", "0.618", "0.786"],
+      "default": "0.618",
+      "optimize": false
     }
   },
-  "ft_stratparam_v": 1,
-  "export_time": "2025-02-02 21:08:17.381601+00:00"
+  "sell": {
+    "sell_rsi": {
+      "type": "IntParameter",
+      "low": 70,
+      "high": 100,
+      "default": 89,
+      "optimize": false
+    },
+    "sell_stoch_osc": {
+      "type": "IntParameter",
+      "low": 70,
+      "high": 100,
+      "default": 77,
+      "optimize": false
+    },
+    "sell_rsi_threshold": {
+      "type": "IntParameter",
+      "low": 60,
+      "high": 80,
+      "default": 75,
+      "optimize": false
+    },
+    "sell_fib_level": {
+      "type": "CategoricalParameter",
+      "choices": ["0.236", "0.382", "0.618", "0.786"],
+      "default": "0.786",
+      "optimize": false
+    }
+  },
+  "protection": {
+    "cooldown_lookback": {
+      "type": "IntParameter",
+      "low": 2,
+      "high": 48,
+      "default": 30,
+      "optimize": true
+    },
+    "low_profit_trade_limit": {
+      "type": "IntParameter",
+      "low": 2,
+      "high": 10,
+      "default": 9,
+      "optimize": true
+    },
+    "max_drawdown_trade_limit": {
+      "type": "IntParameter",
+      "low": 2,
+      "high": 10,
+      "default": 3,
+      "optimize": true
+    },
+    "stop_duration": {
+      "type": "IntParameter",
+      "low": 12,
+      "high": 200,
+      "default": 43,
+      "optimize": true
+    },
+    "trade_limit": {
+      "type": "IntParameter",
+      "low": 2,
+      "high": 10,
+      "default": 5,
+      "optimize": true
+    },
+    "use_low_profit": {
+      "type": "BooleanParameter",
+      "default": false,
+      "optimize": true
+    },
+    "use_max_drawdown_protection": {
+      "type": "BooleanParameter",
+      "default": false,
+      "optimize": true
+    },
+    "use_stop_protection": {
+      "type": "BooleanParameter",
+      "default": true,
+      "optimize": true
+    }
+  },
+  "roi": {
+    "roi_t1": {
+      "type": "IntParameter",
+      "low": 50,
+      "high": 600,
+      "default": 115,
+      "optimize": true
+    },
+    "roi_t2": {
+      "type": "IntParameter",
+      "low": 30,
+      "high": 300,
+      "default": 280,
+      "optimize": true
+    },
+    "roi_t3": {
+      "type": "IntParameter",
+      "low": 10,
+      "high": 200,
+      "default": 507,
+      "optimize": true
+    },
+    "roi_p1": {
+      "type": "DecimalParameter",
+      "low": 0.01,
+      "high": 0.20,
+      "default": 0.298,
+      "decimals": 3,
+      "optimize": true
+    },
+    "roi_p2": {
+      "type": "DecimalParameter",
+      "low": 0.01,
+      "high": 0.10,
+      "default": 0.144,
+      "decimals": 3,
+      "optimize": true
+    },
+    "roi_p3": {
+      "type": "DecimalParameter",
+      "low": 0.01,
+      "high": 0.05,
+      "default": 0.055,
+      "decimals": 3,
+      "optimize": true
+    }
+  },
+  "stoploss": {
+    "atr_stoploss_multiplier": {
+      "type": "DecimalParameter",
+      "low": 1,
+      "high": 3,
+      "default": 1.5,
+      "optimize": true
+    }
+  },
+  "trailing": {
+    "trailing_stop_positive": {
+      "type": "DecimalParameter",
+      "low": 0.01,
+      "high": 0.5,
+      "default": 0.236,
+      "decimals": 3,
+      "optimize": true
+    },
+    "trailing_stop_positive_offset": {
+      "type": "DecimalParameter",
+      "low": 0.5,
+      "high": 1.0,
+      "default": 0.786,
+      "decimals": 3,
+      "optimize": true
+    },
+    "trailing_only_offset_is_reached": {
+      "type": "BooleanParameter",
+      "default": true,
+      "optimize": true
+    }
+  },
+  "trade": {
+    "max_open_trades_param": {
+      "type": "IntParameter",
+      "low": 1,
+      "high": 10,
+      "default": 2,
+      "optimize": true
+    }
+  }
 }
