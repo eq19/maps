@@ -363,13 +363,13 @@ class fibbo(IStrategy):
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         # ATR (Volatility)
-        dataframe['atr'] = ta.ATR(dataframe, timeperiod=int(self.period.value))
+        dataframe['atr'] = ta.ATR(dataframe, timeperiod=int(self.buy_params['period']))
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
         #dataframe['fastd_rsi'] = stoch_rsi['fastd']
         #dataframe['fastk_rsi'] = stoch_rsi['fastk']
-        stoch_rsi = (dataframe['rsi'] - dataframe['rsi'].rolling(self.period.value).min()) / (dataframe['rsi'].rolling(self.period.value).max() - dataframe['rsi'].rolling(self.period.value).min())
+        stoch_rsi = (dataframe['rsi'] - dataframe['rsi'].rolling(self.buy_params['period']).min()) / (dataframe['rsi'].rolling(self.buy_params['period']).max() - dataframe['rsi'].rolling(self.buy_params['period']).min())
         dataframe['fastk_rsi'] = (stoch_rsi * 100).rolling(self.SmoothK.value).mean()
         dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(self.smoothD.value).mean()
 
