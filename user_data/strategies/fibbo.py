@@ -187,11 +187,11 @@ class fibbo(IStrategy):
     sell_fib_level                  = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
 
     # Protection
-    cooldown_lookback               = IntParameter(2, 48, default=30, space="protection", optimize=True)
-    low_profit_trade_limit          = IntParameter(2, 10, default=9, space="protection", optimize=True)
-    max_drawdown_trade_limit        = IntParameter(2, 10, default=3, space="protection", optimize=True)
-    stop_duration                   = IntParameter(12, 200, default=43, space="protection", optimize=True)
-    trade_limit                     = IntParameter(2, 10, default=5, space="protection", optimize=True)
+    cooldown_lookback = get_param_config(span, "protection", "cooldown_lookback")
+    low_profit_trade_limit = get_param_config(span, "protection", "low_profit_trade_limit")
+    max_drawdown_trade_limit = get_param_config(span, "protection", "max_drawdown_trade_limit")
+    stop_duration = get_param_config(span, "protection", "stop_duration")
+    trade_limit = get_param_config(span, "protection", "trade_limit")
     use_low_profit                  = BooleanParameter(default=False, space="protection", optimize=True)
     use_max_drawdown_protection     = BooleanParameter(default=False, space="protection", optimize=True)
     use_stop_protection             = BooleanParameter(default=True, space="protection", optimize=True)
