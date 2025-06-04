@@ -132,52 +132,6 @@ class fibbo(IStrategy):
     buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
     sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
     
-    # Hyperoptable buy parameters
-    period                          = IntParameter(5, 50, default=14, space="buy", optimize=False)
-    smoothD                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %D line
-    SmoothK                         = IntParameter(2, 5, default=3, space="buy", optimize=False) # Smoothing for %K line.
-    buy_rsi                         = IntParameter(10, 45, default=25, space="buy", optimize=False)
-    buy_stoch_osc                   = IntParameter(0, 30, default=10, space="buy", optimize=False)    
-    buy_swing_period                = IntParameter(30, 100, default=50, space="buy", optimize=False)
-    buy_slow_ema                    = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
-    buy_fast_dema                   = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
-    buy_fib_level                   = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
-
-    # Hyperoptable sell parameters
-    sell_rsi                        = IntParameter(70, 100, default=89, space="sell", optimize=False)
-    sell_stoch_osc                  = IntParameter(70, 100, default=77, space="sell", optimize=False)
-    sell_rsi_threshold              = IntParameter(60, 80, default=75, space="sell", optimize=False)
-    sell_fib_level                  = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
-
-    # Protection
-    cooldown_lookback               = IntParameter(2, 48, default=30, space="protection", optimize=True)
-    low_profit_trade_limit          = IntParameter(2, 10, default=9, space="protection", optimize=True)
-    max_drawdown_trade_limit        = IntParameter(2, 10, default=3, space="protection", optimize=True)
-    stop_duration                   = IntParameter(12, 200, default=43, space="protection", optimize=True)
-    trade_limit                     = IntParameter(2, 10, default=5, space="protection", optimize=True)
-    use_low_profit                  = BooleanParameter(default=False, space="protection", optimize=True)
-    use_max_drawdown_protection     = BooleanParameter(default=False, space="protection", optimize=True)
-    use_stop_protection             = BooleanParameter(default=True, space="protection", optimize=True)
-
-    # Hyperoptable ROI parameters - keep these as class variables
-    roi_t1                          = IntParameter(50, 600, default=115, space='roi', optimize=True)
-    roi_t2                          = IntParameter(30, 300, default=280, space='roi', optimize=True)
-    roi_t3                          = IntParameter(10, 200, default=507, space='roi', optimize=True)
-    roi_p1                          = DecimalParameter(0.01, 0.20, default=0.298, decimals=3, space='roi', optimize=True)
-    roi_p2                          = DecimalParameter(0.01, 0.10, default=0.144, decimals=3, space='roi', optimize=True)
-    roi_p3                          = DecimalParameter(0.01, 0.05, default=0.055, decimals=3, space='roi', optimize=True)
-
-    # Stoploss (Singular Optimation)
-    atr_stoploss_multiplier         = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
-
-    # Trailing stop
-    trailing_stop_positive          = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
-    trailing_stop_positive_offset   = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
-    trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
-
-    # Trades (Singular Optimation)
-    max_open_trades_param           = IntParameter(1, 10, default=2, space='trade', optimize=True)
-
 
     def __init__(self, config: dict) -> None:
         # Initialize parent class first
@@ -196,23 +150,84 @@ class fibbo(IStrategy):
             self.config['max_open_trades'] = self.max_open_trades_param.value
 
     @classmethod
+    @classmethod
     def load_params(cls):
-        """Lazy-load parameters when first needed"""
+        """Lazy-load hyperopt parameters from JSON file"""
         if cls._param_config is None:
             param_file = Path(__file__).parent/'hyperopt_params.json'
             try:
-                with open(param_file) as file:
+                with open(param_file, 'r', encoding='utf-8') as file:
                     cls._param_config = json.load(file)
-                    logger.info(f"Load params file: {param_file}")
+                    logger.info(f"Loaded parameters from {param_file}")
+                    
+                    # Recursive function to find 'span' configuration
+                    def find_span(data: Dict) -> Dict:
+                        if isinstance(data, dict):
+                            if 'span' in data:
+                                return data['span']
+                            for v in data.values():
+                                result = find_span(v)
+                                if result:
+                                    return result
+                        return None
+                    
+                    # Process span configuration if found
+                    span_config = find_span(cls._param_config)
+                    if span_config:
+                        for space, params in span_config.items():
+                            for param_name, config in params.items():
+                                try:
+                                    param_type = config['type']
+                                    optimize = config.get('optimize', False)
+                                    
+                                    if param_type == 'IntParameter':
+                                        setattr(cls, param_name, IntParameter(
+                                            low=config['low'],
+                                            high=config['high'],
+                                            default=config['default'],
+                                            space=space,
+                                            optimize=optimize
+                                        ))
+                                    elif param_type == 'DecimalParameter':
+                                        setattr(cls, param_name, DecimalParameter(
+                                            low=config['low'],
+                                            high=config['high'],
+                                            default=config['default'],
+                                            decimals=config.get('decimals', 3),
+                                            space=space,
+                                            optimize=optimize
+                                        ))
+                                    elif param_type == 'BooleanParameter':
+                                        setattr(cls, param_name, BooleanParameter(
+                                            default=config['default'],
+                                            space=space,
+                                            optimize=optimize
+                                        ))
+                                    elif param_type == 'CategoricalParameter':
+                                        choices = (getattr(cls, config['choices']) 
+                                                  if isinstance(config['choices'], str)
+                                                  else config['choices'])
+                                        setattr(cls, param_name, CategoricalParameter(
+                                            choices=choices,
+                                            default=config['default'],
+                                            space=space,
+                                            optimize=optimize
+                                        ))
+                                    logger.debug(f"Created {param_type} {param_name} in space {space}")
+                                    
+                                except Exception as e:
+                                    logger.error(f"Error creating parameter {param_name}: {str(e)}")
+                
             except FileNotFoundError:
-                logger.warning(f"Params file not found: {param_file}")
+                logger.warning(f"Parameter file not found: {param_file}")
                 cls._param_config = {}
-            except json.JSONDecodeError:
-                logger.error(f"Invalid JSON in params file: {param_file}")
+            except json.JSONDecodeError as e:
+                logger.error(f"Invalid JSON in {param_file}: {str(e)}")
                 cls._param_config = {}
             except Exception as e:
-                logger.error(f"Error loading params: {str(e)}")
+                logger.error(f"Unexpected error loading {param_file}: {str(e)}", exc_info=True)
                 cls._param_config = {}
+
     
     def update_roi(self):
         """Update ROI based on current parameter values"""
