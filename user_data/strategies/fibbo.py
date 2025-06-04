@@ -180,7 +180,33 @@ class fibbo(IStrategy):
                             space=space,
                             optimize=config.get('optimize', False)
                         ))
-                    # Add other parameter types similarly...
+                    elif param_type == 'DecimalParameter':
+                        setattr(cls, param_name, DecimalParameter(
+                            low=config['low'],
+                            high=config['high'],
+                            default=config['default'],
+                            decimals=config.get('decimals', 3),
+                            space=space,
+                            optimize=optimize
+                        ))
+                    elif param_type == 'BooleanParameter':
+                        setattr(cls, param_name, BooleanParameter(
+                            default=config['default'],
+                            space=space,
+                            optimize=optimize
+                        ))
+                    elif param_type == 'CategoricalParameter':
+                        choices = (getattr(cls, config['choices']) 
+                            if isinstance(config['choices'], str)
+                                else config['choices'])
+                        setattr(cls, param_name, CategoricalParameter(
+                            choices=choices,
+                            default=config['default'],
+                            space=space,
+                            optimize=optimize
+                        ))
+                    logger.debug(f"Created {param_type} {param_name} in space {space}")
+  
                 except Exception as e:
                     logger.error(f"Failed to create {param_name}: {e}")
 
