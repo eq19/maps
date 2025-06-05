@@ -398,9 +398,9 @@ class fibbo(IStrategy):
         dataframe['bb_lowerband'] = bollinger['lowerband']
 
         # EMA & DEMA
-        for period in self.slow_emas:
+        for period in span["buy"]["buy_slow_ema"]["choices"]:
             dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=period)
-        for period in self.fast_demas:
+        for period in span["buy"]["buy_fast_demas"]["choices"]:
             dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=period)
 
         # Swing high/low for Fibonacci levels
