@@ -438,9 +438,9 @@ class fibbo(IStrategy):
         informative['macdhist'] = macd_inf['macdhist']
         informative['macdsignal'] = macd_inf['macdsignal']
 
-        for period in self.slow_emas:
+        for period in span["buy"]["buy_slow_ema"]["choices"]:
             informative[f'ema{period}'] = ta.EMA(informative, timeperiod=period)
-        for period in self.fast_demas:
+        for period in span["buy"]["buy_fast_demas"]["choices"]:
             informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=period)
 
         # Merge informative pair data into main dataframe
