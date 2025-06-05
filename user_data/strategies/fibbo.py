@@ -183,15 +183,15 @@ class fibbo(IStrategy):
     buy_rsi = get_param_config(span, "buy", "buy_rsi")
     buy_stoch_osc = get_param_config(span, "buy", "buy_stoch_osc")
     buy_swing_period = get_param_config(span, "buy", "buy_swing_period")
-    buy_slow_ema                    = CategoricalParameter(slow_emas, default=34, space="buy", optimize=False)
-    buy_fast_dema                   = CategoricalParameter(fast_demas, default=13, space="buy", optimize=False)
-    buy_fib_level                   = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.618", space='buy', optimize=False)
+    buy_slow_ema = get_param_config(span, "buy", "buy_slow_ema")
+    buy_fast_dema = get_param_config(span, "buy", "buy_fast_dema")
+    buy_fib_level = get_param_config(span, "buy", "buy_fib_level")
 
     # Hyperoptable sell parameters
     sell_rsi = get_param_config(span, "sell", "sell_rsi")
     sell_stoch_osc = get_param_config(span, "sell", "sell_stoch_osc")
     sell_rsi_threshold = get_param_config(span, "sell", "sell_rsi_threshold")
-    sell_fib_level                  = CategoricalParameter(["0.236", "0.382", "0.618", "0.786"], default="0.786", space='sell', optimize=False)
+    sell_fib_level = get_param_config(span, "sell", "sell_fib_level")
 
     # Protection
     cooldown_lookback = get_param_config(span, "protection", "cooldown_lookback")
