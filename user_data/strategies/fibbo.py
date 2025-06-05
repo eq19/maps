@@ -400,7 +400,7 @@ class fibbo(IStrategy):
         # EMA & DEMA
         for period in span["buy"]["buy_slow_ema"]["choices"]:
             dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=int(period))
-        for period in span["buy"]["buy_fast_demas"]["choices"]:
+        for period in span["buy"]["buy_fast_dema"]["choices"]:
             dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=int(period))
 
         # Swing high/low for Fibonacci levels
@@ -432,7 +432,7 @@ class fibbo(IStrategy):
 
         for period in span["buy"]["buy_slow_ema"]["choices"]:
             informative[f'ema{period}'] = ta.EMA(informative, timeperiod=int(period))
-        for period in span["buy"]["buy_fast_demas"]["choices"]:
+        for period in span["buy"]["buy_fast_dema"]["choices"]:
             informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=int(period))
 
         # Merge informative pair data into main dataframe
