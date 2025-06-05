@@ -164,8 +164,6 @@ class fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
 
     # Optional
-    fast_demas                      = [5, 8, 13, 21]
-    slow_emas                       = [34, 55, 89, 144]
     order_time_in_force             = {"entry": "GTC", "exit": "GTC"}
     sell_indicators                 = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
     buy_indicators                  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
