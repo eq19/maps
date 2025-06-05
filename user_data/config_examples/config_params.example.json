@@ -44,13 +44,13 @@
     },
     "buy_slow_ema": {
       "type": "CategoricalParameter",
-      "choices": ["5", "8", "13", "21"],
+      "choices": ["34", "55", "89", "144"],
       "default": 34,
       "optimize": false
     },
     "buy_fast_dema": {
       "type": "CategoricalParameter",
-      "choices": "fast_demas",
+      "choices": ["5", "8", "13", "21"],
       "default": 13,
       "optimize": false
     },
