@@ -70,7 +70,7 @@ def get_param_config(span: dict, space: str, name: str):
         )
     elif param_type == "CategoricalParameter":
         return CategoricalParameter(
-            choices=config['choices'],
+            categories=config['choices'],
             default=default,
             space=space,
             optimize=optimize
