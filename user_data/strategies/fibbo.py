@@ -32,11 +32,22 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 
 
+# Define indicator sets (could also come from the JSON if needed)
+buy_indicators = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
+sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
 # ✅ 1. Load span config from JSON
 with open('user_data/config_examples/config_params.example.json') as f:
     span = json.load(f)
+
+# Insert computed categories into the JSON-loaded span
+span["buy"]["buy_additional_indicator"]["choices"] = sorted(
+    indicator_permutations(buy_indicators, max_indicators=2, include_none=True)
+)
+span["sell"]["sell_additional_indicator"]["choices"] = sorted(
+    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
+)
 
 # ✅ 2. Helper function to construct parameters
 def get_param_config(span: dict, space: str, name: str):
@@ -78,20 +89,18 @@ def get_param_config(span: dict, space: str, name: str):
     else:
         raise ValueError(f"Unknown parameter type: {param_type}")
 
+# Generate permutations and insert them into the span config before using them
 def indicator_permutations(profiles, max_indicators=1, include_none=False):
     profile_permutations = set()
     if include_none:
         profile_permutations.add("NONE")
-
     if max_indicators == 1:
         profile_permutations.update(profiles)
         return profile_permutations
-
-    for i in range(1, len(profiles)+1):
+    for i in range(1, len(profiles) + 1):
         for perm in permutations(profiles, i):
             if len(perm) <= max_indicators:
-                profile_permutations.add(", ".join(sorted(list(perm))))
-
+                profile_permutations.add(", ".join(sorted(perm)))
     return profile_permutations
 
 
@@ -112,7 +121,7 @@ class fibbo(IStrategy):
 
     # Class variable to hold parameters
     _param_config = None
-    plot_config = {
+    plot_cofig = {
         "main_plot": {
             "tema": {},
             "sar": {"color": "white"},
@@ -178,12 +187,14 @@ class fibbo(IStrategy):
     buy_slow_ema = get_param_config(span, "buy", "buy_slow_ema")
     buy_fast_dema = get_param_config(span, "buy", "buy_fast_dema")
     buy_fib_level = get_param_config(span, "buy", "buy_fib_level")
+    buy_additional_indicator = get_param_config(span, "buy", "buy_additional_indicator")
 
     # Hyperoptable sell parameters
     sell_rsi = get_param_config(span, "sell", "sell_rsi")
     sell_stoch_osc = get_param_config(span, "sell", "sell_stoch_osc")
     sell_rsi_threshold = get_param_config(span, "sell", "sell_rsi_threshold")
     sell_fib_level = get_param_config(span, "sell", "sell_fib_level")
+    sell_additional_indicator = get_param_config(span, "sell", "sell_additional_indicator")
 
     # Protection
     cooldown_lookback = get_param_config(span, "protection", "cooldown_lookback")
