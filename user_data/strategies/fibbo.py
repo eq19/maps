@@ -103,6 +103,12 @@ span["sell"]["sell_additional_indicator"]["choices"] = sorted(
     indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
 )
 
+# Preload strategy attributes
+strategy_attrs = {}
+for section, keys in span.items():
+    for key in keys:
+        strategy_attrs[key] = get_param_config(span, section, key)
+
 
 class fibbo(IStrategy):
     # Strategy interface version - allow new iterations of the strategy interface.
@@ -176,54 +182,6 @@ class fibbo(IStrategy):
     use_custom_stoploss = True
     process_only_new_candles = True
     ignore_roi_if_entry_signal = False
-
-    # Hyperoptable buy parameters
-    period = get_param_config(span, "buy", "period")
-    smoothD = get_param_config(span, "buy", "smoothD")
-    SmoothK = get_param_config(span, "buy", "SmoothK")
-    buy_rsi = get_param_config(span, "buy", "buy_rsi")
-    buy_stoch_osc = get_param_config(span, "buy", "buy_stoch_osc")
-    buy_swing_period = get_param_config(span, "buy", "buy_swing_period")
-    buy_slow_ema = get_param_config(span, "buy", "buy_slow_ema")
-    buy_fast_dema = get_param_config(span, "buy", "buy_fast_dema")
-    buy_fib_level = get_param_config(span, "buy", "buy_fib_level")
-    buy_additional_indicator = get_param_config(span, "buy", "buy_additional_indicator")
-
-    # Hyperoptable sell parameters
-    sell_rsi = get_param_config(span, "sell", "sell_rsi")
-    sell_stoch_osc = get_param_config(span, "sell", "sell_stoch_osc")
-    sell_rsi_threshold = get_param_config(span, "sell", "sell_rsi_threshold")
-    sell_fib_level = get_param_config(span, "sell", "sell_fib_level")
-    sell_additional_indicator = get_param_config(span, "sell", "sell_additional_indicator")
-
-    # Protection
-    cooldown_lookback = get_param_config(span, "protection", "cooldown_lookback")
-    low_profit_trade_limit = get_param_config(span, "protection", "low_profit_trade_limit")
-    max_drawdown_trade_limit = get_param_config(span, "protection", "max_drawdown_trade_limit")
-    stop_duration = get_param_config(span, "protection", "stop_duration")
-    trade_limit = get_param_config(span, "protection", "trade_limit")
-    use_low_profit = get_param_config(span, "protection", "use_low_profit")
-    use_max_drawdown_protection = get_param_config(span, "protection", "use_max_drawdown_protection")
-    use_stop_protection = get_param_config(span, "protection", "use_stop_protection")
-
-    # Hyperoptable ROI parameters - keep these as class variables
-    roi_t1 = get_param_config(span, "roi", "roi_t1")
-    roi_t2 = get_param_config(span, "roi", "roi_t2")
-    roi_t3 = get_param_config(span, "roi", "roi_t3")
-    roi_p1 = get_param_config(span, "roi", "roi_p1")
-    roi_p2 = get_param_config(span, "roi", "roi_p2")
-    roi_p3 = get_param_config(span, "roi", "roi_p3")
-
-    # Stoploss (Singular Optimation)
-    atr_stoploss_multiplier = get_param_config(span, "stoploss", "atr_stoploss_multiplier")
-
-    # Trailing stop
-    trailing_stop_positive = get_param_config(span, "trailing", "trailing_stop_positive")
-    trailing_stop_positive_offset = get_param_config(span, "trailing", "trailing_stop_positive_offset")
-    trailing_only_offset_is_reached = get_param_config(span, "trailing", "trailing_only_offset_is_reached")
-
-    # Trades (Singular Optimation)
-    max_open_trades_param = get_param_config(span, "trades", "max_open_trades_param")
 
 
     def __init__(self, config: dict) -> None:
@@ -522,3 +480,7 @@ class fibbo(IStrategy):
                 'exit_long'] = 1
             
         return dataframe
+
+# Inject hyperopt parameters AFTER class definition
+for key, value in strategy_attrs.items():
+    setattr(fibbo, key, value)
