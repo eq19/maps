@@ -60,10 +60,9 @@
       "default": "0.618",
       "optimize": false
     },
-      "buy_fib_level": {
+      "buy_additional_indicator": {
       "type": "CategoricalParameter",
-      "choices": ["0.236", "0.382", "0.618", "0.786"],
-      "default": "0.618",
+      "default": "NONE",
       "optimize": true
     }
   },
@@ -95,10 +94,9 @@
       "default": "0.786",
       "optimize": false
     },
-      "sell_fib_level": {
+      "sell_additional_indicator": {
       "type": "CategoricalParameter",
-      "choices": ["0.236", "0.382", "0.618", "0.786"],
-      "default": "0.786",
+      "default": "NONE",
       "optimize": true
     }
   },
