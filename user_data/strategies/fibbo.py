@@ -69,16 +69,8 @@ def get_param_config(span: dict, space: str, name: str):
             optimize=optimize
         )
     elif param_type == "CategoricalParameter":
-        choices = config["choices"]
-        if isinstance(choices, str):
-            # Replace placeholder names like "slow_emas" with actual list
-            # You must define these somewhere
-            if choices == "slow_emas":
-                choices = [21, 34, 55]
-            elif choices == "fast_demas":
-                choices = [8, 13, 21]
         return CategoricalParameter(
-            choices=choices,
+            choices=config['choices'],
             default=default,
             space=space,
             optimize=optimize
