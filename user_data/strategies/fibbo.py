@@ -225,14 +225,6 @@ class fibbo(IStrategy):
     # Trades (Singular Optimation)
     max_open_trades_param = get_param_config(span, "trades", "max_open_trades_param")
 
-    # Indicator permutations
-    sell_indicators                 = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
-    buy_indicators                  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
-    buy_additional_indicators       = indicator_permutations(buy_indicators, max_indicators=2)
-    sell_additional_indicators      = indicator_permutations(sell_indicators, max_indicators=2)
-    buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
-    sell_additional_indicator       = CategoricalParameter(sell_additional_indicators, default="NONE", optimize=True)
-
 
     def __init__(self, config: dict) -> None:
         # Initialize parent class first
