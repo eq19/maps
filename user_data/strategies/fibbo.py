@@ -155,6 +155,11 @@ class fibbo(IStrategy):
         },
     }
 
+    order_time_in_force = {
+        "entry": "GTC",
+        "exit": "GTC"
+    }
+
     # See the config
     trailing_stop = True
     use_exit_signal = True
@@ -163,12 +168,9 @@ class fibbo(IStrategy):
     process_only_new_candles = True
     ignore_roi_if_entry_signal = False
 
-    # Optional
-    order_time_in_force             = {"entry": "GTC", "exit": "GTC"}
+    # Indicator permutations
     sell_indicators                 = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
     buy_indicators                  = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
-
-    # Indicator permutations
     buy_additional_indicators       = indicator_permutations(buy_indicators, max_indicators=2)
     sell_additional_indicators      = indicator_permutations(sell_indicators, max_indicators=2)
     buy_additional_indicator        = CategoricalParameter(buy_additional_indicators, default="NONE", optimize=True)
