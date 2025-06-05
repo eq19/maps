@@ -44,7 +44,7 @@
     },
     "buy_slow_ema": {
       "type": "CategoricalParameter",
-      "choices": "slow_emas",
+      "choices": ["5", "8", "13", "21"],
       "default": 34,
       "optimize": false
     },
