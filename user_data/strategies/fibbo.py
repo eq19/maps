@@ -41,14 +41,6 @@ logger = logging.getLogger(__name__)
 with open('user_data/config_examples/config_params.example.json') as f:
     span = json.load(f)
 
-# Insert computed categories into the JSON-loaded span
-span["buy"]["buy_additional_indicator"]["choices"] = sorted(
-    indicator_permutations(buy_indicators, max_indicators=2, include_none=True)
-)
-span["sell"]["sell_additional_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
-)
-
 # ✅ 2. Helper function to construct parameters
 def get_param_config(span: dict, space: str, name: str):
     config = span[space][name]
@@ -102,6 +94,14 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
             if len(perm) <= max_indicators:
                 profile_permutations.add(", ".join(sorted(perm)))
     return profile_permutations
+
+# Insert computed categories into the JSON-loaded span
+span["buy"]["buy_additional_indicator"]["choices"] = sorted(
+    indicator_permutations(buy_indicators, max_indicators=2, include_none=True)
+)
+span["sell"]["sell_additional_indicator"]["choices"] = sorted(
+    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
+)
 
 
 class fibbo(IStrategy):
