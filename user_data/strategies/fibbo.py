@@ -220,15 +220,15 @@ class fibbo(IStrategy):
     roi_p3 = get_param_config(span, "roi", "roi_p3")
 
     # Stoploss (Singular Optimation)
-    atr_stoploss_multiplier         = DecimalParameter(1, 3, default=1.5, space='stoploss', optimize=True)
+    atr_stoploss_multiplier = get_param_config(span, "stoploss", "atr_stoploss_multiplier")
 
     # Trailing stop
-    trailing_stop_positive          = DecimalParameter(0.01, 0.50, default=0.236, decimals=3, space='trailing', optimize=True)
-    trailing_stop_positive_offset   = DecimalParameter(0.50, 1.00, default=0.786, decimals=3, space='trailing', optimize=True)
-    trailing_only_offset_is_reached = BooleanParameter(default=True, space='trailing', optimize=True)
+    trailing_stop_positive = get_param_config(span, "trailing", "trailing_stop_positive")
+    trailing_stop_positive_offset = get_param_config(span, "trailing", "trailing_stop_positive_offset")
+    trailing_only_offset_is_reached = get_param_config(span, "trailing", "trailing_only_offset_is_reached")
 
     # Trades (Singular Optimation)
-    max_open_trades_param           = IntParameter(1, 10, default=2, space='trade', optimize=True)
+    max_open_trades_param = get_param_config(span, "trades", "max_open_trades_param")
 
 
     def __init__(self, config: dict) -> None:
