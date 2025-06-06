@@ -54,12 +54,17 @@ def find_span(obj):
     return None
 
 # Load JSON and extract 'span'
-with open(Path(__file__).parent / 'hyperopt_params.json') as f:
-    data = json.load(f)
-    span = find_span(data)
-
-    if span is None:
-        raise ValueError("No 'span' field found in JSON.")
+param_file = Path(__file__).parent/'hyperopt_params.json'
+try:
+    with open(param_file) as file:
+    span = find_span(json.load(file))
+    logger.info(f"Load params file: {param_file}")
+except FileNotFoundError:
+    logger.warning(f"Params file not found: {param_file}")
+except json.JSONDecodeError:
+    logger.error(f"Invalid JSON in params file: {param_file}")
+except Exception as e:
+    logger.error(f"Error loading params: {str(e)}")
 
 # ✅ 2. Helper function to construct parameters
 def get_param_config(span: dict, space: str, name: str):
@@ -208,10 +213,6 @@ class fibbo(IStrategy):
         # Initialize parent class first
         super().__init__(config)
     
-        # Load parameters (if using lazy-loading)
-        if hasattr(self, 'load_params'):
-            self.load_params()
-    
         # Update ROI dynamically (if needed)
         if hasattr(self, 'update_roi'):
             self.update_roi()
@@ -220,25 +221,6 @@ class fibbo(IStrategy):
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
             self.config['max_open_trades'] = self.max_open_trades_param.value
 
-    @classmethod
-    def load_params(cls):
-        """Lazy-load parameters when first needed"""
-        if cls._param_config is None:
-            param_file = Path(__file__).parent/'hyperopt_params.json'
-            try:
-                with open(param_file) as file:
-                    cls._param_config = json.load(file)
-                    logger.info(f"Load params file: {param_file}")
-            except FileNotFoundError:
-                logger.warning(f"Params file not found: {param_file}")
-                cls._param_config = {}
-            except json.JSONDecodeError:
-                logger.error(f"Invalid JSON in params file: {param_file}")
-                cls._param_config = {}
-            except Exception as e:
-                logger.error(f"Error loading params: {str(e)}")
-                cls._param_config = {}
-    
     def update_roi(self):
         """Update ROI based on current parameter values"""
         self.minimal_roi = {
