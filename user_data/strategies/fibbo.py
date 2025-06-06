@@ -150,24 +150,6 @@ class fibbo(IStrategy):
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 200
 
-    # Class variable to hold parameters
-    _param_config = None
-    plot_cofig = {
-        "main_plot": {
-            "tema": {},
-            "sar": {"color": "white"},
-        },
-        "subplots": {
-            "MACD": {
-                "macd": {"color": "blue"},
-                "macdsignal": {"color": "orange"},
-            },
-            "RSI": {
-                "rsi": {"color": "red"},
-            },
-        },
-    }
-
     # Hyperoptable parameters
     stoploss = -0.1
     minimal_roi = {
@@ -207,6 +189,23 @@ class fibbo(IStrategy):
     use_custom_stoploss = True
     process_only_new_candles = True
     ignore_roi_if_entry_signal = False
+
+    # Plot config
+    plot_cofig = {
+        "main_plot": {
+            "tema": {},
+            "sar": {"color": "white"},
+        },
+        "subplots": {
+            "MACD": {
+                "macd": {"color": "blue"},
+                "macdsignal": {"color": "orange"},
+            },
+            "RSI": {
+                "rsi": {"color": "red"},
+            },
+        },
+    }
 
 
     def __init__(self, config: dict) -> None:
