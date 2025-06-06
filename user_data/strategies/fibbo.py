@@ -37,9 +37,29 @@ buy_indicators = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
 sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
-# ✅ 1. Load span config from JSON
-with open('user_data/config_examples/config_params.example.json') as f:
-    span = json.load(f)
+# ✅ 1. Recursively find the first occurrence of the 'span' key
+def find_span(obj):
+    if isinstance(obj, dict):
+        if "span" in obj:
+            return obj["span"]
+        for value in obj.values():
+            result = find_span(value)
+            if result is not None:
+                return result
+    elif isinstance(obj, list):
+        for item in obj:
+            result = find_span(item)
+            if result is not None:
+                return result
+    return None
+
+# Load JSON and extract 'span'
+with open(Path(__file__).parent / 'hyperopt_params.json') as f:
+    data = json.load(f)
+    span = find_span(data)
+
+    if span is None:
+        raise ValueError("No 'span' field found in JSON.")
 
 # ✅ 2. Helper function to construct parameters
 def get_param_config(span: dict, space: str, name: str):
