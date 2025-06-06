@@ -209,23 +209,22 @@ class fibbo(IStrategy):
 
 
     def __init__(self, config: dict) -> None:
-        # Initialize parent class first
         super().__init__(config)
-    
-        # Override only during hyperopt
+
+        # Override settings ONLY during hyperopt
         if config.get('runmode') == 'hyperopt':
             self.trailing_stop = True
             self.use_exit_signal = False
             self.use_custom_stoploss = False
             self.minimal_roi = {"0": 100}
 
-        # Update ROI dynamically (if needed)
+        # Optional: update dynamic ROI logic
         if hasattr(self, 'update_roi'):
             self.update_roi()
-    
-        # Apply max_open_trades optimization
+
+        # Optional: apply hyperopt value of max_open_trades to config
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
-            self.config['max_open_trades'] = self.max_open_trades_param.value
+            self.config['max_open_trades'] = self.max_open_trades.value
 
     def update_roi(self):
         """Update ROI based on current parameter values"""
