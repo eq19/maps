@@ -212,6 +212,13 @@ class fibbo(IStrategy):
         # Initialize parent class first
         super().__init__(config)
     
+        # Override only during hyperopt
+        if config.get('runmode') == 'hyperopt':
+            self.trailing_stop = True
+            self.use_exit_signal = False
+            self.use_custom_stoploss = False
+            self.minimal_roi = {"0": 100}
+
         # Update ROI dynamically (if needed)
         if hasattr(self, 'update_roi'):
             self.update_roi()
