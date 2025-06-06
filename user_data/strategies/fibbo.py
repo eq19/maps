@@ -57,8 +57,8 @@ def find_span(obj):
 param_file = Path(__file__).parent/'hyperopt_params.json'
 try:
     with open(param_file) as file:
-    span = find_span(json.load(file))
-    logger.info(f"Load params file: {param_file}")
+        span = find_span(json.load(file))
+        logger.info(f"Load params file: {param_file}")
 except FileNotFoundError:
     logger.warning(f"Params file not found: {param_file}")
 except json.JSONDecodeError:
