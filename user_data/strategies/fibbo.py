@@ -106,7 +106,7 @@ def get_param_config(span: dict, space: str, name: str):
     else:
         raise ValueError(f"Unknown parameter type: {param_type}")
 
-# Generate permutations and insert them into the span config before using them
+# ✅ 3. Generate permutations and insert them into the span config before using them
 def indicator_permutations(profiles, max_indicators=1, include_none=False):
     profile_permutations = set()
     if include_none:
