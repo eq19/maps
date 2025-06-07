@@ -61,7 +61,6 @@
             "ALIF/IDR",
             "APU/IDR",
             "ARB/IDR",
-            "ATA/IDR",
             "BAT/IDR",
             "BGB/IDR",
             "BOTX/IDR",
@@ -132,7 +131,7 @@
         ],
         "pair_blacklist": [
             ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
-            "(AFA|ALA|ALL|ALPHA|APL|ASR|ATM|AUD|ACM|AERGO|AVAX)/IDR",
+            "(AFA|ALA|ALL|ALPHA|APL|ASR|ATA|ATM|AUD|ACM|AERGO|AVAX)/IDR",
             "(BAR|BEL|BNB|BITTON|BOME|BRETT|BTCST|BRZ|BUSD)/IDR",
             "(BCH|CAI|CAD|CHF|CHZ|CITY|COTI|CRV|CUSDT)/IDR",
             "(DASH|DAI|DEGO|DOGE|DOGEGOV|DOGS)/IDR",
