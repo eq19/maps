@@ -14,7 +14,7 @@
       "default": 3,
       "optimize": false
     },
-    "SmoothK": {
+    "smoothK": {
       "type": "IntParameter",
       "low": 2,
       "high": 5,
