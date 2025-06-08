@@ -10,7 +10,7 @@
     "fiat_display_currency": "IDR",
     "tradable_balance_ratio": 0.99,
     "reduce_df_footprint": false,
-    "informative-timeframe": "1h",
+    "informative-timeframe": "15m",
     "disable_dataframe_checks": false,
     "cancel_open_orders_on_exit": true,
     "process_only_new_candles" : false,
