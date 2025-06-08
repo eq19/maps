@@ -147,9 +147,6 @@ class fibbo(IStrategy):
     timeframe = "1m"
     informative_timeframe = "15m"
 
-    # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 200
-
     # Hyperoptable parameters
     stoploss = -0.1
     minimal_roi = {
