@@ -232,7 +232,7 @@
     }
   },
   "trades": {
-    "max_open_trades_param": {
+    "max_open_trades": {
       "type": "IntParameter",
       "low": 70,
       "high": 100,
