@@ -234,9 +234,9 @@
   "trades": {
     "max_open_trades_param": {
       "type": "IntParameter",
-      "low": 1,
-      "high": 10,
-      "default": 2,
+      "low": 70,
+      "high": 100,
+      "default": 100,
       "optimize": true
     }
   }
