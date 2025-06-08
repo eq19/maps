@@ -1,10 +1,9 @@
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
     "dry_run": true,
-    "timeframe": "1m",
-    "stake_amount": 100000,
     "trading_mode": "spot",
     "stake_currency": "IDR",
+    "stake_amount": 100000,
     "dry_run_wallet": 10000000,
     "startup_candle_count" : 120,
     "fiat_display_currency": "IDR",
