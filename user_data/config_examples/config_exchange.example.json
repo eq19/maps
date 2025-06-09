@@ -1,6 +1,7 @@
 {
     "$schema": "https://schema.freqtrade.io/schema.json",
     "dry_run": true,
+    "max_open_trades": -1,
     "trading_mode": "spot",
     "stake_currency": "IDR",
     "stake_amount": 100000,
@@ -51,6 +52,14 @@
         "name": "indodax",
         "key": "your_exchange_key",
         "secret": "your_exchange_secret",
+        "pair_earning": [
+            "ADA/IDR",
+            "BNB/IDR",
+            "DOT/IDR",
+            "ETH/IDR",
+            "POL/IDR",
+            "SOL/IDR"
+        ],
         "pair_whitelist": [
             "ACTSOL/IDR",
             "ADA/IDR",
@@ -60,6 +69,7 @@
             "ARB/IDR",
             "BAT/IDR",
             "BGB/IDR",
+            "BNB/IDR",
             "BOTX/IDR",
             "BTC/IDR",
             "CBG/IDR",
@@ -68,6 +78,7 @@
             "CHILLGUY/IDR",
             "CHT/IDR",
             "DEGEN/IDR",
+            "DOT/IDR",
             "ENA/IDR",
             "ETH/IDR",
             "FARTCOIN/IDR",
@@ -129,7 +140,7 @@
         "pair_blacklist": [
             ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
             "(AFA|ALA|ALL|ALPHA|APL|ASR|ATA|ATM|AUD|ACM|AERGO|AVAX)/IDR",
-            "(BAR|BEL|BNB|BITTON|BOME|BRETT|BTCST|BRZ|BUSD)/IDR",
+            "(BAR|BEL|BITTON|BOME|BRETT|BTCST|BRZ|BUSD)/IDR",
             "(BCH|CAI|CAD|CHF|CHZ|CITY|COTI|CRV|CUSDT)/IDR",
             "(DASH|DAI|DEGO|DOGE|DOGEGOV|DOGS)/IDR",
             "(EUR)/IDR",
