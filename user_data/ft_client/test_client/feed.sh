@@ -65,7 +65,7 @@ hyperopt() {
     https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
 
   # Trigger the workflow_dispatch
-  curl -X POST \
+  curl -s -X POST \
     -H "Authorization: token $GH_TOKEN" \
     -H "Accept: application/vnd.github.v3+json" \
     -d "{\"ref\":\"$DEFAULT_BRANCH\"}" \
