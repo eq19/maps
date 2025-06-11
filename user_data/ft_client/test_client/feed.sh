@@ -216,6 +216,12 @@ else
   rm -rf /home/runner/user_data/backtest_results/*
   freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
+  # Scoring breakdown:
+  # Winrate: 25 pts
+  # Profit per trade: 25 pts
+  # Total profit: 25 pts
+  # Drawdown ratio: 20 pts
+  # Trade count bonus (capped): 5 pts
   calculate_score
   OLD_SCORE=$SCORE
   echo "SCORE: $OLD_SCORE"
