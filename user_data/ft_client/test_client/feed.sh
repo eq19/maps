@@ -107,7 +107,7 @@ hyperopt() {
 
 calculate_score() {
   local dir="/home/runner/user_data/backtest_results"
-  local latest_zip=$(ls -t "$dir/backtest-result-"*.zip | head -n 1)
+  local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
   if [[ -z "$latest_zip" ]]; then
     echo "No ZIP file found in $dir"
     return 1
@@ -126,54 +126,49 @@ calculate_score() {
     return 1
   else
     echo "$json_data" | jq .
-    rm -rf $dir/*
+    rm -rf "$dir"/*
   fi
 
   local winrate=$(echo "$json_data" | jq -r '.winrate')
   local profit_mean_pct=$(echo "$json_data" | jq -r '.profit_mean_pct')
   local profit_total_pct=$(echo "$json_data" | jq -r '.profit_total_pct')
-  local max_drawdown=$(echo "$json_data" | jq -r '.max_drawdown_account')
-  local trade_count=$(echo "$json_data" | jq -r '.trades')
+  local max_drawdown_account=$(echo "$json_data" | jq -r '.max_drawdown_account')
+  local trades=$(echo "$json_data" | jq -r '.trades')
 
-  # Scoring breakdown:
-  # Winrate: 25 pts
-  # Profit per trade: 25 pts
-  # Total profit: 25 pts
-  # Drawdown ratio: 20 pts
-  # Trade count bonus (capped): 5 pts
+  # Sanity check
+  if [[ -z "$winrate" || -z "$profit_mean_pct" || -z "$profit_total_pct" || -z "$max_drawdown_account" || -z "$trades" ]]; then
+    echo "Missing one or more required values."
+    return 1
+  fi
 
-  # 1. Winrate Score (0–25)
-  winrate_score=$(echo "scale=4; $winrate * 25" | bc)
-
-  # 2. Profit per trade Score (0–25)
-  profit_per_trade_score=$(echo "scale=4; $profit_mean_pct * 100" | bc)
+  # Cap values
+  profit_mean_pct=$(echo "$profit_mean_pct > 0.25" | bc -l) && [[ "$profit_mean_pct" -eq 1 ]] && profit_mean_pct=0.25
+  local winrate_score=$(echo "$winrate * 25" | bc -l)
+  local profit_per_trade_score=$(echo "$profit_mean_pct * 100" | bc -l)
   if (( $(echo "$profit_per_trade_score > 25" | bc -l) )); then
     profit_per_trade_score=25
   fi
+  local profit_total_score=$(echo "$profit_total_pct / 2" | bc -l)
 
-  # 3. Total profit Score (0–25)
-  profit_total_score=$(echo "scale=4; $profit_total_pct / 2" | bc)
-  if (( $(echo "$profit_total_score > 25" | bc -l) )); then
-    profit_total_score=25
-  fi
-
-  # 4. Drawdown ratio Score (0–20)
-  if (( $(echo "$max_drawdown == 0" | bc -l) )); then
+  # Prevent division by zero
+  local drawdown_ratio_score
+  if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
     drawdown_ratio_score=20
   else
-    drawdown_ratio_score=$(echo "scale=4; $profit_total_pct / ($max_drawdown * 100)" | bc)
+    drawdown_ratio_score=$(echo "$profit_total_pct / ($max_drawdown_account * 100)" | bc -l)
     if (( $(echo "$drawdown_ratio_score > 20" | bc -l) )); then
       drawdown_ratio_score=20
     fi
   fi
 
-  # 5. Trade count Score (0–5)
-  trade_count_score=$(echo "scale=4; ($trade_count > 2000 ? 2000 : $trade_count) / 2000 * 5" | bc)
+  local trade_count_score=0
+  if (( $(echo "$trades > 2000" | bc -l) )); then
+    trade_count_score=5
+  fi
 
-  # Final SCORE
-  SCORE=$(echo "scale=2; $winrate_score + $profit_per_trade_score + $profit_total_score + $drawdown_ratio_score + $trade_count_score" | bc)
-
-  echo "Final Score: $SCORE"
+  # Total score
+  SCORE=$(echo "$winrate_score + $profit_per_trade_score + $profit_total_score + $drawdown_ratio_score + $trade_count_score" | bc -l)
+  SCORE=$(printf "%.2f" "$SCORE")
 }
 
 if [[ "$1" == "listing" ]]; then
