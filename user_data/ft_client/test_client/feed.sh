@@ -68,7 +68,7 @@ hyperopt() {
   curl -X POST \
     -H "Authorization: token $GH_TOKEN" \
     -H "Accept: application/vnd.github.v3+json" \
-    -d "{\"ref\":\"$DEFAULT_BRANCH\", \"inputs\": {\"param\": \"value\"}}" \
+    -d "{\"ref\":\"$DEFAULT_BRANCH\"}" \
     https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
   
   echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
