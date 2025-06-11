@@ -60,11 +60,16 @@ hyperopt() {
       hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
     done
 
+  # Get default branch
+  DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
+    https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
+
+  # Trigger the workflow_dispatch
   curl -X POST \
     -H "Authorization: token $GH_TOKEN" \
     -H "Accept: application/vnd.github.v3+json" \
-    -d '{"ref": "V0", "inputs": {"param": "value"}}' \
-    "https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches"
+    -d "{\"ref\":\"$DEFAULT_BRANCH\"}" \
+    https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
   
   echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
