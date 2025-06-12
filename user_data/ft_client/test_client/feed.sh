@@ -60,7 +60,8 @@ hyperopt() {
       hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
     done
 
-  # Get default branch
+  # Read json and get default branch
+  MATRIX_JSON=$(jq -c . .github/matrix.json)
   DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
     https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
 
@@ -68,10 +69,13 @@ hyperopt() {
   curl -s -X POST \
     -H "Authorization: token $GH_TOKEN" \
     -H "Accept: application/vnd.github.v3+json" \
-    -d "{\"ref\":\"$DEFAULT_BRANCH\"}" \
+    -d "$(jq -n \
+      --arg ref "$DEFAULT_BRANCH" \
+      --arg matrix_json "$MATRIX_JSON" \
+      '{ref: $ref, inputs: {matrix_json: $matrix_json}}')" \
     https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
   
-  echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
