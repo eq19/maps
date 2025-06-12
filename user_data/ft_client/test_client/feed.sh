@@ -12,7 +12,7 @@ STRATEGY=/home/runner/user_data/strategies/fibbo.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
-HYPEROPT_PARAM=
+HYPEROPT_PARAM=user_data/config_examples/config_params.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
