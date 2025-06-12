@@ -9,6 +9,7 @@ SCORE=100
 FEE=0.003322
 TIMEFRAMES='1m 15m'
 STRATEGY=/home/runner/user_data/strategies/fibbo.json
+HYPEROPT_MATRIX=user_data/config_examples/matrix.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
@@ -61,7 +62,7 @@ hyperopt() {
     done
 
     # Read json and get default branch
-    MATRIX_JSON=$(jq -c . .github/matrix.json)
+    MATRIX_JSON=$(jq -c . $HYPEROPT_MATRIX)
     DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
       https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
 
