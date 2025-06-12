@@ -9,10 +9,10 @@ SCORE=100
 FEE=0.003322
 TIMEFRAMES='1m 15m'
 STRATEGY=/home/runner/user_data/strategies/fibbo.json
-HYPEROPT_MATRIX=user_data/config_examples/matrix.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
+HYPEROPT_PARAM=
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -70,11 +70,21 @@ hyperopt() {
     curl -s -X POST \
       -H "Authorization: token $GH_TOKEN" \
       -H "Accept: application/vnd.github.v3+json" \
+      https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches \
       -d "$(jq -n \
+        --arg space "$spaces" \
+        --arg loss "$hyperopt_loss" \
         --arg ref "$DEFAULT_BRANCH" \
-        --arg matrix_json "$MATRIX_JSON" \
-        '{ref: $ref, inputs: {matrix_json: $matrix_json}}')" \
-      https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
+        --argfile p "$HYPEROPT_PARAM" \
+        '{ref: $ref, inputs: {
+          matrix_json: (
+            {
+              loss: $hyperopt_loss,
+              space: $space,
+              params: ($p[$space] | keys)
+            } | @json
+          )
+        }}')"
   
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
