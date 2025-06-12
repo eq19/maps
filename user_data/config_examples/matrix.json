@@ -1,6 +1,12 @@
 {
   "config": [
-    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "buy" },
-    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "sell" }
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "cooldown_lookback" },
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "low_profit_trade_limit" },
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "max_drawdown_trade_limit" },
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "stop_duration" },
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "trade_limit" },
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "use_low_profit" },
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "use_max_drawdown_protection" },
+    { "strategy": "fibbo", "loss": "SharpeHyperOptLoss", "space": "protection", "param": "use_stop_protection" }
   ]
 }
