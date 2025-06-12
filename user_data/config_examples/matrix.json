@@ -1,12 +1,14 @@
 {
-  "config": [
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "cooldown_lookback" },
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "low_profit_trade_limit" },
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "max_drawdown_trade_limit" },
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "stop_duration" },
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "trade_limit" },
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "use_low_profit" },
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "use_max_drawdown_protection" },
-    { "loss": "SharpeHyperOptLoss", "space": "protection", "param": "use_stop_protection" }
+  "loss": "SharpeHyperOptLoss",
+  "space": "protection",
+  "params": [
+    "cooldown_lookback",
+    "low_profit_trade_limit",
+    "max_drawdown_trade_limit",
+    "stop_duration",
+    "trade_limit",
+    "use_low_profit",
+    "use_max_drawdown_protection",
+    "use_stop_protection"
   ]
 }
