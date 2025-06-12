@@ -74,7 +74,7 @@ hyperopt() {
         '{ref: $ref, inputs: {
           matrix_json: (
             {
-              loss: $hyperopt_loss,
+              loss: $loss,
               space: $space,
               params: ($p[$space] | keys)
             } | @json
