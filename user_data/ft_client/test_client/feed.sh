@@ -99,7 +99,7 @@ hyperopt() {
         -H "X-GitHub-Api-Version: 2022-11-28" \
          https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")"
-     fi
+    fi
   done
 }
 
