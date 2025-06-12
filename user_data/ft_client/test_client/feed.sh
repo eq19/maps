@@ -1,4 +1,4 @@
-I'll#!/usr/bin/env bash
+#!/usr/bin/env bash
 #
 # Structure: Cell Types
 # Ref: https://www.freqtrade.io/
