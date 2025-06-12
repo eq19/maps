@@ -23,5 +23,6 @@ curl -s -X POST \
   --data @${ARTIFACT} | jq '.' > $OUTPUT
 
 cat $OUTPUT
-jq -r --arg key "$spaces" '.. | objects | select(has("span")) | .span[$key] | keys' "$HYPEROPT_PARAM"
+spaces="protection"
+jq -r --arg key "$spaces" '.. | objects | select(has("span")) | .span[$key] | keys' "$OUTPUT"
     
