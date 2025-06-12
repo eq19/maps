@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+I'll#!/usr/bin/env bash
 #
 # Structure: Cell Types
 # Ref: https://www.freqtrade.io/
@@ -60,20 +60,20 @@ hyperopt() {
       hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
     done
 
-  # Read json and get default branch
-  MATRIX_JSON=$(jq -c . .github/matrix.json)
-  DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
-    https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
+    # Read json and get default branch
+    MATRIX_JSON=$(jq -c . .github/matrix.json)
+    DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
+      https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
 
-  # Trigger the workflow_dispatch
-  curl -s -X POST \
-    -H "Authorization: token $GH_TOKEN" \
-    -H "Accept: application/vnd.github.v3+json" \
-    -d "$(jq -n \
-      --arg ref "$DEFAULT_BRANCH" \
-      --arg matrix_json "$MATRIX_JSON" \
-      '{ref: $ref, inputs: {matrix_json: $matrix_json}}')" \
-    https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
+    # Trigger the workflow_dispatch
+    curl -s -X POST \
+      -H "Authorization: token $GH_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      -d "$(jq -n \
+        --arg ref "$DEFAULT_BRANCH" \
+        --arg matrix_json "$MATRIX_JSON" \
+        '{ref: $ref, inputs: {matrix_json: $matrix_json}}')" \
+      https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
   
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
