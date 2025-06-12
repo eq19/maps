@@ -56,6 +56,7 @@ hyperopt() {
     timerange="$start_date-$end_date"
 
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+    params=$(jq '.. | objects | select(has("span")) | .span[$spaces]' $HYPEROPT_PARAM)
     all_losses=($(jq -r --arg loss "$hyperopt_loss" '[.built_in[], .custom_built[]] | map(select(. != $loss)) | [$loss] + . | .[]' $HYPERFILE))
 
     for losses in "${all_losses[@]}"; do
