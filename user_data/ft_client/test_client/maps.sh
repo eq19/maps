@@ -23,6 +23,4 @@ curl -s -X POST \
   --data @${ARTIFACT} | jq '.' > $OUTPUT
 
 cat $OUTPUT
-spaces="protection"
-jq -r --arg key "$spaces" '.. | objects | select(has("span")) | .span[$key] | keys' "$OUTPUT"
     
