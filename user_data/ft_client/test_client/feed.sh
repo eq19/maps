@@ -207,9 +207,9 @@ else
   freqtrade download-data --help
   freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD"
 
-  echo -e "\n$hr\nLIST DATA\n$hr"
-  freqtrade list-data --help
-  freqtrade list-data
+  #echo -e "\n$hr\nLIST DATA\n$hr"
+  #freqtrade list-data --help
+  #freqtrade list-data
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
