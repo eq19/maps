@@ -9,10 +9,10 @@ SCORE=100
 FEE=0.003322
 TIMEFRAMES='1m 15m'
 STRATEGY=/home/runner/user_data/strategies/fibbo.json
+HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
-HYPEROPT_PARAM=user_data/config_examples/config_params.example.json
 HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
 
@@ -71,13 +71,13 @@ hyperopt() {
         --arg space "$spaces" \
         --arg loss "$hyperopt_loss" \
         --arg ref "$DEFAULT_BRANCH" \
-        --argfile p "$HYPEROPT_PARAM" \
+        --arg params "$params" \
         '{ref: $ref, inputs: {
           matrix_json: (
             {
               loss: $loss,
               space: $space,
-              params: ($p[$space] | keys)
+              params: $params
             } | @json
           )
         }}')" \
