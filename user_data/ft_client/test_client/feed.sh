@@ -69,9 +69,9 @@ hyperopt() {
       -H "Accept: application/vnd.github.v3+json" \
       -d "$(jq -n \
         --arg space "$spaces" \
+        --arg params "$params" \
         --arg loss "$hyperopt_loss" \
         --arg ref "$DEFAULT_BRANCH" \
-        --arg params "$params" \
         '{ref: $ref, inputs: {
           matrix_json: (
             {
