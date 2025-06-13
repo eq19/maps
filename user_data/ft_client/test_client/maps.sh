@@ -20,7 +20,6 @@ curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
   -H "Content-Type: application/json" \
   https://us-central1-feedmapping.cloudfunctions.net/function \
-  --data @${ARTIFACT} | jq '.' > $OUTPUT
+  --data @${ARTIFACT} | jq '.' > $HYPEROPT_PARAM
 
-cat $OUTPUT
-    
+cat $HYPEROPT_PARAM
