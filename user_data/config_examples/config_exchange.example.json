@@ -52,14 +52,6 @@
         "name": "indodax",
         "key": "your_exchange_key",
         "secret": "your_exchange_secret",
-        "pair_earning": [
-            "ADA/IDR",
-            "BNB/IDR",
-            "DOT/IDR",
-            "ETH/IDR",
-            "POL/IDR",
-            "SOL/IDR"
-        ],
         "pair_whitelist": [
             "ACTSOL/IDR",
             "ADA/IDR",
