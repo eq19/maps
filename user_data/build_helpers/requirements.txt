@@ -1,67 +1,61 @@
-numpy==1.26.4
-pandas==2.2.3
+numpy==2.2.6
+pandas==2.3.0
 bottleneck==1.4.2
 numexpr==2.10.2
-pandas-ta==0.3.14b
+# Indicator libraries
+ft-pandas-ta==0.3.15
+ta-lib==0.5.5
+technical==1.5.1
 
-ccxt==4.4.43
-cryptography==42.0.8; platform_machine == 'armv7l'
-cryptography==44.0.0; platform_machine != 'armv7l'
-aiohttp==3.10.11
-SQLAlchemy==2.0.36
-python-telegram-bot==21.9
+ccxt==4.4.89
+cryptography==45.0.3
+aiohttp==3.12.11
+SQLAlchemy==2.0.41
+python-telegram-bot==22.1
 # can't be hard-pinned due to telegram-bot pinning httpx with ~
 httpx>=0.24.1
-humanize==4.11.0
-cachetools==5.5.0
-requests==2.32.3
-urllib3==2.3.0
-jsonschema==4.23.0
-TA-Lib==0.4.34
-technical==1.5.0
+humanize==4.12.3
+cachetools==6.0.0
+requests==2.32.4
+urllib3==2.4.0
+certifi==2025.4.26
+jsonschema==4.24.0
 tabulate==0.9.0
 pycoingecko==3.2.0
-jinja2==3.1.5
-tables==3.10.1
-# Pin blosc2 to < 3.0 until piwheel has wheels for 3.x
-blosc2==2.7.1; platform_machine == 'armv7l' or python_version < '3.11'
-blosc2==3.0.0; platform_machine != 'armv7l' and python_version >= '3.11'
-joblib==1.4.2
-rich==13.9.4
-pyarrow==18.1.0; platform_machine != 'armv7l'
-
-# find first, C search in arrays
-py_find_1st==1.1.7
+jinja2==3.1.6
+joblib==1.5.1
+rich==14.0.0
+pyarrow==20.0.0; platform_machine != 'armv7l'
 
 # Load ticker files 30% faster
 python-rapidjson==1.20
 # Properly format api responses
-orjson==3.10.13
+orjson==3.10.18
 
 # Notify systemd
 sdnotify==0.3.2
 
 # API Server
-fastapi==0.115.6
-pydantic==2.10.4
-uvicorn==0.34.0
+fastapi==0.115.12
+pydantic==2.11.5
+uvicorn==0.34.3
 pyjwt==2.10.1
 aiofiles==24.1.0
-psutil==6.1.1
+psutil==7.0.0
 
 # Building config files interactively
 questionary==2.1.0
-prompt-toolkit==3.0.36
+prompt-toolkit==3.0.51
 # Extensions to datetime library
 python-dateutil==2.9.0.post0
-pytz==2024.2
+pytz==2025.2
 
 #Futures
 schedule==1.2.2
 
 #WS Messages
-websockets==14.1
+websockets==15.0.1
 janus==2.0.0
 
 ast-comments==1.2.2
-packaging==24.2
+packaging==25.0
