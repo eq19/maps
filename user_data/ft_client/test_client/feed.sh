@@ -205,7 +205,7 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --yes --verbose
+  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
   #echo -e "\n$hr\nLIST DATA\n$hr"
   #freqtrade list-data --help
