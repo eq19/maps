@@ -180,7 +180,7 @@ calculate_score() {
 if [[ "$1" == "listing" ]]; then
 
   echo -e "\n$hr\nLIST EXCHANGES\n$hr"
-  freqtrade list-exchanges -- help
+  freqtrade list-exchanges --help
   freqtrade list-exchanges
 
   #freqtrade show-trades
