@@ -343,10 +343,86 @@
         "stoploss_range_min": -0.01,
         "stoploss_range_max": -0.6,
         "stoploss_range_step": -0.05,
-"exchange": {
-    "name": "indodax",
-    "ccxt_config": {},
-    "pair_whitelist": ["BTC/USDT"],
-    "timeframe": "1m"
-  }
+        "minimum_winrate": 0.38,
+        "minimum_expectancy": 0.08,
+        "min_trade_number": 5,
+        "max_trade_duration_minute": 1209600,
+        "remove_pumps": false
+    },
+    "telegram": {
+        "enabled": false,
+        "token": "your_telegram_token",
+        "chat_id": "your_telegram_chat_id",
+        "notification_settings": {
+            "status": "on",
+            "warning": "on",
+            "startup": "on",
+            "entry": "on",
+            "entry_fill": "on",
+            "exit": {
+                "roi": "off",
+                "emergency_exit": "off",
+                "force_exit": "off",
+                "exit_signal": "off",
+                "trailing_stop_loss": "off",
+                "stop_loss": "off",
+                "stoploss_on_exchange": "off",
+                "custom_exit": "off"
+            },
+            "exit_fill": "on",
+            "entry_cancel": "on",
+            "exit_cancel": "on",
+            "protection_trigger": "off",
+            "protection_trigger_global": "on",
+            "show_candle": "off"
+        },
+        "reload": true,
+        "balance_dust_level": 0.01
+    },
+    "api_server": {
+        "enabled": true,
+        "listen_ip_address": "0.0.0.0",
+        "listen_port": 8080,
+        "verbosity": "error",
+        "enable_openapi": false,
+        "CORS_origins": [],
+        "username": "yourusername",
+        "password": "yourpassword",
+        "ws_token": "secret_ws_t0ken.",
+        "jwt_secret_key": "some-random-key"
+    },
+    "external_message_consumer": {
+        "enabled": false,
+        "producers": [
+          {
+            "name": "default",
+            "host": "127.0.0.2",
+            "port": 8080,
+            "ws_token": "secret_ws_t0ken."
+          }
+        ],
+        "wait_timeout": 300,
+        "ping_timeout": 10,
+        "sleep_time": 10,
+        "remove_entry_exit_signals": false,
+        "message_size_limit": 8
+    },
+    "bot_name": "freqtrade",
+    "initial_state": "running",
+    "force_entry_enable": false,
+    "internals": {
+        "process_throttle_secs": 5,
+        "heartbeat_interval": 60
+    },
+    "strategy": "fibbo",
+    "use_exit_signal": true,
+    "dataformat_ohlcv": "feather",
+    "dataformat_trades": "feather",
+    "recursive_strategy_search": false,
+    "db_url": "sqlite:///tradesv3.sqlite",
+    "strategy_path": "/home/runner/user_data/strategies",
+    "add_config_files": [
+        "/home/runner/user_data/config_examples/config_freqai.example.json",
+        "/home/runner/user_data/config_examples/config_hyperopt.example.json"
+    ]
 }
