@@ -188,8 +188,8 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade install-ui
   #freqtrade webserver
 
-  #echo -e "\n$hr\nTEST PAIRLIST\n$hr"
-  #freqtrade test-pairlist --help
+  echo -e "\n$hr\nTEST PAIRLIST\n$hr"
+  freqtrade test-pairlist --help
   #freqtrade test-pairlist --one-column --print-json
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
@@ -205,10 +205,10 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+  #freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
-  #echo -e "\n$hr\nLIST DATA\n$hr"
-  #freqtrade list-data --help
+  echo -e "\n$hr\nLIST DATA\n$hr"
+  freqtrade list-data --help
   #freqtrade list-data
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
@@ -220,7 +220,7 @@ else
   freqtrade backtesting --help
   cat $STRATEGY > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+  #freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   # Scoring breakdown:
   # Winrate: 25 pts
@@ -228,13 +228,14 @@ else
   # Total profit: 25 pts
   # Drawdown ratio: 20 pts
   # Trade count bonus (capped): 5 pts
-  calculate_score
-  OLD_SCORE=$SCORE
-  echo "SCORE: $OLD_SCORE"
+  #calculate_score
+  #OLD_SCORE=$SCORE
+  #echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
-  freqtrade hyperopt --help && freqtrade list-hyperoptloss && hyperopt $ID
+  freqtrade hyperopt --help
+  #freqtrade list-hyperoptloss && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
@@ -243,8 +244,8 @@ else
   #freqtrade backtesting-analysis --timerange="$TB" --indicator-list all
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   
-  #echo -e "\n$hr\nAI MODELS\n$hr"
-  #freqtrade list-freqaimodels --help
+  echo -e "\n$hr\nAI MODELS\n$hr"
+  freqtrade list-freqaimodels --help
   #freqtrade list-freqaimodels
 
 #else
