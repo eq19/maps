@@ -1,0 +1,41 @@
+name: Freqtrade Hyperopt Matrix
+
+on:
+  workflow_dispatch:
+    inputs:
+      matrix_json:
+        description: "Matrix JSON (as string)"
+        required: true
+
+jobs:
+  run-hyperopt:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        params: ${{ fromJson(inputs.matrix_json).params }}
+
+    env:
+      GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+    steps:
+      - name: 📥 Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: 🧠 Run Hyperopt
+        env:
+          PARAM: ${{ matrix.params }}        
+          LOSS: ${{ fromJson(inputs.matrix_json).loss }}
+          SPACE: ${{ fromJson(inputs.matrix_json).space }}
+        run: |
+          echo "Running hyperopt..."
+          echo "Loss: $LOSS"
+          echo "Space: $SPACE"
+          echo "Param: $PARAM"
+
+          # echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+          # freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+          #   --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
+          #   --enable-protections --analyze-per-epoch  --random-state ${id} \
+          #   --fee=$FEE --logfile /dev/null > /dev/null 2>&1

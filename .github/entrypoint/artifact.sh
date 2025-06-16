@@ -55,7 +55,7 @@ set_target() {
   fi
   
   # Generate id from the Structure
-  [[ -z "$SPIN" ]] && if [[ "$1" != "$2" ]]; then SPIN=0; else SPIN=13; fi
+  [[ -z "$SPIN" ]] && if [[ "$1" != "$2" ]]; then SPIN=13; else SPIN=13; fi
   if [[ -n "$CELL" ]]; then
     SPANPLUS=$(($SPAN + 1))
     if (( $CELL == 0 )); then MOD=7; else MOD=13; fi
@@ -79,8 +79,15 @@ set_target() {
 jekyll_build() {
   
   [[ $1 == *"github.io"* ]] && OWNER=$2
-  if [[ $1 != "eq19.github.io" ]]; then SITEID=$(( $3 + 2 )); else SITEID=1; fi
-  
+
+  if [[ $1 == "Chetabahana.github.io" ]]; then
+    SITEID=1
+  elif [[ $1 == "eq19.github.io" ]]; then
+    SITEID=170
+  else
+    SITEID=$(( $3 + 2 ))
+  fi
+
   if  [[ "${OWNER}" == "eq19" ]]; then
     sed -i "1s|^|description: An attempt to discover the Final Theory\n\n|" ${RUNNER_TEMP}/_config.yml
   else

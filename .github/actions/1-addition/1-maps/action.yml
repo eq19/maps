@@ -181,7 +181,7 @@ runs:
 
         pip freeze | grep iree
         pip cache purge && find . -type d -name "__pycache__" -exec rm -rf {} +
-        python user_data/ft_client/test_client/app.py orgs.json ${{ inputs.action_path }}
+        python user_data/ft_client/test_client/app.py orgs.json ${{ env.ID }}
 
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
@@ -213,6 +213,7 @@ runs:
           BEARER=${{ steps.auth.outputs.id_token }}
           GITHUB_REPOSITORY=${{ github.repository }}
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
+          HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
           WORKSPACE=/workspaces/${{ github.event.repository.name }}
           ARTIFACT=user_data/ft_client/test_client/results/orgs.json
 

@@ -150,8 +150,8 @@ runs:
         env: |
           ID=${{ env.ID }}
           GH_TOKEN=${{ env.GH_TOKEN }}
-          REMOTE_REPO=${{ env.REMOTE_REPO }}
-          BEARER=${{ steps.auth.outputs.id_token }}
+          REMOTE_REPO=${{ inputs.repository }}
+          RERUN_RUNNER=${{ env.RERUN_RUNNER }}
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
 
     - name: 🪂 Remove existing images

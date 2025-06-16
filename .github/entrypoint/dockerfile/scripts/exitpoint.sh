@@ -2,8 +2,9 @@
 
 MAX_RETRIES=10
 RETRY_DELAY=100  # seconds
-RUNNER_URL="https://github.com/$1"
-GH_API_URL="https://api.github.com/repos/$1/actions/runners"
+REMOVE_URL="https://github.com/$1"
+RUNNER_URL="https://github.com/$2"
+GH_API_URL="https://api.github.com/repos/$2/actions/runners"
 
 # Function to check if runner is online using GitHub API
 check_runner_online() {
@@ -40,18 +41,37 @@ register_runner() {
   echo "Stopping runner..."
   supervisorctl stop runner || true
 
+  # Remove the runner through config.sh
+  echo "Getting a Remove Token for ${REMOVE_URL}"
+  _PROTO="$(echo "${REMOVE_URL}" | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+  _URL="$(echo "${REMOVE_URL/${_PROTO}/}")"
+  _PATH="$(echo "${_URL}" | grep / | cut -d/ -f2-)"
+
+  REMOVE_TOKEN="$(curl -XPOST -fsSL \
+    -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
+    -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/repos/${_PATH}/actions/runners/remove-token" \
+    | jq -r '.token')"
+
+  if [ -z "$REMOVE_TOKEN" ]; then
+    echo "Failed to get remove token"
+    exit 1
+  fi
+  
+  echo "Forcefully removing old runner configuration"
+  ./config.sh remove --token "$REMOVE_TOKEN"
+
   # Forcefully remove old configuration
-  if [ -f .runner ]; then
-    echo "Forcefully removing old runner configuration"
+  if [ -f .runner ] || [ -d "$RUNNER_WORK_DIRECTORY" ]; then
     rm -f .env
     rm -f .runner
     rm -f .credentials
     rm -f .credentials_rsaparams
-    rm -rf _diag $RUNNER_WORK_DIRECTORY
+    rm -rf _diag "$RUNNER_WORK_DIRECTORY"
   fi
 
   # Register with new token
-  echo "Exchanging the GitHub Access Token with a Runner Token (scope: repos)..."
+  echo "Getting a Runner Token for ${RUNNER_URL}"
   _PROTO="$(echo "${RUNNER_URL}" | grep :// | sed -e's,^\(.*://\).*,\1,g')"
   _URL="$(echo "${RUNNER_URL/${_PROTO}/}")"
   _PATH="$(echo "${_URL}" | grep / | cut -d/ -f2-)"
