@@ -1456,7 +1456,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
       "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
     },
     {
@@ -1465,7 +1465,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -1474,7 +1474,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
       "hyperopt_loss": "ProfitDrawDownHyperOptLossWithTradePenalty"
     },
     {
@@ -1483,7 +1483,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
       "hyperopt_loss": "ROISpaceCombinedHyperOptLoss"
     },
     {
@@ -1492,7 +1492,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
       "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
@@ -1501,7 +1501,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
       "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
@@ -1510,7 +1510,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
       "hyperopt_loss": "SharpeSortinoProfitDrawdownHyperOptLoss"
     },
     {
@@ -1519,7 +1519,79 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["all"],
+      "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
+    },
+    {
+      "id": 169,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
+      "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
+    },
+    {
+      "id": 170,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
+    },
+    {
+      "id": 171,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
+      "hyperopt_loss": "ProfitDrawDownHyperOptLossWithTradePenalty"
+    },
+    {
+      "id": 172,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
+      "hyperopt_loss": "ROISpaceCombinedHyperOptLoss"
+    },
+    {
+      "id": 173,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
+    },
+    {
+      "id": 174,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
+    },
+    {
+      "id": 175,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
+      "hyperopt_loss": "SharpeSortinoProfitDrawdownHyperOptLoss"
+    },
+    {
+      "id": 176,
+      "description": "Comprehensive optimization with all parameters (last 180 days)",
+      "days": 11,
+      "epochs": 31,
+      "parallel_jobs": 4,
+      "spaces": ["all"],
       "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
     }
   ]
