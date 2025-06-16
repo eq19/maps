@@ -205,11 +205,11 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  #freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
-  #freqtrade list-data
+  freqtrade list-data
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
@@ -220,7 +220,7 @@ else
   freqtrade backtesting --help
   cat $STRATEGY > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
-  #freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   # Scoring breakdown:
   # Winrate: 25 pts
