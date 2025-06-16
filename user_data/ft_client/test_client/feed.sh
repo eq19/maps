@@ -8,12 +8,13 @@ hr='----------------------------------------------------------------------------
 SCORE=100
 FEE=0.003322
 TIMEFRAMES='1m 15m'
-STRATEGY=/home/runner/user_data/strategies/fibbo.json
+STRATEGY=user_data/strategies/fibbo.json
 HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
-HYPERPY=/home/runner/venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
+HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
+HYPERFILE=user_data/config_examples/config_hyperopt.example.json
 DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
 
 # Define the backtesting duration (in days)
@@ -45,7 +46,6 @@ printenv
 hyperopt() {
 
   # Load JSON and filter by given ID
-  HYPERFILE=user_data/config_examples/config_hyperopt.example.json
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     id=$(echo "$pipeline" | jq -r '.id')
     days=$(echo "$pipeline" | jq -r '.days')
