@@ -84,7 +84,7 @@ hyperopt() {
       https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
  
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+    freqtrade hyperopt -c $CONFIG --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
       --logfile /dev/null > /dev/null 2>&1
@@ -205,11 +205,11 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+  freqtrade download-data -c $CONFIG --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
-  freqtrade list-data
+  freqtrade list-data -c $CONFIG
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
@@ -220,7 +220,7 @@ else
   freqtrade backtesting --help
   cat $STRATEGY > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+  freqtrade backtesting -c $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
 
   # Scoring breakdown:
   # Winrate: 25 pts
