@@ -56,7 +56,9 @@ set_target() {
   
   # Generate id from the Structure
   if [[ -z "$SPIN" ]]; then
-    if [[ "$1" != "$2" ]]; then
+    if [[ -z "$2" ]]; then
+      SPIN=13
+    elif [[ "$1" != "$2" ]]; then
       SPIN=-1
     else
       SPIN=13
