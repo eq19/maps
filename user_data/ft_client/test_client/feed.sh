@@ -15,7 +15,7 @@ CONFIG=user_data/config_examples/config_exchange.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 HYPERFILE=user_data/config_examples/config_hyperopt.example.json
-DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" https://api.github.com/repos/$REMOTE_REPO | jq -r .default_branch)
+DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" https://api.github.com/repos/$GITHUB_REPOSITORY | jq -r .default_branch)
 
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=2  # Adjust as per your strategy
