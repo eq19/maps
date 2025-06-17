@@ -93,7 +93,7 @@ hyperopt() {
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
     freqtrade backtesting --help
     rm -rf /home/runner/user_data/backtest_results/*
-    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting -c $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
   
     calculate_score
     NEW_SCORE=$SCORE
@@ -205,7 +205,7 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  freqtrade download-data -c $CONFIG --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+  #freqtrade download-data -c $CONFIG --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
@@ -220,7 +220,7 @@ else
   freqtrade backtesting --help
   cat $STRATEGY > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
-  freqtrade backtesting -c $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
+  #freqtrade backtesting -c $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
 
   # Scoring breakdown:
   # Winrate: 25 pts
@@ -255,7 +255,7 @@ else
 
   echo "Starting freqtrade trade..."
   #freqtrade trade --freqaimodel LightGBMRegressor
-  nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
+  nohup -c $CONFIG freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
   echo $! > freqtrade_pid.txt
   tail -f freqtrade.log | while read LOGLINE
   do
