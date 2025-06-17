@@ -67,7 +67,6 @@ hyperopt() {
         continue
       fi
 
-      echo -e "\nDispatching for: $space | Loss: $loss"
       gh workflow run matrix.yml \
         --field matrix_json="$(jq -n \
         --arg space "$space" \
@@ -80,11 +79,11 @@ hyperopt() {
          } | @json')"
     done
 
-    echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
-      --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
+    echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+      --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
-      --logfile /dev/null > /dev/null 2>&1
+      --fee=$FEE --logfile /dev/null > /dev/null 2>&1
     freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
