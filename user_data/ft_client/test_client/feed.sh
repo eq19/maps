@@ -193,16 +193,16 @@ if [[ "$1" == "listing" ]]; then
   freqtrade test-pairlist --help
   #freqtrade test-pairlist --one-column --print-json
 
-  echo -e "\n$hr\nSTRATEGIES\n$hr"
-  freqtrade list-strategies --help
-  freqtrade list-strategies
-  #freqtrade strategy-updater
-
 else
 #elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
+
+  echo -e "\n$hr\nSTRATEGIES\n$hr"
+  freqtrade list-strategies --help
+  freqtrade list-strategies
+  #freqtrade strategy-updater
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
