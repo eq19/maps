@@ -57,6 +57,11 @@ hyperopt() {
     timerange="$start_date-$end_date"
 
     spaces=$(echo "$pipeline" | jq -r '.spaces[]')  # One space per line
+    all_losses=($(jq -r --arg loss "$hyperopt_loss" '[.built_in[], .custom_built[]] | map(select(. != $loss)) | [$loss] + . | .[]' "$HYPERFILE"))
+
+    for losses in "${all_losses[@]}"; do
+      loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
+    done
 
     for space in $spaces; do
       # Extract params as raw JSON
@@ -68,30 +73,25 @@ hyperopt() {
         continue
       fi
 
-      all_losses=($(jq -r --arg loss "$hyperopt_loss" '[.built_in[], .custom_built[]] | map(select(. != $loss)) | [$loss] + . | .[]' "$HYPERFILE"))
-
-      for loss in "${all_losses[@]}"; do
-        echo -e "\nDispatching for: $space | Loss: $loss"
-
-        curl -s -X POST \
-          -H "Authorization: token $GH_TOKEN" \
-          -H "Accept: application/vnd.github.v3+json" \
-          -d "$(jq -n \
-            --arg ref "$DEFAULT_BRANCH" \
-            --arg space "$space" \
-            --arg loss "$loss" \
-            --argjson params "$params" \
-            '{ref: $ref, inputs: {
-              matrix_json: (
-                {
-                  loss: $loss,
-                  space: $space,
-                  params: $params
-                } | @json
-              )
-            }}')" \
-          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-      done
+      echo -e "\nDispatching for: $space | Loss: $loss"
+      curl -s -X POST \
+        -H "Authorization: token $GH_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        -d "$(jq -n \
+          --arg ref "$DEFAULT_BRANCH" \
+          --arg space "$space" \
+          --arg loss "$loss" \
+          --argjson params "$params" \
+          '{ref: $ref, inputs: {
+           matrix_json: (
+             {
+               loss: $loss,
+               space: $space,
+               params: $params
+             } | @json
+           )
+         }}')" \
+       "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
     done
 
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
