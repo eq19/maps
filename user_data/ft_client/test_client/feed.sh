@@ -68,7 +68,7 @@ hyperopt() {
       fi
 
       gh workflow run matrix.yml \
-        --field matrix_json="$(jq -n \
+        --field matrix_json="$(jq -c \
         --arg space "$space" \
         --arg loss "$loss" \
         --argjson params "$params" \
@@ -76,7 +76,7 @@ hyperopt() {
            loss: $loss,
            space: $space,
            params: $params
-         } | @json')"
+         }')"
     done
 
     echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
