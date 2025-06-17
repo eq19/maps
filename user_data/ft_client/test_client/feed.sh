@@ -40,9 +40,9 @@ TB="$BACKTESTING_START-$TODAY"
 echo "Download Timerange: $TD"
 echo "Backtesting Timerange: $TB"
 
-echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
+#echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 cat $CONFIG > user_data/config.json
-printenv
+#printenv
 
 hyperopt() {
 
@@ -82,7 +82,7 @@ hyperopt() {
             } | @json
           )
         }}')" \
-      https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
+      https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches
  
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
@@ -201,7 +201,8 @@ else
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
-  freqtrade list-strategies --recursive-strategy-search
+  freqtrade list-strategies
+  #freqtrade list-strategies --recursive-strategy-search
   #freqtrade strategy-updater
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
