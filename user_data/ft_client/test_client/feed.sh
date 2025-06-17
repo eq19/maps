@@ -201,16 +201,16 @@ else
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
-  freqtrade list-strategies
+  freqtrade list-strategies --recursive-strategy-search
   #freqtrade strategy-updater
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  #freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
-  freqtrade list-data -c $CONFIG
+  freqtrade list-data
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
@@ -221,7 +221,7 @@ else
   freqtrade backtesting --help
   cat $STRATEGY > /tmp/store.json
   rm -rf /home/runner/user_data/backtest_results/*
-  #freqtrade backtesting -c $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
+  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
   # Scoring breakdown:
   # Winrate: 25 pts
@@ -229,14 +229,14 @@ else
   # Total profit: 25 pts
   # Drawdown ratio: 20 pts
   # Trade count bonus (capped): 5 pts
-  #calculate_score
-  #OLD_SCORE=$SCORE
-  #echo "SCORE: $OLD_SCORE"
+  calculate_score
+  OLD_SCORE=$SCORE
+  echo "SCORE: $OLD_SCORE"
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   freqtrade hyperopt --help
-  #freqtrade list-hyperoptloss && hyperopt $ID
+  freqtrade list-hyperoptloss && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
