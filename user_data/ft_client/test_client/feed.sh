@@ -67,16 +67,24 @@ hyperopt() {
         continue
       fi
 
-      gh workflow run matrix.yml \
-        --field matrix_json="$(jq -c \
-        --argjson params "$params" \
-        --arg space "$space" \
-        --arg loss "$loss" \
-        '{
-           loss: $loss,
-           space: $space,
-           params: $params
-         }')"
+      curl -s -X POST \
+        -H "Authorization: token $GH_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        -d "$(jq -n \
+          --arg ref "$DEFAULT_BRANCH" \
+          --argjson params "$params" \
+          --arg space "$space" \
+          --arg loss "$loss" \
+          '{ref: $ref, inputs: {
+           matrix_json: (
+             {
+               loss: $loss,
+               space: $space,
+               params: $params
+             } | @json
+           )
+         }}')" \
+       "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
     done
 
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
