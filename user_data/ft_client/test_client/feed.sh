@@ -79,7 +79,7 @@ hyperopt() {
          }')"
     done
 
-    spaces=$(echo "$pipeline" | jq -r '.spaces')  # Combined spaces
+    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
     echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
