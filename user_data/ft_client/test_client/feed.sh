@@ -69,9 +69,9 @@ hyperopt() {
 
       gh workflow run matrix.yml \
         --field matrix_json="$(jq -c \
+        --argjson params "$params" \
         --arg space "$space" \
         --arg loss "$loss" \
-        --argjson params "$params" \
         '{
            loss: $loss,
            space: $space,
