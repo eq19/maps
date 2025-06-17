@@ -93,7 +93,7 @@ hyperopt() {
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
     freqtrade backtesting --help
-    rm -rf /home/runner/user_data/backtest_results/*
+    rm -rf user_data/backtest_results/*
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
   
     calculate_score
@@ -113,7 +113,7 @@ hyperopt() {
 }
 
 calculate_score() {
-  local dir="/home/runner/user_data/backtest_results"
+  local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
   if [[ -z "$latest_zip" ]]; then
     echo "No ZIP file found in $dir"
@@ -275,6 +275,6 @@ else
   #freqtrade plot-profit --timerange="$TB"
 
   rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki /tmp/dummy
-  rm -rf /home/runner/user_data/build_helpers /home/runner/user_data/hyperopt*
+  rm -rf user_data/build_helpers user_data/hyperopt*
 
 fi
