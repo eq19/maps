@@ -64,26 +64,46 @@ hyperopt() {
       hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
     done
 
-    # Trigger the workflow_dispatch
-    curl -s -X POST \
-      -H "Authorization: token $GH_TOKEN" \
-      -H "Accept: application/vnd.github.v3+json" \
-      -d "$(jq -n \
-        --arg space "$spaces" \
-        --arg params "$params" \
-        --arg loss "$hyperopt_loss" \
-        --arg ref "$DEFAULT_BRANCH" \
-        '{ref: $ref, inputs: {
-          matrix_json: (
-            {
-              loss: $loss,
-              space: $space,
-              params: $params
-            } | @json
-          )
-        }}')" \
-      https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches
- 
+
+
+    spaces=$(echo "$pipeline" | jq -r '.spaces[]')  # One space per line
+    hyperopt_loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
+
+    for space in $spaces; do
+      # Extract params as raw JSON
+      params=$(jq -c --arg space "$space" '.span[$space]' "$HYPEROPT_PARAM")
+  
+      if [[ "$params" == "null" ]]; then
+        echo "Warning: No params found for space '$space'"
+        continue
+      fi
+
+      all_losses=($(jq -r --arg loss "$hyperopt_loss" '[.built_in[], .custom_built[]] | map(select(. != $loss)) | [$loss] + . | .[]' "$HYPERFILE"))
+
+      for loss in "${all_losses[@]}"; do
+        echo -e "\nDispatching for: $space | Loss: $loss"
+
+        curl -s -X POST \
+          -H "Authorization: token $GH_TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          -d "$(jq -n \
+            --arg ref "$DEFAULT_BRANCH" \
+            --arg space "$space" \
+            --arg loss "$loss" \
+            --argjson params "$params" \
+            '{ref: $ref, inputs: {
+              matrix_json: (
+                {
+                  loss: $loss,
+                  space: $space,
+                  params: $params
+                } | @json
+              )
+            }}')" \
+          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
+      done
+    done
+
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
