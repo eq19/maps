@@ -41,6 +41,7 @@ echo "Download Timerange: $TD"
 echo "Backtesting Timerange: $TB"
 
 echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
+cat $CONFIG > user_data/config.json
 printenv
 
 hyperopt() {
@@ -84,7 +85,7 @@ hyperopt() {
       https://api.github.com/repos/$REMOTE_REPO/actions/workflows/matrix.yml/dispatches
  
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    freqtrade hyperopt -c $CONFIG --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
+    freqtrade hyperopt --fee=$FEE --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
       --logfile /dev/null > /dev/null 2>&1
@@ -93,7 +94,7 @@ hyperopt() {
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
     freqtrade backtesting --help
     rm -rf /home/runner/user_data/backtest_results/*
-    freqtrade backtesting -c $CONFIG --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
   
     calculate_score
     NEW_SCORE=$SCORE
@@ -205,7 +206,7 @@ else
 
   echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
   freqtrade download-data --help
-  #freqtrade download-data -c $CONFIG --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+  #freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
@@ -255,7 +256,7 @@ else
 
   echo "Starting freqtrade trade..."
   #freqtrade trade --freqaimodel LightGBMRegressor
-  nohup -c $CONFIG freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
+  nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
   echo $! > freqtrade_pid.txt
   tail -f freqtrade.log | while read LOGLINE
   do
