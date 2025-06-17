@@ -60,7 +60,8 @@ hyperopt() {
 
     for space in $spaces; do
       # Extract params as raw JSON
-      params=$(jq -c --arg space "$space" '.span[$space]' "$HYPEROPT_PARAM")
+      #params=$(jq -c --arg key "$space" '.span[$key]' "$HYPEROPT_PARAM")
+      params=$(jq -r --arg key "$space" '.. | objects | select(has("span")) | .span[$key] | keys' "$HYPEROPT_PARAM")
   
       if [[ "$params" == "null" ]]; then
         echo "Warning: No params found for space '$space'"
