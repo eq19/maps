@@ -74,24 +74,16 @@ hyperopt() {
       fi
 
       echo -e "\nDispatching for: $space | Loss: $loss"
-      curl -s -X POST \
-        -H "Authorization: token $GH_TOKEN" \
-        -H "Accept: application/vnd.github.v3+json" \
-        -d "$(jq -n \
-          --arg ref "$DEFAULT_BRANCH" \
-          --arg space "$space" \
-          --arg loss "$loss" \
-          --argjson params "$params" \
-          '{ref: $ref, inputs: {
-           matrix_json: (
-             {
-               loss: $loss,
-               space: $space,
-               params: $params
-             } | @json
-           )
-         }}')" \
-       "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
+      gh workflow run matrix.yml \
+        --field matrix_json="$(jq -n \
+        --arg space "$space" \
+        --arg loss "$loss" \
+        --argjson params "$params" \
+        '{
+           loss: $loss,
+           space: $space,
+           params: $params
+         } | @json')"
     done
 
     echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
