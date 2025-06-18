@@ -7,7 +7,6 @@
 hr='------------------------------------------------------------------------------------'
 SCORE=100
 FEE=0.003322
-TIMEFRAMES='1m 15m'
 STRATEGY=user_data/strategies/fibbo.json
 HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
@@ -207,10 +206,6 @@ else
   freqtrade list-strategies
   #freqtrade list-strategies --recursive-strategy-search
   #freqtrade strategy-updater
-
-  echo -e "\n$hr\nTEST DOWNLOAD\n$hr"
-  freqtrade download-data --help
-  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
