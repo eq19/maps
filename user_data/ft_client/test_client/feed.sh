@@ -54,9 +54,9 @@ hyperopt() {
     days=$(echo "$pipeline" | jq -r '.days')
     epochs=$(echo "$pipeline" | jq -r '.epochs')
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
-    spaces=$(echo "$pipeline" | jq -r '.spaces[]')  # One space per line
+    [[ "$GITHUB_JOB" == "lexering" ]] && spaces=$(echo "$pipeline" | jq -r '.spaces[]')  # One space per line
 
-    for space in $spaces; do
+    for space in ${spaces:-}; do
       # Extract params as raw JSON
       #params=$(jq -c --arg key "$space" '.span[$key]' "$HYPEROPT_PARAM")
       params=$(jq -r --arg key "$space" '.. | objects | select(has("span")) | .span[$key] | keys' "$HYPEROPT_PARAM")
