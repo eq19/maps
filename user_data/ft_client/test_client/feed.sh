@@ -39,6 +39,7 @@ echo "Download Timerange: $TD"
 echo "Backtesting Timerange: $TB"
 
 #echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
+export PATH="venv/bin:$PATH"
 #printenv
 
 hyperopt() {
