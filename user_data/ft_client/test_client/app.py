@@ -75,7 +75,7 @@ with open(params_path, "r") as params_file:
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
-counter = 0
+counter = 1
 for org in data:
     new_org = {}
     for key, value in org.items():
