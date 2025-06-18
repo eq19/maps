@@ -72,6 +72,7 @@ hyperopt() {
         -d "$(jq -n \
           --arg ref "$DEFAULT_BRANCH" \
           --argjson params "$params" \
+          --arg runId "$GITHUB_RUN_ID" \
           --arg space "$space" \
           --arg loss "$loss" \
           '{ref: $ref, inputs: {
@@ -79,6 +80,7 @@ hyperopt() {
              {
                loss: $loss,
                space: $space,
+               run_id: $runId,
                params: $params
              } | @json
            )
