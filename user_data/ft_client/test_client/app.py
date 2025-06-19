@@ -75,10 +75,7 @@ with open(params_path, "r") as params_file:
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
-# Apply update
 counter = 1
-params = utilities.set_optimize_flags(params, param)
-
 for org in data:
     new_org = {}
     for key, value in org.items():
@@ -87,7 +84,7 @@ for org in data:
             new_org["spin"] = utilities.get_val_spin(finished[counter])
             # Add span field if counter matches id
             if counter == int(id):
-                new_org["span"] = params  # Use loaded JSON content
+                new_org["span"] = utilities.set_optimize_flags(params, param)
             counter += 1
 
         # Handle key1 and key2 by wrapping each item with a spin
@@ -97,7 +94,7 @@ for org in data:
                 item_dict = {"name": item, "spin": utilities.get_val_spin(finished[counter + i])}
                 # Add span field if counter matches id
                 if (counter + i) == int(id):
-                    item_dict["span"] = params  # Use loaded JSON content
+                    item_dict["span"] = utilities.set_optimize_flags(params, param)
                 new_items.append(item_dict)
             new_org[key] = new_items
             counter += len(value)
