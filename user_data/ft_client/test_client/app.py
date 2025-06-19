@@ -75,7 +75,10 @@ with open(params_path, "r") as params_file:
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
+# Apply update
 counter = 1
+params = utilities.set_optimize_flags(params, param)
+
 for org in data:
     new_org = {}
     for key, value in org.items():
