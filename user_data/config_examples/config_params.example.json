@@ -5,60 +5,60 @@
       "low": 5,
       "high": 50,
       "default": 14,
-      "optimize": false
+      "optimize": true
     },
     "smoothD": {
       "type": "IntParameter",
       "low": 2,
       "high": 5,
       "default": 3,
-      "optimize": false
+      "optimize": true
     },
     "smoothK": {
       "type": "IntParameter",
       "low": 2,
       "high": 5,
       "default": 3,
-      "optimize": false
+      "optimize": true
     },
     "buy_rsi": {
       "type": "IntParameter",
       "low": 10,
       "high": 45,
       "default": 25,
-      "optimize": false
+      "optimize": true
     },
     "buy_stoch_osc": {
       "type": "IntParameter",
       "low": 0,
       "high": 30,
       "default": 10,
-      "optimize": false
+      "optimize": true
     },
     "buy_swing_period": {
       "type": "IntParameter",
       "low": 30,
       "high": 100,
       "default": 50,
-      "optimize": false
+      "optimize": true
     },
     "buy_slow_ema": {
       "type": "CategoricalParameter",
       "choices": ["34", "55", "89", "144"],
       "default": 34,
-      "optimize": false
+      "optimize": true
     },
     "buy_fast_dema": {
       "type": "CategoricalParameter",
       "choices": ["5", "8", "13", "21"],
       "default": 13,
-      "optimize": false
+      "optimize": true
     },
     "buy_fib_level": {
       "type": "CategoricalParameter",
       "choices": ["0.236", "0.382", "0.618", "0.786"],
       "default": "0.618",
-      "optimize": false
+      "optimize": true
     },
       "buy_additional_indicator": {
       "type": "CategoricalParameter",
@@ -72,27 +72,27 @@
       "low": 70,
       "high": 100,
       "default": 89,
-      "optimize": false
+      "optimize": true
     },
     "sell_stoch_osc": {
       "type": "IntParameter",
       "low": 70,
       "high": 100,
       "default": 77,
-      "optimize": false
+      "optimize": true
     },
     "sell_rsi_threshold": {
       "type": "IntParameter",
       "low": 60,
       "high": 80,
       "default": 75,
-      "optimize": false
+      "optimize": true
     },
     "sell_fib_level": {
       "type": "CategoricalParameter",
       "choices": ["0.236", "0.382", "0.618", "0.786"],
       "default": "0.786",
-      "optimize": false
+      "optimize": true
     },
       "sell_additional_indicator": {
       "type": "CategoricalParameter",
