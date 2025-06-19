@@ -128,3 +128,11 @@ def get_val_spin(num):
         return "%s %s Limit Reached" % (num.val, ', '.join([str(c) for c in num.colors]))
     else:
         return "%s %s" % (num.val, ', '.join([str(c) for c in num.colors]))
+
+def set_optimize_flags(params, param):
+    for section in params.values():
+        if isinstance(section, dict):
+            for key, value in section.items():
+                if isinstance(value, dict) and "optimize" in value:
+                    value["optimize"] = (key == param)
+    return params
