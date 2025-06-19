@@ -1456,7 +1456,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
     },
     {
@@ -1465,7 +1465,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -1474,7 +1474,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "ProfitDrawDownHyperOptLossWithTradePenalty"
     },
     {
@@ -1483,7 +1483,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "ROISpaceCombinedHyperOptLoss"
     },
     {
@@ -1492,7 +1492,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
@@ -1501,7 +1501,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
@@ -1510,7 +1510,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "SharpeSortinoProfitDrawdownHyperOptLoss"
     },
     {
@@ -1519,7 +1519,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
     },
     {
@@ -1528,7 +1528,7 @@
       "days": 11,
       "epochs": 31,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["protection"],
       "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
     },
     {
