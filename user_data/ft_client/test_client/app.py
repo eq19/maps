@@ -72,6 +72,9 @@ params_path = 'user_data/config_examples/config_params.example.json'
 with open(params_path, "r") as params_file:
     params = json.load(params_file)
 
+if param != 'nil'
+    params = utilities.set_optimize_flags(params, param)
+
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
@@ -84,7 +87,7 @@ for org in data:
             new_org["spin"] = utilities.get_val_spin(finished[counter])
             # Add span field if counter matches id
             if counter == int(id):
-                new_org["span"] = utilities.set_optimize_flags(params, param)
+                new_org["span"] = params
             counter += 1
 
         # Handle key1 and key2 by wrapping each item with a spin
@@ -94,7 +97,7 @@ for org in data:
                 item_dict = {"name": item, "spin": utilities.get_val_spin(finished[counter + i])}
                 # Add span field if counter matches id
                 if (counter + i) == int(id):
-                    item_dict["span"] = utilities.set_optimize_flags(params, param)
+                    item_dict["span"] = params
                 new_items.append(item_dict)
             new_org[key] = new_items
             counter += len(value)
