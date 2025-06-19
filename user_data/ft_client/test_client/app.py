@@ -72,7 +72,7 @@ params_path = 'user_data/config_examples/config_params.example.json'
 with open(params_path, "r") as params_file:
     params = json.load(params_file)
 
-if param != 'nil'
+if param != 'nil':
     params = utilities.set_optimize_flags(params, param)
 
 with open(output_path, "r") as output_file:
