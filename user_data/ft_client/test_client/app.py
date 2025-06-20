@@ -73,15 +73,19 @@ output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 with open(fibbo_path, "r") as fibbo_file:
     fibbo = json.load(fibbo_file)
 
-with open(params_path, "r") as params_file:
-    params = json.load(params_file)
+#with open(params_path, "r") as params_file:
+    #params = json.load(params_file)
 
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
-counter = 1
 params = utilities.set_params(params, param, fibbo)
+from fibbo_param_builder import FibboParamBuilder
 
+builder = params.ParamBuilder(param, fibbo, epochs=50)
+params = builder.build()
+
+counter = 1
 for org in data:
     new_org = {}
     for key, value in org.items():
