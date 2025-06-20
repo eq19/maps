@@ -79,10 +79,9 @@ with open(params_path, "r") as params_file:
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
-if param != 'nil':
-    params = utilities.set_params(params, param, fibbo)
-
 counter = 1
+params = utilities.set_params(params, param, fibbo)
+
 for org in data:
     new_org = {}
     for key, value in org.items():
