@@ -129,14 +129,6 @@ def get_val_spin(num):
     else:
         return "%s %s" % (num.val, ', '.join([str(c) for c in num.colors]))
 
-def set_optimize_flags(params, param):
-    for section in params.values():
-        if isinstance(section, dict):
-            for key, value in section.items():
-                if isinstance(value, dict) and "optimize" in value:
-                    value["optimize"] = (key == param)
-    return params
-
 def set_params(params, param, fibbo):
     strat_params = fibbo.get("params", {})
 
@@ -144,9 +136,10 @@ def set_params(params, param, fibbo):
         strat_section = strat_params.get(section_name, {})
 
         for param_name, param_data in section.items():
-            # Step 1: Set optimize flags
+            # Step 1: Set optimize flags (only if param is not 'nil')
             if isinstance(param_data, dict) and "optimize" in param_data:
-                param_data["optimize"] = (param_name == param)
+                if param != "nil":
+                    param_data["optimize"] = (param_name == param)
 
             # Step 2: Set default values (except ROI, handled separately below)
             if section_name != "roi" and param_name in strat_section:
