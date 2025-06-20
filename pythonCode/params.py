@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 
-class FibboParamBuilder:
+class ParamBuilder:
     def __init__(self, param, fibbo, epochs):
         self.param = param
         self.fibbo = fibbo
