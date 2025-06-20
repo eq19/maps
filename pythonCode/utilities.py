@@ -128,30 +128,3 @@ def get_val_spin(num):
         return "%s %s Limit Reached" % (num.val, ', '.join([str(c) for c in num.colors]))
     else:
         return "%s %s" % (num.val, ', '.join([str(c) for c in num.colors]))
-
-def set_params(params, param, fibbo):
-    strat_params = fibbo.get("params", {})
-
-    for section_name, section in params.items():
-        strat_section = strat_params.get(section_name, {})
-
-        for param_name, param_data in section.items():
-            # Step 1: Set optimize flags (only if param is not 'nil')
-            if isinstance(param_data, dict) and "optimize" in param_data:
-                if param != "nil":
-                    param_data["optimize"] = (param_name == param)
-
-            # Step 2: Set default values (except ROI, handled separately below)
-            if section_name != "roi" and param_name in strat_section:
-                if isinstance(param_data, dict) and "default" in param_data:
-                    param_data["default"] = strat_section[param_name]
-
-    # Special handling for ROI
-    if "roi" in strat_params and "roi" in params:
-        roi_keys = sorted(map(int, strat_params["roi"].keys()), reverse=True)
-        for i, k in enumerate(roi_keys):
-            param_name = f"roi_p{i+1}"
-            if param_name in params["roi"]:
-                params["roi"][param_name]["default"] = strat_params["roi"][str(k)]
-
-    return params
