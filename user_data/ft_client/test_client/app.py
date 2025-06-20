@@ -80,7 +80,7 @@ with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
 if param != 'nil':
-    params = utilities.set_optimize_flags(params, param, fibbo)
+    params = utilities.set_params(params, param, fibbo)
 
 counter = 1
 for org in data:
