@@ -79,9 +79,6 @@ with open(fibbo_path, "r") as fibbo_file:
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
-params = utilities.set_params(params, param, fibbo)
-from fibbo_param_builder import FibboParamBuilder
-
 builder = params.ParamBuilder(param, fibbo, epochs=50)
 params = builder.build()
 
