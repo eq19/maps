@@ -66,15 +66,11 @@ while (current.val <= upper_bound):
 
 # write contents to file/process etc.
 fibbo_path = 'user_data/strategies/fibbo.json'
-params_path = 'user_data/config_examples/config_params.example.json'
 output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
 
 # First load the JSON files
 with open(fibbo_path, "r") as fibbo_file:
     fibbo = json.load(fibbo_file)
-
-#with open(params_path, "r") as params_file:
-    #params = json.load(params_file)
 
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
