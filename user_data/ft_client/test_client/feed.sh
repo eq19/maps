@@ -122,6 +122,7 @@ hyperopt() {
 }
 
 calculate_score() {
+  sleep 5
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
   if [[ -z "$latest_zip" ]]; then
