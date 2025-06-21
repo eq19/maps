@@ -57,9 +57,7 @@ class ParamBuilder:
 
                 elif isinstance(value, int):
                     low, high = 0, value * 2
-                    if key == "cooldown_lookback":
-                        low, high = 2, min(self.epochs * 2, 48)
-                    elif "rsi" in key or "stoch" in key:
+                    if "rsi" in key or "stoch" in key:
                         low, high = 0, 100
                     elif "period" in key:
                         low, high = 5, 50
