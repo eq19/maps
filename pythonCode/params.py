@@ -56,18 +56,7 @@ class ParamBuilder:
                     self.params[section][key] = self.bool_param(value)
 
                 elif isinstance(value, int):
-                    low, high = 0, value * 2
-                    if "rsi" in key or "stoch" in key:
-                        low, high = 0, 100
-                    elif "period" in key:
-                        low, high = 5, 50
-                    elif "trade_limit" in key:
-                        low, high = 2, 10
-                    elif "duration" in key:
-                        low, high = 12, 200
-                    elif "open_trades" in key:
-                        low, high = 70, 100
-
+                    low, high = max(0, value - self.epochs), min(value * 2, value + self.epochs)
                     self.params[section][key] = self.int_param(value, low, high)
 
                 elif isinstance(value, float):
