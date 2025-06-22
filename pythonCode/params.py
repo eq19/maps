@@ -126,14 +126,13 @@ class ParamBuilder:
 
             self.params["roi"] = new_roi
 
-        # Replace stoploss with atr_stoploss_multiplier
+        # Stoploss Optimization
         if "stoploss" in self.params and "stoploss" in fibbo_params["stoploss"]:
             del self.params["stoploss"]["stoploss"]
 
             base_val = fibbo_params["stoploss"].get("atr_stoploss_multiplier", 1.5)
             self.optimize = True if self.param == "nil" or self.param == "atr_stoploss_multiplier" else False
 
-            # Dynamic range based on base_val and self.epochs
             percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2–10%
             decimals = 3 if base_val < 1 else 2
             low = round(max(0.5, base_val * (1 - percent)), decimals)
@@ -148,12 +147,8 @@ class ParamBuilder:
                     "optimize": self.optimize
                 }
             else:
-                self.params["stoploss"]["atr_stoploss_multiplier"] = self.dec_param(
-                    base_val,
-                    low,
-                    high,
-                    decimals,
-                    optimize=self.optimize
-                )
+                param = self.dec_param(base_val, low, high, decimals)
+                param["optimize"] = self.optimize
+                self.params["stoploss"]["atr_stoploss_multiplier"] = param
 
         return self.params
