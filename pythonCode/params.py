@@ -60,10 +60,11 @@ class ParamBuilder:
                     self.params[section][key] = self.int_param(value, int(low), int(high))
 
                 elif isinstance(value, float):
-                    percent = self.epochs * 0.01  # 1% × epochs
+                    percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2%–10%
                     decimals = 4 if value < 0.05 else 3 if value < 1 else 2
-                    low, high = max(0.001, value - value * percent), min(value * 2, value + value * percent)
-                    self.params[section][key] = self.dec_param(value, round(low, decimals), round(high, decimals), decimals)
+                    low = max(0.001, round(value * (1 - percent), decimals))
+                    high = round(value * (1 + percent), decimals)
+                    self.params[section][key] = self.dec_param(value, low, high, decimals)
 
                 elif isinstance(value, str):
                     if key == "buy_fib_level" or key == "sell_fib_level":
