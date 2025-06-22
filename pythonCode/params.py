@@ -79,6 +79,7 @@ class ParamBuilder:
                     self.params[section][key] = self.cat_param(value, choices)
 
         # ROI re-mapping
+
         if "roi" in self.params:
             roi_dict = fibbo_params.get("roi", {})
             new_roi = {}
@@ -94,7 +95,13 @@ class ParamBuilder:
 
                 self.optimize = True if self.param == "nil" or t_key == self.param or p_key == self.param else False
                 new_roi[t_key] = self.int_param(t_val, 10, 600)
-                new_roi[p_key] = self.dec_param(p_val, 0.01, 0.3)
+
+                # Dynamic decimal handling for ROI
+                percent = self.epochs * 0.01
+                decimals = 4 if p_val < 0.05 else 3 if p_val < 1 else 2
+                low = max(0.001, p_val - p_val * percent)
+                high = min(p_val * 2, p_val + p_val * percent)
+                new_roi[p_key] = self.dec_param(p_val, round(low, decimals), round(high, decimals), decimals)
 
             self.params["roi"] = new_roi
 
