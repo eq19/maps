@@ -240,7 +240,10 @@ else
   calculate_score
   OLD_SCORE=$SCORE
   echo "SCORE: $OLD_SCORE"
-  (( $OLD_SCORE == 100 )) && gh workflow run "main.yml"
+  if (( OLD_SCORE == 100 )); then
+    gh workflow run "main.yml"
+    exit 1
+  fi
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
