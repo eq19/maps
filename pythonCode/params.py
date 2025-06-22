@@ -92,7 +92,7 @@ class ParamBuilder:
                 t_val = sorted_times[i]
                 p_val = roi_dict[str(t_val)]
 
-                # Do not optimize time, just keep default
+                # Use fixed time values (non-optimized)
                 new_roi[t_key] = {
                     "type": "IntParameter",
                     "low": 10,
@@ -101,18 +101,28 @@ class ParamBuilder:
                     "optimize": False
                 }
 
-                # Dynamically calculate decimal precision
-                percent = self.epochs * 0.01
+                # Calculate % range for decimal precision tuning
+                percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2–10% window
                 decimals = 4 if p_val < 0.05 else 3 if p_val < 1 else 2
-                low = max(0.001, p_val - p_val * percent)
-                high = p_val + p_val * percent
+                low = max(0.001, round(p_val * (1 - percent), decimals))
+                high = round(p_val * (1 + percent), decimals)
 
-                new_roi[p_key] = self.dec_param(
-                    p_val,
-                    round(low, decimals),
-                    round(high, decimals),
-                    decimals
-                )
+                # Adjust param type if value behaves like integer
+                if p_val >= 1 and round(p_val) == p_val:
+                    new_roi[p_key] = {
+                        "type": "IntParameter",
+                        "low": max(1, int(low)),
+                        "high": int(high),
+                        "default": int(p_val),
+                        "optimize": True
+                    }
+                else:
+                    new_roi[p_key] = self.dec_param(
+                        p_val,
+                        low,
+                        high,
+                        decimals
+                    )
 
             self.params["roi"] = new_roi
 
