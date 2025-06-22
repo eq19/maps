@@ -79,7 +79,6 @@ class ParamBuilder:
                     self.params[section][key] = self.cat_param(value, choices)
 
         # ROI re-mapping
-
         if "roi" in self.params:
             roi_dict = fibbo_params.get("roi", {})
             new_roi = {}
