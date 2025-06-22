@@ -60,8 +60,8 @@ class ParamBuilder:
                     self.params[section][key] = self.int_param(value, int(low), int(high))
 
                 elif isinstance(value, float):
-                    decimals = 4 if value < 0.05 else 3 if value < 1 else 2
                     percent = self.epochs * 0.01  # 1% × epochs
+                    decimals = 4 if value < 0.05 else 3 if value < 1 else 2
                     low, high = max(0.001, value - value * percent), value + value * percent
                     self.params[section][key] = self.dec_param(value, round(low, decimals), round(high, decimals), decimals)
 
