@@ -98,8 +98,7 @@ class ParamBuilder:
                 # Dynamic decimal handling for ROI
                 percent = self.epochs * 0.01
                 decimals = 4 if p_val < 0.05 else 3 if p_val < 1 else 2
-                low = max(0.001, p_val - p_val * percent)
-                high = min(p_val * 2, p_val + p_val * percent)
+                low, high = max(0.001, p_val - p_val * percent), min(p_val * 2, p_val + p_val * percent)
                 new_roi[p_key] = self.dec_param(p_val, round(low, decimals), round(high, decimals), decimals)
 
             self.params["roi"] = new_roi
