@@ -75,7 +75,7 @@ with open(fibbo_path, "r") as fibbo_file:
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
-builder = params.ParamBuilder(param, fibbo, epochs=50)
+builder = params.ParamBuilder(param, fibbo, epochs=30)
 params = builder.build()
 
 counter = 1
