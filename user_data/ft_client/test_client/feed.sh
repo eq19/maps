@@ -241,7 +241,7 @@ else
   OLD_SCORE=$SCORE
   echo "SCORE: $OLD_SCORE"
   if [[ "$OLD_SCORE" == "100" ]]; then
-    gh workflow run "main.yml"
+    [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"
     exit 1
   fi
 
