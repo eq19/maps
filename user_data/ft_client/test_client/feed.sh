@@ -240,7 +240,7 @@ else
   calculate_score
   OLD_SCORE=$SCORE
   echo "SCORE: $OLD_SCORE"
-  if (( ${OLD_SCORE:-0} == 100 )); then
+  if (( $OLD_SCORE == 100 )); then
     gh workflow run "main.yml"
     exit 1
   fi
