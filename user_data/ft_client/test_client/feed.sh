@@ -227,19 +227,22 @@ else
   #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
   #freqtrade edge --fee=$FEE
 
-  echo -e "\n$hr\nRUN BACKTEST\n$hr"
-  freqtrade backtesting --help
-  cat $STRATEGY > /tmp/store.json
-  #rm -rf user_data/backtest_results/*
-  freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+  if [[ "$SCORE" == "100" ]]; then
+    echo -e "\n$hr\nRUN BACKTEST\n$hr"
+    freqtrade backtesting --help
+    cat $STRATEGY > /tmp/store.json
+    #rm -rf user_data/backtest_results/*
+    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
-  # Scoring breakdown:
-  # Winrate: 25 pts
-  # Profit per trade: 25 pts
-  # Total profit: 25 pts
-  # Drawdown ratio: 20 pts
-  # Trade count bonus (capped): 5 pts
-  calculate_score
+    # Scoring breakdown:
+    # Winrate: 25 pts
+    # Profit per trade: 25 pts
+    # Total profit: 25 pts
+    # Drawdown ratio: 20 pts
+    # Trade count bonus (capped): 5 pts
+    calculate_score
+  fi
+  
   OLD_SCORE=$SCORE
   echo "SCORE: $OLD_SCORE"
   if [[ "$OLD_SCORE" == "100" ]]; then
