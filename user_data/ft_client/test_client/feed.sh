@@ -94,6 +94,7 @@ hyperopt() {
        "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
     done
 
+    [[ "$GITHUB_JOB" != "lexering" ]] && epochs = $epochs * 2
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
     echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
