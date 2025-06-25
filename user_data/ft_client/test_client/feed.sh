@@ -123,8 +123,8 @@ hyperopt() {
          https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
       gh variable set SCORE --body "${NEW_SCORE}" && gh variable set JOB --body "${GITHUB_JOB}"
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
-      if [[ "$GITHUB_JOB" == "lexering" ]]; then 
-        [[ "$(gh variable get JOB)" != "lexering" ]] && gh workflow run "main.yml"
+      if [[ "$GITHUB_JOB" == "lexering" ]] && [[ "$(gh variable get JOB)" != "lexering" ]]; then 
+        gh workflow run "main.yml"
       fi
     fi
   done
