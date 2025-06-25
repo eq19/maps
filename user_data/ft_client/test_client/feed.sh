@@ -253,6 +253,7 @@ else
   echo "SCORE: $OLD_SCORE"
   if [[ "$OLD_SCORE" != "100" ]]; then
     gh variable set SCORE --body "${SCORE}"
+    gh variable set GITHUB_JOB --body "${GITHUB_JOB}"
   else
     [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"
     exit 1
