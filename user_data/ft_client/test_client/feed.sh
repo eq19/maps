@@ -112,6 +112,7 @@ hyperopt() {
     NEW_SCORE=$SCORE
     echo "NEW SCORE: $NEW_SCORE"
 
+    OLD_SCORE=$(gh variable get SCORE)
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
       cat $STRATEGY
       curl -L -s -X PATCH \
@@ -121,6 +122,7 @@ hyperopt() {
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
          https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
       [[ "$GITHUB_JOB" != "lexering" ]] && gh workflow run "main.yml"
+      gh variable set SCORE --body "${NEW_SCORE}"
     fi
   done
 }
