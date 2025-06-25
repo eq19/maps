@@ -48,7 +48,7 @@ hyperopt() {
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     end_date=$(date +"%Y%m%d")
     days=$(echo "$pipeline" | jq -r '.days')
-    start_date=$(date -d "$days days ago" +"%Y%m%d")
+    start_date=$(date -d "11 days ago" +"%Y%m%d")
 
     id=$(echo "$pipeline" | jq -r '.id')
     epochs=$(echo "$pipeline" | jq -r '.epochs')
