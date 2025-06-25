@@ -121,10 +121,10 @@ hyperopt() {
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
          https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
-      gh variable set SCORE --body "${NEW_SCORE}" && gh variable set GITHUB_JOB --body "${GITHUB_JOB}"
+      gh variable set SCORE --body "${NEW_SCORE}" && gh variable set JOB --body "${GITHUB_JOB}"
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then 
-        [[ "$(gh variable get GITHUB_JOB)" != "lexering" ]] && gh workflow run "main.yml"
+        [[ "$(gh variable get JOB)" != "lexering" ]] && gh workflow run "main.yml"
       fi
     fi
   done
@@ -247,7 +247,7 @@ else
     # Drawdown ratio: 20 pts
     # Trade count bonus (capped): 5 pts
     calculate_score
-    gh variable set GITHUB_JOB --body "${GITHUB_JOB}"
+    gh variable set JOB --body "${GITHUB_JOB}"
   fi
   
   OLD_SCORE=$SCORE
