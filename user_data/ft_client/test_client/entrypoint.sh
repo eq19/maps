@@ -27,6 +27,9 @@ fi
 # Get the strategy file and params value then save to fibbo.py and fibbo.json
 cp /home/runner/user_data/strategies/fibbo.py /home/runner/data_dry/strategies/fibbo.py 
 cp /home/runner/user_data/strategies/fibbo.py /home/runner/data_live/strategies/fibbo.py 
+cp /home/runner/user_data/strategies/hyperopt_params.json /home/runner/data_dry/strategies/hyperopt_params.json
+cp /home/runner/user_data/strategies/hyperopt_params.json /home/runner/data_live/strategies/hyperopt_params.json
+
 curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/$REPOSITORY/actions/variables/PARAMS_DRY" \
   | jq -r '.value' > /home/runner/data_dry/strategies/fibbo.json
