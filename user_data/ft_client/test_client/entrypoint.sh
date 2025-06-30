@@ -7,6 +7,7 @@ CONFIG_LIVE=/home/runner/data_live/config.json
 # Setup freqtrade userdir
 freqtrade create-userdir --userdir /home/runner/data_dry
 freqtrade create-userdir --userdir /home/runner/data_live
+cat $CONFIG > $CONFIG_DRY && cat $CONFIG > $CONFIG_LIVE
 
 # Setup freqtrade config.json
 if [ -f /home/runner/user_data/config.json ]; then
