@@ -20,6 +20,8 @@ if [ -f /home/runner/user_data/config.json ]; then
   #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
   sed -i "s|your_telegram_token|$TRADING_BOT_TOKEN|g" $CONFIG_LIVE
+  sed -i "s|user_data/strategies|/home/runner/data_dry/strategies|g" $CONFIG_DRY
+  sed -i "s|user_data/strategies|/home/runner/data_live/strategies|g" $CONFIG_LIVE
 fi
 
 # Get the strategy file and params value then save to fibbo.py and fibbo.json
