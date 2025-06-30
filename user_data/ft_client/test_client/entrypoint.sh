@@ -26,10 +26,10 @@ fi
 cp /home/runner/user_data/strategies/fibbo.py /home/runner/data_dry/strategies/fibbo.py 
 cp /home/runner/user_data/strategies/fibbo.py /home/runner/data_live/strategies/fibbo.py 
 curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_DRY" \
+  "https://api.github.com/repos/$REPOSITORY/actions/variables/PARAMS_DRY" \
   | jq -r '.value' > /home/runner/data_dry/strategies/fibbo.json
 curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_LIVE" \
+  "https://api.github.com/repos/$REPOSITORY/actions/variables/PARAMS_LIVE" \
   | jq -r '.value' > /home/runner/data_live/strategies/fibbo.json
 
 # Configure earlyoom
