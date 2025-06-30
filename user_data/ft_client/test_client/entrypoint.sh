@@ -16,8 +16,10 @@ if [ -f /home/runner/user_data/config.json ]; then
   jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
   cat $CONFIG > $CONFIG_DRY && cat $CONFIG > $CONFIG_LIVE
 
-  #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
-  #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
+  sed -i "s|tradesv3|tradesv3_dry|g" $CONFIG_DRY
+  sed -i "s|tradesv3|tradesv3_live|g" $CONFIG_LIVE
+  #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG_LIVE
+  #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG_LIVE
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
   sed -i "s|your_telegram_token|$TRADING_BOT_TOKEN|g" $CONFIG_LIVE
   sed -i "s|user_data/strategies|/home/runner/data_dry/strategies|g" $CONFIG_DRY
