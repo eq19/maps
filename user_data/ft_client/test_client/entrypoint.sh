@@ -8,9 +8,11 @@ CONFIG_LIVE=/home/runner/data_live/config.json
 freqtrade create-userdir --userdir /home/runner/data_dry
 freqtrade create-userdir --userdir /home/runner/data_live
 
-jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
+sed -i "s|user_data/strategies|/home/runner/user_data/strategies|g" $CONFIG
 sed -i "s|config_examples|/home/runner/user_data/config_examples|g" $CONFIG
 sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
+
+jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
 cat $CONFIG > $CONFIG_DRY && cat $CONFIG > $CONFIG_LIVE
 
 # Setup freqtrade config.json
