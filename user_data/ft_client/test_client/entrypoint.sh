@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
+CONFIG=/home/runner/user_data/config.json
+CONFIG_DRY=/home/runner/data_dry/config.json
+CONFIG_LIVE=/home/runner/data_live/config.json
+
 # Setup freqtrade userdir
 freqtrade create-userdir --userdir /home/runner/data_dry
 freqtrade create-userdir --userdir /home/runner/data_live
 
 # Setup freqtrade config.json
-CONFIG=/home/runner/user_data/config.json
 if [ -f /home/runner/user_data/config.json ]; then
   #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
   #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
