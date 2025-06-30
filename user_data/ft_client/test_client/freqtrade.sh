@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the function to send a Telegram message
-LOG_FILE="/var/log/apt/freqtrade_dry.log"
+LOG_FILE="/home/runner/data_live/logs/freqtrade.log"
 rm -rf $LOG_FILE.*
 
 send_telegram_message() {
