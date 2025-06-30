@@ -8,20 +8,29 @@ CONFIG_LIVE=/home/runner/data_live/config.json
 freqtrade create-userdir --userdir /home/runner/data_dry
 freqtrade create-userdir --userdir /home/runner/data_live
 
-sed -i "s|user_data/strategies|/home/runner/user_data/strategies|g" $CONFIG
-sed -i "s|config_examples|/home/runner/user_data/config_examples|g" $CONFIG
-sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
-
-jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
-cat $CONFIG > $CONFIG_DRY && cat $CONFIG > $CONFIG_LIVE
-
 # Setup freqtrade config.json
 if [ -f /home/runner/user_data/config.json ]; then
+  sed -i "s|config_examples|/home/runner/user_data/config_examples|g" $CONFIG
+  sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
+
+  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
+  cat $CONFIG > $CONFIG_DRY && cat $CONFIG > $CONFIG_LIVE
+
   #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
   #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
   sed -i "s|your_telegram_token|$TRADING_BOT_TOKEN|g" $CONFIG_LIVE
 fi
+
+# Get the strategy file and params value then save to fibbo.py and fibbo.json
+cp /home/runner/user_data/strategies/fibbo.py /home/runner/data_dry/strategies/fibbo.py 
+cp /home/runner/user_data/strategies/fibbo.py /home/runner/data_live/strategies/fibbo.py 
+curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_DRY" \
+  | jq -r '.value' > /home/runner/data_dry/strategies/fibbo.json
+curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_LIVE" \
+  | jq -r '.value' > /home/runner/data_live/strategies/fibbo.json
 
 # Configure earlyoom
 ARGS=/etc/default/earlyoom
