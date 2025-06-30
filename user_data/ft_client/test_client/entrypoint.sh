@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# Setup freqtrade userdir
+freqtrade create-userdir --userdir /home/runner/data_dry
+freqtrade create-userdir --userdir /home/runner/data_live
+
 # Setup freqtrade config.json
 CONFIG=/home/runner/user_data/config.json
 if [ -f /home/runner/user_data/config.json ]; then
