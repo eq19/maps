@@ -420,7 +420,6 @@
     "dataformat_trades": "feather",
     "recursive_strategy_search": false,
     "db_url": "sqlite:///tradesv3.sqlite",
-    "strategy_path": "user_data/strategies",
     "add_config_files": [
         "config_examples/config_freqai.example.json",
         "config_examples/config_hyperopt.example.json"
