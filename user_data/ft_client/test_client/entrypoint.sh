@@ -7,15 +7,17 @@ CONFIG_LIVE=/home/runner/data_live/config.json
 # Setup freqtrade userdir
 freqtrade create-userdir --userdir /home/runner/data_dry
 freqtrade create-userdir --userdir /home/runner/data_live
+
+jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
+sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
 cat $CONFIG > $CONFIG_DRY && cat $CONFIG > $CONFIG_LIVE
 
 # Setup freqtrade config.json
 if [ -f /home/runner/user_data/config.json ]; then
   #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG
   #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG
-  sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG
-  sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
-  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
+  sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
+  sed -i "s|your_telegram_token|$TRADING_BOT_TOKEN|g" $CONFIG_LIVE
 fi
 
 # Configure earlyoom
