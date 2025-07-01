@@ -375,7 +375,7 @@ class fibbo(IStrategy):
         dataframe['fib_618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_786'] = dataframe['swing_high'] - swing_range * 0.786
 
-        # ---- Fetch and merge informative timeframe (15m) ----
+        # ---- Fetch and merge informative timeframe ----
         logger.debug("Informative pairs data: %s", self.informative_pairs)
         informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
 
@@ -418,7 +418,7 @@ class fibbo(IStrategy):
         ATR          = (dataframe['atr'] > dataframe['atr'].shift(1))
         VWAP         = (dataframe['close'] > dataframe['vwap'])
         MACD         = (dataframe["macd"] < dataframe["macdsignal"])
-        DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_1h"])
+        DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"])
         FIBBO        = (dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])
         BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
         STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
