@@ -20,7 +20,7 @@
       "hyperopt_loss": "DefaultHyperOptLoss"
     },
     {
-      "id": 2,
+      "id": 3,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
       "epochs": 11,
@@ -29,7 +29,7 @@
       "hyperopt_loss": "ShortTradeDurHyperOptLoss"
     },
     {
-      "id": 3,
+      "id": 2,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
       "epochs": 11,
