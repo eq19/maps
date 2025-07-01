@@ -316,11 +316,11 @@ class fibbo(IStrategy):
         # Get all trading pairs from the whitelist
         pairs = self.dp.current_whitelist()
     
-        # Assign the desired timeframe for each pair
-        informative_pairs = [(pair, '1h') for pair in pairs]
+        # Assign the desired timeframe for each pair using self.informative_timeframe
+        informative_pairs = [(pair, self.informative_timeframe) for pair in pairs]
 
-        # Add any additional fixed pairs
-        informative_pairs += [("USDT/IDR", "15m"), ("USDT/IDR", "1h")]
+        # Add any additional fixed pairs using self.timeframe and self.informative_timeframe
+        informative_pairs += [("USDT/IDR", self.timeframe), ("USDT/IDR", self.informative_timeframe)]
 
         return informative_pairs
 
