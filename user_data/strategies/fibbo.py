@@ -144,8 +144,8 @@ class fibbo(IStrategy):
     can_short: bool = False
 
     # Optimal timeframe for the strategy.
-    timeframe = "1m"
-    informative_timeframe = "15m"
+    timeframe = "15m"
+    informative_timeframe = "1h"
 
     # Hyperoptable parameters
     stoploss = -0.1
