@@ -99,7 +99,7 @@ hyperopt() {
     echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: 11 | Epochs: $epochs\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
-      --enable-protections --analyze-per-epoch  --random-state ${id} \
+      #--enable-protections --analyze-per-epoch  --random-state ${id} \
       --fee=$FEE --logfile /dev/null > /dev/null 2>&1
     freqtrade hyperopt-list
 
