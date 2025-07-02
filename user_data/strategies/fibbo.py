@@ -151,9 +151,9 @@ class fibbo(IStrategy):
     stoploss = -0.1
     minimal_roi = {
         "0": 0.298,
-        "115": 0.144,
-        "280": 0.055,
-        "507": 0
+        "8": 0.144,
+        "9": 0.055,
+        "34": 0
     }
 
     macd_profiles = {
