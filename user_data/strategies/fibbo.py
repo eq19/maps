@@ -235,8 +235,6 @@ class fibbo(IStrategy):
     @property
     def protections(self):
         prot = []
-      "stop_duration_candles": 6,
-      "lookback_period_candles": 4,
 
         # Cooldown period to prevent over-trading
         prot.append({
@@ -249,8 +247,8 @@ class fibbo(IStrategy):
             prot.append({
                 "method": "StoplossGuard",
                 "lookback_period_candles": self.lookback_period_candles.value,
-                "trade_limit": self.trade_limit.value,
                 "stop_duration_candles": self.stop_duration_candles.value,
+                "trade_limit": self.trade_limit.value,
                 "only_per_pair": False
             })
 
@@ -259,9 +257,9 @@ class fibbo(IStrategy):
             prot.append({
                 "method": "MaxDrawdown",
                 "lookback_period_candles": self.lookback_period_candles.value,
+                "stop_duration_candles": self.stop_duration_candles.value,
                 "trade_limit": self.max_drawdown_trade_limit.value,
                 "max_allowed_drawdown": 0.2,  # 20% drawdown
-                "stop_duration_candles": self.stop_duration_candles.value,
                 "only_per_pair": False
             })
 
@@ -270,10 +268,10 @@ class fibbo(IStrategy):
             prot.append({
                 "method": "LowProfitPairs",
                 "lookback_period_candles": self.lookback_period_candles.value,
-                "trade_limit": self.low_profit_trade_limit.value,
                 "stop_duration": self.stop_duration_candles.value,
+                "trade_limit": self.low_profit_trade_limit.value,
                 "required_profit": 0.02,
-                "only_per_pair": False,
+                "only_per_pair": False
             })
 
         return prot
