@@ -34,7 +34,7 @@
       "days": 5,
       "epochs": 100,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["buy sell roi protection"],
       "hyperopt_loss": "OnlyProfitHyperOptLoss"
     },
     {
