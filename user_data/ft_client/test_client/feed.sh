@@ -78,6 +78,7 @@ hyperopt() {
           --argjson params "$params" \
           --arg runId "$GITHUB_RUN_ID" \
           --arg score "$SCORE" \
+          --arg epochs "$epochs" \
           --arg space "$space" \
           --arg loss "$loss" \
           '{ref: $ref, inputs: {
@@ -87,6 +88,7 @@ hyperopt() {
                space: $space,
                score: $score,
                run_id: $runId,
+               epochs: $epochs,
                params: $params
              } | @json
            )
