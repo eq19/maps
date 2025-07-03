@@ -6,7 +6,7 @@ class ParamBuilder:
     def __init__(self, param, fibbo, epochs):
         self.param = param
         self.fibbo = fibbo
-        self.epochs = epochs
+        self.epochs = int(epochs)
         self.params = {}
 
     def int_param(self, default, low, high):
