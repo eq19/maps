@@ -14,7 +14,7 @@ from pythonCode import *
 from datetime import datetime
 
 
-script, output, id, param = argv
+script, output, id, param, epochs = argv
 
 # Number parameters for the range of numbers to be tested
 lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
@@ -75,7 +75,7 @@ with open(fibbo_path, "r") as fibbo_file:
 with open(output_path, "r") as output_file:
     data = json.load(output_file)
 
-builder = params.ParamBuilder(param, fibbo, epochs=30)
+builder = params.ParamBuilder(param, fibbo, epochs)
 params = builder.build()
 
 counter = 1
