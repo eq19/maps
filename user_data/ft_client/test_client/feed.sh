@@ -48,7 +48,7 @@ hyperopt() {
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     end_date=$(date +"%Y%m%d")
     days=$(echo "$pipeline" | jq -r '.days')
-    start_date=$(date -d "11 days ago" +"%Y%m%d")
+    start_date=$(date -d "$days days ago" +"%Y%m%d")
 
     id=$(echo "$pipeline" | jq -r '.id')
     epochs=$(echo "$pipeline" | jq -r '.epochs')
@@ -96,7 +96,7 @@ hyperopt() {
 
     [[ "$GITHUB_JOB" == "lexering" ]] && epochs=$((epochs * 10))
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
-    echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: 11 | Epochs: $epochs\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
       #--enable-protections --analyze-per-epoch  --random-state ${id} \
