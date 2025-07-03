@@ -13,28 +13,28 @@
     {
       "id": 1,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 5,
-      "epochs": 11,
+      "days": 15,
+      "epochs": 100,
       "parallel_jobs": 4,
       "spaces": ["buy"],
       "hyperopt_loss": "DefaultHyperOptLoss"
     },
     {
-      "id": 3,
+      "id": 2,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 5,
-      "epochs": 11,
+      "days": 15,
+      "epochs": 100,
       "parallel_jobs": 4,
       "spaces": ["buy"],
       "hyperopt_loss": "ShortTradeDurHyperOptLoss"
     },
     {
-      "id": 2,
+      "id": 3,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 5,
+      "days": 15,
       "epochs": 100,
       "parallel_jobs": 4,
-      "spaces": ["buy sell roi protection"],
+      "spaces": ["buy"],
       "hyperopt_loss": "OnlyProfitHyperOptLoss"
     },
     {
