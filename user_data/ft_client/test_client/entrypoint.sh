@@ -15,7 +15,7 @@ if [ -f /home/runner/user_data/config.json ]; then
 
   jq '.telegram.enabled = true' $CONFIG > $CONFIG_DRY
   jq '.telegram.enabled = true' $CONFIG > $CONFIG_LIVE
-  #jq '.dry_run = false' $CONFIG_LIVE > tmp.json && mv tmp.json $CONFIG_LIVE
+  #jq '.telegram.enabled = true | .dry_run = false' $CONFIG > $CONFIG_LIVE
 
   sed -i "s|tradesv3|tradesv3_dry|g" $CONFIG_DRY
   sed -i "s|tradesv3|tradesv3_live|g" $CONFIG_LIVE
