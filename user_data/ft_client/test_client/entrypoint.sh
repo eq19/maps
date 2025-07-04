@@ -13,13 +13,12 @@ if [ -f /home/runner/user_data/config.json ]; then
   sed -i "s|config_examples|/home/runner/user_data/config_examples|g" $CONFIG
   sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
 
-  jq '.telegram.enabled = true' $CONFIG > tmp.json && mv tmp.json $CONFIG
-  cat $CONFIG > $CONFIG_DRY && cat $CONFIG > $CONFIG_LIVE
+  jq '.telegram.enabled = true' $CONFIG > $CONFIG_DRY
+  jq '.telegram.enabled = true' $CONFIG > $CONFIG_LIVE
+  #jq '.dry_run = false' $CONFIG_LIVE > tmp.json && mv tmp.json $CONFIG_LIVE
 
   sed -i "s|tradesv3|tradesv3_dry|g" $CONFIG_DRY
   sed -i "s|tradesv3|tradesv3_live|g" $CONFIG_LIVE
-  #sed -i "s|your_exchange_key|${ACCESS_API}|g" $CONFIG_LIVE
-  #sed -i "s|your_exchange_secret|${ACCESS_KEY}|g" $CONFIG_LIVE
   sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
   sed -i "s|your_telegram_token|$TRADING_BOT_TOKEN|g" $CONFIG_LIVE
   sed -i "s|user_data/strategies|/home/runner/data_dry/strategies|g" $CONFIG_DRY
