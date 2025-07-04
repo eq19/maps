@@ -320,7 +320,7 @@ class fibbo(IStrategy):
         informative_pairs = [(pair, self.informative_timeframe) for pair in pairs]
 
         # Add any additional fixed pairs using self.timeframe and self.informative_timeframe
-        informative_pairs += [("USDT/IDR", self.timeframe), ("USDT/IDR", self.informative_timeframe)]
+        #informative_pairs += [("USDT/IDR", self.timeframe), ("USDT/IDR", self.informative_timeframe)]
 
         return informative_pairs
 
