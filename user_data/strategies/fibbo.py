@@ -185,7 +185,9 @@ class fibbo(IStrategy):
     exit_profit_only = False
     use_custom_stoploss = True
     process_only_new_candles = True
+    position_adjustment_enable = True
     ignore_roi_if_entry_signal = False
+    #max_entry_position_adjustment = 2
 
     # Plot config
     plot_cofig = {
