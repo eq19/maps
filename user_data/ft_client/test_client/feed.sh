@@ -240,8 +240,8 @@ else
     freqtrade backtesting --help
     cat $STRATEGY > /tmp/store.json
     #rm -rf user_data/backtest_results/*
-    #freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
-    freqtrade backtesting --fee=$FEE --timerange="$TB"
+    #freqtrade backtesting --fee=$FEE --timerange="$TB"
+    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
     # Scoring breakdown:
     # Winrate: 25 pts
