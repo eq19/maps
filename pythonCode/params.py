@@ -96,8 +96,8 @@ class ParamBuilder:
                 # Use fixed time values (non-optimized)
                 new_roi[t_key] = {
                     "type": "IntParameter",
-                    "low": 1,
-                    "high": 40,
+                    "low": 0,
+                    "high": 600,
                     "default": t_val,
                     "optimize": False
                 }
