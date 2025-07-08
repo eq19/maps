@@ -102,7 +102,7 @@ hyperopt() {
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
-      --fee=$FEE --logfile /dev/null > /dev/null 2>&1 #--print-json
+      --fee=$FEE --logfile /dev/null --print-json #> /dev/null 2>&1
     freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
