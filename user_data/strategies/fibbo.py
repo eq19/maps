@@ -339,7 +339,7 @@ class fibbo(IStrategy):
         dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
 
         # ATR (Volatility)
-        dataframe['atr'] = ta.ATR(dataframe, timeperiod=int(self.period.value))
+        dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
