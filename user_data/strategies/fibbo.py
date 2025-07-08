@@ -246,35 +246,44 @@ class fibbo(IStrategy):
 
         # Stoploss guard to limit losses
         if self.use_stop_protection.value:
-            prot.append({
-                "method": "StoplossGuard",
-                "lookback_period_candles": self.lookback_period_candles.value,
-                "stop_duration_candles": self.stop_duration_candles.value,
-                "trade_limit": self.trade_limit.value,
-                "only_per_pair": False
-            })
+            try:
+                prot.append({
+                    "method": "StoplossGuard",
+                    "lookback_period_candles": self.lookback_period_candles.value,
+                    "stop_duration_candles": self.stop_duration_candles.value,
+                    "trade_limit": self.trade_limit.value,
+                    "only_per_pair": False
+                })
+            except Exception as e:
+                logger.warning(f"StoplossGuard protection disabled due to error: {e}")
 
         # Max drawdown guard to prevent trading after excessive losses
         if self.use_max_drawdown_protection.value:
-            prot.append({
-                "method": "MaxDrawdown",
-                "lookback_period_candles": self.lookback_period_candles.value,
-                "stop_duration_candles": self.stop_duration_candles.value,
-                "trade_limit": self.max_drawdown_trade_limit.value,
-                "max_allowed_drawdown": 0.2,  # 20% drawdown
-                "only_per_pair": False
-            })
+            try:
+                prot.append({
+                    "method": "MaxDrawdown",
+                    "lookback_period_candles": self.lookback_period_candles.value,
+                    "stop_duration_candles": self.stop_duration_candles.value,
+                    "trade_limit": self.max_drawdown_trade_limit.value,
+                    "max_allowed_drawdown": 0.2,  # 20% drawdown
+                    "only_per_pair": False
+                })
+            except Exception as e:
+                logger.warning(f"MaxDrawdown protection disabled due to error: {e}")
 
+        # Low profit pairs protection
         if self.use_low_profit.value:
-            # Low profit pairs protection
-            prot.append({
-                "method": "LowProfitPairs",
-                "lookback_period_candles": self.lookback_period_candles.value,
-                "stop_duration": self.stop_duration_candles.value,
-                "trade_limit": self.low_profit_trade_limit.value,
-                "required_profit": 0.02,
-                "only_per_pair": False
-            })
+            try:
+                prot.append({
+                    "method": "LowProfitPairs",
+                    "lookback_period_candles": self.lookback_period_candles.value,
+                    "stop_duration": self.stop_duration_candles.value,
+                    "trade_limit": self.low_profit_trade_limit.value,
+                    "required_profit": 0.02,
+                    "only_per_pair": False
+                })
+            except Exception as e:
+                logger.warning(f"LowProfitPairs protection disabled due to error: {e}")
 
         return prot
 
