@@ -16,7 +16,7 @@
       "days": 15,
       "epochs": 100,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["default"],
       "hyperopt_loss": "DefaultHyperOptLoss"
     },
     {
