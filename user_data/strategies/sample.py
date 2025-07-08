@@ -47,7 +47,7 @@ def indicator_permutations(profiles, max_indicators=1, include_none=True):
     return profile_permutations
 
 
-class AwesomeCombinationStrategy(IStrategy):
+class Sample(IStrategy):
 
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
