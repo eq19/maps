@@ -99,11 +99,10 @@ hyperopt() {
     [[ "$GITHUB_JOB" == "lexering" ]] && epochs=$((epochs * 10))
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
     echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} --enable-protections --analyze-per-epoch  --random-state ${id} --fee=$FEE --strategy fibbo --print-json
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
       --enable-protections --analyze-per-epoch  --random-state ${id} \
-      --fee=$FEE --logfile /dev/null > /dev/null 2>&1
+      --fee=$FEE --logfile /dev/null > /dev/null 2>&1 #--print-json
     freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
