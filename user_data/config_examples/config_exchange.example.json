@@ -55,9 +55,7 @@
         "secret": "your_exchange_secret",
         "pair_whitelist": [
             "BTC/IDR",
-            "BTC/USDT",
             "ETH/IDR",
-            "ETH/USDT",
             "USDT/IDR"
         ],
         "pair_reserved": [
