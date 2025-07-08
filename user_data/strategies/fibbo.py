@@ -212,7 +212,6 @@ class fibbo(IStrategy):
 
         # Override settings ONLY during hyperopt
         if config.get('runmode') == 'hyperopt':
-            self.protections = []
             self.trailing_stop = True
             self.use_exit_signal = False
             self.use_custom_stoploss = False
