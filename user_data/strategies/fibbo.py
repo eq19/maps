@@ -190,7 +190,7 @@ class fibbo(IStrategy):
     #max_entry_position_adjustment = 2
 
     # Plot config
-    plot_cofig = {
+    plot_config = {
         "main_plot": {
             "tema": {},
             "sar": {"color": "white"},
