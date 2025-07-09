@@ -276,16 +276,14 @@ else
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   freqtrade hyperopt --help
 
-  # Get list of available hyperopt classes
-  hyperopts=$(freqtrade list-hyperoptloss | sed -n '/Available hyperopt classes/,/positional arguments:/p' | \
-    grep -vE "Available hyperopt classes|positional arguments" | awk '{$1=$1};1')
+  # Extract clean list of hyperoptloss classes using --one-column
+  losses=$(freqtrade list-hyperoptloss --one-column)
 
-  # Convert to JSON array
-  json_array=$(printf '%s\n' "$hyperopts" | jq -R . | jq -s .)
+  # Convert to JSON array using jq
+  json_array=$(printf '%s\n' "$losses" | jq -R . | jq -s .)
 
-  # Wrap into GitHub Actions matrix format
-  jq -n --argjson hyperopts "$json_array" '{ hyperopt: $hyperopts }'
-  
+  # Format for GitHub Actions matrix
+  jq -n --argjson hyperoptloss "$json_array" '{ hyperoptloss: $hyperoptloss }'  
   freqtrade list-hyperoptloss --one-column && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
