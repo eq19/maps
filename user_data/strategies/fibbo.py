@@ -16,6 +16,8 @@ from freqtrade.strategy import (
     merge_informative_pair
 )
 from freqtrade.persistence import Trade
+from freqtrade.optimize.hyperopt import HyperOpt
+from freqtrade.configuration import Configuration
 
 # --------------------------------
 # Add your lib to import here
@@ -30,7 +32,6 @@ import talib.abstract as ta
 import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
-
 
 # Define indicator sets (could also come from the JSON if needed)
 buy_indicators = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
@@ -238,6 +239,14 @@ class fibbo(IStrategy):
     def protections(self):
         prot = []
 
+        # Detect if we're in hyperopt and running --spaces all
+        if hasattr(self, 'config'):
+            config: Configuration = self.config
+            if config.get('runmode') == 'hyperopt':
+                # disable protections if optimizing all spaces
+                if 'spaces' in config and 'all' in config['spaces']:
+                    return prot
+
         # Cooldown period to prevent over-trading
         prot.append({
             "method": "CooldownPeriod",
@@ -246,44 +255,35 @@ class fibbo(IStrategy):
 
         # Stoploss guard to limit losses
         if self.use_stop_protection.value:
-            try:
-                prot.append({
-                    "method": "StoplossGuard",
-                    "lookback_period_candles": self.lookback_period_candles.value,
-                    "stop_duration_candles": self.stop_duration_candles.value,
-                    "trade_limit": self.trade_limit.value,
-                    "only_per_pair": False
-                })
-            except Exception as e:
-                logger.warning(f"StoplossGuard protection disabled due to error: {e}")
+            prot.append({
+                "method": "StoplossGuard",
+                "lookback_period_candles": self.lookback_period_candles.value,
+                "stop_duration_candles": self.stop_duration_candles.value,
+                "trade_limit": self.trade_limit.value,
+                "only_per_pair": False
+            })
 
-        # Max drawdown guard to prevent trading after excessive losses
+        # Max drawdown guard
         if self.use_max_drawdown_protection.value:
-            try:
-                prot.append({
-                    "method": "MaxDrawdown",
-                    "lookback_period_candles": self.lookback_period_candles.value,
-                    "stop_duration_candles": self.stop_duration_candles.value,
-                    "trade_limit": self.max_drawdown_trade_limit.value,
-                    "max_allowed_drawdown": 0.2,  # 20% drawdown
-                    "only_per_pair": False
-                })
-            except Exception as e:
-                logger.warning(f"MaxDrawdown protection disabled due to error: {e}")
+            prot.append({
+                "method": "MaxDrawdown",
+                "lookback_period_candles": self.lookback_period_candles.value,
+                "stop_duration_candles": self.stop_duration_candles.value,
+                "trade_limit": self.max_drawdown_trade_limit.value,
+                "max_allowed_drawdown": 0.2,
+                "only_per_pair": False
+            })
 
-        # Low profit pairs protection
+        # Low profit pairs guard
         if self.use_low_profit.value:
-            try:
-                prot.append({
-                    "method": "LowProfitPairs",
-                    "lookback_period_candles": self.lookback_period_candles.value,
-                    "stop_duration": self.stop_duration_candles.value,
-                    "trade_limit": self.low_profit_trade_limit.value,
-                    "required_profit": 0.02,
-                    "only_per_pair": False
-                })
-            except Exception as e:
-                logger.warning(f"LowProfitPairs protection disabled due to error: {e}")
+            prot.append({
+                "method": "LowProfitPairs",
+                "lookback_period_candles": self.lookback_period_candles.value,
+                "stop_duration": self.stop_duration_candles.value,
+                "trade_limit": self.low_profit_trade_limit.value,
+                "required_profit": 0.02,
+                "only_per_pair": False
+            })
 
         return prot
 
