@@ -275,6 +275,17 @@ else
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   freqtrade hyperopt --help
+
+  # Get list of available hyperopt classes
+  hyperopts=$(freqtrade list-hyperoptloss | sed -n '/Available hyperopt classes/,/positional arguments:/p' | \
+    grep -vE "Available hyperopt classes|positional arguments" | awk '{$1=$1};1')
+
+  # Convert to JSON array
+  json_array=$(printf '%s\n' "$hyperopts" | jq -R . | jq -s .)
+
+  # Wrap into GitHub Actions matrix format
+  jq -n --argjson hyperopts "$json_array" '{ hyperopt: $hyperopts }'
+  
   freqtrade list-hyperoptloss && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
