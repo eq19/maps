@@ -102,11 +102,13 @@ hyperopt() {
     # Disable protections if 'all' or 'protection' is in the spaces
     if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
         enable_protections=""
+        prot="disable"
     else
         enable_protections="--enable-protections"
+        prot="enable"
     fi
 
-    echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs | Protection: $prot\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
       ${enable_protections} --analyze-per-epoch --random-state ${id} \
