@@ -16,7 +16,6 @@ from freqtrade.strategy import (
     merge_informative_pair
 )
 from freqtrade.persistence import Trade
-from freqtrade.optimize.hyperopt import HyperOpt
 from freqtrade.configuration import Configuration
 
 # --------------------------------
