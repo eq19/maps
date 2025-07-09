@@ -1,4 +1,5 @@
 {
+  "enable_protections": false,
   "position_stacking": false,
   "disableparamexport": false,
   "hyperopt_jobs": 32,
