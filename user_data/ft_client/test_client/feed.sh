@@ -44,6 +44,11 @@ export PATH="venv/bin:$PATH"
 
 hyperopt() {
 
+  # Extract clean list of hyperoptloss classes
+  losses=$(freqtrade list-hyperoptloss --one-column)
+  json_array=$(printf '%s\n' "$losses" | jq -R . | jq -s .)
+  jq -n --argjson hyperoptloss "$json_array" '{ hyperoptloss: $hyperoptloss }'  
+  
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     end_date=$(date +"%Y%m%d")
@@ -143,6 +148,7 @@ hyperopt() {
 }
 
 calculate_score() {
+
   sleep 5
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
@@ -275,16 +281,7 @@ else
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   freqtrade hyperopt --help
-
-  # Extract clean list of hyperoptloss classes using --one-column
-  losses=$(freqtrade list-hyperoptloss --one-column)
-
-  # Convert to JSON array using jq
-  json_array=$(printf '%s\n' "$losses" | jq -R . | jq -s .)
-
-  # Format for GitHub Actions matrix
-  jq -n --argjson hyperoptloss "$json_array" '{ hyperoptloss: $hyperoptloss }'  
-  freqtrade list-hyperoptloss --one-column && hyperopt $ID
+  hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
