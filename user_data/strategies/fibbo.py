@@ -238,12 +238,12 @@ class fibbo(IStrategy):
     def protections(self):
         prot = []
 
-        # Detect if we're in hyperopt and running --spaces all
+        # Disable protections during hyperopt if spaces contain 'all' or 'protection'
         if hasattr(self, 'config'):
             config: Configuration = self.config
             if config.get('runmode') == 'hyperopt':
-                # disable protections if optimizing all spaces
-                if 'spaces' in config and 'all' in config['spaces']:
+                spaces = config.get('spaces', [])
+                if 'all' in spaces or 'protection' in spaces:
                     return prot
 
         # Cooldown period to prevent over-trading
