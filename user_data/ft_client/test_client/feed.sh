@@ -45,7 +45,7 @@ export PATH="venv/bin:$PATH"
 hyperopt() {
 
   # Extract clean list of hyperoptloss classes
-  losses=$(printf '%s\n' "$(freqtrade list-hyperoptloss --one-column)" | jq -R . | jq -s .)
+  hyperopts=$(printf '%s\n' "$(freqtrade list-hyperoptloss --one-column)" | jq -R . | jq -s .)
   
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
@@ -77,9 +77,9 @@ hyperopt() {
         -H "Authorization: token $GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
         -d "$(jq -n \
-          --arg ref "$DEFAULT_BRANCH" \
-          --argjson losses "$losses" \
+          --argjson hyperopts "$hyperopts" \
           --arg runId "$GITHUB_RUN_ID" \
+          --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
           --arg epochs "$epochs" \
           --arg space "$space" \
@@ -90,7 +90,7 @@ hyperopt() {
                score: $score,
                run_id: $runId,
                epochs: $epochs,
-               losses: $losses
+               hyperopts: $hyperopts
              } | @json
            )
          }}')" \
