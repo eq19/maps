@@ -98,10 +98,18 @@ hyperopt() {
 
     [[ "$GITHUB_JOB" == "lexering" ]] && epochs=$((epochs * 10))
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+
+    # Disable protections if 'all' or 'protection' is in the spaces
+    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
+        enable_protections=""
+    else
+        enable_protections="--enable-protections"
+    fi
+
     echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
-      --enable-protections --analyze-per-epoch  --random-state ${id} \
+      ${enable_protections} --analyze-per-epoch --random-state ${id} \
       --fee=$FEE --logfile /dev/null --print-json #> /dev/null 2>&1
     freqtrade hyperopt-list
 
