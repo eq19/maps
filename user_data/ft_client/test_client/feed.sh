@@ -96,7 +96,7 @@ hyperopt() {
        "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
     done
 
-    [[ "$GITHUB_JOB" == "lexering" ]] && epochs=$((epochs * 100))
+    [[ "$GITHUB_JOB" == "lexering" ]] && epochs=$((epochs * 10))
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
 
     # Disable protections if 'all' or 'protection' is in the spaces
@@ -286,7 +286,7 @@ else
   # Wrap into GitHub Actions matrix format
   jq -n --argjson hyperopts "$json_array" '{ hyperopt: $hyperopts }'
   
-  freqtrade list-hyperoptloss && hyperopt $ID
+  freqtrade list-hyperoptloss --one-column && hyperopt $ID
 
   #echo -e "\n$hr\nANALYSIS\n$hr"
   #freqtrade backtesting-analysis --help
