@@ -181,19 +181,35 @@ calculate_score() {
     return 1
   fi
 
-  # Cap values
-  profit_mean_pct=$(echo "$profit_mean_pct > 0.25" | bc -l) && [[ "$profit_mean_pct" -eq 1 ]] && profit_mean_pct=0.25
+  # 🧱 Zero-trade guard
+  if (( $(echo "$trades == 0" | bc -l) )); then
+    echo "SCORE: 0.00"
+    SCORE=0.00
+    return
+  fi
+
+  # Cap mean profit at 0.25 to prevent distortion
+  if (( $(echo "$profit_mean_pct > 0.25" | bc -l) )); then
+    profit_mean_pct=0.25
+  fi
+
+  # Winrate score: max 25
   local winrate_score=$(echo "$winrate * 25" | bc -l)
+
+  # Mean profit per trade score: max 25
   local profit_per_trade_score=$(echo "$profit_mean_pct * 100" | bc -l)
   if (( $(echo "$profit_per_trade_score > 25" | bc -l) )); then
     profit_per_trade_score=25
   fi
+
+  # Total profit score: scaled
   local profit_total_score=$(echo "$profit_total_pct / 2" | bc -l)
 
-  # Prevent division by zero
+  # Max drawdown score — inversely scaled (lower drawdown = better)
   local drawdown_ratio_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
-    drawdown_ratio_score=20
+    # Instead of full score, give partial reward only
+    drawdown_ratio_score=5
   else
     drawdown_ratio_score=$(echo "$profit_total_pct / ($max_drawdown_account * 100)" | bc -l)
     if (( $(echo "$drawdown_ratio_score > 20" | bc -l) )); then
@@ -201,6 +217,7 @@ calculate_score() {
     fi
   fi
 
+  # Trade count score: only reward high activity
   local trade_count_score=0
   if (( $(echo "$trades > 2000" | bc -l) )); then
     trade_count_score=5
@@ -209,6 +226,7 @@ calculate_score() {
   # Total score
   SCORE=$(echo "$winrate_score + $profit_per_trade_score + $profit_total_score + $drawdown_ratio_score + $trade_count_score" | bc -l)
   SCORE=$(printf "%.2f" "$SCORE")
+  echo "SCORE: $SCORE"
 }
 
 if [[ "$1" == "listing" ]]; then
