@@ -110,10 +110,10 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nID: $id 👉 Running $loss\nSpaces: $spaces | Days: $days | Epochs: $epochs | Protection: $prot\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
-      --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${loss} \
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:loss} -j 4 \
+      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE \
       ${enable_protections} --analyze-per-epoch --random-state ${id} \
-      --fee=$FEE --logfile /dev/null > /dev/null 2>&1 #--print-json
+      --logfile /dev/null > /dev/null 2>&1 #--print-json
     freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
