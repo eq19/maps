@@ -109,8 +109,8 @@ hyperopt() {
         prot="enable"
     fi
 
-    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs | Protection: $prot\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:loss} -j 4 \
+    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs | Protection: $prot\n$hr"
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE \
       ${enable_protections} --analyze-per-epoch --random-state ${id} \
       --logfile /dev/null > /dev/null 2>&1 #--print-json
