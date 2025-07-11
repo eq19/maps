@@ -226,7 +226,6 @@ calculate_score() {
   # Total score
   SCORE=$(echo "$winrate_score + $profit_per_trade_score + $profit_total_score + $drawdown_ratio_score + $trade_count_score" | bc -l)
   SCORE=$(printf "%.2f" "$SCORE")
-  echo "SCORE: $SCORE"
 }
 
 if [[ "$1" == "listing" ]]; then
