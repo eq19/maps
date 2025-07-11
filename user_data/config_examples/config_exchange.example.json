@@ -8,7 +8,7 @@
     "stake_amount": 1000000,
     "dry_run_wallet": 3500000,
     "startup_candle_count" : 120,
-    "flat_display_currency": "IDR",
+    "fiat_display_currency": "IDR",
     "tradable_balance_ratio": 0.99,
     "reduce_df_footprint": false,
     "disable_dataframe_checks": false,
