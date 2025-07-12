@@ -25,7 +25,7 @@
       "days": 15,
       "epochs": 1000,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
+      "spaces": ["default"],
       "hyperopt_loss": "ShortTradeDurHyperOptLoss"
     },
     {
