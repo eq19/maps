@@ -174,58 +174,70 @@ calculate_score() {
   local profit_total_pct=$(echo "$json_data" | jq -r '.profit_total_pct')
   local max_drawdown_account=$(echo "$json_data" | jq -r '.max_drawdown_account')
   local trades=$(echo "$json_data" | jq -r '.trades')
+  local cagr=$(echo "$json_data" | jq -r '.cagr')
+  local expectancy=$(echo "$json_data" | jq -r '.expectancy')
+  local sharpe=$(echo "$json_data" | jq -r '.sharpe')
+  local sortino=$(echo "$json_data" | jq -r '.sortino')
 
-  # Sanity check
+  # Basic guard
   if [[ -z "$winrate" || -z "$profit_mean_pct" || -z "$profit_total_pct" || -z "$max_drawdown_account" || -z "$trades" ]]; then
     echo "Missing one or more required values."
     return 1
   fi
 
-  # 🧱 Zero-trade guard
-  if (( $(echo "$trades == 0" | bc -l) )); then
+  # 🚫 Guard: No trades or no profit
+  if (( $(echo "$trades == 0" | bc -l) || $(echo "$profit_total_pct == 0" | bc -l) )); then
     echo "SCORE: 0.00"
     SCORE=0.00
     return
   fi
 
-  # Cap mean profit at 0.25 to prevent distortion
-  if (( $(echo "$profit_mean_pct > 0.25" | bc -l) )); then
-    profit_mean_pct=0.25
-  fi
+  # ⚙️ CAPS
+  [[ $(echo "$profit_mean_pct > 0.25" | bc -l) -eq 1 ]] && profit_mean_pct=0.25
+  [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
+  [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
+  [[ $(echo "$profit_total_pct > 200" | bc -l) -eq 1 ]] && profit_total_pct=200
 
-  # Winrate score: max 25
+  # 🎯 MAIN SCORE COMPONENTS
   local winrate_score=$(echo "$winrate * 25" | bc -l)
+  local profit_mean_score=$(echo "$profit_mean_pct * 100" | bc -l)
+  local profit_total_score=$(echo "$profit_total_pct * 0.1" | bc -l)  # scaled to max ~20
+  local cagr_score=$(echo "$cagr * 10" | bc -l)
+  local expectancy_score=$(echo "$expectancy * 5" | bc -l)
 
-  # Mean profit per trade score: max 25
-  local profit_per_trade_score=$(echo "$profit_mean_pct * 100" | bc -l)
-  if (( $(echo "$profit_per_trade_score > 25" | bc -l) )); then
-    profit_per_trade_score=25
-  fi
-
-  # Total profit score: scaled
-  local profit_total_score=$(echo "$profit_total_pct / 2" | bc -l)
-
-  # Max drawdown score — inversely scaled (lower drawdown = better)
-  local drawdown_ratio_score
+  # 📉 DRAWNDOWN PENALTY (less is better)
+  local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
-    # Instead of full score, give partial reward only
-    drawdown_ratio_score=5
+    drawdown_score=10
+  elif (( $(echo "$max_drawdown_account < 5" | bc -l) )); then
+    drawdown_score=7
+  elif (( $(echo "$max_drawdown_account < 10" | bc -l) )); then
+    drawdown_score=5
+  elif (( $(echo "$max_drawdown_account < 20" | bc -l) )); then
+    drawdown_score=2
   else
-    drawdown_ratio_score=$(echo "$profit_total_pct / ($max_drawdown_account * 100)" | bc -l)
-    if (( $(echo "$drawdown_ratio_score > 20" | bc -l) )); then
-      drawdown_ratio_score=20
-    fi
+    drawdown_score=0
   fi
 
-  # Trade count score: only reward high activity
-  local trade_count_score=0
+  # 📊 TRADE COUNT BONUS
+  local trade_score=0
   if (( $(echo "$trades > 2000" | bc -l) )); then
-    trade_count_score=5
+    trade_score=5
   fi
 
-  # Total score
-  SCORE=$(echo "$winrate_score + $profit_per_trade_score + $profit_total_score + $drawdown_ratio_score + $trade_count_score" | bc -l)
+  # 💎 SHARPE & SORTINO BONUS
+  local bonus=0
+  if (( $(echo "$sharpe > 1.0" | bc -l) )); then
+    bonus=$(echo "$bonus + 2" | bc)
+  fi
+  if (( $(echo "$sortino > 1.0" | bc -l) )); then
+    bonus=$(echo "$bonus + 2" | bc)
+  fi
+
+  # 🧮 FINAL SCORE
+  SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $trade_score + $bonus" | bc -l)
   SCORE=$(printf "%.2f" "$SCORE")
+  echo "SCORE: $SCORE"
 }
 
 if [[ "$1" == "listing" ]]; then
