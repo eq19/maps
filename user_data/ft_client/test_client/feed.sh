@@ -198,6 +198,12 @@ calculate_score() {
   [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
   [[ $(echo "$profit_total_pct > 200" | bc -l) -eq 1 ]] && profit_total_pct=200
 
+  # ❗ Clamp negative metrics to 0
+  [[ $(echo "$profit_mean_pct < 0" | bc -l) -eq 1 ]] && profit_mean_pct=0
+  [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_pct=0
+  [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
+  [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
+
   # 🎯 MAIN SCORE COMPONENTS
   local winrate_score=$(echo "$winrate * 25" | bc -l)
   local profit_mean_score=$(echo "$profit_mean_pct * 100" | bc -l)
