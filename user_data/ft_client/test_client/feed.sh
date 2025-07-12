@@ -187,7 +187,6 @@ calculate_score() {
 
   # 🚫 Guard: No trades or no profit
   if (( $(echo "$trades == 0" | bc -l) || $(echo "$profit_total_pct == 0" | bc -l) )); then
-    echo "SCORE: 0.00"
     SCORE=0.00
     return
   fi
