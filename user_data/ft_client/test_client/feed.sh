@@ -123,7 +123,6 @@ hyperopt() {
   
     calculate_score
     NEW_SCORE=$SCORE
-    echo "NEW SCORE: $NEW_SCORE"
     OLD_SCORE=$(gh variable get SCORE)
 
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
@@ -328,7 +327,6 @@ else
   fi
   
   OLD_SCORE=$SCORE
-  echo "SCORE: $OLD_SCORE"
   if [[ "$OLD_SCORE" != "100" ]]; then
     gh variable set SCORE --body "${SCORE}"
   else
