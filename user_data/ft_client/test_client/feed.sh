@@ -141,6 +141,7 @@ hyperopt() {
       fi
     fi
   done
+
 }
 
 calculate_score() {
@@ -242,6 +243,34 @@ calculate_score() {
   # 🧮 FINAL SCORE
   SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $trade_score + $bonus" | bc -l)
   SCORE=$(printf "%.2f" "$SCORE")
+
+  echo ""
+  echo "📈 Strategy Summary for 'fibbo'"
+  echo "---------------------------------"
+  echo "🧮 SCORE: $SCORE"
+  echo "💰 Total Profit: $profit_total_pct%"
+  echo "📊 Winrate: $winrate"
+  echo "🔁 Trades: $trades"
+  echo "📉 Max Drawdown: $max_drawdown_account%"
+  echo "📈 CAGR: $cagr"
+  echo "📦 Expectancy: $expectancy"
+  echo "📌 Sharpe: $sharpe"
+  echo "📌 Sortino: $sortino"
+
+  echo ""
+  echo "🔍 Behavior Profile:"
+  if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
+    echo "✅ High-profit and active trading strategy"
+  elif (( $(echo "$profit_total_pct > 100" | bc -l) )); then
+    echo "⚖️ High-profit but with fewer trades – consider increasing volume"
+  elif (( $(echo "$profit_total_pct < 20" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
+    echo "⚠️ Active trading but low profitability – review signal precision"
+  elif (( $(echo "$max_drawdown_account > 20" | bc -l) )); then
+    echo "🛑 Risky strategy with high drawdown – requires protection tuning"
+  else
+    echo "📌 Balanced strategy – decent trade-off between risk and return"
+  fi
+
 }
 
 if [[ "$1" == "listing" ]]; then
