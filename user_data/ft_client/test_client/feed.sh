@@ -179,38 +179,32 @@ calculate_score() {
   local sharpe=$(echo "$json_data" | jq -r '.sharpe')
   local sortino=$(echo "$json_data" | jq -r '.sortino')
 
-  # Basic guard
   if [[ -z "$winrate" || -z "$profit_mean_pct" || -z "$profit_total_pct" || -z "$max_drawdown_account" || -z "$trades" ]]; then
     echo "Missing one or more required values."
     return 1
   fi
 
-  # 🚫 Guard: No trades or no profit
   if (( $(echo "$trades == 0" | bc -l) || $(echo "$profit_total_pct == 0" | bc -l) )); then
     SCORE=0.00
     return
   fi
 
-  # ⚙️ CAPS
   [[ $(echo "$profit_mean_pct > 0.25" | bc -l) -eq 1 ]] && profit_mean_pct=0.25
   [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
   [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
   [[ $(echo "$profit_total_pct > 200" | bc -l) -eq 1 ]] && profit_total_pct=200
 
-  # ❗ Clamp negative metrics to 0
   [[ $(echo "$profit_mean_pct < 0" | bc -l) -eq 1 ]] && profit_mean_pct=0
   [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_pct=0
   [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
   [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
 
-  # 🎯 MAIN SCORE COMPONENTS
   local winrate_score=$(echo "$winrate * 25" | bc -l)
   local profit_mean_score=$(echo "$profit_mean_pct * 100" | bc -l)
-  local profit_total_score=$(echo "$profit_total_pct * 0.1" | bc -l)  # scaled to max ~20
+  local profit_total_score=$(echo "$profit_total_pct * 0.1" | bc -l)
   local cagr_score=$(echo "$cagr * 10" | bc -l)
   local expectancy_score=$(echo "$expectancy * 5" | bc -l)
 
-  # 📉 DRAWNDOWN PENALTY (less is better)
   local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
     drawdown_score=10
@@ -224,13 +218,11 @@ calculate_score() {
     drawdown_score=0
   fi
 
-  # 📊 TRADE COUNT BONUS
   local trade_score=0
   if (( $(echo "$trades > 2000" | bc -l) )); then
     trade_score=5
   fi
 
-  # 💎 SHARPE & SORTINO BONUS
   local bonus=0
   if (( $(echo "$sharpe > 1.0" | bc -l) )); then
     bonus=$(echo "$bonus + 2" | bc)
@@ -239,7 +231,11 @@ calculate_score() {
     bonus=$(echo "$bonus + 2" | bc)
   fi
 
-  # 🧮 FINAL SCORE
+  # ❗ Negative Sortino Penalty
+  if (( $(echo "$sortino < 0" | bc -l) )); then
+    bonus=$(echo "$bonus - 3" | bc)
+  fi
+
   SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $trade_score + $bonus" | bc -l)
   SCORE=$(printf "%.2f" "$SCORE")
 
