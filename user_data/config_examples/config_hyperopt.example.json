@@ -41,16 +41,16 @@
       "id": 4,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
-      "epochs": 11,
+      "epochs": 1000,
       "parallel_jobs": 4,
-      "spaces": ["buy"],
+      "spaces": ["buy roi"],
       "hyperopt_loss": "SharpeHyperOptLoss"
     },
     {
       "id": 5,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
-      "epochs": 11,
+      "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["buy"],
       "hyperopt_loss": "SharpeHyperOptLossDaily"
@@ -59,18 +59,18 @@
       "id": 6,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
-      "epochs": 11,
+      "epochs": 1000,
       "parallel_jobs": 4,
-      "spaces": ["buy"],
+      "spaces": ["sell roi"],
       "hyperopt_loss": "SortinoHyperOptLoss"
     },
     {
       "id": 7,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
-      "epochs": 11,
+      "epochs": 1000,
       "parallel_jobs": 4,
-      "spaces": ["buy"],
+      "spaces": ["sell"],
       "hyperopt_loss": "SortinoHyperOptLossDaily"
     },
     {
