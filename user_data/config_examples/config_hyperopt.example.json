@@ -26,15 +26,15 @@
       "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["default"],
-      "hyperopt_loss": "CalmarHyperOptLoss"
+      "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
     },
     {
       "id": 3,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 100,
+      "epochs": 1000,
       "parallel_jobs": 4,
-      "spaces": ["buy"],
+      "spaces": ["buy sell roi"],
       "hyperopt_loss": "OnlyProfitHyperOptLoss"
     },
     {
@@ -224,7 +224,7 @@
       "epochs": 11,
       "parallel_jobs": 4,
       "spaces": ["buy"],
-      "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
+      "hyperopt_loss": "CalmarHyperOptLoss"
     },
     {
       "id": 25,
