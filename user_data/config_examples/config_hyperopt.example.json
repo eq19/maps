@@ -39,16 +39,16 @@
       "id": 4,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
-      "epochs": 1000,
+      "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["buy roi"],
-      "hyperopt_loss": "SharpeHyperOptLoss"
+      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
     },
     {
       "id": 5,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
-      "epochs": 1000,
+      "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["buy"],
       "hyperopt_loss": "SharpeHyperOptLossDaily"
