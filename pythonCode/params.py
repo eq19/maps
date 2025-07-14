@@ -56,7 +56,10 @@ class ParamBuilder:
                     self.params[section][key] = self.bool_param(value)
 
                 elif isinstance(value, int):
-                    low, high = max(0, value - self.epochs * 0.5), min(value * 2, value + self.epochs * 0.5)
+                    if value == 0:
+                        low, high = 0, 100
+                    else:
+                        low, high = max(0, value - self.epochs * 0.5), min(value * 2, value + self.epochs * 0.5)
                     self.params[section][key] = self.int_param(value, int(low), int(high))
 
                 elif isinstance(value, float):
