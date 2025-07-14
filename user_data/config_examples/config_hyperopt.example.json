@@ -35,7 +35,7 @@
       "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["buy sell roi"],
-      "hyperopt_loss": "OnlyProfitHyperOptLoss"
+      "hyperopt_loss": "MaxDrawDownHyperOptLoss"
     },
     {
       "id": 4,
@@ -107,7 +107,7 @@
       "epochs": 11,
       "parallel_jobs": 4,
       "spaces": ["buy"],
-      "hyperopt_loss": "MaxDrawDownHyperOptLoss"
+      "hyperopt_loss": "OnlyProfitHyperOptLoss"
     },
     {
       "id": 12,
