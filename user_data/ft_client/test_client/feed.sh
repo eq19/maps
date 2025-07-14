@@ -59,20 +59,6 @@ hyperopt() {
 
     # dispatch only for main workflow 
     if [[ "$GITHUB_JOB" == "lexering" ]]; then
-      spaces=$(echo "$pipeline" | jq -r '.spaces[]')  # One space per line
-    fi
-
-    # empty spaces if unset
-    for space in ${spaces:-}; do
-      # Extract params as raw JSON
-      #params=$(jq -c --arg key "$space" '.span[$key]' "$HYPEROPT_PARAM")
-      params=$(jq -r --arg key "$space" '.. | objects | select(has("span")) | .span[$key] | keys' "$HYPEROPT_PARAM")
-  
-      if [[ "$params" == "null" ]]; then
-        echo "Warning: No params found for space '$space'"
-        continue
-      fi
-
       curl -s -X POST \
         -H "Authorization: token $GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
@@ -82,11 +68,9 @@ hyperopt() {
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
           --arg epochs "$epochs" \
-          --arg space "$space" \
           '{ref: $ref, inputs: {
            matrix_json: (
              {
-               space: $space,
                score: $score,
                run_id: $runId,
                epochs: $epochs,
@@ -95,12 +79,11 @@ hyperopt() {
            )
          }}')" \
        "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-    done
-
-    [[ "$GITHUB_JOB" == "lexering" ]] && epochs=$((epochs * 3))
-    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+      epochs=$((epochs * 3))
+    fi
 
     # Disable protections if 'all' or 'protection' is in the spaces
+    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
     if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
         enable_protections=""
         prot="disable"
