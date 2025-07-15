@@ -33,7 +33,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 
 # Define indicator sets (could also come from the JSON if needed)
-buy_indicators = ["BB", "ATR", "VWAP", "MACD", "TTM", "FIBBO", "STOCHRSI", "DEMA", "EMA_TREND"]
+buy_indicators = ["BB", "ATR", "VWAP", "MACD", "TTM", "DEMA", "FIBBO", "STOCHRSI"]
 sell_indicators = ["ATR", "MACD", "TTM", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
@@ -426,21 +426,20 @@ class fibbo(IStrategy):
         RSI = (dataframe['rsi'] < self.buy_rsi.value)
         VWAP = (dataframe['close'] > dataframe['vwap'])
         ATR = (dataframe['atr'] > dataframe['atr'].shift(1))
-        BB = (dataframe["close"] <= dataframe["bb_lowerband"])
-        MACD = (dataframe["macd"] > dataframe["macdsignal"])  # FIXED: Bullish crossover
+        BB = (dataframe['close'] <= dataframe['bb_lowerband'])
+        MACD = (dataframe['macd'] > dataframe['macdsignal'])  # FIXED: Bullish crossover
         STOCHRSI = (
             (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
-        )
-        FIBBO = (
-            ((dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])) |
-            ((dataframe['close'].shift(1) < dataframe['fib_786']) & (dataframe['close'] > dataframe['fib_786']))
         )
         DEMA = (
             dataframe[f"dema{self.buy_fast_dema.value}"] >
             dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
-        EMA_TREND = (dataframe['dema9'] > dataframe['ema50_15m'])  # Optional trend filter
+        FIBBO = (
+            ((dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])) |
+            ((dataframe['close'].shift(1) < dataframe['fib_786']) & (dataframe['close'] > dataframe['fib_786']))
+        )
 
         # Always include RSI
         long_conditions.append(RSI)
@@ -453,14 +452,12 @@ class fibbo(IStrategy):
             long_conditions.append(VWAP)
         if "MACD" in self.buy_additional_indicator.value:
             long_conditions.append(MACD)
+        if "DEMA" in self.buy_additional_indicator.value:
+            long_conditions.append(DEMA)
         if "FIBBO" in self.buy_additional_indicator.value:
             long_conditions.append(FIBBO)
         if "STOCHRSI" in self.buy_additional_indicator.value:
             long_conditions.append(STOCHRSI)
-        if "DEMA" in self.buy_additional_indicator.value:
-            long_conditions.append(DEMA)
-        if "EMA_TREND" in self.buy_additional_indicator.value:
-            long_conditions.append(EMA_TREND)
 
         # TTM Squeeze
         if "TTM" in self.buy_additional_indicator.value:
@@ -482,7 +479,7 @@ class fibbo(IStrategy):
         ### Momentum Indicators ###
         RSI = (dataframe['rsi'] >= self.sell_rsi.value)
         ATR = (dataframe['atr'] < dataframe['atr'].shift(1))  # FIXED bug
-        MACD = (dataframe["macd"] < dataframe["macdsignal"])  # FIXED: Bearish crossover
+        MACD = (dataframe['macd'] < dataframe['macdsignal'])  # FIXED: Bearish crossover
         FIBBO = (dataframe['close'] >= dataframe['fib_236'])  # Optional fib exit
         STOCHRSI = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
