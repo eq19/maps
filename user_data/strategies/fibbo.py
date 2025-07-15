@@ -418,29 +418,36 @@ class fibbo(IStrategy):
             )
 
         return merged_dataframe
-    
+
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Define the buy conditions
         long_conditions = []
 
         ### Momentum Indicators ###
-        RSI          = (dataframe['rsi'] < self.buy_rsi.value)
-        ATR          = (dataframe['atr'] > dataframe['atr'].shift(1))
-        VWAP         = (dataframe['close'] > dataframe['vwap'])
-        MACD         = (dataframe["macd"] < dataframe["macdsignal"])
-        FIBBO        = (dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])
-        BB           = (dataframe["close"] <= dataframe["bb_lowerband"]) #& (dataframe["close"].shift(1) < dataframe["close"])
-        STOCHRSI     = (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
-        DEMA         = (dataframe[f"dema{self.buy_fast_dema.value}"] > dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"])
+        RSI = (dataframe['rsi'] < self.buy_rsi.value)
+        ATR = (dataframe['atr'] > dataframe['atr'].shift(1))
+        VWAP = (dataframe['close'] > dataframe['vwap'])
+        MACD = (dataframe["macd"] > dataframe["macdsignal"])  # FIXED: Bullish crossover
+        STOCHRSI = (
+            (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
+            (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
+        )
+        FIBBO = (
+            ((dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])) |
+            ((dataframe['close'].shift(1) < dataframe['fib_786']) & (dataframe['close'] > dataframe['fib_786']))
+        )
+        DEMA = (
+            dataframe[f"dema{self.buy_fast_dema.value}"] >
+            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
+        )
+        EMA_TREND = (dataframe['dema9'] > dataframe['ema50_15m'])  # Optional trend filter
 
+        # Always include RSI
         long_conditions.append(RSI)
 
         if "BB" in self.buy_additional_indicator.value:
-            long_conditions.append(BB)
+            long_conditions.append(dataframe["close"] <= dataframe["bb_lowerband"])
         if "ATR" in self.buy_additional_indicator.value:
             long_conditions.append(ATR)
-        if "DEMA" in self.buy_additional_indicator.value:
-            long_conditions.append(DEMA)
         if "VWAP" in self.buy_additional_indicator.value:
             long_conditions.append(VWAP)
         if "MACD" in self.buy_additional_indicator.value:
@@ -449,50 +456,62 @@ class fibbo(IStrategy):
             long_conditions.append(FIBBO)
         if "STOCHRSI" in self.buy_additional_indicator.value:
             long_conditions.append(STOCHRSI)
-  
-        # TTM Squeeze entry condition
-        squeeze_on = dataframe['squeeze_on']
-        momentum_positive = dataframe['momentum_hist'] > 0
+        if "DEMA" in self.buy_additional_indicator.value:
+            long_conditions.append(DEMA)
+        if "EMA_TREND" in self.buy_additional_indicator.value:
+            long_conditions.append(EMA_TREND)
+
+        # TTM Squeeze
         if "TTM" in self.buy_additional_indicator.value:
+            squeeze_on = dataframe['squeeze_on']
+            momentum_positive = dataframe['momentum_hist'] > 0
             long_conditions.append(squeeze_on & momentum_positive)
 
         if long_conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, long_conditions),
-                'enter_long'] = 1
+                'enter_long'
+            ] = 1
 
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Define the sell conditions
         long_conditions = []
 
         ### Momentum Indicators ###
-        RSI          = (dataframe['rsi'] >= self.sell_rsi.value)
-        ATR          = (dataframe['atr'] < dataframe['atr']).shift(1)
-        MACD         = (dataframe["macd"] >= dataframe["macdsignal"])
-        STOCHRSI     = (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) & (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
+        RSI = (dataframe['rsi'] >= self.sell_rsi.value)
+        ATR = (dataframe['atr'] < dataframe['atr'].shift(1))  # FIXED bug
+        MACD = (dataframe["macd"] < dataframe["macdsignal"])  # FIXED: Bearish crossover
+        FIBBO = (dataframe['close'] >= dataframe['fib_236'])  # Optional fib exit
+        STOCHRSI = (
+            (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
+            (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
+        )
 
+        # Always include RSI
         long_conditions.append(RSI)
 
         if "ATR" in self.sell_additional_indicator.value:
             long_conditions.append(ATR)
         if "MACD" in self.sell_additional_indicator.value:
             long_conditions.append(MACD)
+        if "FIBBO" in self.sell_additional_indicator.value:
+            long_conditions.append(FIBBO)
         if "STOCHRSI" in self.sell_additional_indicator.value:
             long_conditions.append(STOCHRSI)
 
-        # TTM Squeeze exit condition
-        squeeze_off = dataframe['squeeze_off']
-        momentum_negative = dataframe['momentum_hist'] < 0
+        # TTM Squeeze
         if "TTM" in self.sell_additional_indicator.value:
+            squeeze_off = dataframe['squeeze_off']
+            momentum_negative = dataframe['momentum_hist'] < 0
             long_conditions.append(squeeze_off & momentum_negative)
-            
+
         if long_conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, long_conditions),
-                'exit_long'] = 1
-            
+                'exit_long'
+            ] = 1
+
         return dataframe
 
 # Inject hyperopt parameters AFTER class definition
