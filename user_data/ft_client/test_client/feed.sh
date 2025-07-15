@@ -213,13 +213,19 @@ calculate_score() {
   if (( $(echo "$sortino > 1.0" | bc -l) )); then
     bonus=$(echo "$bonus + 2" | bc)
   fi
-
-  # ❗ Negative Sortino Penalty
   if (( $(echo "$sortino < 0" | bc -l) )); then
     bonus=$(echo "$bonus - 3" | bc)
   fi
 
   SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $trade_score + $bonus" | bc -l)
+
+  # 🔻 Apply penalties for low trade count
+  if (( $(echo "$trades < 3" | bc -l) )); then
+    SCORE=0
+  elif (( $(echo "$trades < 10" | bc -l) )); then
+    SCORE=$(echo "$SCORE * 0.5" | bc -l)
+  fi
+
   SCORE=$(printf "%.2f" "$SCORE")
 
   echo ""
