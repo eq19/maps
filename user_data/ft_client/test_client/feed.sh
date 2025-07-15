@@ -223,6 +223,8 @@ calculate_score() {
   if (( $(echo "$trades < 3" | bc -l) )); then
     SCORE=0
   elif (( $(echo "$trades < 10" | bc -l) )); then
+    SCORE=$(echo "$SCORE * 0.25" | bc -l)
+  elif (( $(echo "$trades < 20" | bc -l) )); then
     SCORE=$(echo "$SCORE * 0.5" | bc -l)
   fi
 
