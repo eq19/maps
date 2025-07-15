@@ -316,11 +316,12 @@ else
   fi
   
   OLD_SCORE=$SCORE
-  if [[ "$OLD_SCORE" != "100" ]]; then
-    [[ "$GITHUB_JOB" == "lexering" ]] && gh variable set SCORE --body "${SCORE}"
-  else
-    [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"
-    exit 1
+  if [[ "$GITHUB_JOB" == "lexering" ]]; then
+    if [[ "$OLD_SCORE" == "100" ]]; then
+      gh workflow run "main.yml" && exit 1
+    else
+      gh variable set SCORE --body "${SCORE}"
+    fi
   fi
 
   echo -e "\n$hr\nRUN HYPEROPT\n$hr"
