@@ -33,7 +33,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 
 # Define indicator sets (could also come from the JSON if needed)
-buy_indicators = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI"]
+buy_indicators = ["BB", "MACD", "TTM", "FIBBO", "STOCHRSI", "DEMA", "EMA_TREND"]
 sell_indicators = ["MACD", "TTM", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
