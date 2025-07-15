@@ -424,8 +424,9 @@ class fibbo(IStrategy):
 
         ### Momentum Indicators ###
         RSI = (dataframe['rsi'] < self.buy_rsi.value)
-        ATR = (dataframe['atr'] > dataframe['atr'].shift(1))
         VWAP = (dataframe['close'] > dataframe['vwap'])
+        ATR = (dataframe['atr'] > dataframe['atr'].shift(1))
+        BB = (dataframe["close"] <= dataframe["bb_lowerband"])
         MACD = (dataframe["macd"] > dataframe["macdsignal"])  # FIXED: Bullish crossover
         STOCHRSI = (
             (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
@@ -445,7 +446,7 @@ class fibbo(IStrategy):
         long_conditions.append(RSI)
 
         if "BB" in self.buy_additional_indicator.value:
-            long_conditions.append(dataframe["close"] <= dataframe["bb_lowerband"])
+            long_conditions.append(BB)
         if "ATR" in self.buy_additional_indicator.value:
             long_conditions.append(ATR)
         if "VWAP" in self.buy_additional_indicator.value:
