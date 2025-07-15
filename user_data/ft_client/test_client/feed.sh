@@ -226,6 +226,8 @@ calculate_score() {
     SCORE=$(echo "$SCORE * 0.25" | bc -l)
   elif (( $(echo "$trades < 20" | bc -l) )); then
     SCORE=$(echo "$SCORE * 0.5" | bc -l)
+  elif (( $(echo "$trades < 30" | bc -l) )); then
+    SCORE=$(echo "$SCORE * 0.75" | bc -l)
   fi
 
   SCORE=$(printf "%.2f" "$SCORE")
