@@ -42,7 +42,7 @@
       "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["buy roi"],
-      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
+      "hyperopt_loss": "MultiMetricHyperOptLoss"
     },
     {
       "id": 5,
