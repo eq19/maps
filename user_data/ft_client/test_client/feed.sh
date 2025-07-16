@@ -79,6 +79,7 @@ hyperopt() {
            )
          }}')" \
        "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
+      gh variable list | grep -q "HYPEROPT" && HYPEROPT=$(gh variable get HYPEROPT)
       epochs=$((epochs * 3))
     fi
 
