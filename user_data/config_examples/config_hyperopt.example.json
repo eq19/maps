@@ -69,7 +69,7 @@
       "epochs": 3000,
       "parallel_jobs": 4,
       "spaces": ["sell"],
-      "hyperopt_loss": "SharpeSortinoProfitDrawdownHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 8,
