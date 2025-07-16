@@ -60,7 +60,7 @@
       "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["sell roi"],
-      "hyperopt_loss": "SharpeHyperOptLossDaily"
+      "hyperopt_loss": "CalmarHyperOptLoss"
     },
     {
       "id": 7,
