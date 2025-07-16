@@ -12,7 +12,7 @@
       "id": 1,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 1000,
+      "epochs": 5000,
       "parallel_jobs": 4,
       "spaces": ["all"],
       "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
@@ -21,7 +21,7 @@
       "id": 2,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 1000,
+      "epochs": 4000,
       "parallel_jobs": 4,
       "spaces": ["default"],
       "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
@@ -30,7 +30,7 @@
       "id": 3,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 1000,
+      "epochs": 3000,
       "parallel_jobs": 4,
       "spaces": ["buy sell roi"],
       "hyperopt_loss": "MaxDrawDownHyperOptLoss"
@@ -48,7 +48,7 @@
       "id": 5,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 3000,
+      "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["buy"],
       "hyperopt_loss": "SharpeSortinoProfitDrawdownHyperOptLoss"
@@ -66,7 +66,7 @@
       "id": 7,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 3000,
+      "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["sell"],
       "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
@@ -75,7 +75,7 @@
       "id": 8,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 3000,
+      "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["roi"],
       "hyperopt_loss": "ROISpaceCombinedHyperOptLoss"
@@ -84,7 +84,7 @@
       "id": 9,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 1000,
+      "epochs": 4000,
       "parallel_jobs": 4,
       "spaces": ["stoploss trailing protection trades"],
       "hyperopt_loss": "MultiMetricHyperOptLoss"
@@ -95,7 +95,7 @@
       "days": 15,
       "epochs": 3000,
       "parallel_jobs": 4,
-      "spaces": ["trailing trades"],
+      "spaces": ["trailing protection trades"],
       "hyperopt_loss": "MultiMetricHyperOptLoss"
     },
     {
@@ -104,14 +104,14 @@
       "days": 15,
       "epochs": 2000,
       "parallel_jobs": 4,
-      "spaces": ["trailing"],
+      "spaces": ["trailing trades"],
       "hyperopt_loss": "OnlyProfitHyperOptLoss"
     },
     {
       "id": 12,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 3000,
+      "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["protection trades"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
@@ -120,7 +120,7 @@
       "id": 13,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 5,
-      "epochs": 11,
+      "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["protection"],
       "hyperopt_loss": "MaxDrawDownPerPairHyperOptLoss"
