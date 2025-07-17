@@ -16,17 +16,17 @@ HYPERFILE=user_data/config_examples/config_hyperopt.example.json
 HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
-BACKTESTING_DURATION=2  # Adjust as per your strategy
+BACKTESTING_DURATION=1  # In months. Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
 YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
 # 30 days ago in the required format
-EARLIEST_DATE=$(date -u -d "13 days ago" +%Y%m%d)
+EARLIEST_DATE=$(date -u -d "3 months ago" +%Y%m%d)
 
 # Backtesting start date in the required format (earliest_date + sliding window)
-BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION days" +%Y%m%d)
+BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION months" +%Y%m%d)
 
 # Time range for downloading data
 TD="$EARLIEST_DATE-$TODAY"
