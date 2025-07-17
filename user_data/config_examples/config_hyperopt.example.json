@@ -86,7 +86,7 @@
       "days": 15,
       "epochs": 100,
       "parallel_jobs": 4,
-      "spaces": ["stoploss"],
+      "spaces": ["trailing"],
       "hyperopt_loss": "MultiMetricHyperOptLoss"
     },
     {
@@ -95,7 +95,7 @@
       "days": 15,
       "epochs": 3000,
       "parallel_jobs": 4,
-      "spaces": ["trailing protection trades"],
+      "spaces": ["stoploss protection trades"],
       "hyperopt_loss": "MultiMetricHyperOptLoss"
     },
     {
