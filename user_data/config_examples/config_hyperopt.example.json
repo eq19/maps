@@ -86,7 +86,7 @@
       "days": 15,
       "epochs": 100,
       "parallel_jobs": 4,
-      "spaces": ["trades"],
+      "spaces": ["trades protection"],
       "hyperopt_loss": "MultiMetricHyperOptLoss"
     },
     {
