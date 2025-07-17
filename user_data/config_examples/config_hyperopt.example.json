@@ -84,7 +84,7 @@
       "id": 9,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 15,
-      "epochs": 1000,
+      "epochs": 100,
       "parallel_jobs": 4,
       "spaces": ["stoploss"],
       "hyperopt_loss": "MultiMetricHyperOptLoss"
