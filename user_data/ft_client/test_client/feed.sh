@@ -293,6 +293,10 @@ else
   freqtrade list-data --help
   freqtrade list-data
 
+  echo -e "\n$hr\nLIST MARKETS\n$hr"
+  freqtrade list-markets --help
+  freqtrade list-markets
+
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
   #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
