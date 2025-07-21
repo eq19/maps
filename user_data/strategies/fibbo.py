@@ -165,8 +165,7 @@ for section, keys in span.items():
 
 # 👇 Now define your strategy below
 class fibbo(IStrategy):
-    # Your parameters and methods
-    passclass fibbo(IStrategy):
+
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
