@@ -137,8 +137,36 @@ for section, keys in span.items():
     for key in keys:
         strategy_attrs[key] = get_param_config(span, section, key)
 
+def patch_indodax_cancel_order():
+    """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
+    if hasattr(Exchange.cancel_order, '_is_patched'):
+        return  # Avoid double-patching
 
+    original_cancel_order = Exchange.cancel_order
+
+    def patched_cancel_order(self, order_id: str, symbol: str, *args, **kwargs):
+        if self.exchange.id == "indodax":
+            trade = Trade.get_open_order_trades(order_id).first()
+            if not trade or not trade.orders:
+                raise OperationalException(f"Cannot cancel order {order_id} - missing trade or order history")
+
+            side = trade.orders[-1].side
+            params = kwargs.get('params', {})
+            params['side'] = side
+            kwargs['params'] = params
+
+        return original_cancel_order(self, order_id, symbol, *args, **kwargs)
+
+    Exchange.cancel_order = patched_cancel_order
+    Exchange.cancel_order._is_patched = True
+
+# ✅ Call the patch once at module level
+patch_indodax_cancel_order()
+
+# 👇 Now define your strategy below
 class fibbo(IStrategy):
+    # Your parameters and methods
+    passclass fibbo(IStrategy):
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
@@ -212,7 +240,6 @@ class fibbo(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
-        #self.patch_indodax_cancel_order()
 
         # Override settings ONLY during hyperopt
         if config.get('runmode') == 'hyperopt':
@@ -237,39 +264,6 @@ class fibbo(IStrategy):
             str(int(self.roi_t2.value)): float(self.roi_p3.value),
             str(int(self.roi_t3.value)): 0
         }
-
-    @staticmethod
-    def patch_indodax_cancel_order():
-        """Monkey-patch Exchange.cancel_order() to handle Indodax's 'side' requirement"""
-        original_cancel_order = Exchange.cancel_order
-
-        def patched_cancel_order(self, self_exchange, order_id: str, symbol: str, *args, **kwargs):
-            if self_exchange.exchange.id == "indodax":
-                # Look up the trade by order_id
-                trade = Trade.query.filter(Trade.order_id == order_id).first()
-                if not trade:
-                    raise OperationalException(
-                        f"Cannot cancel order {order_id} - no trade found (Indodax requires 'side')."
-                    )
-
-                # Look up the corresponding order object with a matching order_id
-                order = next((o for o in trade.orders if o.ft_order_id == order_id), None)
-                if not order or not order.side:
-                    raise OperationalException(
-                        f"Cannot cancel order {order_id} - 'side' missing for Indodax cancel."
-                    )
-
-                # Inject 'side' param
-                params = kwargs.get('params', {})
-                params['side'] = order.side
-                kwargs['params'] = params
-
-            return original_cancel_order(self_exchange, order_id, symbol, *args, **kwargs)
-
-        # Only patch once
-        if not hasattr(Exchange.cancel_order, '_is_patched'):
-            Exchange.cancel_order = patched_cancel_order
-            Exchange.cancel_order._is_patched = True
 
     @property
     def protections(self):
