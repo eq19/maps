@@ -268,6 +268,10 @@ if [[ "$1" == "listing" ]]; then
   freqtrade list-exchanges --help
   freqtrade list-exchanges
 
+  echo -e "\n$hr\nLIST MARKETS\n$hr"
+  freqtrade list-markets --help
+  freqtrade list-markets
+
   #freqtrade show-trades
   #freqtrade convert-db 
   #freqtrade install-ui
@@ -292,10 +296,6 @@ else
   echo -e "\n$hr\nLIST DATA\n$hr"
   freqtrade list-data --help
   freqtrade list-data
-
-  echo -e "\n$hr\nLIST MARKETS\n$hr"
-  freqtrade list-markets --help
-  freqtrade list-markets
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
