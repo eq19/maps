@@ -212,8 +212,8 @@ class fibbo(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
-        self.patch_indodax_cancel_order()
-        
+        #self.patch_indodax_cancel_order()
+
         # Override settings ONLY during hyperopt
         if config.get('runmode') == 'hyperopt':
             self.trailing_stop = True
