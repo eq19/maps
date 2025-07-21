@@ -40,7 +40,33 @@ buy_indicators = ["BB", "ATR", "TTM", "VWAP", "MACD", "DEMA", "FIBBO", "STOCHRSI
 sell_indicators = ["ATR", "TTM", "MACD", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
-# ✅ 1. Recursively find the first occurrence of the 'span' key
+# ✅ 1. Call every patches once at module level
+def patch_indodax_cancel_order():
+    """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
+    if hasattr(Exchange.cancel_order, '_is_patched'):
+        return  # Avoid double-patching
+
+    original_cancel_order = Exchange.cancel_order
+
+    def patched_cancel_order(self, order_id: str, symbol: str, *args, **kwargs):
+        if self.exchange.id == "indodax":
+            trade = Trade.get_open_order_trades(order_id).first()
+            if not trade or not trade.orders:
+                raise OperationalException(f"Cannot cancel order {order_id} - missing trade or order history")
+
+            side = trade.orders[-1].side
+            params = kwargs.get('params', {})
+            params['side'] = side
+            kwargs['params'] = params
+
+        return original_cancel_order(self, order_id, symbol, *args, **kwargs)
+
+    Exchange.cancel_order = patched_cancel_order
+    Exchange.cancel_order._is_patched = True
+
+patch_indodax_cancel_order()
+
+# ✅ 2. Recursively find the first occurrence of the 'span' key
 def find_span(obj):
     if isinstance(obj, dict):
         if "span" in obj:
@@ -69,7 +95,7 @@ except json.JSONDecodeError:
 except Exception as e:
     logger.error(f"Error loading params: {str(e)}")
 
-# ✅ 2. Helper function to construct parameters
+# ✅ 3. Helper function to construct parameters
 def get_param_config(span: dict, space: str, name: str):
     config = span[space][name]
     param_type = config["type"]
@@ -109,7 +135,7 @@ def get_param_config(span: dict, space: str, name: str):
     else:
         raise ValueError(f"Unknown parameter type: {param_type}")
 
-# ✅ 3. Generate permutations and insert them into the span config before using them
+# ✅ 4. Generate permutations and insert them into the span config before using them
 def indicator_permutations(profiles, max_indicators=1, include_none=False):
     profile_permutations = set()
     if include_none:
@@ -136,32 +162,6 @@ strategy_attrs = {}
 for section, keys in span.items():
     for key in keys:
         strategy_attrs[key] = get_param_config(span, section, key)
-
-def patch_indodax_cancel_order():
-    """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
-    if hasattr(Exchange.cancel_order, '_is_patched'):
-        return  # Avoid double-patching
-
-    original_cancel_order = Exchange.cancel_order
-
-    def patched_cancel_order(self, order_id: str, symbol: str, *args, **kwargs):
-        if self.exchange.id == "indodax":
-            trade = Trade.get_open_order_trades(order_id).first()
-            if not trade or not trade.orders:
-                raise OperationalException(f"Cannot cancel order {order_id} - missing trade or order history")
-
-            side = trade.orders[-1].side
-            params = kwargs.get('params', {})
-            params['side'] = side
-            kwargs['params'] = params
-
-        return original_cancel_order(self, order_id, symbol, *args, **kwargs)
-
-    Exchange.cancel_order = patched_cancel_order
-    Exchange.cancel_order._is_patched = True
-
-# ✅ Call the patch once at module level
-patch_indodax_cancel_order()
 
 # 👇 Now define your strategy below
 class fibbo(IStrategy):
