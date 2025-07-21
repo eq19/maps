@@ -15,8 +15,10 @@ from freqtrade.strategy import (
     IntParameter,
     merge_informative_pair
 )
+from freqtrade.exchange import Exchange
 from freqtrade.persistence import Trade
 from freqtrade.configuration import Configuration
+from freqtrade.exceptions import OperationalException
 
 # --------------------------------
 # Add your lib to import here
@@ -31,6 +33,7 @@ import talib.abstract as ta
 import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
+
 
 # Define indicator sets (could also come from the JSON if needed)
 buy_indicators = ["BB", "ATR", "TTM", "VWAP", "MACD", "DEMA", "FIBBO", "STOCHRSI"]
@@ -209,7 +212,8 @@ class fibbo(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
-
+        self.patch_indodax_cancel_order()
+        
         # Override settings ONLY during hyperopt
         if config.get('runmode') == 'hyperopt':
             self.trailing_stop = True
@@ -233,6 +237,39 @@ class fibbo(IStrategy):
             str(int(self.roi_t2.value)): float(self.roi_p3.value),
             str(int(self.roi_t3.value)): 0
         }
+
+    @staticmethod
+    def patch_indodax_cancel_order():
+        """Monkey-patch Exchange.cancel_order() to handle Indodax's 'side' requirement"""
+        original_cancel_order = Exchange.cancel_order
+
+        def patched_cancel_order(self, self_exchange, order_id: str, symbol: str, *args, **kwargs):
+            if self_exchange.exchange.id == "indodax":
+                # Look up the trade by order_id
+                trade = Trade.query.filter(Trade.order_id == order_id).first()
+                if not trade:
+                    raise OperationalException(
+                        f"Cannot cancel order {order_id} - no trade found (Indodax requires 'side')."
+                    )
+
+                # Look up the corresponding order object with a matching order_id
+                order = next((o for o in trade.orders if o.ft_order_id == order_id), None)
+                if not order or not order.side:
+                    raise OperationalException(
+                        f"Cannot cancel order {order_id} - 'side' missing for Indodax cancel."
+                    )
+
+                # Inject 'side' param
+                params = kwargs.get('params', {})
+                params['side'] = order.side
+                kwargs['params'] = params
+
+            return original_cancel_order(self_exchange, order_id, symbol, *args, **kwargs)
+
+        # Only patch once
+        if not hasattr(Exchange.cancel_order, '_is_patched'):
+            Exchange.cancel_order = patched_cancel_order
+            Exchange.cancel_order._is_patched = True
 
     @property
     def protections(self):
