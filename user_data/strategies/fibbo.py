@@ -42,19 +42,27 @@ sell_indicators = ["ATR", "TTM", "MACD", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
 # ✅ 1. Call every patches once at module level
-def patch_indodax_create_order_delay():
-    """Monkey-patch Exchange.create_order() to delay balance check on Indodax after placing an order."""
+def patch_indodax_create_order():
+    """Monkey-patch Exchange.create_order() to delay return for Indodax and ensure fill."""
     if hasattr(Exchange.create_order, '_is_patched'):
-        return  # Prevent double patching
+        return  # Avoid multiple patching
 
     original_create_order = Exchange.create_order
 
-    def patched_create_order(self, *args, **kwargs):
-        order = original_create_order(self, *args, **kwargs)
+    def patched_create_order(self, pair, order_type, side, amount, rate, **kwargs):
+        order = original_create_order(self, pair, order_type, side, amount, rate, **kwargs)
 
         if self.exchange.id == "indodax":
-            logger.info("🕒 Sleeping 30 seconds to allow Indodax to update wallet balances...")
+            import time
+            # 💤 Wait to allow Indodax to fully fill the order
             time.sleep(30)
+
+            # 🛠 Optional: force-refresh order info if available
+            try:
+                refreshed_order = self.exchange.fetch_order(order['id'], symbol=pair)
+                order.update(refreshed_order)
+            except Exception as e:
+                logger.warning(f"Failed to refresh order status for {order['id']}: {e}")
 
         return order
 
@@ -84,7 +92,7 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
 
-patch_indodax_create_order_delay()
+patch_indodax_create_order()
 patch_indodax_cancel_order()
 
 # ✅ 2. Recursively find the first occurrence of the 'span' key
