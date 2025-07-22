@@ -92,8 +92,10 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
 
-#patch_indodax_create_order()
-patch_indodax_cancel_order()
+# Check if dry_run is False before patching
+if not Configuration.get_config().get('dry_run', False):
+    patch_indodax_create_order()
+    patch_indodax_cancel_order()
 
 # ✅ 2. Recursively find the first occurrence of the 'span' key
 def find_span(obj):
