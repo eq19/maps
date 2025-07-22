@@ -93,7 +93,8 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order._is_patched = True
 
 # Check if dry_run is False before patching
-config = Configuration.get_config()
+config = Configuration.from_files([]).get_config()
+
 if not config.get("dry_run", False):
     patch_indodax_create_order()
     patch_indodax_cancel_order()
