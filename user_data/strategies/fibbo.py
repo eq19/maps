@@ -41,6 +41,26 @@ sell_indicators = ["ATR", "TTM", "MACD", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
 # ✅ 1. Call every patches once at module level
+def patch_indodax_create_order_delay():
+    """Monkey-patch Exchange.create_order() to delay balance check on Indodax after placing an order."""
+    if hasattr(Exchange.create_order, '_is_patched'):
+        return  # Prevent double patching
+
+    original_create_order = Exchange.create_order
+
+    def patched_create_order(self, *args, **kwargs):
+        order = original_create_order(self, *args, **kwargs)
+
+        if self.exchange.id == "indodax":
+            import time
+            self.logger.info("🕒 Sleeping 30 seconds to allow Indodax to update wallet balances...")
+            time.sleep(30)
+
+        return order
+
+    Exchange.create_order = patched_create_order
+    Exchange.create_order._is_patched = True
+
 def patch_indodax_cancel_order():
     """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
     if hasattr(Exchange.cancel_order, '_is_patched'):
@@ -64,6 +84,7 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
 
+patch_indodax_create_order_delay()
 patch_indodax_cancel_order()
 
 # ✅ 2. Recursively find the first occurrence of the 'span' key
