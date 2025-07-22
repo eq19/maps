@@ -92,13 +92,6 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
 
-# Check if dry_run is False before patching
-config = Configuration.from_files([]).get_config()
-
-if not config.get("dry_run", False):
-    patch_indodax_create_order()
-    patch_indodax_cancel_order()
-
 # ✅ 2. Recursively find the first occurrence of the 'span' key
 def find_span(obj):
     if isinstance(obj, dict):
@@ -272,6 +265,10 @@ class fibbo(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
+
+        if not config.get("dry_run", False):
+            patch_indodax_create_order()
+            patch_indodax_cancel_order()
 
         # Override settings ONLY during hyperopt
         if config.get('runmode') == 'hyperopt':
