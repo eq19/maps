@@ -17,8 +17,8 @@ from freqtrade.strategy import (
 )
 from freqtrade.exchange import Exchange
 from freqtrade.persistence import Trade
-from freqtrade.configuration import Configuration
 from freqtrade.exceptions import OperationalException
+from freqtrade.configuration import Configuration, config
 
 # --------------------------------
 # Add your lib to import here
@@ -93,7 +93,7 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order._is_patched = True
 
 # Check if dry_run is False before patching
-if not Configuration.get_config().get('dry_run', False):
+if not config.get("dry_run", False):
     patch_indodax_create_order()
     patch_indodax_cancel_order()
 
