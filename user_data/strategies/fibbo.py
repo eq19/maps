@@ -22,6 +22,7 @@ from freqtrade.exceptions import OperationalException
 
 # --------------------------------
 # Add your lib to import here
+import time
 import json
 import random
 import logging
@@ -52,8 +53,7 @@ def patch_indodax_create_order_delay():
         order = original_create_order(self, *args, **kwargs)
 
         if self.exchange.id == "indodax":
-            import time
-            self.logger.info("🕒 Sleeping 30 seconds to allow Indodax to update wallet balances...")
+            logger.info("🕒 Sleeping 30 seconds to allow Indodax to update wallet balances...")
             time.sleep(30)
 
         return order
