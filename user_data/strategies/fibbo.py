@@ -6,6 +6,7 @@ import numpy as np  # noqa
 import pandas as pd  # noqa
 from pandas import DataFrame
 from typing import Optional, Union
+from utils.indodax_patch import *
 
 from freqtrade.strategy import (
     BooleanParameter,
@@ -22,7 +23,6 @@ from freqtrade.exceptions import OperationalException
 
 # --------------------------------
 # Add your lib to import here
-import time
 import json
 import random
 import logging
@@ -137,60 +137,6 @@ strategy_attrs = {}
 for section, keys in span.items():
     for key in keys:
         strategy_attrs[key] = get_param_config(span, section, key)
-
-# ✅ 4. Call every patches once
-def patch_indodax_create_order():
-    """Monkey-patch Exchange.create_order() to delay return for Indodax and ensure fill."""
-    if hasattr(Exchange.create_order, '_is_patched'):
-        return  # Avoid multiple patching
-
-    original_create_order = Exchange.create_order
-
-    def patched_create_order(self, *args, **kwargs):
-        pair = args[0] if args else kwargs.get("pair", "unknown")
-        logger.info(f"⏳ [Indodax Patch] Delaying order return for pair: {pair}")
-
-        order = original_create_order(self, *args, **kwargs)
-
-        # 💤 Wait to allow Indodax to fully fill the order
-        time.sleep(30)
-
-        # 🛠 Optional: force-refresh order info
-        try:
-            refreshed_order = self.fetch_order(order['id'], pair)
-            order.update(refreshed_order)
-            logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
-        except Exception as e:
-            logger.warning(f"⚠️ [Indodax Patch] Failed to refresh order {order['id']}: {e}")
-
-        return order
-
-    Exchange.create_order = patched_create_order
-    Exchange.create_order._is_patched = True
-    logger.info("✅ Indodax create_order() patched.")
-
-def patch_indodax_cancel_order():
-    """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
-    if hasattr(Exchange.cancel_order, '_is_patched'):
-        return  # Avoid double-patching
-
-    original_cancel_order = Exchange.cancel_order
-
-    def patched_cancel_order(self, order_id: str, symbol: str, *args, **kwargs):
-        trade = Trade.get_trades([Order.order_id == order_id]).first()
-        if not trade or not trade.orders:
-            raise OperationalException(f"Cannot cancel order {order_id} - missing trade or order history")
-
-        side = trade.orders[-1].side
-        params = kwargs.get('params', {})
-        params['side'] = side
-        kwargs['params'] = params
-
-        return original_cancel_order(self, order_id, symbol, *args, **kwargs)
-
-    Exchange.cancel_order = patched_cancel_order
-    Exchange.cancel_order._is_patched = True
-    logger.info("✅ Indodax cancel_order() patched.")
 
 # 👇 Now define the strategy below
 class Fibbo(IStrategy):
