@@ -142,51 +142,54 @@ for section, keys in span.items():
 def patch_indodax_create_order():
     """Monkey-patch Exchange.create_order() to delay return for Indodax and ensure fill."""
     if hasattr(Exchange.create_order, '_is_patched'):
-        return  # Avoid multiple patching
+        logger.debug("Indodax create_order already patched. Skipping.")
+        return
 
     original_create_order = Exchange.create_order
 
     def patched_create_order(self, pair, order_type, side, amount, rate, **kwargs):
         order = original_create_order(self, pair, order_type, side, amount, rate, **kwargs)
+        
+        # 💤 Wait to allow Indodax to fully fill the order
+        time.sleep(30)
 
-        if self.exchange.id == "indodax":
-            # 💤 Wait to allow Indodax to fully fill the order
-            time.sleep(30)
-
-            # 🛠 Optional: force-refresh order info if available
-            try:
-                refreshed_order = self.exchange.fetch_order(order['id'], symbol=pair)
-                order.update(refreshed_order)
-            except Exception as e:
-                logger.warning(f"Failed to refresh order status for {order['id']}: {e}")
+        # 🛠 Optional: force-refresh order info if available
+        try:
+            refreshed_order = self.fetch_order(order['id'], pair)
+            order.update(refreshed_order)
+        except Exception as e:
+            logger.warning(f"Failed to refresh order status for {order['id']}: {e}")
 
         return order
 
     Exchange.create_order = patched_create_order
     Exchange.create_order._is_patched = True
+    logger.info("✅ Patched Exchange.create_order for Indodax.")
+
 
 def patch_indodax_cancel_order():
     """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
     if hasattr(Exchange.cancel_order, '_is_patched'):
-        return  # Avoid double-patching
+        logger.debug("Indodax cancel_order already patched. Skipping.")
+        return
 
     original_cancel_order = Exchange.cancel_order
 
     def patched_cancel_order(self, order_id: str, symbol: str, *args, **kwargs):
-        if self.exchange.id == "indodax":
-            trade = Trade.get_open_order_trades(order_id).first()
-            if not trade or not trade.orders:
-                raise OperationalException(f"Cannot cancel order {order_id} - missing trade or order history")
+        trade = Trade.get_open_order_trades(order_id).first()
+        if not trade or not trade.orders:
+            raise OperationalException(f"Cannot cancel order {order_id} - missing trade or order history")
 
-            side = trade.orders[-1].side
-            params = kwargs.get('params', {})
-            params['side'] = side
-            kwargs['params'] = params
+        side = trade.orders[-1].side
+        params = kwargs.get('params', {})
+        params['side'] = side
+        kwargs['params'] = params
 
         return original_cancel_order(self, order_id, symbol, *args, **kwargs)
 
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
+    logger.info("✅ Patched Exchange.cancel_order for Indodax.")
 
 # 👇 Now define the strategy below
 class Fibbo(IStrategy):
@@ -269,16 +272,11 @@ class Fibbo(IStrategy):
     }
 
 
-    def __init__(self, config: dict):
+    def __init__(self, config: dict) -> None:
         super().__init__(config)
-    
-        # Check the actual exchange instance
-        if not self.config.get("dry_run", False) and self.dp.exchange.id == 'indodax':
-            patch_indodax_create_order()
-            patch_indodax_cancel_order()
 
         # Override settings ONLY during hyperopt
-        if config.get('runmode') == 'hyperopt':
+        if self.config.get('runmode') == 'hyperopt':
             self.trailing_stop = True
             self.use_exit_signal = False
             self.use_custom_stoploss = False
@@ -292,7 +290,14 @@ class Fibbo(IStrategy):
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
             self.config['max_open_trades'] = self.max_open_trades.value
 
-    def update_roi(self):
+        if not self.config.get("dry_run", False) and self.exchange.id == 'indodax':
+            logger.info("🟢 Live mode with Indodax detected. Applying monkey patches.")
+            patch_indodax_create_order()
+            patch_indodax_cancel_order()
+        else:
+            logger.debug("Not in live Indodax mode — no patching performed.")
+
+def update_roi(self):
         """Update ROI based on current parameter values"""
         self.minimal_roi = {
             "0": float(self.roi_p1.value),
