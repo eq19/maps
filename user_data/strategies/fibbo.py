@@ -243,6 +243,7 @@ class Fibbo(IStrategy):
         if not self.config.get("dry_run", False):
             patch_indodax_create_order()
             patch_indodax_cancel_order()
+            patch_indodax_fetch_order()
             logger.info("✅ Indodax patches applied (live mode).")
         else:
             logger.info(f"ℹ️ Indodax patches skipped (dry_run mode).")
