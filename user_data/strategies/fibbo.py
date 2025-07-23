@@ -190,7 +190,14 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order._is_patched = True
 
 # 👇 Now define the strategy below
-class fibbo(IStrategy):
+class Fibbo(IStrategy):
+    """
+    Fibonacci Strategy with Indodax exchange workarounds.
+    
+    Includes special handling for:
+    - Order creation delays (30s wait)
+    - Cancel order side requirements
+    """
 
     # Strategy interface version - allow new iterations of the strategy interface.
     # Check the documentation or the Sample strategy to get the latest version.
