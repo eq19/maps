@@ -146,26 +146,11 @@ def patch_indodax_create_order():
 
     original_create_order = Exchange.create_order
 
-    def patched_create_order(self, pair, ordertype, amount, price=None,
-                             time_in_force='gtc', leverage=None, reduce_only=False,
-                             stop_price=None, trailing_percent=None, trailing_price=None,
-                             order_tag=None, oco_stop_price=None, oco_limit_price=None,
-                             order_type=None):
+    def patched_create_order(self, *args, **kwargs):
+        pair = args[0] if args else kwargs.get("pair", "unknown")
         logger.info(f"⏳ [Indodax Patch] Delaying order return for pair: {pair}")
 
-        order = original_create_order(
-            self, pair, ordertype, amount, price,
-            time_in_force=time_in_force,
-            leverage=leverage,
-            reduce_only=reduce_only,
-            stop_price=stop_price,
-            trailing_percent=trailing_percent,
-            trailing_price=trailing_price,
-            order_tag=order_tag,
-            oco_stop_price=oco_stop_price,
-            oco_limit_price=oco_limit_price,
-            order_type=order_type,
-        )
+        order = original_create_order(self, *args, **kwargs)
 
         # 💤 Wait to allow Indodax to fully fill the order
         time.sleep(30)
