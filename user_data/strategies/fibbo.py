@@ -587,4 +587,4 @@ class Fibbo(IStrategy):
 
 # Inject hyperopt parameters AFTER class definition
 for key, value in strategy_attrs.items():
-    setattr(fibbo, key, value)
+    setattr(Fibbo, key, value)
