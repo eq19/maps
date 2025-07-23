@@ -1,12 +1,12 @@
 {
-  "enable_protections": true,
-  "position_stacking": false,
-  "disableparamexport": false,
-  "hyperopt_jobs": 32,
-  "hyperopt_min_trades": 150,
   "print_all": true,
-  "max_generated_candidates": 100,
+  "hyperopt_jobs": 32,
+  "position_stacking": true,
+  "hyperopt_min_trades": 150,
   "max_parallel_backtest": 8,
+  "enable_protections": true,
+  "disableparamexport": false,
+  "max_generated_candidates": 100,
   "pipelines": [
     {
       "id": 1,
