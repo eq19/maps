@@ -16,7 +16,7 @@ from freqtrade.strategy import (
     merge_informative_pair
 )
 from freqtrade.exchange import Exchange
-from freqtrade.persistence import Trade
+from freqtrade.persistence import Trade, Order
 from freqtrade.configuration import Configuration
 from freqtrade.exceptions import OperationalException
 
@@ -157,7 +157,7 @@ def patch_indodax_create_order():
 
         # 🛠 Optional: force-refresh order info
         try:
-            refreshed_order = self.fetch_order(order['id'], symbol=pair)
+            refreshed_order = self.fetch_order(order['id'], pair)
             order.update(refreshed_order)
             logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
         except Exception as e:
@@ -177,7 +177,7 @@ def patch_indodax_cancel_order():
     original_cancel_order = Exchange.cancel_order
 
     def patched_cancel_order(self, order_id: str, symbol: str, *args, **kwargs):
-        trade = Trade.get_open_order_trades(order_id).first()
+        trade = Trade.get_trades([Order.order_id == order_id]).first()
         if not trade or not trade.orders:
             raise OperationalException(f"Cannot cancel order {order_id} - missing trade or order history")
 
