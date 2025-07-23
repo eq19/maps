@@ -41,7 +41,104 @@ buy_indicators = ["BB", "ATR", "TTM", "VWAP", "MACD", "DEMA", "FIBBO", "STOCHRSI
 sell_indicators = ["ATR", "TTM", "MACD", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
-# ✅ 1. Call every patches once at module level
+# ✅ 1. Recursively find the first occurrence of the 'span' key
+def find_span(obj):
+    if isinstance(obj, dict):
+        if "span" in obj:
+            return obj["span"]
+        for value in obj.values():
+            result = find_span(value)
+            if result is not None:
+                return result
+    elif isinstance(obj, list):
+        for item in obj:
+            result = find_span(item)
+            if result is not None:
+                return result
+    return None
+
+# Load JSON and extract 'span'
+param_file = Path(__file__).parent/'hyperopt_params.json'
+logger.info(f"Load params file: {param_file}")
+try:
+    with open(param_file) as file:
+        span = find_span(json.load(file))
+except FileNotFoundError:
+    logger.warning(f"Params file not found: {param_file}")
+except json.JSONDecodeError:
+    logger.error(f"Invalid JSON in params file: {param_file}")
+except Exception as e:
+    logger.error(f"Error loading params: {str(e)}")
+
+# ✅ 2. Helper function to construct parameters
+def get_param_config(span: dict, space: str, name: str):
+    config = span[space][name]
+    param_type = config["type"]
+    optimize = config.get("optimize", False)
+    default = config["default"]
+
+    if param_type == "IntParameter":
+        return IntParameter(
+            low=config["low"],
+            high=config["high"],
+            default=default,
+            space=space,
+            optimize=optimize
+        )
+    elif param_type == "DecimalParameter":
+        return DecimalParameter(
+            low=config['low'],
+            high=config['high'],
+            default=default,
+            decimals=config.get('decimals', 3),
+            space=space,
+            optimize=optimize
+        )
+    elif param_type == "BooleanParameter":
+        return BooleanParameter(
+            default=default,
+            space=space,
+            optimize=optimize
+        )
+    elif param_type == "CategoricalParameter":
+        return CategoricalParameter(
+            categories=config['choices'],
+            default=default,
+            space=space,
+            optimize=optimize
+        )
+    else:
+        raise ValueError(f"Unknown parameter type: {param_type}")
+
+# ✅ 3. Generate permutations and insert them into the span config before using them
+def indicator_permutations(profiles, max_indicators=1, include_none=False):
+    profile_permutations = set()
+    if include_none:
+        profile_permutations.add("NONE")
+    if max_indicators == 1:
+        profile_permutations.update(profiles)
+        return profile_permutations
+    for i in range(1, len(profiles) + 1):
+        for perm in permutations(profiles, i):
+            if len(perm) <= max_indicators:
+                profile_permutations.add(", ".join(sorted(perm)))
+    return profile_permutations
+
+# Insert computed categories into the JSON-loaded span
+span["buy"]["buy_additional_indicator"]["choices"] = sorted(
+    indicator_permutations(buy_indicators, max_indicators=2, include_none=True)
+)
+span["sell"]["sell_additional_indicator"]["choices"] = sorted(
+    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
+)
+
+# Preload strategy attributes
+strategy_attrs = {}
+for section, keys in span.items():
+    for key in keys:
+        strategy_attrs[key] = get_param_config(span, section, key)
+
+# ✅ 4. Call every patches once
 def patch_indodax_create_order():
     """Monkey-patch Exchange.create_order() to delay return for Indodax and ensure fill."""
     if hasattr(Exchange.create_order, '_is_patched'):
@@ -92,104 +189,7 @@ def patch_indodax_cancel_order():
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
 
-# ✅ 2. Recursively find the first occurrence of the 'span' key
-def find_span(obj):
-    if isinstance(obj, dict):
-        if "span" in obj:
-            return obj["span"]
-        for value in obj.values():
-            result = find_span(value)
-            if result is not None:
-                return result
-    elif isinstance(obj, list):
-        for item in obj:
-            result = find_span(item)
-            if result is not None:
-                return result
-    return None
-
-# Load JSON and extract 'span'
-param_file = Path(__file__).parent/'hyperopt_params.json'
-logger.info(f"Load params file: {param_file}")
-try:
-    with open(param_file) as file:
-        span = find_span(json.load(file))
-except FileNotFoundError:
-    logger.warning(f"Params file not found: {param_file}")
-except json.JSONDecodeError:
-    logger.error(f"Invalid JSON in params file: {param_file}")
-except Exception as e:
-    logger.error(f"Error loading params: {str(e)}")
-
-# ✅ 3. Helper function to construct parameters
-def get_param_config(span: dict, space: str, name: str):
-    config = span[space][name]
-    param_type = config["type"]
-    optimize = config.get("optimize", False)
-    default = config["default"]
-
-    if param_type == "IntParameter":
-        return IntParameter(
-            low=config["low"],
-            high=config["high"],
-            default=default,
-            space=space,
-            optimize=optimize
-        )
-    elif param_type == "DecimalParameter":
-        return DecimalParameter(
-            low=config['low'],
-            high=config['high'],
-            default=default,
-            decimals=config.get('decimals', 3),
-            space=space,
-            optimize=optimize
-        )
-    elif param_type == "BooleanParameter":
-        return BooleanParameter(
-            default=default,
-            space=space,
-            optimize=optimize
-        )
-    elif param_type == "CategoricalParameter":
-        return CategoricalParameter(
-            categories=config['choices'],
-            default=default,
-            space=space,
-            optimize=optimize
-        )
-    else:
-        raise ValueError(f"Unknown parameter type: {param_type}")
-
-# ✅ 4. Generate permutations and insert them into the span config before using them
-def indicator_permutations(profiles, max_indicators=1, include_none=False):
-    profile_permutations = set()
-    if include_none:
-        profile_permutations.add("NONE")
-    if max_indicators == 1:
-        profile_permutations.update(profiles)
-        return profile_permutations
-    for i in range(1, len(profiles) + 1):
-        for perm in permutations(profiles, i):
-            if len(perm) <= max_indicators:
-                profile_permutations.add(", ".join(sorted(perm)))
-    return profile_permutations
-
-# Insert computed categories into the JSON-loaded span
-span["buy"]["buy_additional_indicator"]["choices"] = sorted(
-    indicator_permutations(buy_indicators, max_indicators=2, include_none=True)
-)
-span["sell"]["sell_additional_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
-)
-
-# Preload strategy attributes
-strategy_attrs = {}
-for section, keys in span.items():
-    for key in keys:
-        strategy_attrs[key] = get_param_config(span, section, key)
-
-# 👇 Now define your strategy below
+# 👇 Now define the strategy below
 class fibbo(IStrategy):
 
     # Strategy interface version - allow new iterations of the strategy interface.
