@@ -269,10 +269,10 @@ class Fibbo(IStrategy):
     }
 
 
-    def __init__(self, config: dict) -> None:
+    def __init__(self, config: dict):
         super().__init__(config)
-
-        if not config.get("dry_run", False):
+        
+        if not self.config.get("dry_run", False) and self.dp.exchange.id == 'indodax':
             patch_indodax_create_order()
             patch_indodax_cancel_order()
 
