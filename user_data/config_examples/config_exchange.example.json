@@ -22,16 +22,16 @@
     "unit": "minutes"
   },
   "entry_pricing": {
-    "price_side": "other",
-    "use_order_book": false
+    "price_side": "same",
+    "use_order_book": true
   },
   "exit_pricing": {
-    "price_side": "other",
-    "use_order_book": false
+    "price_side": "same",
+    "use_order_book": true
   },
   "order_types": {
-    "entry": "market",
-    "exit": "market",
+    "entry": "limit",
+    "exit": "limit",
     "emergency_exit": "market",
     "force_entry": "market",
     "force_exit": "market",
@@ -243,7 +243,7 @@
         "withdraw": true
       },
       "options": {
-        "createMarketBuyOrderRequiresPrice": true
+        "createMarketBuyOrderRequiresPrice": false
       }
     },
     "ccxt_async_config": {
@@ -336,7 +336,7 @@
         "withdraw": true
       },
       "options": {
-        "createMarketBuyOrderRequiresPrice": true
+        "createMarketBuyOrderRequiresPrice": false
       }
     }
   },
