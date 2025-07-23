@@ -17,6 +17,7 @@ exchange.load_markets()
 print("test timeframes", exchange.options['timeframes'])
 print("test fetch_ticker", exchange.fetch_ticker('BTC/IDR'))
 print("test fetch_ohlcv", exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
+print("available options", exchange.options)
 
 #tickers = exchange.fetch_tickers()
 #for pair, ticker in tickers.items():
