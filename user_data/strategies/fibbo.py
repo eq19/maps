@@ -291,9 +291,10 @@ class Fibbo(IStrategy):
 
     def bot_start(self, **kwargs) -> None:
         """Called once after the bot has started and dependencies are available."""
-        exchange_id = getattr(self.exchange, 'id', 'unknown')
+        #exchange_id = getattr(self.dp.exchange, 'id', 'unknown')
 
-        if not self.config.get("dry_run", False) and exchange_id == 'indodax':
+        if not self.config.get("dry_run", False):
+        #if not self.config.get("dry_run", False) and exchange_id == 'indodax':
             patch_indodax_create_order()
             patch_indodax_cancel_order()
             logger.info("✅ Indodax patches applied (live mode).")
