@@ -291,7 +291,7 @@ class Fibbo(IStrategy):
             self.config['max_open_trades'] = self.max_open_trades.value
 
         # Check if indodax is the actual exchange to apply the monkey patches
-        if not self.config.get("dry_run", False) and self.exchange.id == 'indodax':
+        if not self.config.get("dry_run", False) and self.dp.exchange.id == 'indodax':
             logger.info("🟢 Live mode with Indodax detected. Applying monkey patches.")
             patch_indodax_create_order()
             patch_indodax_cancel_order()
