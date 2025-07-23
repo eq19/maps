@@ -291,7 +291,7 @@ class Fibbo(IStrategy):
 
     def bot_start(self, **kwargs) -> None:
         """Called once after the bot has started and dependencies are available."""
-        exchange_id = self.dp.exchange.id if hasattr(self, 'dp') and hasattr(self.dp, 'exchange') else 'unknown'
+        exchange_id = getattr(self.exchange, 'id', 'unknown')
 
         if not self.config.get("dry_run", False) and exchange_id == 'indodax':
             patch_indodax_create_order()
@@ -299,7 +299,7 @@ class Fibbo(IStrategy):
             logger.info("✅ Indodax patches applied (live mode).")
         else:
             logger.info(f"ℹ️ Indodax patches skipped - dry_run: {self.config.get('dry_run', False)}, exchange: {exchange_id}")
-
+    
     def update_roi(self):
         """Update ROI based on current parameter values"""
         self.minimal_roi = {
