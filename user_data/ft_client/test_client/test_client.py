@@ -1,4 +1,5 @@
 import ccxt
+import pprint
 
 from freqtrade.configuration import Configuration
 from freqtrade.resolvers import ExchangeResolver
@@ -19,8 +20,9 @@ print("test fetch_ticker", exchange.fetch_ticker('BTC/IDR'))
 print("test fetch_ohlcv", exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
 print("available options", exchange.options)
 print("supported methods", exchange.has)
+print("exchange api", exchange.api)
+pprint.pprint(exchange.describe())
 
-print([m for m in dir(exchange) if m.endswith('_get') or m.endswith('_post')])
 
 #tickers = exchange.fetch_tickers()
 #for pair, ticker in tickers.items():
