@@ -142,35 +142,35 @@ for section, keys in span.items():
 def patch_indodax_create_order():
     """Monkey-patch Exchange.create_order() to delay return for Indodax and ensure fill."""
     if hasattr(Exchange.create_order, '_is_patched'):
-        logger.debug("Indodax create_order already patched. Skipping.")
-        return
+        return  # Avoid multiple patching
 
     original_create_order = Exchange.create_order
 
     def patched_create_order(self, pair, order_type, side, amount, rate, **kwargs):
+        logger.info(f"⏳ [Indodax Patch] Delaying order return for pair: {pair}")
         order = original_create_order(self, pair, order_type, side, amount, rate, **kwargs)
         
         # 💤 Wait to allow Indodax to fully fill the order
         time.sleep(30)
 
-        # 🛠 Optional: force-refresh order info if available
+        # 🛠 Optional: force-refresh order info
         try:
-            refreshed_order = self.fetch_order(order['id'], pair)
+            refreshed_order = self.fetch_order(order['id'], symbol=pair)
             order.update(refreshed_order)
+            logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
         except Exception as e:
-            logger.warning(f"Failed to refresh order status for {order['id']}: {e}")
+            logger.warning(f"⚠️ [Indodax Patch] Failed to refresh order {order['id']}: {e}")
 
         return order
 
     Exchange.create_order = patched_create_order
     Exchange.create_order._is_patched = True
-    logger.info("✅ Patched Exchange.create_order for Indodax.")
+    logger.info("✅ Indodax create_order() patched.")
 
 def patch_indodax_cancel_order():
     """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
     if hasattr(Exchange.cancel_order, '_is_patched'):
-        logger.debug("Indodax cancel_order already patched. Skipping.")
-        return
+        return  # Avoid double-patching
 
     original_cancel_order = Exchange.cancel_order
 
@@ -188,7 +188,7 @@ def patch_indodax_cancel_order():
 
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
-    logger.info("✅ Patched Exchange.cancel_order for Indodax.")
+    logger.info("✅ Indodax cancel_order() patched.")
 
 # 👇 Now define the strategy below
 class Fibbo(IStrategy):
@@ -289,14 +289,16 @@ class Fibbo(IStrategy):
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
             self.config['max_open_trades'] = self.max_open_trades.value
 
-    def bot_start(self, **kwargs):
-        """Called when strategy is loaded"""
-        if not self.config.get("dry_run", False) and self.exchange.id == 'indodax':
-            logger.info("🟢 Live mode with Indodax detected. Applying monkey patches.")
+    def bot_start(self, **kwargs) -> None:
+        """Called once after the bot has started and dependencies are available."""
+        exchange_id = self.dp.exchange.id if hasattr(self, 'dp') and hasattr(self.dp, 'exchange') else 'unknown'
+
+        if not self.config.get("dry_run", False) and exchange_id == 'indodax':
             patch_indodax_create_order()
             patch_indodax_cancel_order()
+            logger.info("✅ Indodax patches applied (live mode).")
         else:
-            logger.debug("Not in live Indodax mode — no patching performed.")
+            logger.info(f"ℹ️ Indodax patches skipped - dry_run: {self.config.get('dry_run', False)}, exchange: {exchange_id}")
 
     def update_roi(self):
         """Update ROI based on current parameter values"""
