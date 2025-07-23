@@ -298,7 +298,7 @@ class Fibbo(IStrategy):
         else:
             logger.debug("Not in live Indodax mode — no patching performed.")
 
-def update_roi(self):
+    def update_roi(self):
         """Update ROI based on current parameter values"""
         self.minimal_roi = {
             "0": float(self.roi_p1.value),
