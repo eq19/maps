@@ -299,7 +299,7 @@ class Fibbo(IStrategy):
             patch_indodax_cancel_order()
             logger.info("✅ Indodax patches applied (live mode).")
         else:
-            logger.info(f"ℹ️ Indodax patches skipped (dry_run mode)")
+            logger.info(f"ℹ️ Indodax patches skipped (dry_run mode).")
 
     def update_roi(self):
         """Update ROI based on current parameter values"""
