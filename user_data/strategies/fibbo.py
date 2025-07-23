@@ -150,7 +150,6 @@ def patch_indodax_create_order():
         order = original_create_order(self, pair, order_type, side, amount, rate, **kwargs)
 
         if self.exchange.id == "indodax":
-            import time
             # 💤 Wait to allow Indodax to fully fill the order
             time.sleep(30)
 
