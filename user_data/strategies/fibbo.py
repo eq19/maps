@@ -166,7 +166,6 @@ def patch_indodax_create_order():
     Exchange.create_order._is_patched = True
     logger.info("✅ Patched Exchange.create_order for Indodax.")
 
-
 def patch_indodax_cancel_order():
     """Monkey-patch Exchange.cancel_order() to handle Indodax's side requirement."""
     if hasattr(Exchange.cancel_order, '_is_patched'):
