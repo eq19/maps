@@ -8,6 +8,7 @@ from freqtrade.resolvers import ExchangeResolver
 
 # Test ccxt
 exchange = ccxt.indodax()
+markets = exchange.load_markets()
 
 # Load the markets to ensure the exchange's metadata is fetched
 exchange.load_markets()
@@ -15,7 +16,7 @@ exchange.load_markets()
 # Uncomment fot test freqtrade
 # exchange = ExchangeResolver.load_exchange(config)
 
-print("test timeframes", exchange.options['timeframes'])
+print("test markets", markets['BTC/IDR'])
 print("test fetch_ticker", exchange.fetch_ticker('BTC/IDR'))
 print("test fetch_ohlcv", exchange.fetch_ohlcv('BTC/IDR', timeframe='1m', limit=5))
 print("available options", exchange.options)
