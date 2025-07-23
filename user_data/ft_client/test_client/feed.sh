@@ -144,9 +144,9 @@ calculate_score() {
     return 1
   fi
 
-  local json_data=$(jq ".strategy_comparison[] | select(.key==\"fibbo\")" "$json_file")
+  local json_data=$(jq ".strategy_comparison[] | select(.key==\"Fibbo\")" "$json_file")
   if [[ -z "$json_data" ]]; then
-    echo "No data found for key: fibbo"
+    echo "No data found for key: Fibbo"
     return 1
   else
     echo "$json_data" | jq .
@@ -234,7 +234,7 @@ calculate_score() {
   SCORE=$(printf "%.2f" "$SCORE")
 
   echo ""
-  echo "📈 Strategy Summary for 'fibbo'"
+  echo "📈 Strategy Summary for 'Fibbo'"
   echo "---------------------------------"
   echo "🧮 SCORE: $SCORE"
   echo "💰 Total Profit: $profit_total_pct%"
