@@ -1,10 +1,10 @@
 {
   "print_all": true,
   "hyperopt_jobs": 32,
-  "position_stacking": true,
   "hyperopt_min_trades": 150,
   "max_parallel_backtest": 8,
   "enable_protections": true,
+  "position_stacking": false,
   "disableparamexport": false,
   "max_generated_candidates": 100,
   "pipelines": [
