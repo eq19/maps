@@ -13,8 +13,8 @@ def patch_indodax_create_order():
     original_create_order = Exchange.create_order
 
     def patched_create_order(self, *args, **kwargs):
-        if getattr(self, 'id', '') != 'indodax':
-            return original_create_order(self, *args, **kwargs)
+        #if getattr(self, 'id', '') != 'indodax':
+            #return original_create_order(self, *args, **kwargs)
 
         pair = args[0] if args else kwargs.get("pair", "unknown")
         logger.info(f"⏳ [Indodax Patch] Creating order for: {pair}")
@@ -50,8 +50,8 @@ def patch_indodax_cancel_order():
     original_cancel_order = Exchange.cancel_order
 
     def patched_cancel_order(self, order_id, symbol=None, params={}):
-        if getattr(self, 'id', '') != 'indodax':
-            return original_cancel_order(self, order_id, symbol, params)
+        #if getattr(self, 'id', '') != 'indodax':
+            #return original_cancel_order(self, order_id, symbol, params)
 
         logger.info(f"⚠️ [Indodax Patch] Cancelling order: {order_id}")
         try:
@@ -75,8 +75,8 @@ def patch_indodax_fetch_order():
     original_fetch_order = Exchange.fetch_order
 
     def patched_fetch_order(self, order_id, symbol=None, params={}):
-        if getattr(self, 'id', '') != 'indodax':
-            return original_fetch_order(self, order_id, symbol, params)
+        #if getattr(self, 'id', '') != 'indodax':
+            #return original_fetch_order(self, order_id, symbol, params)
 
         logger.info(f"🔄 [Indodax Patch] Fetching order {order_id} for {symbol}")
         try:
