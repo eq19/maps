@@ -39,7 +39,7 @@ def patch_indodax_create_order():
 
     Exchange.create_order = patched_create_order
     Exchange.create_order._is_patched = True
-    logger.info("✅ Indodax create_order() patched.")
+    logger.info("🛠️ Indodax create_order() patched.")
 
 
 def patch_indodax_cancel_order():
@@ -64,7 +64,7 @@ def patch_indodax_cancel_order():
 
     Exchange.cancel_order = patched_cancel_order
     Exchange.cancel_order._is_patched = True
-    logger.info("✅ Indodax cancel_order() patched.")
+    logger.info("🛠️ Indodax cancel_order() patched.")
 
 
 def patch_indodax_fetch_order():
@@ -89,4 +89,4 @@ def patch_indodax_fetch_order():
 
     Exchange.fetch_order = patched_fetch_order
     Exchange.fetch_order._is_patched = True
-    logger.info("✅ Indodax fetch_order() patched.")
+    logger.info("🛠️ Indodax fetch_order() patched.")
