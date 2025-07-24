@@ -32,7 +32,7 @@ def patch_indodax_create_order():
                 logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
                 break
             except Exception as e:
-                logger.warning(f"⚠️ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
+                logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
                 time.sleep(2 ** attempt)
 
         return order
@@ -53,13 +53,13 @@ def patch_indodax_cancel_order():
         if getattr(self, 'id', '') != 'indodax':
             return original_cancel_order(self, order_id, symbol, params)
 
-        logger.info(f"⛔ [Indodax Patch] Cancelling order: {order_id}")
+        logger.info(f"⚠️ [Indodax Patch] Cancelling order: {order_id}")
         try:
             result = original_cancel_order(self, order_id, symbol, params)
             logger.info(f"✅ [Indodax Patch] Order {order_id} cancelled.")
             return result
         except Exception as e:
-            logger.warning(f"⚠️ [Indodax Patch] Failed to cancel order {order_id}: {e}")
+            logger.warning(f"⛔ [Indodax Patch] Failed to cancel order {order_id}: {e}")
             raise
 
     Exchange.cancel_order = patched_cancel_order
@@ -84,7 +84,7 @@ def patch_indodax_fetch_order():
             logger.debug(f"📦 [Indodax Patch] Raw fetch_order result: {result}")
             return result
         except Exception as e:
-            logger.warning(f"⚠️ [Indodax Patch] Error fetching order {order_id}: {e}")
+            logger.warning(f"⛔ [Indodax Patch] Error fetching order {order_id}: {e}")
             raise
 
     Exchange.fetch_order = patched_fetch_order
