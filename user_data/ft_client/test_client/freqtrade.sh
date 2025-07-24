@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define the function to send a Telegram message
-LOG_FILE="/home/runner/data_dry/logs/freqtrade.log"
-rm -rf $LOG_FILE.* /home/runner/data_live/logs/freqtrade.log.*
+LOG_FILE="/home/runner/data_live/logs/freqtrade.log"
+rm -rf $LOG_FILE.* /home/runner/data_dry/logs/freqtrade.log.*
 
 send_telegram_message() {
     local message="$1"
@@ -36,7 +36,7 @@ done
 service earlyoom status > /dev/null 2>&1 || service earlyoom start
 
 # Run the log monitoring command in the background
-tail -f "$LOG_FILE" | grep --line-buffered -iE "WARNING|ERROR" | while read -r line; do
+tail -f "$LOG_FILE" | grep --line-buffered -iE "WARNING|ERROR|✅|📦|🛠️|🔧" | while read -r line; do
     send_telegram_message "$line"
 done
 
