@@ -5,8 +5,8 @@
 import numpy as np  # noqa
 import pandas as pd  # noqa
 from pandas import DataFrame
-from typing import Optional, Union
 from utils.indodax_patch import *
+from typing import Optional, Union
 
 from freqtrade.strategy import (
     BooleanParameter,
