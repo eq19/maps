@@ -73,44 +73,45 @@ def patch_indodax_fetch_order():
     original_fetch_order = Exchange.fetch_order
 
     def patched_fetch_order(self, order_id, symbol=None, params={}):
+        #if getattr(self, 'id', '') != 'indodax':
+            #return original_fetch_order(self, order_id, symbol, params)
+
         logger.info(f"🔄 [Indodax Patch] Fetching order {order_id} for {symbol}")
         try:
             result = original_fetch_order(self, order_id, symbol, params)
             logger.debug(f"📦 [Indodax Patch] Raw fetch_order result: {result}")
+            info = result.get("info", {})
+            order_info = info.get("return", {}).get("order", {})
 
-            if getattr(self, 'id', '') == 'indodax':
-                info = result.get("info", {})
-                order_info = info.get("return", {}).get("order", {})
+            # Handle amount from receive_eth / receive_btc / receive_... if amount is None
+            if result.get("amount") is None:
+                for key in order_info:
+                    if key.startswith("receive_"):
+                        try:
+                            received = float(order_info[key])
+                            result["amount"] = received
+                            result["filled"] = received  # fully filled
+                            break
+                        except ValueError:
+                            logger.warning(f"🔍 [Indodax Patch] Failed to parse {key}: {order_info[key]}")
 
-                # Handle amount from receive_eth / receive_btc / receive_... if amount is None
-                if result.get("amount") is None:
-                    for key in order_info:
-                        if key.startswith("receive_"):
-                            try:
-                                received = float(order_info[key])
-                                result["amount"] = received
-                                result["filled"] = received  # fully filled
-                                break
-                            except ValueError:
-                                logger.warning(f"🔍 [Indodax Patch] Failed to parse {key}: {order_info[key]}")
+            # Handle cost from order_rp
+            if result.get("cost") is None and "order_rp" in order_info:
+                try:
+                    result["cost"] = float(order_info["order_rp"])
+                except ValueError:
+                    logger.warning(f"🔍 [Indodax Patch] Failed to parse order_rp: {order_info['order_rp']}")
 
-                # Handle cost from order_rp
-                if result.get("cost") is None and "order_rp" in order_info:
-                    try:
-                        result["cost"] = float(order_info["order_rp"])
-                    except ValueError:
-                        logger.warning(f"🔍 [Indodax Patch] Failed to parse order_rp: {order_info['order_rp']}")
-
-                # Handle fee if available
-                if result.get("fee") is None and "fee" in order_info:
-                    try:
-                        fee_cost = float(order_info["fee"]) / 100  # assuming fee is in IDR cents
-                        result["fee"] = {
-                            "cost": fee_cost,
-                            "currency": "IDR"
-                        }
-                    except ValueError:
-                        logger.warning(f"🔍 [Indodax Patch] Failed to parse fee: {order_info['fee']}")
+            # Handle fee if available
+            if result.get("fee") is None and "fee" in order_info:
+                try:
+                    fee_cost = float(order_info["fee"]) / 100  # assuming fee is in IDR cents
+                    result["fee"] = {
+                        "cost": fee_cost,
+                        "currency": "IDR"
+                    }
+                except ValueError:
+                    logger.warning(f"🔍 [Indodax Patch] Failed to parse fee: {order_info['fee']}")
 
             return result
 
