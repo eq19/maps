@@ -284,8 +284,10 @@ if [[ "$1" == "listing" ]]; then
 else
 #elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
-  echo -e "\n$hr\nTEST CCXT\n$hr"
-  python user_data/ft_client/test_client/test_client.py
+  if [[ "$GITHUB_JOB" == "lexering" ]]; then
+    echo -e "\n$hr\nTEST CCXT\n$hr"
+    python user_data/ft_client/test_client/test_client.py
+  fi
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
