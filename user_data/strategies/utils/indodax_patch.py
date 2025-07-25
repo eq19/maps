@@ -22,7 +22,7 @@ def patch_indodax_create_order():
         order = original_create_order(self, *args, **kwargs)
 
         # 💤 Delay to let the order settle in Indodax
-        time.sleep(30)
+        time.sleep(20)
 
         # 🔁 Retry fetch_order up to 3 times with exponential backoff
         for attempt in range(3):
