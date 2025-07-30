@@ -5,7 +5,7 @@
   "max_open_trades": -1,
   "trading_mode": "spot",
   "stake_currency": "IDR",
-  "stake_amount": 1000000,
+  "stake_amount": 100000,
   "dry_run_wallet": 4100000,
   "startup_candle_count": 120,
   "fiat_display_currency": "IDR",
