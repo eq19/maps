@@ -15,7 +15,7 @@
       "epochs": 3000,
       "parallel_jobs": 4,
       "spaces": ["all"],
-      "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
+      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
     },
     {
       "id": 2,
