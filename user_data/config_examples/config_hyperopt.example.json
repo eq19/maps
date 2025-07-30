@@ -11,8 +11,8 @@
     {
       "id": 1,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
-      "epochs": 5000,
+      "days": 60,
+      "epochs": 3000,
       "parallel_jobs": 4,
       "spaces": ["all"],
       "hyperopt_loss": "SharpeSortinoCombinedHyperOptLoss"
@@ -20,8 +20,8 @@
     {
       "id": 2,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
-      "epochs": 4000,
+      "days": 60,
+      "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["default"],
       "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
@@ -29,8 +29,8 @@
     {
       "id": 3,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
-      "epochs": 3000,
+      "days": 60,
+      "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["buy sell roi"],
       "hyperopt_loss": "MaxDrawDownHyperOptLoss"
@@ -38,8 +38,8 @@
     {
       "id": 4,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
-      "epochs": 2000,
+      "days": 60,
+      "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["buy roi"],
       "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
@@ -47,7 +47,7 @@
     {
       "id": 5,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
+      "days": 60,
       "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["buy"],
@@ -56,7 +56,7 @@
     {
       "id": 6,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
+      "days": 60,
       "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["sell roi"],
@@ -65,7 +65,7 @@
     {
       "id": 7,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
+      "days": 60,
       "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["sell"],
@@ -74,7 +74,7 @@
     {
       "id": 8,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 15,
+      "days": 60,
       "epochs": 1000,
       "parallel_jobs": 4,
       "spaces": ["roi"],
