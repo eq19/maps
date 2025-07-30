@@ -55,7 +55,7 @@ def patch_indodax_cancel_order():
         logger.info(f"⚠️ [Indodax Patch] Cancelling order: {order_id}")
         try:
             # 🔍 Indodax requires 'side' param when cancelling an order
-            if getattr(self, 'id', '') == 'indodax' and "side" not in params:
+            if "side" not in params:
                 try:
                     order = self.fetch_order(order_id, symbol)
                     side = order.get("side")
