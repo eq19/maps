@@ -6,14 +6,8 @@ rm -rf $LOG_FILE.* /home/runner/data_dry/logs/freqtrade.log.*
 
 send_telegram_message() {
     local message="$1"
-    local bot_token="$WARNING_BOT_TOKEN"
-    local chat_id="$TELEGRAM_CHAT_ID"
-
-    # Ensure required environment variables are set
-    if [[ -z "$bot_token" || -z "$chat_id" ]]; then
-        echo "Error: WARNING_BOT_TOKEN or TELEGRAM_CHAT_ID environment variables are not set."
-        exit 1
-    fi
+    local chat_id="TELEGRAM_CHAT_ID"
+    local bot_token="WARNING_BOT_TOKEN"
 
     # Send the message via Telegram API
     curl -s -X POST "https://api.telegram.org/bot$bot_token/sendMessage" \
