@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def patch_indodax_create_order():
-    """Monkey-patch Exchange.create_order() for Indodax with delay and post-fill fetch."""
+    """Monkey-patch Exchange.create_order() for Indodax with delay, post-fill fetch, and market-sell workaround."""
     if hasattr(Exchange.create_order, '_is_patched'):
         return
 
@@ -16,12 +16,37 @@ def patch_indodax_create_order():
         #if getattr(self, 'id', '') != 'indodax':
             #return original_create_order(self, *args, **kwargs)
 
-        pair = args[0] if args else kwargs.get("pair", "unknown")
-        logger.info(f"⏳ [Indodax Patch] Creating order for: {pair}")
+        # Extract parameters from args and kwargs
+        pair = args[0] if len(args) > 0 else kwargs.get("pair", "unknown")
+        order_type = args[1] if len(args) > 1 else kwargs.get("order_type")
+        side = args[2] if len(args) > 2 else kwargs.get("side")
+        amount = args[3] if len(args) > 3 else kwargs.get("amount")
+        price = args[4] if len(args) > 4 else kwargs.get("price")
 
+        # Convert args to mutable list for safe modification
+        args = list(args)
+
+        logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={order_type}, side={side})")
+
+        # 🛠️ Simulate market sell as limit sell at minimal price
+        if side == 'sell' and order_type == 'market':
+            logger.warning(f"⚠️ [Indodax Patch] Simulating market sell on {pair} as limit sell at 1 IDR")
+
+            # Patch args if present
+            if len(args) > 1:
+                args[1] = 'limit'
+            else:
+                kwargs['order_type'] = 'limit'
+
+            if len(args) > 4:
+                args[4] = 1
+            else:
+                kwargs['price'] = 1
+
+        # 🧾 Submit order
         order = original_create_order(self, *args, **kwargs)
 
-        # 💤 Delay to let the order settle in Indodax
+        # 💤 Allow some time for Indodax to settle the order
         time.sleep(20)
 
         # 🔁 Retry fetch_order up to 3 times with exponential backoff
@@ -32,7 +57,7 @@ def patch_indodax_create_order():
                 logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
                 break
             except Exception as e:
-                logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
+                logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt + 1} failed: {e}")
                 time.sleep(2 ** attempt)
 
         return order
