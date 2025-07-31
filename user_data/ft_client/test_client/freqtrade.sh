@@ -22,7 +22,7 @@ if [[ ! -f "$LOG_FILE" ]]; then
 fi
 
 # Monitor the entire log file and then continue monitoring new lines
-cat "$LOG_FILE" | grep --line-buffered -iE "WARNING|ERROR|✅|⏳|📦|🔁|🔄|📎|🧾|🛠️|🔧|💤|⚠️|⛔" | while read -r line; do
+cat "$LOG_FILE" | grep --line-buffered -iE "WARNING|ERROR|✅|⏳|📦|🔁|🔄|📎|🧾|🛠️|🔧|💤|⚠️|⛔|❌" | while read -r line; do
     send_telegram_message "$line"
 done
 
@@ -30,7 +30,7 @@ done
 service earlyoom status > /dev/null 2>&1 || service earlyoom start
 
 # Run the log monitoring command in the background
-tail -f "$LOG_FILE" | grep --line-buffered -iE "WARNING|ERROR|✅|⏳|📦|🔁|🔄|📎|🧾|🛠️|🔧|💤|⚠️|⛔" | while read -r line; do
+tail -f "$LOG_FILE" | grep --line-buffered -iE "WARNING|ERROR|✅|⏳|📦|🔁|🔄|📎|🧾|🛠️|🔧|💤|⚠️|⛔|❌" | while read -r line; do
     send_telegram_message "$line"
 done
 
