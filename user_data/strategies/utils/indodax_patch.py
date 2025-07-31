@@ -13,7 +13,7 @@ def patch_indodax_create_order():
     original_create_order = Exchange.create_order
 
     def patched_create_order(self, *args, **kwargs):
-        args = list(args)  # allow modification
+        args = list(args)
 
         pair = args[0] if len(args) > 0 else kwargs.get("symbol") or kwargs.get("pair")
         order_type = args[1] if len(args) > 1 else kwargs.get("type") or kwargs.get("order_type")
@@ -24,7 +24,7 @@ def patch_indodax_create_order():
 
         if side == 'sell' and (order_type is None or order_type == 'market'):
             try:
-                orderbook = self.fetch_order_book(pair)
+                orderbook = self._api.fetch_order_book(pair)
                 best_bid = orderbook['bids'][0][0] if orderbook['bids'] else None
 
                 if best_bid:
@@ -37,7 +37,7 @@ def patch_indodax_create_order():
 
                     logger.warning(f"⚠️ [Indodax Patch] Simulating market sell with limit price {simulated_price} IDR")
 
-                    # Patch args or kwargs to simulate a limit order
+                    # Modify args or kwargs to become a limit sell
                     if len(args) > 1:
                         args[1] = 'limit'
                     else:
@@ -48,17 +48,17 @@ def patch_indodax_create_order():
                     else:
                         kwargs['price'] = simulated_price
                 else:
-                    logger.warning(f"❌ [Indodax Patch] No bids available to simulate market sell on {pair}")
+                    logger.warning(f"❌ [Indodax Patch] No bids to simulate market sell on {pair}")
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Error simulating market sell: {e}")
 
-        # Create the order
+        # Place the (possibly patched) order
         order = original_create_order(self, *args, **kwargs)
 
-        # Delay to let order settle
+        # Allow order to settle
         time.sleep(20)
 
-        # Try to refresh order status
+        # Refresh order info with retry
         for attempt in range(3):
             try:
                 refreshed_order = self.fetch_order(order['id'], pair)
