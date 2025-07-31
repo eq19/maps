@@ -6,29 +6,27 @@ logger = logging.getLogger(__name__)
 
 
 def patch_indodax_create_order():
-    """Monkey-patch Exchange.create_order() for Indodax to simulate market sell as limit sell if needed."""
+    """Monkey-patch Freqtrade's Exchange.create_order for Indodax to simulate market sell."""
     if hasattr(Exchange.create_order, '_is_patched'):
         return
 
     original_create_order = Exchange.create_order
 
     def patched_create_order(self, *args, **kwargs):
-        args = list(args)
+        pair = kwargs.get("pair", "unknown")
+        ordertype = kwargs.get("ordertype") or kwargs.get("type")
+        side = kwargs.get("side")
+        amount = kwargs.get("amount")
 
-        pair = args[0] if len(args) > 0 else kwargs.get("symbol") or kwargs.get("pair")
-        order_type = args[1] if len(args) > 1 else kwargs.get("type")
-        side = args[2] if len(args) > 2 else kwargs.get("side")
-        amount = args[3] if len(args) > 3 else kwargs.get("amount")
+        logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={ordertype}, side={side})")
 
-        logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={order_type}, side={side})")
-
-        if getattr(self, 'id', '') == 'indodax' and side == 'sell' and (order_type is None or order_type == 'market'):
+        if side == 'sell' and (ordertype is None or ordertype == 'market'):
             try:
                 orderbook = self._api.fetch_order_book(pair)
                 best_bid = orderbook['bids'][0][0] if orderbook['bids'] else None
 
                 if best_bid:
-                    simulated_price = round(best_bid * 0.99, -2)  # nearest 100 IDR
+                    simulated_price = round(best_bid * 0.99, -2)
                     total = simulated_price * amount
 
                     if total < 1000:
@@ -37,29 +35,25 @@ def patch_indodax_create_order():
 
                     logger.warning(f"⚠️ [Indodax Patch] Simulating market sell with limit price {simulated_price} IDR")
 
-                    # Force args to match signature: (symbol, type, side, amount, price, ...)
-                    args[1] = 'limit'  # type
-                    if len(args) < 5:
-                        args.append(simulated_price)  # price
-                    else:
-                        args[4] = simulated_price
+                    kwargs["ordertype"] = "limit"
+                    kwargs["rate"] = simulated_price
                 else:
-                    logger.warning(f"❌ [Indodax Patch] No bids available to simulate market sell.")
+                    logger.warning("❌ [Indodax Patch] No bids available to simulate market sell.")
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Error simulating market sell: {e}")
 
-        order = original_create_order(self, *args)
+        order = original_create_order(self, *args, **kwargs)
 
-        time.sleep(20)  # Let Indodax update its order book
+        time.sleep(20)  # Let the exchange register the order
 
         for attempt in range(3):
             try:
-                refreshed = self.fetch_order(order['id'], pair)
-                order.update(refreshed)
+                refreshed_order = self.fetch_order(order['id'], pair)
+                order.update(refreshed_order)
                 logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
                 break
             except Exception as e:
-                logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt + 1} failed: {e}")
+                logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
                 time.sleep(2 ** attempt)
 
         return order
