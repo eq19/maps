@@ -26,7 +26,7 @@ def patch_indodax_create_order():
         # Convert args to mutable list for safe modification
         args = list(args)
 
-        logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={order_type}, side={side})")
+        #logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={order_type}, side={side})")
 
         # 🛠️ Simulate market sell as limit sell at minimal price
         if side == 'sell' and order_type == 'market':
@@ -54,7 +54,7 @@ def patch_indodax_create_order():
             try:
                 refreshed_order = self.fetch_order(order['id'], pair)
                 order.update(refreshed_order)
-                logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
+                #logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
                 break
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt + 1} failed: {e}")
@@ -77,7 +77,7 @@ def patch_indodax_cancel_order():
         #if getattr(self, 'id', '') != 'indodax':
             #return original_cancel_order(self, order_id, symbol, params)
 
-        logger.info(f"⚠️ [Indodax Patch] Cancelling order: {order_id}")
+        #logger.info(f"⚠️ [Indodax Patch] Cancelling order: {order_id}")
         try:
             # 🔍 Indodax requires 'side' param when cancelling an order
             if "side" not in params:
@@ -87,7 +87,7 @@ def patch_indodax_cancel_order():
                     if side:
                         params = dict(params)  # clone to avoid mutating input
                         params["side"] = side
-                        logger.debug(f"📎 [Indodax Patch] Injected side='{side}' into cancel_order params.")
+                        #logger.debug(f"📎 [Indodax Patch] Injected side='{side}' into cancel_order params.")
                     else:
                         logger.warning(f"❓ [Indodax Patch] Could not determine order side for {order_id}")
                 except Exception as fetch_err:
@@ -95,7 +95,7 @@ def patch_indodax_cancel_order():
                     raise
 
             result = original_cancel_order(self, order_id, symbol, params)
-            logger.info(f"✅ [Indodax Patch] Order {order_id} cancelled.")
+            #logger.info(f"✅ [Indodax Patch] Order {order_id} cancelled.")
             return result
 
         except Exception as e:
@@ -120,7 +120,7 @@ def patch_indodax_fetch_order():
         logger.info(f"🔄 [Indodax Patch] Fetching order {order_id} for {symbol}")
         try:
             result = original_fetch_order(self, order_id, symbol, params)
-            logger.debug(f"📦 [Indodax Patch] Raw fetch_order result: {result}")
+            #logger.debug(f"📦 [Indodax Patch] Raw fetch_order result: {result}")
             info = result.get("info", {})
             order_info = info.get("return", {}).get("order", {})
 
