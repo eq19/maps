@@ -117,7 +117,7 @@ def patch_indodax_fetch_order():
         #if getattr(self, 'id', '') != 'indodax':
             #return original_fetch_order(self, order_id, symbol, params)
 
-        logger.info(f"🔄 [Indodax Patch] Fetching order {order_id} for {symbol}")
+        #logger.info(f"🔄 [Indodax Patch] Fetching order {order_id} for {symbol}")
         try:
             result = original_fetch_order(self, order_id, symbol, params)
             #logger.debug(f"📦 [Indodax Patch] Raw fetch_order result: {result}")
