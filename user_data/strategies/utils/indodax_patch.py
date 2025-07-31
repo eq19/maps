@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def patch_indodax_create_order():
-    """Monkey-patch Exchange.create_order() for Indodax with market-sell fallback and post-fetch refresh."""
+    """Monkey-patch Exchange.create_order() for Indodax to simulate market sell as limit sell if needed."""
     if hasattr(Exchange.create_order, '_is_patched'):
         return
 
@@ -22,48 +22,40 @@ def patch_indodax_create_order():
 
         logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={order_type}, side={side})")
 
-        # ⚠️ Patch only for Indodax market sell
-        if side == 'sell' and (order_type is None or order_type == 'market'):
+        if getattr(self, 'id', '') == 'indodax' and side == 'sell' and (order_type is None or order_type == 'market'):
             try:
                 orderbook = self._api.fetch_order_book(pair)
                 best_bid = orderbook['bids'][0][0] if orderbook['bids'] else None
 
                 if best_bid:
-                    simulated_price = round(best_bid * 0.99, -2)  # round to nearest 100
-                    total = simulated_price * amount if simulated_price and amount else 0
+                    simulated_price = round(best_bid * 0.99, -2)  # nearest 100 IDR
+                    total = simulated_price * amount
 
                     if total < 1000:
                         logger.warning(f"❌ [Indodax Patch] Sell amount too small: {amount} × {simulated_price} = {total} IDR")
-                        raise ValueError("Cannot simulate market sell: total < 1000 IDR")
+                        raise ValueError("Simulated sell order below 1000 IDR")
 
                     logger.warning(f"⚠️ [Indodax Patch] Simulating market sell with limit price {simulated_price} IDR")
 
-                    # Patch type and price for simulated limit order
-                    if len(args) > 1:
-                        args[1] = 'limit'
+                    # Force args to match signature: (symbol, type, side, amount, price, ...)
+                    args[1] = 'limit'  # type
+                    if len(args) < 5:
+                        args.append(simulated_price)  # price
                     else:
-                        kwargs['type'] = 'limit'
-
-                    if len(args) > 4:
                         args[4] = simulated_price
-                    else:
-                        kwargs['price'] = simulated_price
                 else:
-                    logger.warning(f"❌ [Indodax Patch] No bids to simulate market sell on {pair}")
+                    logger.warning(f"❌ [Indodax Patch] No bids available to simulate market sell.")
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Error simulating market sell: {e}")
 
-        # Create order
-        order = original_create_order(self, *args, **kwargs)
+        order = original_create_order(self, *args)
 
-        # Delay to let Indodax settle
-        time.sleep(20)
+        time.sleep(20)  # Let Indodax update its order book
 
-        # Refresh order info
         for attempt in range(3):
             try:
-                refreshed_order = self.fetch_order(order['id'], pair)
-                order.update(refreshed_order)
+                refreshed = self.fetch_order(order['id'], pair)
+                order.update(refreshed)
                 logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
                 break
             except Exception as e:
