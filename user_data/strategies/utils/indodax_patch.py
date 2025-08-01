@@ -18,7 +18,7 @@ def patch_indodax_create_order():
         side = kwargs.get("side")
         amount = kwargs.get("amount")
 
-        logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={ordertype}, side={side})")
+        #logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={ordertype}, side={side})")
 
         if side == 'sell' and (ordertype is None or ordertype == 'market'):
             try:
@@ -33,7 +33,7 @@ def patch_indodax_create_order():
                         logger.warning(f"❌ [Indodax Patch] Sell amount too small: {amount} × {simulated_price} = {total} IDR")
                         raise ValueError("Simulated sell order below 1000 IDR")
 
-                    logger.warning(f"⚠️ [Indodax Patch] Simulating market sell with limit price {simulated_price} IDR")
+                    #logger.warning(f"⚠️ [Indodax Patch] Simulating market sell with limit price {simulated_price} IDR")
 
                     kwargs["ordertype"] = "limit"
                     kwargs["rate"] = simulated_price
@@ -50,7 +50,7 @@ def patch_indodax_create_order():
             try:
                 refreshed_order = self.fetch_order(order['id'], pair)
                 order.update(refreshed_order)
-                logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
+                #logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
                 break
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
