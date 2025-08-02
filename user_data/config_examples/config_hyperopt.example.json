@@ -12,16 +12,16 @@
       "id": 1,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 60,
-      "epochs": 3000,
+      "epochs": 5000,
       "parallel_jobs": 4,
       "spaces": ["all"],
-      "hyperopt_loss": "SellSpaceCombinedHyperOptLoss"
+      "hyperopt_loss": "SortinoHyperOptLossDaily"
     },
     {
       "id": 2,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 60,
-      "epochs": 2000,
+      "epochs": 4000,
       "parallel_jobs": 4,
       "spaces": ["default"],
       "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
@@ -30,7 +30,7 @@
       "id": 3,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 60,
-      "epochs": 1000,
+      "epochs": 3000,
       "parallel_jobs": 4,
       "spaces": ["buy sell roi"],
       "hyperopt_loss": "MaxDrawDownHyperOptLoss"
@@ -39,7 +39,7 @@
       "id": 4,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 60,
-      "epochs": 1000,
+      "epochs": 2000,
       "parallel_jobs": 4,
       "spaces": ["buy roi"],
       "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
