@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.freqtrade.io/schema.json",
   "dry_run": true,
-  "fee": 0.003322,
+  "fee": 0.003733,
   "max_open_trades": -1,
   "trading_mode": "spot",
   "stake_currency": "IDR",
