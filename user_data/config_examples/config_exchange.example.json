@@ -1,9 +1,4 @@
 {
-  "pairlists": [
-    {
-      "method": "StaticPairList"
-    }
-  ],
   "exchange": {
     "name": "indodax",
     "key": "your_exchange_key",
