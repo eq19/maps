@@ -39,11 +39,6 @@
     "stoploss_on_exchange": false,
     "stoploss_on_exchange_interval": 60
   },
-  "pairlists": [
-    {
-      "method": "StaticPairList"
-    }
-  ],
   "edge": {
     "enabled": false,
     "process_throttle_secs": 604800,
