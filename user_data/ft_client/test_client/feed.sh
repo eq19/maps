@@ -282,8 +282,6 @@ if [[ "$1" == "listing" ]]; then
   freqtrade test-pairlist --help
   #freqtrade test-pairlist --one-column --print-json
 
-else
-
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
@@ -311,6 +309,8 @@ else
       fi
     done   
   fi
+
+else
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
