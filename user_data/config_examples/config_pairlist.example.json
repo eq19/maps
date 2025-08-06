@@ -32,9 +32,14 @@
             "max_volatility": 0.75,
             "refresh_period": 1800
         },
-		{
-			"method": "PrecisionFilter"
-		},
+        {
+            "method": "PerformanceFilter",
+            "minutes": 14400,
+            "min_profit": 0.015
+        },
+        {
+	    "method": "PrecisionFilter"
+	},
         {
             "method": "ShuffleFilter"
         }     
