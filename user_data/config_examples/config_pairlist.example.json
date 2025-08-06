@@ -32,6 +32,9 @@
             "max_volatility": 0.75,
             "refresh_period": 1800
         },
+		{
+			"method": "PrecisionFilter"
+		},
         {
             "method": "ShuffleFilter"
         }     
