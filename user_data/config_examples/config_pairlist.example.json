@@ -1,47 +1,47 @@
 {
     "pairlists": [
         {
-            "method": "VolumePairList",
-            "number_assets": 100,
-            "sort_key": "quoteVolume",
-            "min_value": 0,
-            "refresh_period": 86400
+            "method": "PriceFilter",
+            "low_price_ratio": 0.0005  // ↓ Accept coins priced >= 0.0005 of quote asset (e.g. IDR)
+        },
+        {
+            "method": "PrecisionFilter"
         },
         {
             "method": "AgeFilter",
-            "min_days_listed": 30
+            "min_days_listed": 60  // ↑ Require coins to be listed longer (maturity improves stability)
         },
         {
-            "method": "PriceFilter",
-            "low_price_ratio": 0.003
+            "method": "VolumePairList",
+            "number_assets": 75,  // ↓ Reduce from 100 to 75 to improve liquidity quality
+            "sort_key": "quoteVolume",
+            "min_value": 5000000,  // ↑ Ignore illiquid pairs (< 5M IDR 24h volume)
+            "refresh_period": 3600
         },
         {
             "method": "SpreadFilter",
-            "max_spread_ratio": 0.008
-        },
-        {
-            "method": "RangeStabilityFilter",
-            "lookback_days": 3,
-            "min_rate_of_change": 0.03,
-            "refresh_period": 1800
+            "max_spread_ratio": 0.005  // ↓ Tighten from 0.008 to 0.005 (aim for better fills)
         },
         {
             "method": "VolatilityFilter",
             "lookback_days": 3,
-            "min_volatility": 0.02,
-            "max_volatility": 0.75,
+            "min_volatility": 0.01,   // ↓ Slightly relax to include smoother assets
+            "max_volatility": 0.5,    // ↓ Avoid over-volatile pairs
+            "refresh_period": 1800
+        },
+        {
+            "method": "RangeStabilityFilter",
+            "lookback_days": 3,
+            "min_rate_of_change": 0.025,  // ↓ Slightly relaxed to avoid excluding mild movers
             "refresh_period": 1800
         },
         {
             "method": "PerformanceFilter",
-            "minutes": 14400,
-            "min_profit": 0.015
+            "minutes": 1440,           // ↓ 1 day = more stable than 10 days
+            "min_profit": 0.01         // ↓ Lower to allow more candidates
         },
         {
-	    "method": "PrecisionFilter"
-	},
-        {
             "method": "ShuffleFilter"
-        }     
+        }
     ]
 }
