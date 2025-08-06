@@ -283,11 +283,33 @@ if [[ "$1" == "listing" ]]; then
   #freqtrade test-pairlist --one-column --print-json
 
 else
-#elif [[ "${RERUN_RUNNER}" != "true" ]]; then
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
+
+    echo -e "\n$hr\nAI MODELS\n$hr"
+    freqtrade list-freqaimodels --help
+    #freqtrade list-freqaimodels
+
+    echo -e "\n$hr\nAI TRADES\n$hr"
+    freqtrade trade --help
+
+    echo "Starting freqtrade trade..."
+    #freqtrade trade --freqaimodel LightGBMRegressor
+    nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
+    echo $! > freqtrade_pid.txt
+    tail -f freqtrade.log | while read LOGLINE
+    do
+      echo "$LOGLINE"
+      if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
+        echo "Stopping freqtrade trade..."
+        PID=$(cat freqtrade_pid.txt)
+        kill -SIGTERM $PID
+        echo "freqtrade trade stopped."
+        break
+      fi
+    done   
   fi
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
@@ -344,31 +366,6 @@ else
   #freqtrade backtesting-analysis --timerange="$TB" --indicator-list all
   jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   
-  echo -e "\n$hr\nAI MODELS\n$hr"
-  freqtrade list-freqaimodels --help
-  #freqtrade list-freqaimodels
-
-#else
-
-  echo -e "\n$hr\nAI TRADES\n$hr"
-  freqtrade trade --help
-
-  echo "Starting freqtrade trade..."
-  #freqtrade trade --freqaimodel LightGBMRegressor
-  nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
-  echo $! > freqtrade_pid.txt
-  tail -f freqtrade.log | while read LOGLINE
-  do
-    echo "$LOGLINE"
-    if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
-      echo "Stopping freqtrade trade..."
-      PID=$(cat freqtrade_pid.txt)
-      kill -SIGTERM $PID
-      echo "freqtrade trade stopped."
-      break
-    fi
-  done  
-
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe
   #freqtrade plot-profit --timerange="$TB"
