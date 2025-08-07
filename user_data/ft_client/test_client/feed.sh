@@ -365,7 +365,7 @@ else
   #freqtrade lookahead-analysis
   #freqtrade recursive-analysis
   #freqtrade backtesting-analysis --timerange="$TB" --indicator-list all
-  jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
+  #jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
   
   #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
   #freqtrade plot-dataframe
