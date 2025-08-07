@@ -295,39 +295,45 @@ if [[ "$1" != "hyperopt" ]]; then
     echo -e "\n$hr\nAI TRADES\n$hr"
     freqtrade trade --help
 
-    echo "Starting freqtrade trade..."
-    #freqtrade trade --freqaimodel LightGBMRegressor
-    nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
-    echo $! > freqtrade_pid.txt
-    tail -f freqtrade.log | while read LOGLINE
-    do
-      echo "$LOGLINE"
-      if [[ "${LOGLINE}" == *"pairs:"* ]]; then
-        log_line="${LOGLINE}"
-        pairs=$(echo "${LOGLINE}" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
-      fi
-      if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
-        echo "Stopping freqtrade trade..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        break
-      fi
-    done   
+
+echo "Starting freqtrade trade..."
+nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
+echo $! > freqtrade_pid.txt
+
+# Open file descriptor
+exec 3< <(tail -f freqtrade.log)
+
+while read -r LOGLINE <&3; do
+  echo "$LOGLINE"
+
+  if [[ "${LOGLINE}" == *"pairs:"* ]]; then
+    log_line="${LOGLINE}"
+    pairs=$(echo "${LOGLINE}" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
   fi
 
-  # Validate
-  if [[ -z "$pairs" ]]; then
-    echo "❌ No pairs found in the $log_line. Aborting."
-  else
-    # Update config.json using jq
-    jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
-    echo "✅ Updated pair whitelist in $EXCHANGE_FILE"
+  if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
+    echo "Stopping freqtrade trade..."
+    PID=$(cat freqtrade_pid.txt)
+    kill -SIGTERM $PID
+    echo "freqtrade trade stopped."
+    break
   fi
+done
 
-  echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
-  freqtrade download-data --help
-  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
+# Validate and update config
+if [[ -z "$pairs" ]]; then
+  echo "❌ No pairs found in the log. Last line: $log_line"
+else
+  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
+  echo "✅ Updated pair whitelist in $EXCHANGE_FILE"
+fi
+
+
+
+    echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
+    freqtrade download-data --help
+    freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
+  fi
 
 else
 
