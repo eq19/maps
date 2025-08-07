@@ -263,7 +263,7 @@ calculate_score() {
 
 }
 
-if [[ "$1" == "listing" ]]; then
+if [[ "$1" != "hyperopt" ]]; then
 
   echo -e "\n$hr\nLIST EXCHANGES\n$hr"
   freqtrade list-exchanges --help
