@@ -303,7 +303,7 @@ if [[ "$1" != "hyperopt" ]]; then
     do
       echo "$LOGLINE"
       if [[ "${LOGLINE}" == *"freqtrade.plugins.pairlistmanager"* ]]; then
-        log_line=$LOGLINE
+        log_line="${LOGLINE}"
         pairs=$(echo "${LOGLINE}" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
       fi
       if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
