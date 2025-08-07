@@ -312,11 +312,11 @@ if [[ "$1" != "hyperopt" ]]; then
     done   
   fi
 
-  # Get the most recent whitelist line from the log
-  log_line=$(grep "Whitelist with" "freqtrade.log" | tail -1)
+  # Extract the latest log line with the whitelist
+  log_line=$(grep "Whitelist with" freqtrade.log | tail -1)
 
-  # Extract the pair list and convert to JSON array format
-  pairs=$(echo "$log_line" | grep -o "\[.*\]" | sed "s/'/\"/g")
+  # Extract the list of pairs using sed, then convert to JSON array by replacing single quotes with double quotes
+  pairs=$(echo "$log_line" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
 
   # Validate
   if [[ -z "$pairs" ]]; then
