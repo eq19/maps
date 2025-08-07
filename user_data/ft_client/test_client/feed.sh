@@ -14,7 +14,6 @@ EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERFILE=user_data/config_examples/config_hyperopt.example.json
 HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
-jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
 
 # Define the backtesting duration (in days)
 BACKTESTING_DURATION=1  # In months. Adjust as per your strategy
@@ -333,6 +332,7 @@ else
     cat $STRATEGY > /tmp/store.json
     #rm -rf user_data/backtest_results/*
     #freqtrade backtesting --fee=$FEE --timerange="$TB"
+    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
     # Scoring breakdown:
