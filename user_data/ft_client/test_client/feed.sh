@@ -320,7 +320,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
   # Validate
   if [[ -z "$pairs" ]]; then
-    echo "❌ No pairs found in the log. Aborting."
+    echo "❌ No pairs found in the freqtrade.log. Aborting."
   else
     # Update config.json using jq
     jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
