@@ -302,6 +302,8 @@ if [[ "$1" != "hyperopt" ]]; then
     tail -f freqtrade.log | while read LOGLINE
     do
       echo "$LOGLINE"
+      if [[ "${LOGLINE}" == *"Whitelist with"* ]]; then
+      fi
       if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
