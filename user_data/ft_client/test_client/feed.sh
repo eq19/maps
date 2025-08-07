@@ -312,7 +312,8 @@ if [[ "$1" != "hyperopt" ]]; then
   fi
 
   echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
-  freqtrade download-data --help && freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
+  freqtrade download-data --help
+  freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
 else
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
