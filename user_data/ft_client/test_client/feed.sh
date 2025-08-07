@@ -325,7 +325,7 @@ else
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
   #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
-  #freqtrade edge --fee=$FEE
+  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
 
   if [[ "$SCORE" == "100" ]]; then
     echo -e "\n$hr\nRUN BACKTEST\n$hr"
@@ -333,7 +333,6 @@ else
     cat $STRATEGY > /tmp/store.json
     #rm -rf user_data/backtest_results/*
     #freqtrade backtesting --fee=$FEE --timerange="$TB"
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
     # Scoring breakdown:
