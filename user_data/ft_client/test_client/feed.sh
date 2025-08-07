@@ -14,6 +14,7 @@ CONFIG=user_data/config_examples/config_full.example.json
 EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERFILE=user_data/config_examples/config_hyperopt.example.json
+EXCHANGE_FILE=user_data/config_examples/config_exchange.example.json
 HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
 # Define the backtesting duration (in days)
@@ -311,9 +312,25 @@ if [[ "$1" != "hyperopt" ]]; then
     done   
   fi
 
+  # Get the most recent whitelist line from the log
+  log_line=$(grep "Whitelist with" "freqtrade.log" | tail -1)
+
+  # Extract the pair list and convert to JSON array format
+  pairs=$(echo "$log_line" | grep -o "\[.*\]" | sed "s/'/\"/g")
+
+  # Validate
+  if [[ -z "$pairs" ]]; then
+    echo "❌ No pairs found in the log. Aborting."
+  else
+    # Update config.json using jq
+    jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
+    echo "✅ Updated pair whitelist in $EXCHANGE_FILE"
+  fi
+
   echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
   freqtrade download-data --help
   freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
+
 else
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
