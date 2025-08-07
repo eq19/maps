@@ -303,6 +303,7 @@ if [[ "$1" != "hyperopt" ]]; then
     do
       echo "$LOGLINE"
       if [[ "${LOGLINE}" == *"Whitelist with"* ]]; then
+        pairs=$(echo "${LOGLINE}" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
       fi
       if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
         echo "Stopping freqtrade trade..."
@@ -313,12 +314,6 @@ if [[ "$1" != "hyperopt" ]]; then
       fi
     done   
   fi
-
-  # Extract the latest log line with the whitelist
-  log_line=$(grep "Whitelist with" freqtrade.log | tail -1)
-
-  # Extract the list of pairs using sed, then convert to JSON array by replacing single quotes with double quotes
-  pairs=$(echo "$log_line" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
 
   # Validate
   if [[ -z "$pairs" ]]; then
