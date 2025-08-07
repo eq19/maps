@@ -295,23 +295,40 @@ if [[ "$1" != "hyperopt" ]]; then
     echo -e "\n$hr\nAI TRADES\n$hr"
     freqtrade trade --help
 
-
 echo "Starting freqtrade trade..."
 nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
 echo $! > freqtrade_pid.txt
 
-# Open file descriptor
+# Open descriptor to log stream
 exec 3< <(tail -f freqtrade.log)
+
+inside_pairs_block=false
+full_pairs_line=""
 
 while read -r LOGLINE <&3; do
   echo "$LOGLINE"
 
-  if [[ "${LOGLINE}" == *"pairs:"* ]]; then
-    log_line="${LOGLINE}"
-    pairs=$(echo "${LOGLINE}" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
+  # Detect the start of pair whitelist
+  if [[ "$LOGLINE" == *"Whitelist with"* && "$LOGLINE" == *"pairs:"* ]]; then
+    inside_pairs_block=true
+    full_pairs_line="$LOGLINE"
+    # Check if closing bracket already present
+    if [[ "$LOGLINE" == *"]" ]]; then
+      inside_pairs_block=false
+    fi
+    continue
   fi
 
-  if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
+  # Collect remaining lines if pair list is split
+  if $inside_pairs_block; then
+    full_pairs_line+="$LOGLINE"
+    if [[ "$LOGLINE" == *"]" ]]; then
+      inside_pairs_block=false
+    fi
+  fi
+
+  # Stop if Freqtrade has entered RUNNING state
+  if [[ "$LOGLINE" == *"state='RUNNING'"* ]]; then
     echo "Stopping freqtrade trade..."
     PID=$(cat freqtrade_pid.txt)
     kill -SIGTERM $PID
@@ -320,9 +337,13 @@ while read -r LOGLINE <&3; do
   fi
 done
 
+# Extract the JSON from the full_pairs_line
+pairs=$(echo "$full_pairs_line" | sed -n "s/.*pairs: \(\[.*\]\).*/\1/p" | tr -d '\n' | sed "s/'/\"/g")
+
 # Validate and update config
 if [[ -z "$pairs" ]]; then
-  echo "❌ No pairs found in the log. Last line: $log_line"
+  echo "❌ No pairs found in the log. Last line was:"
+  echo "$full_pairs_line"
 else
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
   echo "✅ Updated pair whitelist in $EXCHANGE_FILE"
