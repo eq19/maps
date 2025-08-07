@@ -347,6 +347,7 @@ if [[ "$1" != "hyperopt" ]]; then
     else
       jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
       echo "✅ Updated pair whitelist in $EXCHANGE_FILE"
+      gh variable set PAIRS --body "$pairs"
     fi
 
     echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
