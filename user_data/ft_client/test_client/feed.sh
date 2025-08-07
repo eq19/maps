@@ -6,6 +6,7 @@
 #
 hr='------------------------------------------------------------------------------------'
 FEE=0.003322
+TIMEFRAMES='15m 1h'
 [[ -z "${SCORE+x}" ]] && SCORE=100
 STRATEGY=user_data/strategies/fibbo.json
 HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
@@ -311,7 +312,7 @@ if [[ "$1" != "hyperopt" ]]; then
   fi
 
   echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
-  freqtrade download-data --help && freqtrade download-data --timeframes '15m 1h' --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
+  freqtrade download-data --help && freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
 else
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
