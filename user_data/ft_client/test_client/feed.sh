@@ -303,6 +303,7 @@ if [[ "$1" != "hyperopt" ]]; then
     do
       echo "$LOGLINE"
       if [[ "${LOGLINE}" == *"Whitelist with"* ]]; then
+        log_line=$LOGLINE
         pairs=$(echo "${LOGLINE}" | sed -n "s/.*Whitelist with .* pairs: \(\[.*\]\)/\1/p" | sed "s/'/\"/g")
       fi
       if [[ "${LOGLINE}" == *"state='RUNNING'"* ]]; then
@@ -317,7 +318,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
   # Validate
   if [[ -z "$pairs" ]]; then
-    echo "❌ No pairs found in the freqtrade.log. Aborting."
+    echo "❌ No pairs found in the $log_line. Aborting."
   else
     # Update config.json using jq
     jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
