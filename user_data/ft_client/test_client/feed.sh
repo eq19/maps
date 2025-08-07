@@ -369,8 +369,10 @@ else
 
   #echo -e "\n$hr\nSHOW EDGE\n$hr"
   #freqtrade edge --help
+  pairs=$(gh variable get PAIRS)
   #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
   jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
   if [[ "$SCORE" == "100" ]]; then
     echo -e "\n$hr\nRUN BACKTEST\n$hr"
