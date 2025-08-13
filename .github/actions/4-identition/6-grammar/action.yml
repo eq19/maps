@@ -113,7 +113,7 @@ runs:
           #Jekyll Quick Reference https://gist.github.com/DrOctogon/bfb6e392aa5654c63d12
           JEKYLL_GITHUB_TOKEN=${{ inputs.token }} DISABLE_WHITELIST=true bundle exec jekyll build --profile --trace -t -d ./docs
 
-          if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "www.eq19.com" > ./docs/CNAME; fi
+          if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "eq19.github.io" > ./docs/CNAME; fi
           rm -rf ./docs/.nojekyll && touch ./docs/.nojekyll
 
           echo -e "\n$hr\nFinal Pages\n$hr"

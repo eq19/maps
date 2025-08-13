@@ -23,7 +23,7 @@ else
   echo -e "\n$hr\nBuild Pages\n$hr"
   #Jekyll Quick Reference https://gist.github.com/DrOctogon/bfb6e392aa5654c63d12
   JEKYLL_GITHUB_TOKEN=${GITHUB_ACCESS_TOKEN} DISABLE_WHITELIST=true jekyll build --profile -t -p /home/runner/_site/_plugins -d /home/runner/_site/docs    
-  if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "www.eq19.com" > /home/runner/_site/docs/CNAME; fi
+  if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then echo "eq19.github.io" > /home/runner/_site/docs/CNAME; fi
   rm -rf /home/runner/_site/docs/.nojekyll && touch /home/runner/_site/docs/.nojekyll
 fi
 
