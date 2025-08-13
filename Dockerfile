@@ -31,7 +31,7 @@ RUN chmod 644 /etc/supervisor/conf.d/*.conf
 ENV ACTIONS_RUNNER_HOOK_JOB_STARTED=/home/runner/hooks/job_started.sh
 ENV ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/home/runner/hooks/job_completed.sh
 
-LABEL maintainer="me@eq19.com" \
+LABEL maintainer="me@eq19.github.io" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.vcs-ref=$VCS_REF \
