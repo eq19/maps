@@ -39,12 +39,11 @@ TB="$BACKTESTING_START-$TODAY"
 # Print the timeranges
 echo "Download Timerange: $TD"
 echo "Backtesting Timerange: $TB"
-
-#echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 cat $CONFIG > user_data/config.json
+
+# ENVIRONMENT
 export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:$PYTHONPATH"
-#printenv
 
 hyperopt() {
 
@@ -101,8 +100,8 @@ hyperopt() {
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE \
       ${enable_protections} --analyze-per-epoch --random-state ${id} \
-      --print-json
-      #--logfile /dev/null > /dev/null 2>&1 
+      --logfile /dev/null > /dev/null 2>&1 
+      #--print-json
     freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
