@@ -43,6 +43,7 @@ echo "Backtesting Timerange: $TB"
 #echo -e "\n$hr\nTEST ENVIRONMENT\n$hr"
 cat $CONFIG > user_data/config.json
 export PATH="venv/bin:$PATH"
+export PYTHONPATH="user_data/strategies:$PYTHONPATH"
 #printenv
 
 hyperopt() {
