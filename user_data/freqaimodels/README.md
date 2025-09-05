@@ -46,7 +46,7 @@ from user_data.freqaimodels import list_available_models
 print("Available models:", list_available_models())
 ```
 
-## 🏗️ Architecture
+## 🏗️ [Architecture](https://github.com/markelayan/hhec-dois-bull-manager)
 
 ### Model Categories
 
