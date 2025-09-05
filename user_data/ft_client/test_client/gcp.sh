@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Max retries
-max_retries=30
+max_retries=10
 # Interval between checks (10 retries in 10 minutes -> 60s each)
 interval=60
 
@@ -19,7 +19,8 @@ for ((i=1; i<=max_retries; i++)); do
     fi
 
     if [ $i -lt $max_retries ]; then
-        sleep $interval
+      wait=$(($i * $interval))
+      sleep $wait
     fi
 done
 
