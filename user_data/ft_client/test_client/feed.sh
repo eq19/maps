@@ -71,12 +71,14 @@ hyperopt() {
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
           --arg epochs "$epochs" \
+          --arg freqai "$FREQAIMODEL" \
           '{ref: $ref, inputs: {
            matrix_json: (
              {
                score: $score,
                run_id: $runId,
                epochs: $epochs,
+               freqai: $freqai,
                hyperopts: $hyperopts
              } | @json
            )
@@ -100,14 +102,14 @@ hyperopt() {
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} -j 4 \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE \
       ${enable_protections} --analyze-per-epoch --random-state ${id} \
-      --logfile /dev/null > /dev/null 2>&1 
+      --freqaimodel $FREQAIMODEL --logfile /dev/null > /dev/null 2>&1 
       #--print-json
     freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST\n$hr"
     freqtrade backtesting --help
     #rm -rf user_data/backtest_results/*
-    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
   
     calculate_score
     NEW_SCORE=$SCORE
@@ -295,7 +297,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
     echo -e "\n$hr\nAI TRADES\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
-    nohup freqtrade trade --dry-run --freqaimodel LightGBMClassifier --fee=$FEE > freqtrade.log 2>&1 &
+    nohup freqtrade trade --dry-run --freqaimodel $FREQAIMODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
     # Open descriptor to log stream
@@ -379,7 +381,7 @@ else
     cat $STRATEGY > /tmp/store.json
     #rm -rf user_data/backtest_results/*
     #freqtrade backtesting --fee=$FEE --timerange="$TB"
-    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
 
     # Scoring breakdown:
     # Winrate: 25 pts
