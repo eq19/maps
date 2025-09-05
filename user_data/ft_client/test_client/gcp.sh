@@ -19,7 +19,7 @@ for ((i=1; i<=max_retries; i++)); do
     fi
 
     if [ $i -lt $max_retries ]; then
-      wait=$(($i * $interval))
+      wait=$((i * interval))
       sleep $wait
     fi
 done
