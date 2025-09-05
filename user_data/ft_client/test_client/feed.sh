@@ -295,7 +295,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
     echo -e "\n$hr\nAI TRADES\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
-    nohup freqtrade trade --dry-run --freqaimodel --fee=$FEE > freqtrade.log 2>&1 &
+    nohup freqtrade trade --dry-run --freqaimodel LightGBMClassifier --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
     # Open descriptor to log stream
