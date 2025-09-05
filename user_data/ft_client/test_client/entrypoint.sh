@@ -22,7 +22,7 @@ else
 fi
 
 # Check if the line already exists in the crontab
-NEW_LINE="0 */3 * * * supervisorctl stop monitor_freqtrade && supervisorctl start monitor_freqtrade"
+NEW_LINE="0 */6 * * * supervisorctl stop monitor_freqtrade && supervisorctl start monitor_freqtrade"
 if ! crontab -l | grep -Fxq "$NEW_LINE"; then
   # If the line does not exist, add it
   (crontab -l 2>/dev/null; echo "$NEW_LINE") | crontab -
