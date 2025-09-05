@@ -291,12 +291,10 @@ if [[ "$1" != "hyperopt" ]]; then
 
     echo -e "\n$hr\nAI MODELS\n$hr"
     freqtrade list-freqaimodels --help
-    #freqtrade list-freqaimodels
+    freqtrade list-freqaimodels
 
     echo -e "\n$hr\nAI TRADES\n$hr"
-    freqtrade trade --help
-
-    echo "Starting freqtrade trade..."
+    freqtrade trade --help && echo "Starting freqtrade trade..."
     nohup freqtrade trade --dry-run --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
