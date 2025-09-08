@@ -6,7 +6,6 @@ import numpy as np  # noqa
 import pandas as pd  # noqa
 from pandas import DataFrame
 from typing import Optional, Union
-from utils.indodax_patch import *
 
 from freqtrade.strategy import (
     BooleanParameter,
@@ -34,6 +33,7 @@ import talib.abstract as ta
 import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
+from utils.indodax_patch import *
 
 
 # Define indicator sets (could also come from the JSON if needed)
