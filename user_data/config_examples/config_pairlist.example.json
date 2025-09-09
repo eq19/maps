@@ -2,10 +2,9 @@
     "pairlists": [
         {
             "method": "VolumePairList",
-            "number_assets": 60,
             "sort_key": "quoteVolume",
-            "min_value": 10000000,
-            "refresh_period": 1800
+            "refresh_period": 1800,
+            "number_assets": 60
         },
         {
             "method": "AgeFilter",
@@ -21,7 +20,6 @@
         },
         {
             "method": "VolatilityFilter",
-            "lookback_days": 5,
             "min_volatility": 0.015,
             "max_volatility": 0.45,
             "refresh_period": 1800
@@ -31,6 +29,7 @@
             "lookback_days": 5,
             "min_rate_of_change": 0.02,
             "refresh_period": 1800
+            "lookback_days": 5
         },
         {
             "method": "PerformanceFilter",
