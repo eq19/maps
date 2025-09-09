@@ -34,8 +34,10 @@
         },
         {
             "method": "PerformanceFilter",
+            "number_assets": 5,
             "minutes": 1440,
-            "min_profit": 0.01
+            "sort_key": "profit",
+            "min_periods": 24
         },
         {
             "method": "PrecisionFilter"
