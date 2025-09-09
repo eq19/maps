@@ -17,8 +17,8 @@ HYPERFILE=user_data/config_examples/config_hyperopt.example.json
 EXCHANGE_FILE=user_data/config_examples/config_exchange.example.json
 HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
-# Define the backtesting duration (in days)
-BACKTESTING_DURATION=1  # In months. Adjust as per your strategy
+# Define the starting point of backtesting duration (in months)
+BACKTESTING_DURATION=2  # In months. Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
