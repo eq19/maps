@@ -35,7 +35,6 @@
         },
         {
             "method": "PerformanceFilter",
-            "number_assets": 10,
             "lookback_period": 2880,
             "sort_key": "profit",
             "min_periods": 48
