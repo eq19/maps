@@ -1,13 +1,11 @@
 {
     "pairlists": [
-        // 1. Create a large universe of liquid pairs
         {
             "method": "VolumePairList",
             "sort_key": "quoteVolume",
             "refresh_period": 1800,
-            "number_assets": 60
+            "number_assets": 100
         },
-        // 2. Apply various SAFETY filters (these remove bad pairs)
         {
             "method": "AgeFilter",
             "min_days_listed": 90
@@ -28,22 +26,19 @@
         },
         {
             "method": "RangeStabilityFilter",
-            "lookback_days": 5, // REMOVED THE DUPLICATE PARAMETER
+            "lookback_days": 5,
             "min_rate_of_change": 0.02,
             "refresh_period": 1800
         },
         {
-            "method": "PrecisionFilter" // Safety filter
+            "method": "PrecisionFilter"
         },
-        // 3. FINALLY, apply the filter that limits the number <<< MOST IMPORTANT
-        // This must be the last filter that changes the number of assets.
         {
             "method": "PerformanceFilter",
-            "number_assets": 10, // This is the final gate
-            "lookback_period": 2880, // CORRECTED PARAMETER (from "minutes")
-            "sort_key": "profit", // Or use your FreqAI prediction column
+            "number_assets": 10,
+            "lookback_period": 2880,
+            "sort_key": "profit",
             "min_periods": 48
         }
-        // 4. ShuffleFilter is REMOVED entirely
     ]
 }
