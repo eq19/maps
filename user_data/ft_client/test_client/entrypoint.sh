@@ -31,8 +31,5 @@ else
   echo "The line already exists in the crontab. No changes made."
 fi
 
-# Run PostgreSQL (autostart)
-exec supervisord -c /etc/supervisor/supervisord.conf
-
 # Continue with the original entrypoint process
 exec "$@"
