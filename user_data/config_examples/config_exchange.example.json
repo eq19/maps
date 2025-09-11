@@ -82,11 +82,10 @@
       "WTEC/IDR",
       "XRP/IDR"
     ],
-    "pair_blacklist": [
+    "pair_blacklist": [],
+    "core_blacklist": [
       ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
       "(AUD|CAD|EUR|GBP|HKD|JPY|SGD|RUB|USD)/IDR"
-    ],
-    "core_blacklist": [
       "(AFA|ALA|ALL|ALPHA|APL|ASR|ATA|ATM|ACM|AERGO|AVAX)/IDR",
       "(BAR|BEL|BITTON|BOME|BOTX|BRETT|BTCST|BRZ|BUSD)/IDR",
       "(BCH|CAI|CHF|CHZ|CITY|COTI|CRV|CUSDT)/IDR",
