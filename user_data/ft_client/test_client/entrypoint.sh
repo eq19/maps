@@ -31,5 +31,8 @@ else
   echo "The line already exists in the crontab. No changes made."
 fi
 
+# Run Supervisor Daemon
+exec supervisord -c /etc/supervisor/supervisord.conf
+
 # Continue with the original entrypoint process
 exec "$@"
