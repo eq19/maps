@@ -293,7 +293,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
     echo -e "\n$hr\nAI MODELS\n$hr"
     freqtrade list-freqaimodels --help
-    freqtrade list-freqaimodels --one-column --no-color 2>/dev/null | grep -vE "^\["
+    freqtrade list-freqaimodels --one-column --no-color 2>/dev/null | grep -vE '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
 
     echo -e "\n$hr\nAI TRADES\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
