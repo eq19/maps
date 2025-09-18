@@ -1,0 +1,59 @@
+{
+  "TheoryOfEverything": {
+    "model": "AdvancedEnsembleRegressor",
+    "description": "Meta-model (ensemble) that can integrate any other model. Serves as the Theory of Everything.",
+    "GrandUnification": {
+      "EnsembleForces": [
+        "AdvancedEnsembleRegressor",
+        "BlendingRegressor",
+        "StackingRegressor",
+        "VotingRegressor",
+        "EnsembleTreeModel"
+      ],
+      "Bosons_GradientBoosting": [
+        "CatboostClassifier",
+        "CatboostClassifierMultiTarget",
+        "CatboostRegressor",
+        "CatboostRegressorMultiTarget",
+        "EnhancedCatboostRegressor",
+        "LightGBMClassifier",
+        "LightGBMClassifierMultiTarget",
+        "LightGBMRegressor",
+        "LightGBMRegressorMultiTarget",
+        "EnhancedLightGBMRegressor",
+        "XGBoostClassifier",
+        "XGBoostRFClassifier",
+        "XGBoostRegressor",
+        "XGBoostRegressorMu",
+        "XGBoostRFRegressor",
+        "EnhancedXGBoostRegressor"
+      ],
+      "Leptons_NeuralNets": [
+        "FreqAILSTMRegressor",
+        "FreqAILSTMCudaRegressor",
+        "PyTorchLSTMRegressor",
+        "LSTMRegressor",
+        "PyTorchMLPClassifier",
+        "PyTorchMLPRegressor",
+        "PyTorchTransformerRegressor",
+        "EnhancedPyTorchTransformerRegressor"
+      ],
+      "Quarks_ClassicalML": [
+        "LinearRegressionModel",
+        "RidgeRegressor",
+        "KNeighborsRegressor",
+        "ExtraTreesRegressor",
+        "RandomForestRegressor",
+        "SKLearnRandomForestClassifier",
+        "SVR"
+      ],
+      "Neutrinos_SpecializedTrading": [
+        "MultiTimeframeRegressor",
+        "SmartMoneyRegressor",
+        "VolatilityRegressor",
+        "ReinforcementLearner",
+        "ReinforcementLearner_multiproc"
+      ]
+    }
+  }
+}
