@@ -20,6 +20,11 @@ def patch_indodax_create_order():
 
         #logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={ordertype}, side={side})")
 
+        # 🔥 Force rounding for pairs like PENG/IDR (no decimals allowed)
+        if side == 'buy' and amount is not None:
+            kwargs["amount"] = int(amount)  # round down to integer
+            logger.info(f"🔢 [Indodax Patch] Rounded amount for {pair}: {amount} -> {kwargs['amount']}")
+
         if side == 'sell' and (ordertype is None or ordertype == 'market'):
             try:
                 orderbook = self._api.fetch_order_book(pair)
