@@ -198,6 +198,10 @@
         "transfer": false,
         "withdraw": true
       },
+      "amount_precision": {
+        "DRX/IDR": 0,
+        "PENGU/IDR": 0
+      },
       "options": {
         "createMarketBuyOrderRequiresPrice": false
       }
@@ -290,6 +294,10 @@
         "setPositionMode": false,
         "transfer": false,
         "withdraw": true
+      },
+      "amount_precision": {
+        "DRX/IDR": 0,
+        "PENGU/IDR": 0
       },
       "options": {
         "createMarketBuyOrderRequiresPrice": false
