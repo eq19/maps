@@ -1,12 +1,17 @@
 import time
 import logging
+from decimal import Decimal, ROUND_DOWN
 from freqtrade.exchange import Exchange
 
 logger = logging.getLogger(__name__)
 
 
 def patch_indodax_create_order():
-    """Monkey-patch Freqtrade's Exchange.create_order for Indodax to simulate market sell."""
+    """Monkey-patch Freqtrade's Exchange.create_order for Indodax.
+    - Enforces precision for BUY orders (rounding down or forcing int).
+    - Simulates market SELLs with limit orders.
+    - Refreshes order status after creation.
+    """
     if hasattr(Exchange.create_order, '_is_patched'):
         return
 
@@ -18,8 +23,39 @@ def patch_indodax_create_order():
         side = kwargs.get("side")
         amount = kwargs.get("amount")
 
-        #logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={ordertype}, side={side})")
+        # 🔢 BUY amount precision handling
+        if side == "buy" and amount is not None:
+            try:
+                market = self._api.market(pair)
+                amount_precision = int(market.get("precision", {}).get("amount", 8))
+                min_amount = float(market.get("limits", {}).get("amount", {}).get("min", 0) or 0)
 
+                if amount_precision == 0:
+                    # Integer-only pairs (PENGU, DOGE, SUN, etc.)
+                    rounded_amount = int(amount)
+                else:
+                    quantize_str = "1." + "0" * amount_precision
+                    rounded_amount = float(
+                        Decimal(str(amount)).quantize(Decimal(quantize_str), rounding=ROUND_DOWN)
+                    )
+                    if min_amount == 0.0:
+                        min_amount = 10 ** -amount_precision
+
+                if rounded_amount < min_amount:
+                    logger.warning(
+                        f"❌ [Indodax Patch] Computed amount {rounded_amount} < min {min_amount} for {pair}. Skipping trade."
+                    )
+                    raise ValueError("Amount too small for exchange precision")
+
+                kwargs["amount"] = rounded_amount
+                logger.info(
+                    f"🔢 [Indodax Patch] Rounded BUY {pair}: {amount} -> {rounded_amount} "
+                    f"(precision={amount_precision}, min={min_amount})"
+                )
+            except Exception as e:
+                logger.warning(f"⛔ [Indodax Patch] Error rounding BUY {pair}: {e}")
+
+        # 📉 SELL market simulation
         if side == 'sell' and (ordertype is None or ordertype == 'market'):
             try:
                 orderbook = self._api.fetch_order_book(pair)
@@ -33,8 +69,6 @@ def patch_indodax_create_order():
                         logger.warning(f"❌ [Indodax Patch] Sell amount too small: {amount} × {simulated_price} = {total} IDR")
                         raise ValueError("Simulated sell order below 1000 IDR")
 
-                    #logger.warning(f"⚠️ [Indodax Patch] Simulating market sell with limit price {simulated_price} IDR")
-
                     kwargs["ordertype"] = "limit"
                     kwargs["rate"] = simulated_price
                 else:
@@ -42,15 +76,16 @@ def patch_indodax_create_order():
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Error simulating market sell: {e}")
 
+        # 🚀 Create the order
         order = original_create_order(self, *args, **kwargs)
 
-        time.sleep(20)  # Let the exchange register the order
-
+        # ⏳ Let the exchange register the order, then refresh it
+        time.sleep(20)
         for attempt in range(3):
             try:
                 refreshed_order = self.fetch_order(order['id'], pair)
                 order.update(refreshed_order)
-                #logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
+                logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']} {pair} amount={order.get('amount')}")
                 break
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
