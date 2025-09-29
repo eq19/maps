@@ -2,7 +2,7 @@
     "pairlists": [
         {
             "method": "VolumePairList",
-            "sort_key": "quoteVolume",
+            "sort_key": "quoteVolume", 
             "refresh_period": 1800,
             "number_assets": 50
         },
@@ -21,7 +21,7 @@
             "refresh_period": 1800
         },
         {
-            "method": "RangeStabilityFilter",
+            "method": "RangeStabilityFilter", 
             "lookback_days": 5,
             "min_rate_of_change": 0.02,
             "refresh_period": 1800
@@ -30,14 +30,22 @@
             "method": "PrecisionFilter"
         },
         {
-            "method": "PerformanceFilter",
-            "lookback_period": 2880,
-            "sort_key": "profit",
-            "min_periods": 48
-        },
-        {
             "method": "SpreadFilter",
             "max_spread_ratio": 0.01
+        },
+        {
+            "method": "PerformanceFilter",
+            "lookback_period": 4320,  // 3 days
+            "sort_key": "profit",
+            "min_periods": 72,
+            "number_assets": 30
+        },
+        {
+            "method": "PerformanceFilter", 
+            "lookback_period": 10080,  // 1 week
+            "sort_key": "profit", 
+            "min_periods": 168,
+            "number_assets": 20
         }
     ]
 }
