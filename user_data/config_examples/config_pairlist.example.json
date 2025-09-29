@@ -35,14 +35,14 @@
         },
         {
             "method": "PerformanceFilter",
-            "lookback_period": 4320,  // 3 days
+            "lookback_period": 4320,
             "sort_key": "profit",
             "min_periods": 72,
             "number_assets": 30
         },
         {
             "method": "PerformanceFilter", 
-            "lookback_period": 10080,  // 1 week
+            "lookback_period": 10080,
             "sort_key": "profit", 
             "min_periods": 168,
             "number_assets": 20
