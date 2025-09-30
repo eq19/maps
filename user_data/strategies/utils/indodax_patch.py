@@ -8,9 +8,9 @@ logger = logging.getLogger(__name__)
 
 def patch_indodax_create_order():
     """Monkey-patch Freqtrade's Exchange.create_order for Indodax.
-    - Enforces precision for BUY orders (rounding down or forcing int).
+    - Enforces precision for BUY orders.
     - Simulates market SELLs with limit orders.
-    - Refreshes order status after creation.
+    - Refreshes order safely (ignores bogus 0.0 amounts).
     """
     if hasattr(Exchange.create_order, '_is_patched'):
         return
@@ -31,7 +31,7 @@ def patch_indodax_create_order():
                 min_amount = float(market.get("limits", {}).get("amount", {}).get("min", 0) or 0)
 
                 if amount_precision == 0:
-                    # Integer-only pairs (PENGU, DOGE, SUN, etc.)
+                    # Integer-only pairs
                     rounded_amount = int(amount)
                 else:
                     quantize_str = "1." + "0" * amount_precision
@@ -41,11 +41,12 @@ def patch_indodax_create_order():
                     if min_amount == 0.0:
                         min_amount = 10 ** -amount_precision
 
+                # ✅ Clamp to min_amount if needed
                 if rounded_amount < min_amount:
                     logger.warning(
-                        f"❌ [Indodax Patch] Computed amount {rounded_amount} < min {min_amount} for {pair}. Skipping trade."
+                        f"⚠️ [Indodax Patch] Rounded amount {rounded_amount} < min {min_amount} for {pair}. Using min instead."
                     )
-                    raise ValueError("Amount too small for exchange precision")
+                    rounded_amount = min_amount
 
                 kwargs["amount"] = rounded_amount
                 logger.info(
@@ -79,13 +80,17 @@ def patch_indodax_create_order():
         # 🚀 Create the order
         order = original_create_order(self, *args, **kwargs)
 
-        # ⏳ Let the exchange register the order, then refresh it
+        # ⏳ Refresh order safely
         time.sleep(20)
         for attempt in range(3):
             try:
                 refreshed_order = self.fetch_order(order['id'], pair)
-                order.update(refreshed_order)
-                logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']} {pair} amount={order.get('amount')}")
+                # ✅ Only overwrite if amount > 0
+                if refreshed_order.get("amount", 0) > 0:
+                    order.update(refreshed_order)
+                logger.info(
+                    f"✅ [Indodax Patch] Order refreshed: {order['id']} {pair} amount={order.get('amount')}"
+                )
                 break
             except Exception as e:
                 logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
