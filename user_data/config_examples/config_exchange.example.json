@@ -82,7 +82,9 @@
       "WTEC/IDR",
       "XRP/IDR"
     ],
-    "pair_blacklist": [],
+    "pair_blacklist": [
+      "(DRX|FIS|FOR|PENGU)/IDR"   
+    ],
     "core_blacklist": [
       ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
       "(AUD|CAD|EUR|GBP|HKD|JPY|SGD|RUB|USD)/IDR",
