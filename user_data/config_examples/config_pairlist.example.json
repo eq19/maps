@@ -8,7 +8,7 @@
         },
         {
             "method": "AgeFilter",
-            "min_days_listed": 15
+            "min_days_listed": 3
         },
         {
             "method": "PriceFilter",
@@ -17,7 +17,7 @@
         {
             "method": "VolatilityFilter",
             "min_volatility": 0.005,
-            "max_volatility": 1.0,
+            "max_volatility": 2.0,
             "refresh_period": 900
         },
         {
@@ -25,7 +25,7 @@
         },
         {
             "method": "SpreadFilter",
-            "max_spread_ratio": 0.03
+            "max_spread_ratio": 0.07
         },
         {
             "method": "PerformanceFilter",
