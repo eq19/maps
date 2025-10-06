@@ -18,7 +18,8 @@
             "method": "VolatilityFilter",
             "min_volatility": 0.005,
             "max_volatility": 2.0,
-            "refresh_period": 900
+            "refresh_period": 3600,
+            "allow_nan": true
         },
         {
             "method": "PrecisionFilter"
