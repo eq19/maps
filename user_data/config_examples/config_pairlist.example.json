@@ -3,21 +3,22 @@
         {
             "method": "VolumePairList",
             "sort_key": "quoteVolume",
-            "refresh_period": 900,
-            "number_assets": 50
+            "refresh_period": 1200,
+            "number_assets": 60,
+            "min_value": 50000000
         },
         {
             "method": "AgeFilter",
-            "min_days_listed": 3
+            "min_days_listed": 1
         },
         {
             "method": "PriceFilter",
-            "low_price_ratio": 0.001
+            "low_price_ratio": 0.0005
         },
         {
             "method": "VolatilityFilter",
-            "min_volatility": 0.005,
-            "max_volatility": 2.0,
+            "min_volatility": 0.003,
+            "max_volatility": 3.0,
             "refresh_period": 3600,
             "allow_nan": true
         },
@@ -26,14 +27,14 @@
         },
         {
             "method": "SpreadFilter",
-            "max_spread_ratio": 0.07
+            "max_spread_ratio": 0.05
         },
         {
             "method": "PerformanceFilter",
             "lookback_period": 1440,
             "sort_key": "profit",
-            "min_periods": 24,
-            "number_assets": 30
+            "min_periods": 12,
+            "number_assets": 25
         }
     ]
 }
