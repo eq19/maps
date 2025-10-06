@@ -2,13 +2,13 @@
     "pairlists": [
         {
             "method": "VolumePairList",
-            "sort_key": "quoteVolume", 
-            "refresh_period": 1800,
+            "sort_key": "quoteVolume",
+            "refresh_period": 900,
             "number_assets": 40
         },
         {
             "method": "AgeFilter",
-            "min_days_listed": 90
+            "min_days_listed": 15
         },
         {
             "method": "PriceFilter",
@@ -16,36 +16,23 @@
         },
         {
             "method": "VolatilityFilter",
-            "min_volatility": 0.015,
-            "max_volatility": 0.45,
-            "refresh_period": 1800
-        },
-        {
-            "method": "RangeStabilityFilter", 
-            "lookback_days": 5,
-            "min_rate_of_change": 0.02,
-            "refresh_period": 1800
+            "min_volatility": 0.005,
+            "max_volatility": 1.0,
+            "refresh_period": 900
         },
         {
             "method": "PrecisionFilter"
         },
         {
             "method": "SpreadFilter",
-            "max_spread_ratio": 0.01
+            "max_spread_ratio": 0.03
         },
         {
             "method": "PerformanceFilter",
-            "lookback_period": 4320,
+            "lookback_period": 1440,
             "sort_key": "profit",
-            "min_periods": 72,
+            "min_periods": 24,
             "number_assets": 30
-        },
-        {
-            "method": "PerformanceFilter", 
-            "lookback_period": 10080,
-            "sort_key": "profit", 
-            "min_periods": 168,
-            "number_assets": 20
         }
     ]
 }
