@@ -4,7 +4,7 @@
             "method": "VolumePairList",
             "sort_key": "quoteVolume",
             "refresh_period": 900,
-            "number_assets": 40
+            "number_assets": 50
         },
         {
             "method": "AgeFilter",
