@@ -4,8 +4,7 @@
             "method": "VolumePairList",
             "sort_key": "quoteVolume",
             "refresh_period": 1200,
-            "number_assets": 60,
-            "min_value": 50000000
+            "number_assets": 50
         },
         {
             "method": "AgeFilter",
@@ -34,7 +33,7 @@
             "lookback_period": 1440,
             "sort_key": "profit",
             "min_periods": 12,
-            "number_assets": 25
+            "number_assets": 30
         }
     ]
 }
