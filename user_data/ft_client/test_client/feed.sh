@@ -43,7 +43,7 @@ cat $CONFIG > user_data/config.json
 
 # ENVIRONMENT
 export PATH="venv/bin:$PATH"
-export PYTHONPATH="user_data/strategies:$PYTHONPATH"
+export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
 
 hyperopt() {
 
