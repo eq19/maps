@@ -14,8 +14,12 @@ This package contains organized FreqAI models for different use cases:
 Each model type has its own module with utilities and base classes.
 """
 
-import sys
 import os
+import sys
+from pathlib import Path
+
+# Make utils importable in worker processes
+sys.path.append(str(Path(__file__).parent))
 
 # Add the user_data directory to Python path
 user_data_path = os.path.join(os.path.dirname(__file__), '..')
