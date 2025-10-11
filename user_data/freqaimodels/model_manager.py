@@ -1,63 +1,43 @@
+
 #!/usr/bin/env python3
 """
 FreqAI Model Manager
 ====================
 
-This script provides comprehensive model management capabilities for FreqAI models,
-including testing, benchmarking, optimization, and MPS compatibility verification.
-
-Classes:
-    FreqAIModelManager: Main model management class
-
-Functions:
-    main: Command-line interface entry point
-
-Usage:
-    python model_manager.py --action list
-    python model_manager.py --action test --model CatboostRegressor
-    python model_manager.py --action benchmark --save-results results.csv
+Provides model management for FreqAI, including testing, benchmarking,
+and MPS compatibility verification.
 """
 
-import sys
 import os
+import sys
 import argparse
 import logging
 from typing import Dict, List, Any, Optional
 import pandas as pd
 import numpy as np
 
-# Add the parent directory to the path to import our modules
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Ensure parent directory is in path (for standalone execution)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Import with error handling - using absolute imports
-import sys
-import os
-
-# Add current directory to path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-if current_dir not in sys.path:
-    sys.path.insert(0, current_dir)
-
+# --- Import core package ---
 try:
-    # Import main package
-    import freqaimodels
+    from freqaimodels import get_model_class, list_available_models
     from freqaimodels import *
-    # Import new enhanced models
-    from netanel_enhanced_lstm import NetanelEnhancedLSTMRegressor
-    from nateemma_neural_classifiers import NateemmaNeuralClassifier
+    from freqaimodels.netanel_enhanced_lstm import NetanelEnhancedLSTMRegressor
+    from freqaimodels.nateemma_neural_classifiers import NateemmaNeuralClassifier
 except ImportError as e:
     print(f"Warning: Could not import freqaimodels package: {e}")
 
+# --- Import utilities ---
 try:
-    # Import utilities
-    from utils.dataframe_utils import FreqAIDataFrameUtils, create_sample_data
+    from freqaimodels.utils.dataframe_utils import FreqAIDataFrameUtils, create_sample_data
 except ImportError as e:
     print(f"Warning: Could not import dataframe_utils: {e}")
     FreqAIDataFrameUtils = None
     create_sample_data = None
 
 try:
-    from utils.testing_utils import FreqAIModelTester, MPSCompatibilityTester
+    from freqaimodels.utils.testing_utils import FreqAIModelTester, MPSCompatibilityTester
 except ImportError as e:
     print(f"Warning: Could not import testing_utils: {e}")
     FreqAIModelTester = None
