@@ -18,13 +18,13 @@ import os
 import sys
 from pathlib import Path
 
-# Make utils importable in worker processes
-sys.path.append(str(Path(__file__).parent))
-
 # Add the user_data directory to Python path
 user_data_path = os.path.join(os.path.dirname(__file__), '..')
 if user_data_path not in sys.path:
     sys.path.insert(0, user_data_path)
+
+# Make utils importable in worker processes
+sys.path.append(str(Path(__file__).parent))
 
 # Import base classes from FreqAI
 try:
