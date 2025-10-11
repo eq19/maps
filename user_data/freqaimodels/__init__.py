@@ -70,8 +70,7 @@ modules_to_import = [
 
 for module_name in modules_to_import:
     try:
-        # module = __import__(module_name)
-        module = __import__(f"{__name__}.{module_name}", fromlist=[module_name])
+        module = __import__(module_name)
         # Import all public attributes
         if hasattr(module, '__all__'):
             globals().update({name: getattr(module, name) for name in module.__all__})
