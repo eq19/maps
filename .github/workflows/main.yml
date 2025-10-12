@@ -6,10 +6,16 @@ on:
   workflow_run:
     types: [completed]
     workflows: ["pages-build-deployment"]
-  workflow_dispatch:
   repository_dispatch:
     types: [trigger_action, retry_workflow]
-
+  workflow_dispatch:
+    inputs:
+      REMOVE_RUNNER:
+        description: 'remove runner if is set true'
+        default: 'false'
+        required: false
+        type: string
+        
 concurrency:
   cancel-in-progress: true
   group: ${{ github.workflow }}
@@ -18,7 +24,9 @@ permissions: write-all
         
 # 🕸️ Global Environment
 env:
+  REPO_NAME: ${{ github.repository }}
   GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  RERUN_RUNNER: ${{ vars.RERUN_RUNNER }}
   RUNNER_TITLE: "Google-optimized-instance"
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
 
@@ -32,9 +40,11 @@ jobs:
           - { os: ubuntu-latest, jobs_id: 1 }
           - { os: macos-latest, jobs_id: 2 }
     env:
+      FREQAIMODEL: ${{ vars.FREQAIMODEL }}
       JOBS_ID: ${{ matrix.config.jobs_id }}
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       DOC: '${{ vars.TARGET_REPOSITORY }}.wiki'
+      REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER }}
 
     # 🔧 Commutation relations
     runs-on: ${{ matrix.config.os }}
@@ -73,6 +83,7 @@ jobs:
           api_key: ${{ secrets.ACCESS_API }}
           api_secret: ${{ secrets.ACCESS_KEY }}
           pypi_token: ${{ secrets.PYPI_TOKEN }}
+          live_token: ${{ secrets.LIVE_TOKEN }}
           bot_token: ${{ secrets.MONITOR_TOKEN }}
           logs_token: ${{ secrets.WARNING_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
@@ -92,12 +103,12 @@ jobs:
           initiate_pauli_sum: ${{ toJSON(steps.feed-mapping.outputs) }}
 
       - name: 📋 Generate Outputs
-        id: gen_outputs
         shell: bash
+        id: gen_outputs
+        if: ${{ env.JOBS_ID == 2 && env.RERUN_RUNNER == 'true' }}
         run: |
-          output=${{ env.JOBS_ID == 1 &&
-            steps.feed-mapping.outputs.addition ||
-            steps.set-lexering.outputs.multiplication }}
+          output=${{ steps.feed-mapping.outputs.addition || steps.set-lexering.outputs.multiplication }}
+          bash ${{ github.workspace }}/_user/ft_client/test_client/gcp.sh
           echo "output_${id}=${output}" >> "${GITHUB_OUTPUT}"
 
     outputs:
@@ -124,8 +135,8 @@ jobs:
 
     ## ✔️ Completeness status
     needs: lexering
+    #if: ${{ env.JOBS_ID == 4 }}
     runs-on: ${{ matrix.config.os }}
-    #if: ${{ (needs.lexering.result == 'success') }}
     continue-on-error: ${{ matrix.config.jobs_id == 3 && true || false }}
      
     steps:
@@ -144,6 +155,13 @@ jobs:
         id: set-parser
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
+          chat_id: ${{ secrets.MESSAGE_API }}
+          api_key: ${{ secrets.ACCESS_API }}
+          api_secret: ${{ secrets.ACCESS_KEY }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          live_token: ${{ secrets.LIVE_TOKEN }}
+          bot_token: ${{ secrets.MONITOR_TOKEN }}
+          logs_token: ${{ secrets.WARNING_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           pauli_sum: ${{ needs.lexering.outputs.function }}
           failure_status: ${{ contains(steps.check-out.conclusion, 'failure') ||
