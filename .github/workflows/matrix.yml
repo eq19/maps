@@ -7,32 +7,104 @@ on:
         description: "Matrix JSON (as string)"
         required: true
 
+concurrency:
+  cancel-in-progress: true
+  group: ${{ github.workflow }}
+
+permissions:
+  actions: read
+
 jobs:
-  run-hyperopt:
+  feeding:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        params: ${{ fromJson(inputs.matrix_json).params }}
+        hyperopts: ${{ fromJson(inputs.matrix_json).hyperopts }}
 
     env:
       GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+      RUNNER_TITLE: "Google-optimized-instance"
+      TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
 
     steps:
       - name: 📥 Checkout Repo
         uses: actions/checkout@v4
 
+      - name: ⚙️ Build Maps
+        uses: eq19/maps@v8
+        id: build-parser
+        env:
+          JOBS_ID: 1
+          EPOCHS: ${{ fromJson(inputs.matrix_json).epochs }}
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          chat_id: ${{ secrets.MESSAGE_API }}
+          api_key: ${{ secrets.ACCESS_API }}
+          api_secret: ${{ secrets.ACCESS_KEY }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          bot_token: ${{ secrets.MONITOR_TOKEN }}
+          logs_token: ${{ secrets.WARNING_TOKEN }}
+          credentials: ${{ secrets.GCP_CREDENTIALS }}
+          docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
+          docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: 🪂 Install freqtrade
+        shell: bash
+        run: |
+          cd user_data/build_helpers && ./install_ta-lib.sh > /dev/null 2>&1
+          cd ${{ github.workspace }} && python -m venv venv && source venv/bin/activate
+          pip install -qq --no-cache-dir ta "numpy<3.0" "plotly==6.1.2"
+          pip install -qq --no-cache-dir -r user_data/build_helpers/requirements-hyperopt.txt
+          pip install -qq --no-cache-dir -r user_data/build_helpers/requirements-freqai-rl.txt
+          pip install -qq --no-cache-dir --no-build-isolation --upgrade freqtrade
+
+      - name: ⚙️ Get artifact ID
+        id: get-artifact-id
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const matrix = JSON.parse(context.payload.inputs.matrix_json);
+            const artifactName = 'freqtrade-data';
+            const runId = matrix.run_id;
+
+            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              run_id: runId,
+            });
+
+            const match = artifacts.data.artifacts.find(a => a.name === artifactName);
+            if (!match) {
+              throw new Error(`Artifact '${artifactName}' not found in run ${runId}`);
+            }
+            core.setOutput('artifact_id', match.id);
+
+      - name: Download artifact zip using curl
+        run: |
+          curl -L \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/actions/artifacts/${{ steps.get-artifact-id.outputs.artifact_id }}/zip \
+            -o freqtrade-data.zip            
+               
+      - name: Extract artifact
+        run: unzip -o freqtrade-data.zip -d user_data/data/
+
+      - name: Show contents
+        run: ls -R user_data/data
+
       - name: 🧠 Run Hyperopt
         env:
-          PARAM: ${{ matrix.params }}        
-          LOSS: ${{ fromJson(inputs.matrix_json).loss }}
+          HYPEROPT: ${{ matrix.hyperopts }}
           SPACE: ${{ fromJson(inputs.matrix_json).space }}
+          SCORE: ${{ fromJson(inputs.matrix_json).score }}
+          FREQAIMODEL: ${{ fromJson(inputs.matrix_json).freqai }}
         run: |
           echo "Running hyperopt..."
-          echo "Loss: $LOSS"
           echo "Space: $SPACE"
-          echo "Param: $PARAM"
+          echo "Score: $SCORE"
+          bash user_data/ft_client/test_client/feed.sh hyperopt
 
           # echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
           # freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \

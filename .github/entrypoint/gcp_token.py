@@ -24,7 +24,7 @@ from google.auth import compute_engine
 
 # pip install google-auth requests
 
-target_audience = 'https://us-central1-feedmapping.cloudfunctions.net/function'
+target_audience = 'https://us-central1-marketleader.cloudfunctions.net/function'
 
 url = 'https://httpbin.org/get'
 certs_url='https://www.googleapis.com/oauth2/v1/certs'

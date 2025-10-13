@@ -67,6 +67,9 @@ inputs:
   bot_token:
     description: 'The monitor token'
     required: false
+  live_token:
+    description: 'The trading token'
+    required: false
   logs_token:
     description: 'The warning token'
     required: false
@@ -97,7 +100,7 @@ runs:
       id: variables
       shell: bash
       run: |
-        brew update --quiet
+        brew update --quiet && brew uninstall cmake
         brew install --quiet coreutils doxygen pandoc gsl cmake ninja lcov gcc@12 qt@5 texlive
         brew info qt@5 && brew info gsl
         IFS=', '; array=($(curl -L -s 'https://registry.hub.docker.com/v2/repositories/${{ inputs.image_name }}/tags?page_size=1024' | jq -rc '."results"[]["name"]' | yq eval -P | sed "s/ /, /g")) 
@@ -118,11 +121,13 @@ runs:
         #cloud-config
         users:
         - default
-        - uid: 1000
-          name: runner
-          groups: admin,adm,video,docker,google-sudoers
 
         write_files:
+        - path: /home/runner/.docker/.keep
+          permissions: "0755"
+          owner: root
+          content: ""
+
         - path: /etc/systemd/system/firewall.service
           permissions: "0644"
           owner: root
@@ -151,7 +156,7 @@ runs:
             ExecStop=/usr/bin/docker stop runner1
             ExecStopPost=/usr/bin/docker rm runner1
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ env.TARGET_REPOSITORY }} -e GITHUB_ACCESS_TOKEN=${{ inputs.token }} -e CONTAINER_NAME=runner1 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --name runner1 --pull=always eq19/maps:target-${{ github.run_number }}
+            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ env.TARGET_REPOSITORY }} -e GH_TOKEN=${{ inputs.token }} -e CONTAINER_NAME=runner1 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name runner1 --pull=always eq19/maps:target-${{ github.run_number }}
 
         - path: /etc/systemd/system/mydb.service
           permissions: "0644"
@@ -167,7 +172,7 @@ runs:
             Environment="HOME=/home/runner"
             ExecStop=/usr/bin/docker exec mydb -s quit
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e TELEGRAM_CHAT_ID=${{ inputs.chat_id }} -e MONITOR_BOT_TOKEN=${{ inputs.bot_token }} -e WARNING_BOT_TOKEN=${{ inputs.logs_token }} -v /mnt:/mnt --memory=512M --memory-swap=1G --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --memory=512M --memory-swap=10G --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
 
         - path: /etc/systemd/system/runner2.service
           permissions: "0644"
@@ -185,7 +190,25 @@ runs:
             ExecStop=/usr/bin/docker stop runner2
             ExecStopPost=/usr/bin/docker rm runner2
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GITHUB_ACCESS_TOKEN=${{ inputs.token }}  -e CONTAINER_NAME=runner2 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --name runner2 --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e CONTAINER_NAME=runner2 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name runner2 --pull=always eq19/maps:target-${{ github.run_number }}
+
+        - path: /etc/systemd/system/myredis.service
+          permissions: "0644"
+          owner: root
+          content: |
+            [Unit]
+            Description=gcloud compute
+            Wants=myrunner2.service
+            After=myrunner2.service
+
+            [Service]
+            RestartSec=5s
+            Restart=on-failure
+            Environment="HOME=/home/runner"
+            ExecStop=/usr/bin/docker stop myredis
+            ExecStopPost=/usr/bin/docker rm myredis
+            ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
+            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }}  -e CONTAINER_NAME=runner2 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name myredis --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
 
         bootcmd:
         - fsck.ext4 -tvy /dev/sdb1
@@ -194,7 +217,7 @@ runs:
 
         runcmd:
         - systemctl stop docker
-        - fallocate -l 2G /mnt/disks/deeplearning/swapfile || dd if=/dev/zero of=/mnt/disks/deeplearning/swapfile bs=1M count=2048
+        - fallocate -l 10G /mnt/disks/deeplearning/swapfile || dd if=/dev/zero of=/mnt/disks/deeplearning/swapfile bs=1M count=10240
         - chmod 600 /mnt/disks/deeplearning/swapfile
         - mkswap /mnt/disks/deeplearning/swapfile
         - swapon /mnt/disks/deeplearning/swapfile
@@ -217,8 +240,14 @@ runs:
       shell: bash
       run: >
         gcloud compute instances create grid-${{ env.IMAGE_TAG }}
-        --service-account=project-owner@feedmapping.iam.gserviceaccount.com
+        --service-account=project-owner@marketleader.iam.gserviceaccount.com
         --scopes=https://www.googleapis.com/auth/cloud-platform --deletion-protection
         --zone=us-central1-a --machine-type=e2-micro --enable-display-device --tags=https-server
         --boot-disk-device-name=cos --image-project cos-cloud --image-family cos-stable --metadata-from-file=user-data=cloud-config
         --create-disk=boot=no,auto-delete=yes,name=tensorflow,device-name=deeplearning,mode=rw,size=50,type=pd-standard,image=projects/ml-images/global/images/c0-deeplearning-common-cpu-v20250325-debian-11-py310-conda
+
+    - name: ⚧️ Rerun workflow if failed
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"

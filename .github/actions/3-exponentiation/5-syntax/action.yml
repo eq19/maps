@@ -57,7 +57,7 @@ inputs:
     required: true
   api_secret:
     description: 'The api secret'
-    required: false
+    required: true
   token:
     description: 'The deploy token'
     required: false
@@ -86,14 +86,7 @@ runs:
       if: runner.os == 'Redis'
       shell: bash
       run: |
-        TOKEN=$(/mnt/disks/deeplearning/usr/bin/gcloud auth print-identity-token)
-        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
-          -H "Authorization: Bearer ${TOKEN}" -H "Content-Type: application/json" \
-          --data @${{ github.workspace }}/docs/data.json | jq '.'
-
         # Bring GitHub Env Variables in to the config file on another container usong docker from the attached deeplearning image
-        /mnt/disks/deeplearning/usr/bin/docker exec mydb sed -i "s|your_exchange_key|${{ inputs.api_key }}|g" /home/runner/user_data/config.json
-        /mnt/disks/deeplearning/usr/bin/docker exec mydb sed -i "s|your_exchange_secret|${{ inputs.api_secret }}|g" /home/runner/user_data/config.json
 
     - name: 💎 Connect to Redis
       # Runs a script that creates a Redis client, populates
@@ -111,7 +104,7 @@ runs:
         echo '${{ inputs.pauli_sum }}'
     
     - name: 💎 Connect to postgres
-      if: env.RERUN_RUNNER == 'true'
+      if: runner.os == 'Redis'
       env:
         # use the internal host here because we have specified a container for the job.
         # If we were running the job on the VM this would be localhost
@@ -121,3 +114,9 @@ runs:
       run: |
         node /home/runner/scripts/post.js
         echo '${{ inputs.pauli_sum }}'
+
+    - name: ⚧️ Rerun workflow if failed
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPOSITORY" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"

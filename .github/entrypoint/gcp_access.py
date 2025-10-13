@@ -19,7 +19,7 @@ def make_authorized_get_request():
 
     # Cloud Functions uses your function's URL as the `audience` value
     # audience = https://project-region-projectid.cloudfunctions.net/myFunction
-    audience = "https://us-central1-feedmapping.cloudfunctions.net/function"
+    audience = "https://us-central1-marketleader.cloudfunctions.net/function"
 
     # For Cloud Functions, `endpoint` and `audience` should be equal
     # Ref: https://cloud.google.com/functions/docs/securing/authenticating

@@ -1,5 +1,5 @@
 {                                       
-  "strategy_name": "Fibbo",             
+  "strategy_name": "fibbo",             
   "params": {                           
     "roi": {                            
       "0": 0.05499999999999999,         

@@ -99,11 +99,33 @@ runs:
       run: |      
         shopt -s dotglob
         rm -rf ${{ inputs.action_path }}/.git
-
         mv -f ${{ inputs.action_path }} ${{ github.workspace }}/_site
         mkdir -p ${{ inputs.action_path }} && cp -R ${{ github.workspace }}/_site/. ${{ inputs.action_path }}/
   
+    - name: 🪂 Download data
+      if: env.RERUN_RUNNER == 'false'
+      shell: bash
+      run: |
+        cd user_data/build_helpers
+        ./install_ta-lib.sh > /dev/null 2>&1 && rm -rf *.txt
+        curl -s https://api.github.com/repos/freqtrade/freqtrade/contents | jq -r '.[] | select(.name | test("^requirements(-.*)?\\.txt$")) | .download_url' | xargs -n1 curl -sO
+        python -m venv ${{ github.workspace }}/venv && source ${{ github.workspace }}/venv/bin/activate
+        pip install -qq --no-cache-dir ta "numpy<3.0"
+        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-plot.txt
+        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-hyperopt.txt
+        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-freqai-rl.txt
+        pip install -qq --no-cache-dir --no-build-isolation --upgrade freqtrade
+        cd ${{ github.workspace }} && bash user_data/ft_client/test_client/feed.sh
+
+    - name: Upload downloaded data as artifact
+      uses: actions/upload-artifact@v4
+      if: env.RERUN_RUNNER == 'false'
+      with:
+        name: freqtrade-data
+        path: user_data/data/
+
     - uses: ikalnytskyi/action-setup-postgres@v7
+      if: env.RERUN_RUNNER == 'false'
       id: postgres
       with:
         username: yoda
@@ -114,6 +136,8 @@ runs:
         ssl: true
 
     - name: 🪂 Test postgres
+      if: env.RERUN_RUNNER == 'false'
+      shell: bash
       env:
         CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
         SERVICE_NAME: ${{ steps.postgres.outputs.service-name }}
@@ -122,8 +146,8 @@ runs:
         EXPECTED_SERVICE_NAME: yoda
         EXPECTED_SERVER_VERSION: 17
         EXPECTED_SSL: true
-      shell: bash
       run: |
+        bash user_data/ft_client/test_client/feed.sh hyperopt
         ##cd /home/runner/work/_actions/eq19/eq19/v2/integrations/tensorflow
         ##pip install -e python_projects/* && iree-import-tflite -h && iree-import-tf -h
 
@@ -135,9 +159,9 @@ runs:
 
         #cp ${{ github.workspace }}/.github/entrypoint/test.py . && python3 -m pytest -vv test.py
         #python ${{ github.workspace }}/web_programming/cc_exchanges.py
-        
+
     - name: 🚀 Initiate Feed Container
-      if: runner.os != 'Windows'
+      if: env.RERUN_RUNNER == 'true'
       uses: devcontainers/ci@v0.3
       id: set_output
       with:
@@ -145,7 +169,7 @@ runs:
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
         configFile: _site/.devcontainer.json
-        runCmd: bash user_data/ft_client/test_client/feed.sh
+        #runCmd: bash user_data/ft_client/test_client/feed.sh
         push: ${{ env.RERUN_RUNNER == 'true' && 'always' || 'never' }}
         env: |
           ID=${{ env.ID }}
@@ -155,6 +179,7 @@ runs:
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
 
     - name: 🪂 Remove existing images
+      if: env.RERUN_RUNNER == 'true'
       id: variables
       shell: bash
       run: |
@@ -167,3 +192,9 @@ runs:
             echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
           fi
         done
+
+    - name: ⚧️ Rerun workflow if failed
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"

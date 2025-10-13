@@ -103,6 +103,7 @@ runs:
 
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
+      if: runner.os == 'Redis'
       id: artifact
       with:
         imageTag: id-${{ env.ID }}
@@ -135,3 +136,9 @@ runs:
             echo "deleted: ${{ inputs.image_name }}:${array[$i]}"
           fi
         done
+
+    - name: ⚧️ Rerun workflow if failed
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"

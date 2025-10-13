@@ -1,8 +1,12 @@
-name: Cancel & Rerun Workflow
+name: Rerun Main Workflow
 
 on:
   workflow_dispatch:
 
+# 🕸️ Global Environment
+env:
+  GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+  
 jobs:
   cancel-and-rerun:
     runs-on: ubuntu-latest
@@ -12,15 +16,9 @@ jobs:
         run: |
           run_id=$(gh run list -w "main.yml" -L 1 --json databaseId -q '.[0].databaseId')
           echo "RUN_ID=$run_id" >> $GITHUB_ENV
-        env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Cancel it
         run: gh run cancel "$RUN_ID"
-        env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Re-run it
         run: gh workflow run main.yml --ref main
-        env:
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}

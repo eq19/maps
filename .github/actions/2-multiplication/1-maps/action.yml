@@ -114,7 +114,7 @@ runs:
         bash /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
 
     - name: View context attributes
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: console.log(context)
         
@@ -153,3 +153,9 @@ runs:
             echo "deleted: ${instance_zone}/${instance_name}"
           fi
         done
+
+    - name: ⚧️ Rerun workflow if failed
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"

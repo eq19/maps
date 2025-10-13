@@ -8,7 +8,7 @@ GH_API_URL="https://api.github.com/repos/$2/actions/runners"
 
 # Function to check if runner is online using GitHub API
 check_runner_online() {
-  local AUTH="Authorization: Bearer $GITHUB_ACCESS_TOKEN"
+  local AUTH="Authorization: Bearer $GH_TOKEN"
   local VERSION="X-GitHub-Api-Version: 2022-11-28"
   local ACCEPT="Accept: application/vnd.github+json"
     
@@ -48,7 +48,7 @@ register_runner() {
   _PATH="$(echo "${_URL}" | grep / | cut -d/ -f2-)"
 
   REMOVE_TOKEN="$(curl -XPOST -fsSL \
-    -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
+    -H "Authorization: token ${GH_TOKEN}" \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/${_PATH}/actions/runners/remove-token" \
     | jq -r '.token')"
@@ -77,7 +77,7 @@ register_runner() {
   _PATH="$(echo "${_URL}" | grep / | cut -d/ -f2-)"
 
   RUNNER_TOKEN="$(curl -XPOST -fsSL \
-    -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
+    -H "Authorization: token ${GH_TOKEN}" \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/${_PATH}/actions/runners/registration-token" \
     | jq -r '.token')"
@@ -102,8 +102,8 @@ register_runner() {
   supervisorctl start runner
 }
 
-if [[ -z $RUNNER_TOKEN && -z $GITHUB_ACCESS_TOKEN ]]; then
-  echo "Error : You need to set RUNNER_TOKEN (or GITHUB_ACCESS_TOKEN) environment variable."
+if [[ -z $RUNNER_TOKEN && -z $GH_TOKEN ]]; then
+  echo "Error : You need to set RUNNER_TOKEN (or GH_TOKEN) environment variable."
   exit 1
 fi
 

@@ -112,7 +112,7 @@ runs:
         if [[ "$TOTAL_COUNT" -eq 0 ]]; then
           export "RUNNER_COUNT=$TOTAL_COUNT"
           gh variable set RERUN_RUNNER --body "true"
-        elif [[ "$STATUS" == "offline" ]]; then
+        elif [[ "$STATUS" == "offline" || "$REMOVE_RUNNER" == "true" ]]; then
           export "RUNNER_STATUS=$STATUS"
           gh variable set RERUN_RUNNER --body "true"
           RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
@@ -123,7 +123,7 @@ runs:
         mv -f /home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/dockerfile/* ${{ inputs.action_path }}/
 
     - name: View context attributes
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: console.log(context)
 
@@ -144,7 +144,7 @@ runs:
         token_format: 'id_token'
         create_credentials_file: false
         credentials_json: ${{ inputs.credentials }}
-        id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
+        id_token_audience: 'https://us-central1-marketleader.cloudfunctions.net/function'
 
     - name: Install dependencies
       shell: bash
@@ -167,6 +167,7 @@ runs:
         ##Ref: https://iree.dev/guides/ml-frameworks/tensorflow/
         #pip uninstall -y iree-base-compiler iree-base-runtime iree-compiler iree-tools-tf
         python -m pip -q install --pre iree-base-compiler iree-base-runtime iree-tools-tf -f https://iree.dev/pip-release-links.html
+        python user_data/ft_client/test_client/app.py orgs.json ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
   
         ##python -m pip -q install -e ./.github/entrypoint/artifact/python
         ##iree-compile --iree-llvmcpu-list-targets && iree-run-module --list_drivers
@@ -178,10 +179,6 @@ runs:
         #sudo apt-get install llvm-17 llvm-17-dev clang-17 mlir-17-tools > /dev/null
         #export IREE_LLVM_ENABLE_BACKTRACE=1
         #export LLVM_SYMBOLIZER_PATH=$(which llvm-symbolizer)
-
-        pip freeze | grep iree
-        pip cache purge && find . -type d -name "__pycache__" -exec rm -rf {} +
-        python user_data/ft_client/test_client/app.py orgs.json ${{ env.ID }}
 
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
@@ -227,3 +224,9 @@ runs:
         MAX_DELETIONS: 15
       run: |
         ./.github/entrypoint/remote.sh
+
+    - name: ⚧️ Rerun workflow if failed
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"

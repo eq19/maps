@@ -100,7 +100,7 @@ runs:
         token_format: 'id_token'
         create_credentials_file: false
         credentials_json: ${{ inputs.credentials }}
-        id_token_audience: 'https://us-central1-feedmapping.cloudfunctions.net/function'
+        id_token_audience: 'https://us-central1-marketleader.cloudfunctions.net/function'
 
     #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
     - name: Run identity
@@ -109,6 +109,12 @@ runs:
       env:
         GCP_TOKEN: ${{ steps.auth.outputs.id_token }}
       run: |
-        curl -s -X POST https://us-central1-feedmapping.cloudfunctions.net/function \
+        curl -s -X POST https://us-central1-marketleader.cloudfunctions.net/function \
           -H "Authorization: Bearer ${GCP_TOKEN}" -H "Content-Type: application/json" \
           --data @${{ inputs.workspace }}/_data/orgs.json | jq '.'                
+
+    - name: ⚧️ Rerun workflow if failed
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"
