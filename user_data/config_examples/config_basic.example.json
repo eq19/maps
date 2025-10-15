@@ -80,7 +80,11 @@
       "protection_trigger_global": "on",
       "show_candle": "off"
     },
+    "timeout": 60,
     "reload": true,
+    "read_timeout": 30,
+    "connect_timeout": 30,
+    "poll_interval": 10.0,
     "balance_dust_level": 0.01
   },
   "api_server": {
