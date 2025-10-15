@@ -37,8 +37,6 @@ TD="$EARLIEST_DATE-$TODAY"
 TB="$BACKTESTING_START-$TODAY"
 
 # Print the timeranges
-echo "Download Timerange: $TD"
-echo "Backtesting Timerange: $TB"
 cat $CONFIG > user_data/config.json
 
 # ENVIRONMENT
@@ -278,6 +276,12 @@ if [[ "$1" != "hyperopt" ]]; then
   freqtrade list-markets --help
   freqtrade list-markets
 
+  echo -e "\n$hr\nSTRATEGIES\n$hr"
+  freqtrade list-strategies --help
+  freqtrade list-strategies
+  #freqtrade list-strategies --recursive-strategy-search
+  #freqtrade strategy-updater
+
   #freqtrade show-trades
   #freqtrade convert-db 
   #freqtrade install-ui
@@ -358,13 +362,9 @@ if [[ "$1" != "hyperopt" ]]; then
 
 else
 
-  echo -e "\n$hr\nSTRATEGIES\n$hr"
-  freqtrade list-strategies --help
-  freqtrade list-strategies
-  #freqtrade list-strategies --recursive-strategy-search
-  #freqtrade strategy-updater
-
   echo -e "\n$hr\nLIST DATA\n$hr"
+  echo "Download Timerange: $TD"
+  echo "Backtesting Timerange: $TB"
   freqtrade list-data --help
   freqtrade list-data
 
