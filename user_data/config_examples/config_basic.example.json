@@ -89,13 +89,13 @@
   },
   "api_server": {
     "enabled": true,
-    "listen_ip_address": "0.0.0.0",
+    "CORS_origins": [],
     "listen_port": 8080,
     "verbosity": "error",
     "enable_openapi": false,
-    "CORS_origins": [],
     "username": "YourUsername",
     "password": "YourPassword",
+    "listen_ip_address": "0.0.0.0",
     "ws_token": "secret_ws_t0ken.",
     "jwt_secret_key": "some-random-key"
   },
