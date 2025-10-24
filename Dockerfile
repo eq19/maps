@@ -28,7 +28,7 @@ RUN chmod 644 /etc/supervisor/conf.d/*.conf
 
 #ENV ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER=false
 #ENV ACTIONS_RUNNER_CONTAINER_HOOKS=/opt/runner/index.js
-ENV ACTIONS_RUNNER_HOOK_JOB_STARTED=/home/runner/hooks/job_started.sh
+ENV ACTIONS_RUNNER_HOOK_JOB_STARTED=/home/runner/hooks/job_begin.sh
 ENV ACTIONS_RUNNER_HOOK_JOB_COMPLETED=/home/runner/hooks/job_completed.sh
 
 LABEL maintainer="me@eq19.github.io" \
