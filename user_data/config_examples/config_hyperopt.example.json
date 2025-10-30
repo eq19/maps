@@ -12,7 +12,7 @@
       "id": 1,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 30,
-      "epochs": 5000,
+      "epochs": 2500,
       "parallel_jobs": 4,
       "spaces": ["all"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
