@@ -20,8 +20,8 @@
     {
       "id": 2,
       "description": "Optimize buy (use the last 30 days for robust results)",
-      "days": 60,
-      "epochs": 4000,
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
       "spaces": ["default"],
       "hyperopt_loss": "TradesSpaceCombinedHyperOptLoss"
