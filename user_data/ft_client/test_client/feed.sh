@@ -296,9 +296,11 @@ if [[ "$1" != "hyperopt" ]]; then
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
 
-    echo -e "\n$hr\nAI MODELS\n$hr"
-    freqtrade list-freqaimodels --help
-    freqtrade list-freqaimodels --one-column
+    if [[ "$FREQAI_MODEL" == "false" ]]; then
+      echo -e "\n$hr\nAI MODELS\n$hr"
+      freqtrade list-freqaimodels --help
+      freqtrade list-freqaimodels --one-column
+    fi
 
     echo -e "\n$hr\nAI TRADES\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
