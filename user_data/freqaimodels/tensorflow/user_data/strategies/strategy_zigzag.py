@@ -1,1 +1,0 @@
-../../strategy_zigzag.py
