@@ -10,9 +10,9 @@ from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
 logger = logging.getLogger(__name__)
 
-class AdvancedEnsembleRegressor(BaseRegressionModel):
+class YieldedEnsembleRegressor(BaseRegressionModel):
     """
-    Advanced Ensemble Regressor combining multiple models with adaptive weighting
+    Yielded Ensemble Regressor combining multiple models with adaptive weighting
     """
     
     def __init__(self, **kwargs):
