@@ -43,6 +43,43 @@ cat $CONFIG > user_data/config.json
 export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
 
+# Read FreqAI models into an array
+mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
+
+CURRENT="${FREQAI_MODEL}"
+
+if [[ "$CURRENT" == "false" ]]; then
+    # Set CURRENT to first model
+    export FREQAI_MODEL="${MODELS[0]}"
+    export FREQAI_NEXT="${MODELS[1]}"
+else
+    # Find index of CURRENT in list
+    index=-1
+    for i in "${!MODELS[@]}"; do
+        if [[ "${MODELS[$i]}" == "$CURRENT" ]]; then
+            index=$i
+            break
+        fi
+    done
+
+    if [[ $index -lt 0 ]]; then
+        echo "Current model '$CURRENT' not found in list!"
+        exit 1
+    fi
+
+    # If not last element → NEXT = next model
+    if (( index < ${#MODELS[@]} - 1 )); then
+        export FREQAI_NEXT="${MODELS[$((index + 1))]}"
+    else
+        # Last model → NEXT = false
+        export FREQAI_NEXT="false"
+    fi
+fi
+
+# Print results
+echo "FREQAI_MODEL=${FREQAI_MODEL}"
+echo "FREQAI_NEXT=${FREQAI_NEXT}"
+
 hyperopt() {
 
   # Extract clean list of hyperoptloss classes
@@ -295,49 +332,6 @@ if [[ "$1" != "hyperopt" ]]; then
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
-
-    if [[ "$FREQAI_MODEL" == "false" ]]; then
-      echo -e "\n$hr\nAI MODELS\n$hr"
-      freqtrade list-freqaimodels --help
-      freqtrade list-freqaimodels --one-column
-    fi
-
-# Read FreqAI models into an array
-mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
-
-CURRENT="${FREQAI_MODEL}"
-
-if [[ "$CURRENT" == "false" ]]; then
-    # Set CURRENT to first model
-    export FREQAI_MODEL="${MODELS[0]}"
-    export FREQAI_NEXT="${MODELS[1]}"
-else
-    # Find index of CURRENT in list
-    index=-1
-    for i in "${!MODELS[@]}"; do
-        if [[ "${MODELS[$i]}" == "$CURRENT" ]]; then
-            index=$i
-            break
-        fi
-    done
-
-    if [[ $index -lt 0 ]]; then
-        echo "Current model '$CURRENT' not found in list!"
-        exit 1
-    fi
-
-    # If not last element → NEXT = next model
-    if (( index < ${#MODELS[@]} - 1 )); then
-        export FREQAI_NEXT="${MODELS[$((index + 1))]}"
-    else
-        # Last model → NEXT = false
-        export FREQAI_NEXT="false"
-    fi
-fi
-
-# Print results
-echo "FREQAI_MODEL=${FREQAI_MODEL}"
-echo "FREQAI_NEXT=${FREQAI_NEXT}"
 
     echo -e "\n$hr\nAI TRADES\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
