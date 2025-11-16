@@ -73,7 +73,7 @@ print("Available models:", list_available_models())
 - **Voting Regressor**: Combines predictions from multiple models
 - **Stacking Regressor**: Uses meta-learner to combine base models
 - **Blending Regressor**: Weighted combination of models
-- **Advanced Ensemble**: Dynamic weight adjustment
+- **Yielded Ensemble**: Dynamic weight adjustment
 - **Utilities**: Optimal ensemble creation, performance analysis
 
 #### 5. **Custom Models** (`custom_models.py`) ✅
@@ -328,9 +328,9 @@ multitf_model = MultiTimeframeRegressor(
 ### Advanced Ensemble
 
 ```python
-from user_data.freqaimodels import AdvancedEnsembleRegressor
+from user_data.freqaimodels import YieldedEnsembleRegressor
 
-ensemble = AdvancedEnsembleRegressor(
+ensemble = YieldedEnsembleRegressor(
     models={
         'tree': [CatboostRegressor(), LightGBMRegressor()],
         'neural': [PyTorchLSTMRegressor(), PyTorchTransformerRegressor()],
