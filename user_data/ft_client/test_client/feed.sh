@@ -141,7 +141,7 @@ hyperopt() {
       #--print-json
     freqtrade hyperopt-list
 
-    echo -e "\n$hr\nRERUN BACKTEST\n$hr"
+    echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
     #rm -rf user_data/backtest_results/*
     freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
@@ -333,7 +333,7 @@ if [[ "$1" != "hyperopt" ]]; then
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
 
-    echo -e "\n$hr\nAI TRADES\n$hr"
+    echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
     nohup freqtrade trade --dry-run --freqaimodel $FREQAIMODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
@@ -410,7 +410,7 @@ else
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
   if [[ "$SCORE" == "100" ]]; then
-    echo -e "\n$hr\nRUN BACKTEST\n$hr"
+    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
     cat $STRATEGY > /tmp/store.json
     #rm -rf user_data/backtest_results/*
@@ -436,7 +436,7 @@ else
     fi
   fi
 
-  echo -e "\n$hr\nRUN HYPEROPT\n$hr"
+  echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   freqtrade hyperopt --help
   hyperopt $ID
