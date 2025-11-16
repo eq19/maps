@@ -1,0 +1,16 @@
+{
+    "add_config_files": [
+        "config/common.json",
+        "config/secret.json",
+        "config/strategy.json",
+
+        //"config/pairlist_dynamic.json",
+        "config/pairlist_static.json",
+
+        //"config/binance_btc.json",
+        //"config/binance_busd.json",
+        "config/binance_usdt.json",
+        //"config/bitbank_jpy.json",
+        //"config/huobijp_jpy.json",
+    ],
+}

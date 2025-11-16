@@ -1,0 +1,20 @@
+{
+    "stake_currency": "BTC",
+    "stake_amount": 0.001,
+    "dry_run_wallet": 0.01,
+    "available_capital": 0.01,
+    "trading_mode": "spot",
+    "exchange": {
+        "name": "binance",
+        "key": "",
+        "secret": "",
+        "ccxt_config": {},
+        "ccxt_async_config": {},
+        "pair_whitelist": [
+            ".*/BTC",
+        ],
+        "pair_blacklist": [
+            "BNB/BTC",
+        ],
+    },
+}

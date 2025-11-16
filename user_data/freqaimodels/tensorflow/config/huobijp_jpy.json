@@ -1,0 +1,19 @@
+{
+    "stake_currency": "JPY",
+    "stake_amount": 5000,
+    "dry_run_wallet": 50000,
+    "available_capital": 50000,
+    "trading_mode": "spot",
+    "exchange": {
+        "name": "huobijp",
+        "key": "",
+        "secret": "",
+        "ccxt_config": {},
+        "ccxt_async_config": {},
+        "pair_whitelist": [
+            ".*/JPY",
+        ],
+        "pair_blacklist": [
+        ],
+    },
+}

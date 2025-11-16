@@ -1,0 +1,27 @@
+From cbca4c0bbc97c0ef63a6aedd83f686eb8aa15592 Mon Sep 17 00:00:00 2001
+From: root <root@lr70-1-poplar-12.openstack-dev.graphcore.ai>
+Date: Mon, 5 Dec 2022 20:04:12 +0000
+Subject: [PATCH 2/5] Fix a bug
+
+---
+ freqtrade/optimize/backtesting.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/freqtrade/optimize/backtesting.py b/freqtrade/optimize/backtesting.py
+index a02b9e23d..58805fc5d 100644
+--- a/freqtrade/optimize/backtesting.py
++++ b/freqtrade/optimize/backtesting.py
+@@ -751,9 +751,8 @@ class Backtesting:
+             leverage = min(max(leverage, 1.0), max_leverage)
+ 
+         min_stake_amount = 0
+-        max_stake_amount = self.exchange.get_max_pair_stake_amount(
+-            pair, propose_rate, leverage=leverage)
+         stake_available = self.wallets.get_available_stake_amount()
++        max_stake_amount = stake_available
+ 
+         if not pos_adjust:
+             stake_amount = strategy_safe_wrapper(self.strategy.custom_stake_amount,
+-- 
+2.25.1
+

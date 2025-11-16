@@ -1,0 +1,24 @@
+From 47e436b8d4a0307139ce1888596d2b37008c7d73 Mon Sep 17 00:00:00 2001
+From: root <root@lr70-1-poplar-12.openstack-dev.graphcore.ai>
+Date: Mon, 5 Dec 2022 20:24:33 +0000
+Subject: [PATCH 4/5] Supress log
+
+---
+ freqtrade/exchange/exchange.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/freqtrade/exchange/exchange.py b/freqtrade/exchange/exchange.py
+index f556beeb4..9af19d8ba 100644
+--- a/freqtrade/exchange/exchange.py
++++ b/freqtrade/exchange/exchange.py
+@@ -298,7 +298,6 @@ class Exchange:
+     def markets(self) -> Dict:
+         """exchange ccxt markets"""
+         if not self._markets:
+-            logger.info("Markets were not loaded. Loading them now..")
+             self._load_markets()
+         return self._markets
+ 
+-- 
+2.25.1
+
