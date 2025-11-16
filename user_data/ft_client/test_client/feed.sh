@@ -108,7 +108,7 @@ hyperopt() {
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
           --arg epochs "$epochs" \
-          --arg freqai "$FREQAIMODEL" \
+          --arg freqai "$FREQAI_MODEL" \
           '{ref: $ref, inputs: {
            matrix_json: (
              {
@@ -136,7 +136,7 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss} | Days: $days | Epochs: $epochs\nSpaces: $spaces | Protection: $prot | FreqAImodel: $FREQAI_MODEL\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAIMODEL \
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --random-state ${id} ${enable_protections} \
       --logfile /dev/null > /dev/null 2>&1 
@@ -146,7 +146,7 @@ hyperopt() {
     echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
     #rm -rf user_data/backtest_results/*
-    freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
   
     calculate_score
     NEW_SCORE=$SCORE
@@ -337,7 +337,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
-    nohup freqtrade trade --dry-run --freqaimodel $FREQAIMODEL --fee=$FEE > freqtrade.log 2>&1 &
+    nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
     # Open descriptor to log stream
@@ -417,7 +417,7 @@ else
     cat $STRATEGY > /tmp/store.json
     #rm -rf user_data/backtest_results/*
     #freqtrade backtesting --fee=$FEE --timerange="$TB"
-    freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
 
     # Scoring breakdown:
     # Winrate: 25 pts
