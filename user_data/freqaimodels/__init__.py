@@ -113,7 +113,7 @@ MODEL_REGISTRY = {
     "VotingRegressor": "VotingRegressor.VotingRegressor",
     "StackingRegressor": "StackingRegressor.StackingRegressor", 
     "BlendingRegressor": "BlendingRegressor.BlendingRegressor",
-    "AdvancedEnsembleRegressor": "AdvancedEnsembleRegressor.AdvancedEnsembleRegressor",
+    "YieldedEnsembleRegressor": "YieldedEnsembleRegressor.YieldedEnsembleRegressor",
     
     # Custom models
     "SmartMoneyRegressor": "custom_models.SmartMoneyRegressor",
