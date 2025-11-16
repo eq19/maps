@@ -43,42 +43,44 @@ cat $CONFIG > user_data/config.json
 export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
 
-# Read FreqAI models into an array
-mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
+if [[ "$GITHUB_JOB" == "lexering" ]]; then
+  # Read FreqAI models into an array
+  mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
 
-CURRENT="${FREQAI_MODEL}"
+  CURRENT="${FREQAI_MODEL}"
 
-if [[ "$CURRENT" == "false" ]]; then
+  if [[ "$CURRENT" == "false" ]]; then
     # Set CURRENT to first model
     export FREQAI_MODEL="${MODELS[0]}"
     export FREQAI_NEXT="${MODELS[1]}"
-else
+  else
     # Find index of CURRENT in list
     index=-1
     for i in "${!MODELS[@]}"; do
-        if [[ "${MODELS[$i]}" == "$CURRENT" ]]; then
-            index=$i
-            break
-        fi
+      if [[ "${MODELS[$i]}" == "$CURRENT" ]]; then
+        index=$i
+        break
+      fi
     done
 
     if [[ $index -lt 0 ]]; then
-        echo "Current model '$CURRENT' not found in list!"
-        exit 1
+      echo "Current model '$CURRENT' not found in list!"
+      exit 1
     fi
 
     # If not last element → NEXT = next model
     if (( index < ${#MODELS[@]} - 1 )); then
-        export FREQAI_NEXT="${MODELS[$((index + 1))]}"
+      export FREQAI_NEXT="${MODELS[$((index + 1))]}"
     else
-        # Last model → NEXT = false
-        export FREQAI_NEXT="false"
+      # Last model → NEXT = false
+      export FREQAI_NEXT="false"
     fi
-fi
+  fi
 
-# Print results
-echo "FREQAI_MODEL=${FREQAI_MODEL}"
-echo "FREQAI_NEXT=${FREQAI_NEXT}"
+  # Print results
+  echo "FREQAI_MODEL=${FREQAI_MODEL}"
+  echo "FREQAI_NEXT=${FREQAI_NEXT}"
+fi
 
 hyperopt() {
 
