@@ -7,7 +7,7 @@
 hr='----------------------------------------------------------------------------------'
 FEE=0.003322
 TIMEFRAMES='15m 1h'
-[[ -z "${SCORE+x}" ]] && SCORE=100
+
 STRATEGY=user_data/strategies/fibbo.json
 HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
 CONFIG=user_data/config_examples/config_basic.example.json
@@ -53,6 +53,7 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
     # Set CURRENT to first model
     export FREQAI_MODEL="${MODELS[0]}"
     export FREQAI_NEXT="${MODELS[1]}"
+    export SCORE=100
   else
     # Find index of CURRENT in list
     index=-1
