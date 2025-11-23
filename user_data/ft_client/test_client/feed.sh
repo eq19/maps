@@ -44,9 +44,10 @@ export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
 
 if [[ "$GITHUB_JOB" == "lexering" ]]; then
+  gh variable set JOB --body "${GITHUB_JOB}"
+      
   # Read FreqAI models into an array
   mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
-
   CURRENT="${FREQAI_MODEL}"
 
   if [[ "$CURRENT" == "false" ]]; then
@@ -435,7 +436,6 @@ else
     # Drawdown ratio: 20 pts
     # Trade count bonus (capped): 5 pts
     calculate_score
-    gh variable set JOB --body "${GITHUB_JOB}"
   fi
   
   OLD_SCORE=$SCORE
