@@ -371,41 +371,49 @@ class TreeModelUtils:
         """Create an ensemble of tree models"""
         return EnsembleTreeModel(models, weights)
 
-
 class EnsembleTreeModel(BaseFreqAIModel):
     """Ensemble of tree-based models"""
-    
+
     model_type = "ensemble"
-    
-    def __init__(self, models: list, weights: Optional[list] = None):
-        super().__init__()
-        self.models = models
-        self.weights = weights if weights else [1.0] * len(models)
-        
+
+    def __init__(
+        self,
+        config: dict,
+        models: list = None,
+        weights: Optional[list] = None,
+        **kwargs
+    ):
+        # Required so Freqtrade can initialize the model
+        super().__init__(config=config, **kwargs)
+
+        # Your original parameters
+        self.models = models if models else []
+        self.weights = weights if weights else [1.0] * len(self.models)
+
         if len(self.weights) != len(self.models):
             raise ValueError("Number of weights must match number of models")
-    
+
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnsembleTreeModel':
         """Train all models in the ensemble"""
         for model in self.models:
             model.fit(X, y, **kwargs)
-        
+
         self.is_trained = True
         return self
-    
+
     def predict(self, X: np.ndarray) -> np.ndarray:
         """Make ensemble predictions"""
         if not self.is_trained:
             raise ValueError("Models must be trained before making predictions")
-        
+
         predictions = []
         for model in self.models:
             pred = model.predict(X)
             predictions.append(pred)
-        
+
         # Weighted average
         weighted_pred = np.zeros_like(predictions[0])
         for pred, weight in zip(predictions, self.weights):
             weighted_pred += pred * weight
-        
-        return weighted_pred / sum(self.weights) 
+
+        return weighted_pred / sum(self.weights)
