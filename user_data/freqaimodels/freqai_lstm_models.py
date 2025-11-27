@@ -28,7 +28,7 @@ BaseFreqAIModel = BaseRegressionModel
 
 logger = logging.getLogger(__name__)
 
-
+'''
 class FreqAILSTMRegressor(BaseFreqAIModel):
     """
     FreqAI LSTM Regressor - Optimized Implementation
@@ -134,7 +134,7 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
             predictions = self.model(X_tensor).cpu().numpy()
         
         return predictions.squeeze()
-
+'''
 
 class FreqAILSTMRegressor(BaseFreqAIModel):
     """
