@@ -136,7 +136,7 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
         return predictions.squeeze()
 
 
-class FreqAILSTMCudaRegressor(BaseFreqAIModel):
+class FreqAILSTMRegressor(BaseFreqAIModel):
     """
     FreqAI LSTM Regressor with CUDA Support
     
