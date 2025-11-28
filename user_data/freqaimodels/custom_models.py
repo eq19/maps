@@ -415,7 +415,7 @@ class MultiTimeframeRegressor(BaseFreqAIModel):
         for timeframe in self.parameters.get("timeframes", ["15m", "1h"]):
             self.timeframe_models[timeframe] = EnhancedCatboostRegressor(config=self.config)
             self.timeframe_models[timeframe].parameters = {"iterations": 100}
-            self.timeframe_weights[timeframe] = 1.0 / len(self.parameters.get("timeframes", ["1h", "4h", "1d"]))
+            self.timeframe_weights[timeframe] = 1.0 / len(self.parameters.get("timeframes", ["15m", "1h"]))
     
     def _align_timeframes(self, X: np.ndarray) -> Dict[str, np.ndarray]:
         """Align data across different timeframes"""
