@@ -385,65 +385,84 @@ class VolatilityRegressor(BaseFreqAIModel):
 class MultiTimeframeRegressor(BaseFreqAIModel):
     """
     Multi-Timeframe Regressor for FreqAI
-    
-    This model combines information from multiple timeframes
-    to make more robust predictions.
-    
+
+    Combines multiple timeframes to make robust predictions.
+
     Features:
     - Multi-timeframe analysis
     - Timeframe alignment
     - Cross-timeframe patterns
     - Hierarchical modeling
     """
-    
+
     model_type = "custom"
+
+    # Default parameters if user does not supply any via freqai.json
     default_parameters = {
         "timeframes": ["15m", "1h"],
         "alignment_method": "interpolation",
         "weight_method": "performance",
-        "base_model": "ensemble"
+        "base_model": "ensemble",
     }
-    
+
     def __init__(self, **kwargs):
+        """
+        Ensures BaseFreqAIModel initializes config, parameters,
+        freqai_config, and internal structures.
+        """
         super().__init__(**kwargs)
+
+        # Guarantee parameters exist
+        if not hasattr(self, "parameters") or self.parameters is None:
+            self.parameters = {}
+
+        # Merge defaults with provided parameters
+        for k, v in self.default_parameters.items():
+            self.parameters.setdefault(k, v)
+
+        self.timeframes = self.parameters.get("timeframes", ["15m", "1h"])
         self.timeframe_models = {}
         self.timeframe_weights = {}
+
         self._initialize_timeframe_models()
-    
+
     def _initialize_timeframe_models(self):
-        """Initialize models for each timeframe"""
-        for timeframe in self.parameters.get("timeframes", ["15m", "1h"]):
-            self.timeframe_models[timeframe] = EnhancedCatboostRegressor(config=self.config)
-            self.timeframe_models[timeframe].parameters = {"iterations": 100}
-            self.timeframe_weights[timeframe] = 1.0 / len(self.parameters.get("timeframes", ["15m", "1h"]))
-    
+        """Initialize per-timeframe ML models."""
+        tf_count = len(self.timeframes)
+        default_weight = 1.0 / tf_count if tf_count > 0 else 1.0
+
+        for tf in self.timeframes:
+            # Create a model for each timeframe
+            model = EnhancedCatboostRegressor(config=self.config)
+
+            # Safe model parameters assignment
+            model.parameters = model.parameters if hasattr(model, "parameters") else {}
+            model.parameters.setdefault("iterations", 100)
+
+            self.timeframe_models[tf] = model
+            self.timeframe_weights[tf] = default_weight
+
     def _align_timeframes(self, X: np.ndarray) -> Dict[str, np.ndarray]:
-        """Align data across different timeframes"""
-        aligned_data = {}
-        
-        # Simple alignment (assuming data is already aligned)
-        # In practice, this would involve more sophisticated alignment
-        for timeframe in self.parameters.get("timeframes", ["15m", "1h"]):
-            aligned_data[timeframe] = X
-        
-        return aligned_data
-    
+        """
+        Aligns feature sets from different timeframes.
+        Currently a pass-through.
+        """
+        aligned = {}
+        for tf in self.timeframes:
+            aligned[tf] = X  # TODO: insert real alignment logic later
+        return aligned
+
     def _extract_timeframe_features(self, X: np.ndarray, timeframe: str) -> np.ndarray:
-        """Extract timeframe-specific features"""
-        # Timeframe-specific feature extraction
+        """
+        Extract timeframe-specific features.
+        """
         if timeframe == "15m":
-            # Short-term features
-            features = self._extract_short_term_features(X)
+            return self._extract_short_term_features(X)
         elif timeframe == "1h":
-            # Medium-term features
-            features = self._extract_medium_term_features(X)
+            return self._extract_medium_term_features(X)
         elif timeframe == "1d":
-            # Long-term features
-            features = self._extract_long_term_features(X)
-        else:
-            features = X
-        
-        return features
+            return self._extract_long_term_features(X)
+        return X  # fallback if unknown timeframe
     
     def _extract_short_term_features(self, X: np.ndarray) -> np.ndarray:
         """Extract short-term features"""
