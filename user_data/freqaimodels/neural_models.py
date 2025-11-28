@@ -269,9 +269,10 @@ class EnhancedPyTorchTransformerRegressor(BaseFreqAIModel):
         
         self.scaler = StandardScaler()
         self.sequence_length = self.parameters.get("sequence_length", 50)
-        # Force MPS device (Apple Silicon). No CUDA, no auto.
-        if torch.backends.mps.is_available():
-            self.device = torch.device("mps")
+        # Force CUDA device.
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+            print("CUDA device used")
         else:
             self.device = torch.device("cpu")
     
