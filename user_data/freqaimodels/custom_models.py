@@ -398,7 +398,7 @@ class MultiTimeframeRegressor(BaseFreqAIModel):
     
     model_type = "custom"
     default_parameters = {
-        "timeframes": ["1h", "4h", "1d"],
+        "timeframes": ["15m", "1h"],
         "alignment_method": "interpolation",
         "weight_method": "performance",
         "base_model": "ensemble"
