@@ -11,7 +11,7 @@ These models are particularly good for:
 - Time series prediction
 - Sequence modeling
 - Complex pattern recognition
-- GPU acceleration (MPS support)
+- GPU acceleration (CUDA support)
 """
 
 import logging
