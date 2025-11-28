@@ -412,7 +412,7 @@ class MultiTimeframeRegressor(BaseFreqAIModel):
     
     def _initialize_timeframe_models(self):
         """Initialize models for each timeframe"""
-        for timeframe in self.parameters.get("timeframes", ["1h", "4h", "1d"]):
+        for timeframe in self.parameters.get("timeframes", ["15m", "1h"]):
             self.timeframe_models[timeframe] = EnhancedCatboostRegressor(config=self.config)
             self.timeframe_models[timeframe].parameters = {"iterations": 100}
             self.timeframe_weights[timeframe] = 1.0 / len(self.parameters.get("timeframes", ["1h", "4h", "1d"]))
@@ -423,7 +423,7 @@ class MultiTimeframeRegressor(BaseFreqAIModel):
         
         # Simple alignment (assuming data is already aligned)
         # In practice, this would involve more sophisticated alignment
-        for timeframe in self.parameters.get("timeframes", ["1h", "4h", "1d"]):
+        for timeframe in self.parameters.get("timeframes", ["15m", "1h"]):
             aligned_data[timeframe] = X
         
         return aligned_data
@@ -431,10 +431,10 @@ class MultiTimeframeRegressor(BaseFreqAIModel):
     def _extract_timeframe_features(self, X: np.ndarray, timeframe: str) -> np.ndarray:
         """Extract timeframe-specific features"""
         # Timeframe-specific feature extraction
-        if timeframe == "1h":
+        if timeframe == "15m":
             # Short-term features
             features = self._extract_short_term_features(X)
-        elif timeframe == "4h":
+        elif timeframe == "1h":
             # Medium-term features
             features = self._extract_medium_term_features(X)
         elif timeframe == "1d":
