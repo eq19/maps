@@ -443,14 +443,20 @@ class Fibbo(IStrategy):
         return merged_dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        long_conditions = []
-
-        ### Momentum Indicators ###
+        """
+        Combine your Fibbo strategy with FreqAI predictions.
+        FreqAI columns are now available in the dataframe.
+        """
+        logger.debug(f"Generating entry signals for {metadata['pair']}")
+        
+        entry_conditions = []
+        
+        # === Your existing Fibbo conditions ===
         RSI = (dataframe['rsi'] < self.buy_rsi.value)
         VWAP = (dataframe['close'] > dataframe['vwap'])
         ATR = (dataframe['atr'] > dataframe['atr'].shift(1))
         BB = (dataframe['close'] <= dataframe['bb_lowerband'])
-        MACD = (dataframe['macd'] > dataframe['macdsignal'])  # FIXED: Bullish crossover
+        MACD = (dataframe['macd'] > dataframe['macdsignal'])
         STOCHRSI = (
             (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
@@ -463,37 +469,75 @@ class Fibbo(IStrategy):
             ((dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])) |
             ((dataframe['close'].shift(1) < dataframe['fib_786']) & (dataframe['close'] > dataframe['fib_786']))
         )
-
+        
         # Always include RSI
         long_conditions.append(RSI)
-
+        
         if "BB" in self.buy_additional_indicator.value:
-            long_conditions.append(BB)
+            entry_conditions.append(BB)
         if "ATR" in self.buy_additional_indicator.value:
-            long_conditions.append(ATR)
+            entry_conditions.append(ATR)
         if "VWAP" in self.buy_additional_indicator.value:
-            long_conditions.append(VWAP)
+            entry_conditions.append(VWAP)
         if "MACD" in self.buy_additional_indicator.value:
-            long_conditions.append(MACD)
+            entry_conditions.append(MACD)
         if "DEMA" in self.buy_additional_indicator.value:
-            long_conditions.append(DEMA)
+            entry_conditions.append(DEMA)
         if "FIBBO" in self.buy_additional_indicator.value:
-            long_conditions.append(FIBBO)
+            entry_conditions.append(FIBBO)
         if "STOCHRSI" in self.buy_additional_indicator.value:
-            long_conditions.append(STOCHRSI)
-
+            entry_conditions.append(STOCHRSI)
+        
         # TTM Squeeze
         if "TTM" in self.buy_additional_indicator.value:
             squeeze_on = dataframe['squeeze_on']
             momentum_positive = dataframe['momentum_hist'] > 0
-            long_conditions.append(squeeze_on & momentum_positive)
-
-        if long_conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, long_conditions),
-                'enter_long'
-            ] = 1
-
+            entry_conditions.append(squeeze_on & momentum_positive)
+        
+        # === FreqAI Integration ===
+        # Check if FreqAI predictions are available
+        # According to FreqAI example, columns like 'do_predict' and 'DI_values' are added automatically
+        
+        if 'do_predict' in dataframe.columns:
+            logger.debug("FreqAI predictions available")
+            
+            # Method 1: Standard FreqAI signal (1 = buy, -1 = sell)
+            freqai_buy_signal = (dataframe['do_predict'] == 1)
+            
+            # Method 2: If confidence column exists
+            if 'DI_values' in dataframe.columns:
+                freqai_confident = (dataframe['DI_values'] > float(self.freqaithreshold.value))
+                freqai_signal = freqai_buy_signal & freqai_confident
+            else:
+                freqai_signal = freqai_buy_signal
+            
+            # Combine FreqAI with your strategy
+            if long_conditions:
+                # Option A: FreqAI must agree with ALL your conditions (conservative)
+                fibbo_conditions = reduce(lambda x, y: x & y, long_conditions)
+                combined_signal = fibbo_conditions & freqai_signal
+                
+                # Option B: FreqAI can trigger with fewer conditions (aggressive)
+                # combined_signal = freqai_signal & RSI  # Only require RSI + FreqAI
+                
+                dataframe.loc[combined_signal, 'enter_long'] = 1
+                
+                # Tag entries that were FreqAI confirmed
+                dataframe.loc[freqai_signal & (dataframe['enter_long'] == 1), 'freqai_confirmed'] = 1
+            else:
+                # If no Fibbo conditions, use FreqAI alone
+                dataframe.loc[freqai_signal, 'enter_long'] = 1
+            
+        else:
+            # Fallback to original Fibbo strategy if no FreqAI
+            logger.debug("No FreqAI predictions, using original Fibbo strategy")
+            if entry_conditions:
+                dataframe.loc[
+                    reduce(lambda x, y: x & y, entry_conditions),
+                    'enter_long'
+                ] = 1
+        
+        logger.debug(f"Generated {dataframe['enter_long'].sum()} entry signals")
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
