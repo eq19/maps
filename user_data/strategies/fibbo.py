@@ -525,7 +525,7 @@ class Fibbo(IStrategy):
             exit_conditions.append(FIBBO)
         if "STOCHRSI" in self.sell_additional_indicator.value:
             exit_conditions.append(STOCHRSI)
-        
+
         # TTM Squeeze exit
         if "TTM" in self.sell_additional_indicator.value:
             squeeze_off = dataframe['squeeze_off']
