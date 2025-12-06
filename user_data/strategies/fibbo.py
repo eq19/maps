@@ -440,6 +440,10 @@ class Fibbo(IStrategy):
                 f"(before: {len(dataframe)}, after: {len(merged_dataframe)})"
             )
 
+        # IMPORTANT: FreqAI will automatically add prediction columns AFTER this function
+        # Columns like 'do_predict', 'DI_values' will be available in populate_entry_trend
+
+        logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
         return merged_dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
