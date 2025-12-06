@@ -512,7 +512,7 @@ class Fibbo(IStrategy):
                 freqai_signal = freqai_buy_signal
             
             # Combine FreqAI with your strategy
-            if long_conditions:
+            if entry_conditions:
                 # Option A: FreqAI must agree with ALL your conditions (conservative)
                 fibbo_conditions = reduce(lambda x, y: x & y, entry_conditions)
                 combined_signal = fibbo_conditions & freqai_signal
