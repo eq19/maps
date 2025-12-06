@@ -309,18 +309,62 @@ class Fibbo(IStrategy):
 
         return prot
 
-    # ATR Stoploss Multiplier
-    def custom_stoploss(self, pair: str, trade: Trade, current_time: 'datetime', current_rate: float, current_profit: float, **kwargs) -> float:
-        # Calculate ATR-based stoploss
+    # Optional: Custom stoploss based on FreqAI confidence
+    def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
+                       current_rate: float, current_profit: float, **kwargs) -> float:
+        """
+        Dynamic stoploss based on FreqAI confidence.
+        """
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1]
-        atr_stoploss = last_candle['atr'] * self.atr_stoploss_multiplier.value
+        last_candle = dataframe.iloc[-1].squeeze()
+        
+        # If FreqAI confidence is high, use tighter stoploss
+        if 'DI_values' in last_candle:
+            confidence = last_candle['DI_values']
+            
+            # Adjust stoploss based on confidence
+            if confidence > 0.8:
+                # High confidence: tighter stoploss
+                return -0.05
+            elif confidence > 0.6:
+                # Medium confidence: normal stoploss
+                return self.stoploss
+            else:
+                # Low confidence: wider stoploss
+                return -0.15
+        
+        return self.stoploss
 
-        # Set stoploss based on ATR
-        stoploss_price = trade.open_rate - atr_stoploss
-        if current_rate < stoploss_price:
-            return -1  # stop out
-        return 1  # continue
+    # Optional: Leverage adjustment based on FreqAI
+    def leverage(self, pair: str, current_time: datetime, current_rate: float,
+                proposed_leverage: float, max_leverage: float, entry_tag: Optional[str],
+                side: str, **kwargs) -> float:
+        """
+        Adjust leverage based on FreqAI confidence.
+        """
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        last_candle = dataframe.iloc[-1].squeeze()
+        
+        if 'DI_values' in last_candle:
+            confidence = last_candle['DI_values']
+            
+            # Reduce leverage for low confidence predictions
+            if confidence < 0.5:
+                leverage_factor = 0.5
+            elif confidence < 0.7:
+                leverage_factor = 0.75
+            else:
+                leverage_factor = 1.0
+            
+            adjusted_leverage = min(max_leverage, proposed_leverage * leverage_factor)
+            
+            if adjusted_leverage != proposed_leverage:
+                logger.info(f"FreqAI adjusted leverage: {confidence:.2%} confidence, "
+                          f"leverage {proposed_leverage:.1f} → {adjusted_leverage:.1f}")
+            
+            return adjusted_leverage
+        
+        return proposed_leverage
 
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
