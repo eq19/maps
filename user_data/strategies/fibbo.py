@@ -471,7 +471,7 @@ class Fibbo(IStrategy):
         )
         
         # Always include RSI
-        long_conditions.append(RSI)
+        entry_conditions.append(RSI)
         
         if "BB" in self.buy_additional_indicator.value:
             entry_conditions.append(BB)
@@ -514,7 +514,7 @@ class Fibbo(IStrategy):
             # Combine FreqAI with your strategy
             if long_conditions:
                 # Option A: FreqAI must agree with ALL your conditions (conservative)
-                fibbo_conditions = reduce(lambda x, y: x & y, long_conditions)
+                fibbo_conditions = reduce(lambda x, y: x & y, entry_conditions)
                 combined_signal = fibbo_conditions & freqai_signal
                 
                 # Option B: FreqAI can trigger with fewer conditions (aggressive)
