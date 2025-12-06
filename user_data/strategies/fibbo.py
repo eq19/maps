@@ -497,42 +497,62 @@ class Fibbo(IStrategy):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        long_conditions = []
-
-        ### Momentum Indicators ###
+        """
+        Exit logic combining Fibbo strategy with FreqAI sell signals.
+        """
+        logger.debug(f"Generating exit signals for {metadata['pair']}")
+        
+        exit_conditions = []
+        
+        # === Your existing Fibbo exit conditions ===
         RSI = (dataframe['rsi'] >= self.sell_rsi.value)
-        ATR = (dataframe['atr'] < dataframe['atr'].shift(1))  # FIXED bug
-        MACD = (dataframe['macd'] < dataframe['macdsignal'])  # FIXED: Bearish crossover
-        FIBBO = (dataframe['close'] >= dataframe['fib_236'])  # Optional fib exit
+        ATR = (dataframe['atr'] < dataframe['atr'].shift(1))
+        MACD = (dataframe['macd'] < dataframe['macdsignal'])
+        FIBBO = (dataframe['close'] >= dataframe['fib_236'])
         STOCHRSI = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
-
+        
         # Always include RSI
-        long_conditions.append(RSI)
-
+        exit_conditions.append(RSI)
+        
         if "ATR" in self.sell_additional_indicator.value:
-            long_conditions.append(ATR)
+            exit_conditions.append(ATR)
         if "MACD" in self.sell_additional_indicator.value:
-            long_conditions.append(MACD)
+            exit_conditions.append(MACD)
         if "FIBBO" in self.sell_additional_indicator.value:
-            long_conditions.append(FIBBO)
+            exit_conditions.append(FIBBO)
         if "STOCHRSI" in self.sell_additional_indicator.value:
-            long_conditions.append(STOCHRSI)
-
-        # TTM Squeeze
+            exit_conditions.append(STOCHRSI)
+        
+        # TTM Squeeze exit
         if "TTM" in self.sell_additional_indicator.value:
             squeeze_off = dataframe['squeeze_off']
             momentum_negative = dataframe['momentum_hist'] < 0
-            long_conditions.append(squeeze_off & momentum_negative)
-
-        if long_conditions:
+            exit_conditions.append(squeeze_off & momentum_negative)
+        
+        # === FreqAI Exit Signals ===
+        if 'do_predict' in dataframe.columns:
+            # FreqAI sell signal (standard is -1)
+            freqai_sell_signal = (dataframe['do_predict'] == -1)
+            
+            # Add confidence filter if available
+            if 'DI_values' in dataframe.columns:
+                freqai_sell_confident = freqai_sell_signal & (dataframe['DI_values'] > float(self.freqaithreshold.value))
+                exit_conditions.append(freqai_sell_confident)
+            else:
+                exit_conditions.append(freqai_sell_signal)
+        
+        # Combine exit conditions with OR logic
+        # Exit if ANY condition is met
+        if exit_conditions:
             dataframe.loc[
-                reduce(lambda x, y: x & y, long_conditions),
+                reduce(lambda x, y: x | y, exit_conditions),
                 'exit_long'
             ] = 1
-
+        
+        logger.debug(f"Generated {dataframe['exit_long'].sum()} exit signals")
         return dataframe
 
 # Inject hyperopt parameters AFTER class definition
