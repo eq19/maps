@@ -208,7 +208,9 @@ class Fibbo(IStrategy):
             "sar": {"color": "white"},
         },
         "subplots": {
-            "&-s_close": {"&-s_close": {"color": "green"}},
+            "&-s_close": {
+                "&-s_close": {"color": "green"}
+            },
             "do_predict": {
                 "do_predict": {"color": "brown"},
             },
