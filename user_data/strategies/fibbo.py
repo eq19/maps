@@ -208,6 +208,10 @@ class Fibbo(IStrategy):
             "sar": {"color": "white"},
         },
         "subplots": {
+            "&-s_close": {"&-s_close": {"color": "green"}},
+            "do_predict": {
+                "do_predict": {"color": "brown"},
+            },
             "MACD": {
                 "macd": {"color": "blue"},
                 "macdsignal": {"color": "orange"},
