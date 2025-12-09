@@ -35,7 +35,8 @@ TD="$EARLIEST_DATE-$TODAY"
 TB="$BACKTESTING_START-$TODAY"
 
 # Print the timeranges
-source functions.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "${SCRIPT_DIR}/functions.sh"
 cat $CONFIG > user_data/config.json
 
 # ENVIRONMENT
