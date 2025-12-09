@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+#
+# Function: Calculate Score
+#
+
 calculate_score() {
 
   sleep 5
