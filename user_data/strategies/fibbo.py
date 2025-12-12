@@ -413,18 +413,6 @@ class Fibbo(IStrategy):
 
         return dataframe
 
-    def informative_pairs(self):
-        # Get all trading pairs from the whitelist
-        pairs = self.dp.current_whitelist()
-    
-        # Assign the desired timeframe for each pair using self.informative_timeframe
-        informative_pairs = [(pair, self.informative_timeframe) for pair in pairs]
-
-        # Add any additional fixed pairs using self.timeframe and self.informative_timeframe
-        #informative_pairs += [("USDT/IDR", self.timeframe), ("USDT/IDR", self.informative_timeframe)]
-
-        return informative_pairs
-
     # ============ FreqAI Feature Engineering ============
     
     def feature_engineering_expand_all(self, dataframe: DataFrame, period, **kwargs) -> DataFrame:
@@ -610,6 +598,38 @@ class Fibbo(IStrategy):
         
         return dataframe
 
+    # ============ Entry/Exit Logic ============
+
+    def informative_pairs(self):
+        """
+        Define additional informative pairs
+        """
+        whitelist_pairs = self.dp.current_whitelist()
+        corr_pairs = self.config["freqai"]["feature_parameters"]["include_corr_pairlist"]
+        informative_pairs = []
+        
+        for tf in self.config["freqai"]["feature_parameters"]["include_timeframes"]:
+            for pair in whitelist_pairs:
+                informative_pairs.append((pair, tf))
+            for pair in corr_pairs:
+                if pair in whitelist_pairs:
+                    continue
+                informative_pairs.append((pair, tf))
+        
+        return informative_pairs
+
+    def informative_pairs(self):
+        # Get all trading pairs from the whitelist
+        pairs = self.dp.current_whitelist()
+    
+        # Assign the desired timeframe for each pair using self.informative_timeframe
+        informative_pairs = [(pair, self.informative_timeframe) for pair in pairs]
+
+        # Add any additional fixed pairs using self.timeframe and self.informative_timeframe
+        #informative_pairs += [("USDT/IDR", self.timeframe), ("USDT/IDR", self.informative_timeframe)]
+
+        return informative_pairs
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Trigger FreqAI pipeline (training/prediction and column injection)
         #df = self.freqai.start(dataframe, metadata, self)
@@ -701,8 +721,6 @@ class Fibbo(IStrategy):
 
         logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
         return merged_dataframe
-
-    # ============ Entry/Exit Logic ============
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
