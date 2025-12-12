@@ -535,7 +535,7 @@ class Fibbo(IStrategy):
         dataframe["%-regime_long"] = dataframe["%-market_regime"].rolling(window=200).mean()
         
         return dataframe
-    
+
     def set_freqai_targets(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
         """
         Define prediction targets for the model
@@ -591,7 +591,7 @@ class Fibbo(IStrategy):
         dataframe["&-s_volume"] = dataframe["&-s_volume"].fillna(0)
         
         return dataframe
-    
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Trigger FreqAI pipeline (training/prediction and column injection)
         #df = self.freqai.start(dataframe, metadata, self)
@@ -684,7 +684,8 @@ class Fibbo(IStrategy):
         logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
         return merged_dataframe
 
-    # --------- Entry/Exit using new API ---------
+    # ============ Entry/Exit Logic ============
+
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Combine your Fibbo strategy with FreqAI predictions.
