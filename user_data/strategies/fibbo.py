@@ -407,66 +407,191 @@ class Fibbo(IStrategy):
 
         return informative_pairs
 
-    # --------- FreqAI required hooks ---------
-    def set_freqai_targets(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
-        """Define target '&-prediction' as close shifted -label_period (reduces NaNs)."""
-        label_period = int(self.freqai_info.get("feature_parameters", {}).get("label_period_candles", 24))
-        df = dataframe.copy()
-        df["&-prediction"] = df["close"].shift(-label_period)
-        return df
-
-    def feature_engineering_expand_all(self, dataframe: DataFrame, period: int, metadata: dict, **kwargs) -> DataFrame:
-        """Create period-dependent features (expanded by FreqAI across periods/timeframes).
-
-        Be robust to short slices (e.g., UI chart queries) by skipping indicators
-        that require a minimum window length.
+    # ============ FreqAI Feature Engineering ============
+    
+    def feature_engineering_expand_all(self, dataframe: DataFrame, period, **kwargs) -> DataFrame:
         """
-        df = dataframe.copy()
-        if RSIIndicator is not None:
-            try:
-                df["%-rsi"] = RSIIndicator(close=df["close"], window=period).rsi()
-            except Exception:
-                df["%-rsi"] = pd.Series(np.nan, index=df.index)
-            try:
-                df["%-ema"] = EMAIndicator(close=df["close"], window=period).ema_indicator()
-            except Exception:
-                df["%-ema"] = df["close"].ewm(span=max(1, period), adjust=False).mean()
-            # ADX requires at least `period` candles; guard to avoid negative dimensions
-            if len(df) >= max(2, period):
-                try:
-                    df["%-adx"] = ADXIndicator(
-                        high=df["high"], low=df["low"], close=df["close"], window=period
-                    ).adx()
-                except Exception:
-                    df["%-adx"] = pd.Series(np.nan, index=df.index)
-            else:
-                df["%-adx"] = pd.Series(np.nan, index=df.index)
-        else:
-            # Fallback: EMA + RSI (Wilder) via pandas
-            df["%-ema"] = df["close"].ewm(span=max(1, period), adjust=False).mean()
-            delta = df["close"].diff()
-            up = delta.clip(lower=0)
-            down = -delta.clip(upper=0)
-            roll_up = up.ewm(alpha=1/14, adjust=False).mean()
-            roll_down = down.ewm(alpha=1/14, adjust=False).mean()
-            rs = roll_up / roll_down.replace(0, pd.NA)
-            df["%-rsi"] = 100 - (100 / (1 + rs))
-            df["%-adx"] = pd.Series(np.nan, index=df.index)
-        return df
-
-    def feature_engineering_expand_basic(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
-        df = dataframe.copy()
-        df["%-pct_change"] = df["close"].pct_change()
-        df["%-volume"] = df["volume"]
-        return df
-
-    def feature_engineering_standard(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
-        df = dataframe.copy()
-        if "date" in df.columns:
-            df["%-day_of_week"] = df["date"].dt.dayofweek / 6.0
-            df["%-hour_of_day"] = df["date"].dt.hour / 23.0
-        return df
-
+        Features that will be auto-expanded based on:
+        - indicator_periods_candles
+        - include_timeframes  
+        - include_shifted_candles
+        - include_corr_pairlist
+        
+        This function is called once per period defined in config
+        """
+        # Price-based features
+        dataframe[f"%-rsi-period"] = ta.RSI(dataframe, timeperiod=period)
+        dataframe[f"%-mfi-period"] = ta.MFI(dataframe, timeperiod=period)
+        dataframe[f"%-adx-period"] = ta.ADX(dataframe, timeperiod=period)
+        dataframe[f"%-sma-period"] = ta.SMA(dataframe, timeperiod=period)
+        dataframe[f"%-ema-period"] = ta.EMA(dataframe, timeperiod=period)
+        
+        # Momentum indicators
+        dataframe[f"%-mom-period"] = ta.MOM(dataframe, timeperiod=period)
+        dataframe[f"%-roc-period"] = ta.ROC(dataframe, timeperiod=period)
+        
+        # Volatility
+        bollinger = ta.BBANDS(dataframe, timeperiod=period, nbdevup=2.0, nbdevdn=2.0)
+        dataframe[f"%-bb_lowerband-period"] = bollinger['lowerband']
+        dataframe[f"%-bb_middleband-period"] = bollinger['middleband']
+        dataframe[f"%-bb_upperband-period"] = bollinger['upperband']
+        # Handle division by zero
+        dataframe[f"%-bb_width-period"] = np.where(
+            bollinger['middleband'] != 0,
+            (bollinger['upperband'] - bollinger['lowerband']) / bollinger['middleband'],
+            0
+        )
+        
+        # ATR for volatility
+        dataframe[f"%-atr-period"] = ta.ATR(dataframe, timeperiod=period)
+        
+        # MACD
+        macd = ta.MACD(dataframe, fastperiod=int(period/2), slowperiod=period, signalperiod=int(period/3))
+        dataframe[f"%-macd-period"] = macd['macd']
+        dataframe[f"%-macdsignal-period"] = macd['macdsignal']
+        dataframe[f"%-macdhist-period"] = macd['macdhist']
+        
+        return dataframe
+    
+    def feature_engineering_expand_basic(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
+        """
+        Features that will be expanded based on:
+        - include_timeframes
+        - include_shifted_candles  
+        - include_corr_pairlist
+        
+        NOT expanded by indicator_periods_candles
+        """
+        # Price change features
+        dataframe["%-pct-change"] = dataframe["close"].pct_change()
+        dataframe["%-raw_volume"] = dataframe["volume"]
+        dataframe["%-raw_price"] = dataframe["close"]
+        
+        # Price volatility (rolling std)
+        dataframe["%-volatility"] = dataframe["close"].rolling(window=20).std()
+        
+        # Volume features
+        dataframe["%-volume_mean_20"] = dataframe["volume"].rolling(window=20).mean()
+        dataframe["%-volume_std_20"] = dataframe["volume"].rolling(window=20).std()
+        
+        return dataframe
+    
+    def feature_engineering_standard(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
+        """
+        Features that are NOT auto-expanded
+        Use this for custom features that should appear only once
+        
+        This is where we add Market Regime Detection (Situation Awareness)
+        """
+        # Time-based features
+        dataframe["%-day_of_week"] = (dataframe["date"].dt.dayofweek + 1) / 7
+        dataframe["%-hour_of_day"] = (dataframe["date"].dt.hour + 1) / 25
+        
+        # ========== MARKET REGIME DETECTION ==========
+        
+        # Trend detection (EMA crossover based)
+        ema_short = ta.EMA(dataframe, timeperiod=20)
+        ema_long = ta.EMA(dataframe, timeperiod=50)
+        # Handle division by zero
+        dataframe["%-trend_strength"] = np.where(
+            ema_long != 0,
+            (ema_short - ema_long) / ema_long,
+            0
+        )
+        
+        # Volatility regime (ATR normalized)
+        atr_20 = ta.ATR(dataframe, timeperiod=20)
+        # Handle division by zero
+        dataframe["%-volatility_regime"] = np.where(
+            dataframe["close"] != 0,
+            atr_20 / dataframe["close"],
+            0
+        )
+        
+        # Volume regime
+        volume_ma = dataframe["volume"].rolling(window=20).mean()
+        # Handle division by zero
+        dataframe["%-volume_regime"] = np.where(
+            volume_ma != 0,
+            dataframe["volume"] / volume_ma,
+            1
+        )
+        
+        # Market regime classification
+        # 0 = Range, 1 = Trending Up, 2 = Trending Down, 3 = High Volatility
+        dataframe["%-market_regime"] = 0  # Default: Range
+        
+        trend_up = dataframe["%-trend_strength"] > self.trend_threshold.value
+        trend_down = dataframe["%-trend_strength"] < -self.trend_threshold.value
+        high_vol = dataframe["%-volatility_regime"] > self.volatility_threshold.value * 0.02
+        
+        dataframe.loc[trend_up & ~high_vol, "%-market_regime"] = 1  # Trending Up
+        dataframe.loc[trend_down & ~high_vol, "%-market_regime"] = 2  # Trending Down
+        dataframe.loc[high_vol, "%-market_regime"] = 3  # High Volatility
+        
+        # Regime indicators for different time horizons
+        dataframe["%-regime_short"] = dataframe["%-market_regime"].rolling(window=10).mean()
+        dataframe["%-regime_medium"] = dataframe["%-market_regime"].rolling(window=50).mean()
+        dataframe["%-regime_long"] = dataframe["%-market_regime"].rolling(window=200).mean()
+        
+        return dataframe
+    
+    def set_freqai_targets(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
+        """
+        Define prediction targets for the model
+        
+        We use multiple targets for ensemble predictions
+        """
+        # Target 1: Future price change (main target)
+        future_close = (
+            dataframe["close"]
+            .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
+            .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
+            .mean()
+        )
+        # Handle division by zero
+        dataframe["&-s_close"] = np.where(
+            dataframe["close"] != 0,
+            (future_close / dataframe["close"]) - 1,
+            0
+        )
+        
+        # Target 2: Future volatility (for risk management)
+        future_volatility = (
+            dataframe["close"]
+            .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
+            .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
+            .std()
+        )
+        # Handle division by zero
+        dataframe["&-s_volatility"] = np.where(
+            dataframe["close"] != 0,
+            future_volatility / dataframe["close"],
+            0
+        )
+        
+        # Target 3: Future volume surge (for confirmation)
+        future_volume = (
+            dataframe["volume"]
+            .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
+            .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
+            .mean()
+        )
+        # Handle division by zero
+        dataframe["&-s_volume"] = np.where(
+            dataframe["volume"] != 0,
+            (future_volume / dataframe["volume"]) - 1,
+            0
+        )
+        
+        # Clean up inf/nan in targets
+        dataframe = dataframe.replace([np.inf, -np.inf], np.nan)
+        dataframe["&-s_close"] = dataframe["&-s_close"].fillna(0)
+        dataframe["&-s_volatility"] = dataframe["&-s_volatility"].fillna(0)
+        dataframe["&-s_volume"] = dataframe["&-s_volume"].fillna(0)
+        
+        return dataframe
+    
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Trigger FreqAI pipeline (training/prediction and column injection)
         #df = self.freqai.start(dataframe, metadata, self)
