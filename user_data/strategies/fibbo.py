@@ -315,6 +315,9 @@ class Fibbo(IStrategy):
 
         return prot
 
+    def custom_params(self, pair: str, param: str):
+        return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
+
     # Optional: Custom stoploss based on FreqAI confidence
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                        current_rate: float, current_profit: float, **kwargs) -> float:
@@ -340,6 +343,24 @@ class Fibbo(IStrategy):
                 return -0.15
         
         return self.stoploss
+
+    def custom_exit(self, pair: str, trade: Trade, current_time: datetime, 
+                   current_rate: float, current_profit: float, **kwargs):
+        """
+        Custom exit logic - can be used for advanced risk management
+        """
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        last_candle = dataframe.iloc[-1].squeeze()
+        
+        # Exit if entering high volatility regime with profit
+        if last_candle.get('%-market_regime', 0) == 3 and current_profit > 0.01:
+            return 'high_volatility_exit'
+        
+        # Exit if model confidence drops (high DI values)
+        if last_candle.get('DI_values', 0) > 2.0:
+            return 'low_confidence_exit'
+        
+        return None
 
     # Optional: Leverage adjustment based on FreqAI
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
@@ -371,9 +392,6 @@ class Fibbo(IStrategy):
             return adjusted_leverage
         
         return proposed_leverage
-
-    def custom_params(self, pair: str, param: str):
-        return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
     def ttm_squeeze(self, dataframe: DataFrame, bollinger_period: int = 20, keltner_period: int = 20, momentum_period: int = 12) -> DataFrame:
         # Calculate Bollinger Bands
