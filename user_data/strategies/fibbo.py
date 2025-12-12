@@ -556,6 +556,7 @@ class Fibbo(IStrategy):
         logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
         return merged_dataframe
 
+    # --------- Entry/Exit using new API ---------
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Combine your Fibbo strategy with FreqAI predictions.
