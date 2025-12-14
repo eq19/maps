@@ -867,6 +867,42 @@ class Fibbo(IStrategy):
         return dataframe
 
     # --------- Entry/Exit using new API ---------
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        # Trigger FreqAI pipeline (training/prediction and column injection)
+        df = self.freqai.start(dataframe, metadata, self)
+
+        # Add ATR(14) and EMA(200) for volatility-aware thresholds and trend filter
+        try:
+            if AverageTrueRange is not None:
+                atr_ind = AverageTrueRange(high=df["high"], low=df["low"], close=df["close"], window=14)
+                df["atr"] = atr_ind.average_true_range()
+            else:
+                # Fallback ATR: simple rolling mean of True Range
+                prev_close = df["close"].shift(1)
+                tr = pd.concat([
+                    (df["high"] - df["low"]).abs(),
+                    (df["high"] - prev_close).abs(),
+                    (df["low"] - prev_close).abs(),
+                ], axis=1).max(axis=1)
+                df["atr"] = tr.rolling(window=14, min_periods=1).mean()
+        except Exception:
+            # Ensure column exists even if computation fails
+            df["atr"] = pd.Series(np.nan, index=df.index)
+
+        try:
+            if EMAIndicator is not None:
+                df["ema200"] = EMAIndicator(close=df["close"], window=200).ema_indicator()
+            else:
+                df["ema200"] = df["close"].ewm(span=200, adjust=False).mean()
+        except Exception:
+            df["ema200"] = df["close"].ewm(span=200, adjust=False).mean()
+
+        # Derived helpers
+        df["atr_pct"] = (df["atr"] / df["close"]).replace([np.inf, -np.inf], np.nan)
+        if "&-prediction" in df.columns:
+            df["pred_ret"] = (df["&-prediction"] - df["close"]) / df["close"]
+        return df
+
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         df = dataframe.copy()
         df["enter_long"] = 0
