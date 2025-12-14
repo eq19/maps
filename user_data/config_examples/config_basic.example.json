@@ -11,9 +11,9 @@
   "fiat_display_currency": "IDR",
   "tradable_balance_ratio": 0.99,
   "reduce_df_footprint": false,
+  "process_only_new_candles": true,
   "disable_dataframe_checks": false,
   "cancel_open_orders_on_exit": true,
-  "process_only_new_candles": false,
   "ignore_roi_if_entry_signal": false,
   "unfilledtimeout": {
     "entry": 10,
