@@ -86,13 +86,13 @@ fi
 
 if [[ "$1" != "hyperopt" ]]; then
 
-  echo -e "\n$hr\nLIST EXCHANGES\n$hr"
-  freqtrade list-exchanges --help
-  freqtrade list-exchanges
+  #echo -e "\n$hr\nLIST EXCHANGES\n$hr"
+  #freqtrade list-exchanges --help
+  #freqtrade list-exchanges
 
-  echo -e "\n$hr\nLIST MARKETS\n$hr"
-  freqtrade list-markets --help
-  freqtrade list-markets
+  #echo -e "\n$hr\nLIST MARKETS\n$hr"
+  #freqtrade list-markets --help
+  #freqtrade list-markets
 
   echo -e "\n$hr\nSTRATEGIES\n$hr"
   freqtrade list-strategies --help
