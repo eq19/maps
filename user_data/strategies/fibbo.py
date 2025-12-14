@@ -620,7 +620,7 @@ class Fibbo(IStrategy):
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Trigger FreqAI pipeline (training/prediction and column injection)
-        #df = self.freqai.start(dataframe, metadata, self)
+        df = self.freqai.start(dataframe, metadata, self)
 
         # RSI 
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
