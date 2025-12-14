@@ -617,7 +617,7 @@ class Fibbo(IStrategy):
         
         return informative_pairs
 
-    def populates_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Trigger FreqAI pipeline (training/prediction and column injection)
         #dataframe = self.freqai.start(dataframe, metadata, self)
 
@@ -709,7 +709,7 @@ class Fibbo(IStrategy):
         logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
         return merged_dataframe
 
-    def populates_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Combine your Fibbo strategy with FreqAI predictions.
         FreqAI columns are now available in the dataframe.
@@ -807,7 +807,7 @@ class Fibbo(IStrategy):
         logger.debug(f"Generated {dataframe['enter_long'].sum()} entry signals")
         return dataframe
 
-    def populates_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Exit logic combining Fibbo strategy with FreqAI sell signals.
         """
@@ -867,7 +867,7 @@ class Fibbo(IStrategy):
         return dataframe
 
     # --------- Entry/Exit using new API ---------
-    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populates_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Trigger FreqAI pipeline (training/prediction and column injection)
         df = self.freqai.start(dataframe, metadata, self)
 
@@ -903,7 +903,7 @@ class Fibbo(IStrategy):
             df["pred_ret"] = (df["&-prediction"] - df["close"]) / df["close"]
         return df
 
-    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populates_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         df = dataframe.copy()
         df["enter_long"] = 0
         df["enter_short"] = 0
@@ -926,7 +926,7 @@ class Fibbo(IStrategy):
             df.loc[short_cond.fillna(False), "enter_short"] = 1
         return df
 
-    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+    def populates_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         df = dataframe.copy()
         df["exit_long"] = 0
         df["exit_short"] = 0
