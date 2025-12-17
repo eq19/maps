@@ -122,7 +122,7 @@
     "process_throttle_secs": 5,
     "heartbeat_interval": 60
   },
-  "strategy": "Fibbo",
+  "strategy": "FreqaiExampleHybridStrategy",
   "use_exit_signal": true,
   "dataformat_ohlcv": "feather",
   "dataformat_trades": "feather",
