@@ -89,7 +89,9 @@ class FreqaiExampleHybridStrategy(IStrategy):
     use_exit_signal = True
     startup_candle_count: int = 30
     can_short = False
-
+    timeframe = "15m"
+    informative_timeframe = "1h"
+    
     # Hyperoptable parameters
     buy_rsi = IntParameter(low=1, high=50, default=30, space="buy", optimize=True, load=True)
     sell_rsi = IntParameter(low=50, high=100, default=70, space="sell", optimize=True, load=True)
