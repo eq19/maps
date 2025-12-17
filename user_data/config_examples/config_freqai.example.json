@@ -1,50 +1,48 @@
 {
-    "freqai": {
-        "enabled": true,
-        "purge_old_models": 2,
+  "freqai": {
+    "enabled": true,
 
-        "train_period_days": 14,
-        "backtest_period_days": 14,
-        "live_retrain_hours": 0,
-        "identifier": "unique-id",
+    "identifier": "indodax-bootstrap-v1",
 
-        "feature_parameters": {
-            "include_timeframes": ["15m", "1h", "1d"],
-            "include_corr_pairlist": [
-                "ADA/IDR", "BTC/IDR", "BNB/IDR", "DOT/IDR", "ETH/IDR",
-                "POL/IDR", "SOL/IDR", "TRX/IDR", "USDT/IDR"
-            ],
-            "label_period_candles": 24,
-            "include_shifted_candles": 10,
-            "DI_threshold": 0.8,
-            "weight_factor": 0.9,
-            "principal_component_analysis": true,
-            "use_SVM_to_remove_outliers": true,
-            "indicator_periods_candles": [12, 24, 48],
-            "plot_feature_importances": 0
-        },
+    "purge_old_models": 2,
 
-        "data_split_parameters": {
-            "test_size": 0.33,
-            "random_state": 1
-        },
+    "train_period_days": 14,
+    "backtest_period_days": 7,
 
-        "model_training_parameters": {},
+    "live_retrain_hours": 0,
 
-        "rl_config": {
-            "train_cycles": 3,
-            "cpu_count": 1,
+    "feature_parameters": {
+      "include_timeframes": ["15m", "1h"],
 
-            "gamma": 0.99,
-            "learning_rate": 0.0003,
-            "batch_size": 64,
-            "n_steps": 2048,
+      "include_corr_pairlist": [
+        "BTC/IDR",
+        "ETH/IDR"
+      ],
 
-            "max_trade_duration_candles": 300,
+      "label_period_candles": 24,
 
-            "model_reward_parameters": {
-                "win_reward_factor": 2
-            }
-        }
+      "include_shifted_candles": 5,
+
+      "indicator_periods_candles": [12, 24],
+
+      "DI_threshold": 0.8,
+      "weight_factor": 0.9,
+
+      "principal_component_analysis": false,
+      "use_SVM_to_remove_outliers": false,
+
+      "plot_feature_importances": 0
+    },
+
+    "data_split_parameters": {
+      "test_size": 0.25,
+      "random_state": 42
+    },
+
+    "model_training_parameters": {
+      "n_estimators": 50,
+      "learning_rate": 0.1,
+      "max_depth": 6
     }
+  }
 }
