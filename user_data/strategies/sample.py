@@ -868,4 +868,4 @@ class Sample(IStrategy):
 
 # Inject hyperopt parameters AFTER class definition
 for key, value in strategy_attrs.items():
-    setattr(Fibbo, key, value)
+    setattr(Sample, key, value)
