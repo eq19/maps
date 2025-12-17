@@ -2,10 +2,6 @@
     "pairlists": [
       {
         "method": "StaticPairList",
-        "pairs": [
-        "BTC/IDR",
-        "ETH/IDR"
-       ]
       }
    ]
 }
