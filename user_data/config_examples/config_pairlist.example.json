@@ -1,39 +1,11 @@
 {
     "pairlists": [
-        {
-            "method": "VolumePairList",
-            "sort_key": "quoteVolume",
-            "refresh_period": 900,
-            "number_assets": 25
-        },
-        {
-            "method": "AgeFilter",
-            "min_days_listed": 3
-        },
-        {
-            "method": "PriceFilter",
-            "low_price_ratio": 0.001
-        },
-        {
-            "method": "VolatilityFilter",
-            "min_volatility": 0.003,
-            "max_volatility": 3.0,
-            "refresh_period": 1800,
-            "allow_nan": true
-        },
-        {
-            "method": "PrecisionFilter"
-        },
-        {
-            "method": "SpreadFilter",
-            "max_spread_ratio": 0.07
-        },
-        {
-            "method": "PerformanceFilter",
-            "lookback_period": 1440,
-            "sort_key": "profit",
-            "min_periods": 24,
-            "number_assets": 15
-        }
-    ]
+      {
+        "method": "StaticPairList",
+        "pairs": [
+        "BTC/IDR",
+        "ETH/IDR"
+       ]
+      }
+   ]
 }
