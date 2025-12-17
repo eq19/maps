@@ -413,188 +413,141 @@ class Fibbo(IStrategy):
         return dataframe
 
     # ============ FreqAI Feature Engineering ============
-    
-    def feature_engineering_expand_all(self, dataframe: DataFrame, period, **kwargs) -> DataFrame:
+
+    def feature_engineering_expand_all(
+        self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
+    ) -> DataFrame:
         """
-        Features that will be auto-expanded based on:
-        - indicator_periods_candles
-        - include_timeframes  
-        - include_shifted_candles
-        - include_corr_pairlist
-        
-        This function is called once per period defined in config
+        *Only functional with FreqAI enabled strategies*
+        This function will automatically expand the defined features on the config defined
+        `indicator_periods_candles`, `include_timeframes`, `include_shifted_candles`, and
+        `include_corr_pairs`. In other words, a single feature defined in this function
+        will automatically expand to a total of
+        `indicator_periods_candles` * `include_timeframes` * `include_shifted_candles` *
+        `include_corr_pairs` numbers of features added to the model.
+
+        All features must be prepended with `%` to be recognized by FreqAI internals.
+
+        More details on how these config defined parameters accelerate feature engineering
+        in the documentation at:
+
+        https://www.freqtrade.io/en/latest/freqai-parameter-table/#feature-parameters
+
+        https://www.freqtrade.io/en/latest/freqai-feature-engineering/#defining-the-features
+
+        :param dataframe: strategy dataframe which will receive the features
+        :param period: period of the indicator - usage example:
+        :param metadata: metadata of current pair
+        dataframe["%-ema-period"] = ta.EMA(dataframe, timeperiod=period)
         """
-        # Price-based features
-        dataframe[f"%-rsi-period"] = ta.RSI(dataframe, timeperiod=period)
-        dataframe[f"%-mfi-period"] = ta.MFI(dataframe, timeperiod=period)
-        dataframe[f"%-adx-period"] = ta.ADX(dataframe, timeperiod=period)
-        dataframe[f"%-sma-period"] = ta.SMA(dataframe, timeperiod=period)
-        dataframe[f"%-ema-period"] = ta.EMA(dataframe, timeperiod=period)
-        
-        # Momentum indicators
-        dataframe[f"%-mom-period"] = ta.MOM(dataframe, timeperiod=period)
-        dataframe[f"%-roc-period"] = ta.ROC(dataframe, timeperiod=period)
-        
-        # Volatility
-        bollinger = ta.BBANDS(dataframe, timeperiod=period, nbdevup=2.0, nbdevdn=2.0)
-        dataframe[f"%-bb_lowerband-period"] = bollinger['lowerband']
-        dataframe[f"%-bb_middleband-period"] = bollinger['middleband']
-        dataframe[f"%-bb_upperband-period"] = bollinger['upperband']
-        # Handle division by zero
-        dataframe[f"%-bb_width-period"] = np.where(
-            bollinger['middleband'] != 0,
-            (bollinger['upperband'] - bollinger['lowerband']) / bollinger['middleband'],
-            0
+
+        dataframe["%-rsi-period"] = ta.RSI(dataframe, timeperiod=period)
+        dataframe["%-mfi-period"] = ta.MFI(dataframe, timeperiod=period)
+        dataframe["%-adx-period"] = ta.ADX(dataframe, timeperiod=period)
+        dataframe["%-sma-period"] = ta.SMA(dataframe, timeperiod=period)
+        dataframe["%-ema-period"] = ta.EMA(dataframe, timeperiod=period)
+
+        bollinger = qtpylib.bollinger_bands(
+            qtpylib.typical_price(dataframe), window=period, stds=2.2
         )
-        
-        # ATR for volatility
-        dataframe[f"%-atr-period"] = ta.ATR(dataframe, timeperiod=period)
-        
-        # MACD
-        macd = ta.MACD(dataframe, fastperiod=int(period/2), slowperiod=period, signalperiod=int(period/3))
-        dataframe[f"%-macd-period"] = macd['macd']
-        dataframe[f"%-macdsignal-period"] = macd['macdsignal']
-        dataframe[f"%-macdhist-period"] = macd['macdhist']
-        
+        dataframe["bb_lowerband-period"] = bollinger["lower"]
+        dataframe["bb_middleband-period"] = bollinger["mid"]
+        dataframe["bb_upperband-period"] = bollinger["upper"]
+
+        dataframe["%-bb_width-period"] = (
+            dataframe["bb_upperband-period"] - dataframe["bb_lowerband-period"]
+        ) / dataframe["bb_middleband-period"]
+        dataframe["%-close-bb_lower-period"] = dataframe["close"] / dataframe["bb_lowerband-period"]
+
+        dataframe["%-roc-period"] = ta.ROC(dataframe, timeperiod=period)
+
+        dataframe["%-relative_volume-period"] = (
+            dataframe["volume"] / dataframe["volume"].rolling(period).mean()
+        )
+
         return dataframe
-    
-    def feature_engineering_expand_basic(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
+
+    def feature_engineering_expand_basic(
+        self, dataframe: DataFrame, metadata: dict, **kwargs
+    ) -> DataFrame:
         """
-        Features that will be expanded based on:
-        - include_timeframes
-        - include_shifted_candles  
-        - include_corr_pairlist
-        
-        NOT expanded by indicator_periods_candles
+        *Only functional with FreqAI enabled strategies*
+        This function will automatically expand the defined features on the config defined
+        `include_timeframes`, `include_shifted_candles`, and `include_corr_pairs`.
+        In other words, a single feature defined in this function
+        will automatically expand to a total of
+        `include_timeframes` * `include_shifted_candles` * `include_corr_pairs`
+        numbers of features added to the model.
+
+        Features defined here will *not* be automatically duplicated on user defined
+        `indicator_periods_candles`
+
+        All features must be prepended with `%` to be recognized by FreqAI internals.
+
+        More details on how these config defined parameters accelerate feature engineering
+        in the documentation at:
+
+        https://www.freqtrade.io/en/latest/freqai-parameter-table/#feature-parameters
+
+        https://www.freqtrade.io/en/latest/freqai-feature-engineering/#defining-the-features
+
+        :param dataframe: strategy dataframe which will receive the features
+        :param metadata: metadata of current pair
+        dataframe["%-pct-change"] = dataframe["close"].pct_change()
+        dataframe["%-ema-200"] = ta.EMA(dataframe, timeperiod=200)
         """
-        # Price change features
         dataframe["%-pct-change"] = dataframe["close"].pct_change()
         dataframe["%-raw_volume"] = dataframe["volume"]
         dataframe["%-raw_price"] = dataframe["close"]
-        
-        # Price volatility (rolling std)
-        dataframe["%-volatility"] = dataframe["close"].rolling(window=20).std()
-        
-        # Volume features
-        dataframe["%-volume_mean_20"] = dataframe["volume"].rolling(window=20).mean()
-        dataframe["%-volume_std_20"] = dataframe["volume"].rolling(window=20).std()
-        
-        return dataframe
-    
-    def feature_engineering_standard(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
-        """
-        Features that are NOT auto-expanded
-        Use this for custom features that should appear only once
-        
-        This is where we add Market Regime Detection (Situation Awareness)
-        """
-        # Time-based features
-        dataframe["%-day_of_week"] = (dataframe["date"].dt.dayofweek + 1) / 7
-        dataframe["%-hour_of_day"] = (dataframe["date"].dt.hour + 1) / 25
-        
-        # ========== MARKET REGIME DETECTION ==========
-        
-        # Trend detection (EMA crossover based)
-        ema_short = ta.EMA(dataframe, timeperiod=20)
-        ema_long = ta.EMA(dataframe, timeperiod=50)
-        # Handle division by zero
-        dataframe["%-trend_strength"] = np.where(
-            ema_long != 0,
-            (ema_short - ema_long) / ema_long,
-            0
-        )
-        
-        # Volatility regime (ATR normalized)
-        atr_20 = ta.ATR(dataframe, timeperiod=20)
-        # Handle division by zero
-        dataframe["%-volatility_regime"] = np.where(
-            dataframe["close"] != 0,
-            atr_20 / dataframe["close"],
-            0
-        )
-        
-        # Volume regime
-        volume_ma = dataframe["volume"].rolling(window=20).mean()
-        # Handle division by zero
-        dataframe["%-volume_regime"] = np.where(
-            volume_ma != 0,
-            dataframe["volume"] / volume_ma,
-            1
-        )
-        
-        # Market regime classification
-        # 0 = Range, 1 = Trending Up, 2 = Trending Down, 3 = High Volatility
-        dataframe["%-market_regime"] = 0  # Default: Range
-        
-        trend_up = dataframe["%-trend_strength"] > self.trend_threshold.value
-        trend_down = dataframe["%-trend_strength"] < -self.trend_threshold.value
-        high_vol = dataframe["%-volatility_regime"] > self.volatility_threshold.value * 0.02
-        
-        dataframe.loc[trend_up & ~high_vol, "%-market_regime"] = 1  # Trending Up
-        dataframe.loc[trend_down & ~high_vol, "%-market_regime"] = 2  # Trending Down
-        dataframe.loc[high_vol, "%-market_regime"] = 3  # High Volatility
-        
-        # Regime indicators for different time horizons
-        dataframe["%-regime_short"] = dataframe["%-market_regime"].rolling(window=10).mean()
-        dataframe["%-regime_medium"] = dataframe["%-market_regime"].rolling(window=50).mean()
-        dataframe["%-regime_long"] = dataframe["%-market_regime"].rolling(window=200).mean()
-        
         return dataframe
 
-    def set_freqai_targets(self, dataframe: DataFrame, metadata, **kwargs) -> DataFrame:
+    def feature_engineering_standard(
+        self, dataframe: DataFrame, metadata: dict, **kwargs
+    ) -> DataFrame:
         """
-        Define prediction targets for the model
-        
-        We use multiple targets for ensemble predictions
+        *Only functional with FreqAI enabled strategies*
+        This optional function will be called once with the dataframe of the base timeframe.
+        This is the final function to be called, which means that the dataframe entering this
+        function will contain all the features and columns created by all other
+        freqai_feature_engineering_* functions.
+
+        This function is a good place to do custom exotic feature extractions (e.g. tsfresh).
+        This function is a good place for any feature that should not be auto-expanded upon
+        (e.g. day of the week).
+
+        All features must be prepended with `%` to be recognized by FreqAI internals.
+
+        More details about feature engineering available:
+
+        https://www.freqtrade.io/en/latest/freqai-feature-engineering
+
+        :param dataframe: strategy dataframe which will receive the features
+        :param metadata: metadata of current pair
+        usage example: dataframe["%-day_of_week"] = (dataframe["date"].dt.dayofweek + 1) / 7
         """
-        # Target 1: Future price change (main target)
-        future_close = (
-            dataframe["close"]
-            .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-            .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-            .mean()
+        dataframe["%-day_of_week"] = dataframe["date"].dt.dayofweek
+        dataframe["%-hour_of_day"] = dataframe["date"].dt.hour
+        return dataframe
+
+    def set_freqai_targets(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
+        """
+        *Only functional with FreqAI enabled strategies*
+        Required function to set the targets for the model.
+        All targets must be prepended with `&` to be recognized by the FreqAI internals.
+
+        More details about feature engineering available:
+
+        https://www.freqtrade.io/en/latest/freqai-feature-engineering
+
+        :param dataframe: strategy dataframe which will receive the targets
+        :param metadata: metadata of current pair
+        usage example: dataframe["&-target"] = dataframe["close"].shift(-1) / dataframe["close"]
+        """
+        self.freqai.class_names = ["down", "up"]
+        dataframe["&s-up_or_down"] = np.where(
+            dataframe["close"].shift(-50) > dataframe["close"], "up", "down"
         )
-        # Handle division by zero
-        dataframe["&-s_close"] = np.where(
-            dataframe["close"] != 0,
-            (future_close / dataframe["close"]) - 1,
-            0
-        )
-        
-        # Target 2: Future volatility (for risk management)
-        future_volatility = (
-            dataframe["close"]
-            .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-            .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-            .std()
-        )
-        # Handle division by zero
-        dataframe["&-s_volatility"] = np.where(
-            dataframe["close"] != 0,
-            future_volatility / dataframe["close"],
-            0
-        )
-        
-        # Target 3: Future volume surge (for confirmation)
-        future_volume = (
-            dataframe["volume"]
-            .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-            .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-            .mean()
-        )
-        # Handle division by zero
-        dataframe["&-s_volume"] = np.where(
-            dataframe["volume"] != 0,
-            (future_volume / dataframe["volume"]) - 1,
-            0
-        )
-        
-        # Clean up inf/nan in targets
-        dataframe = dataframe.replace([np.inf, -np.inf], np.nan)
-        dataframe["&-s_close"] = dataframe["&-s_close"].fillna(0)
-        dataframe["&-s_volatility"] = dataframe["&-s_volatility"].fillna(0)
-        dataframe["&-s_volume"] = dataframe["&-s_volume"].fillna(0)
-        
+
         return dataframe
 
     # ============ Entry/Exit Logic ============
