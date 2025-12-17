@@ -139,7 +139,7 @@ for section, keys in span.items():
         strategy_attrs[key] = get_param_config(span, section, key)
 
 # 👇 Now define the strategy below
-class Fibbo(IStrategy):
+class Sample(IStrategy):
     """
     Fibonacci Strategy with Indodax exchange workarounds.
     
