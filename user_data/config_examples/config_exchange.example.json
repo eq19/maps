@@ -3,7 +3,7 @@
     "name": "indodax",
     "key": "your_exchange_key",
     "secret": "your_exchange_secret",
-    "pair_whitelist": ["BTC/IDR", "ETH/IDR"],
+    "pair_whitelist": [],
     "core_whitelist": [
       "ADA/IDR",
       "BTC/IDR",
