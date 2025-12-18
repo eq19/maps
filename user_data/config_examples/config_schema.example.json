@@ -1,0 +1,14 @@
+{
+  "schema": {
+    "default": {
+      "threshold": 0.5,
+      "buy": { "column_index": 0, "operator": ">" },
+      "sell": { "column_index": 0, "operator": "<" }
+    },
+    "multi_target": {
+      "threshold": 0.5,
+      "buy": { "column_index": 0, "operator": ">" },
+      "sell": { "column_index": 1, "operator": ">" }
+    }
+  }
+}
