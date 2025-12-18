@@ -569,11 +569,21 @@ class Fibbo(IStrategy):
                 informative_pairs.append((pair, tf))
         
         return informative_pairs
-    
+
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Trigger FreqAI pipeline (training/prediction and column injection)
-        if self.freqai.is_pair_ready(pair):
-            dataframe = self.freqai.start(dataframe, metadata, self)
+        pair = metadata["pair"]
+
+        # --- FreqAI (safe for dynamic pairs) ---
+
+        if self.freqai is not None:
+            try:
+                if self.freqai.is_pair_ready(pair):
+                    dataframe = self.freqai.start(dataframe, metadata, self)
+            except KeyError:
+                # Pair introduced dynamically without FreqAI history/model
+                logger.debug(f"FreqAI not ready for {pair}, skipping AI step.")
+
+        # --- Classical indicators (always run) ---
 
         # RSI 
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
