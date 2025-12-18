@@ -569,10 +569,11 @@ class Fibbo(IStrategy):
                 informative_pairs.append((pair, tf))
         
         return informative_pairs
-
+    
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         # Trigger FreqAI pipeline (training/prediction and column injection)
-        dataframe = self.freqai.start(dataframe, metadata, self)
+        if self.freqai.is_pair_ready(pair):
+            dataframe = self.freqai.start(dataframe, metadata, self)
 
         # RSI 
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
