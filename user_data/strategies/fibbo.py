@@ -573,15 +573,16 @@ class Fibbo(IStrategy):
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = metadata["pair"]
 
-        # --- FreqAI (safe for dynamic pairs) ---
-
+        # --- FreqAI (robust for dynamic pairs) ---
         if self.freqai is not None:
             try:
-                if self.freqai.is_pair_ready(pair):
-                    dataframe = self.freqai.start(dataframe, metadata, self)
+                dataframe = self.freqai.start(dataframe, metadata, self)
             except KeyError:
                 # Pair introduced dynamically without FreqAI history/model
-                logger.debug(f"FreqAI not ready for {pair}, skipping AI step.")
+                pass
+            except Exception as e:
+                # Extra safety: never let AI crash the strategy
+                self.logger.debug(f"FreqAI skipped for {pair}: {e}")
 
         # --- Classical indicators (always run) ---
 
