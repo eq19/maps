@@ -578,7 +578,7 @@ class Fibbo(IStrategy):
 
         is_classifier = any(
             k in model_name
-            for k in ["classifier", "classification"]
+            for k in ["Classifier", "Classification"]
         )
 
         # ------------------------------------------------------------
