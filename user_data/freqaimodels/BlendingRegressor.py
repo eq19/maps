@@ -25,7 +25,6 @@ class BlendingRegressor(BaseRegressionModel):
         """
         # Initialize base models
         self.base_models['rf'] = RandomForestRegressor(
-            n_estimators=50,
             max_depth=8,
             random_state=42,
             **self.model_training_parameters
