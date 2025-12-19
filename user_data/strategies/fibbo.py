@@ -1,4 +1,97 @@
-# pragma pylint: disable=missing-docstring, invalid-name, pointless-string-statement
+    # ----------------------------------------------------------
+    # Helper: apply operator defined in JSON
+    # ----------------------------------------------------------
+    def _apply_operator(self, series, operator, threshold):
+        if operator == ">":
+            return series > threshold
+        if operator == "<":
+            return series < threshold
+        if operator == ">=":
+            return series >= threshold
+        if operator == "<=":
+            return series <= threshold
+        raise ValueError(f"Unsupported operator: {operator}")
+
+    # ----------------------------------------------------------
+    # Feature engineering (post-prediction)
+    # ----------------------------------------------------------
+    def feature_engineering_standard(
+        self,
+        dataframe,
+        metadata,
+        **kwargs,
+    ):
+        """
+        Runs after FreqAI predictions are injected.
+        Interprets freqai_pred* columns and injects:
+        - ai_buy_signal
+        - ai_sell_signal
+        """
+
+        # Discover prediction columns injected by FreqAI
+        pred_cols = sorted(
+            c for c in dataframe.columns if c.startswith("freqai_pred")
+        )
+
+        # Safety for warmup / startup
+        if not pred_cols:
+            return dataframe
+
+        # Select schema based on output dimensionality
+        if len(pred_cols) > 1:
+            schema = self.freqai_pred_schema["multi_target"]
+        else:
+            schema = self.freqai_pred_schema["default"]
+
+        threshold = schema["threshold"]
+
+        # Buy signal
+        buy_cfg = schema["buy"]
+        dataframe["ai_buy_signal"] = self._apply_operator(
+            dataframe[pred_cols[buy_cfg["column_index"]]],
+            buy_cfg["operator"],
+            threshold,
+        )
+
+        # Sell signal
+        sell_cfg = schema["sell"]
+        dataframe["ai_sell_signal"] = self._apply_operator(
+            dataframe[pred_cols[sell_cfg["column_index"]]],
+            sell_cfg["operator"],
+            threshold,
+        )
+
+        return dataframe
+
+    # ----------------------------------------------------------
+    # Entry logic
+    # ----------------------------------------------------------
+    def populate_entry_trend(
+        self,
+        dataframe,
+        metadata,
+    ):
+        dataframe.loc[
+            dataframe.get("ai_buy_signal", False),
+            "enter_long",
+        ] = 1
+
+        return dataframe
+
+    # ----------------------------------------------------------
+    # Exit logic
+    # ----------------------------------------------------------
+    def populate_exit_trend(
+        self,
+        dataframe,
+        metadata,
+    ):
+        dataframe.loc[
+            dataframe.get("ai_sell_signal", False),
+            "exit_long",
+        ] = 1
+
+        return dataframe# pragma pylint: disable=missing-docstring, invalid-name, pointless-string-statement
 # flake8: noqa: F401
 # isort: skip_file
 # --- Do not remove these libs ---
@@ -141,11 +234,11 @@ for section, keys in span.items():
 # 👇 Now define the strategy below
 class Fibbo(IStrategy):
     """
-    Fibonacci Strategy with Indodax exchange workarounds.
-    
-    Includes special handling for:
-    - Order creation delays (30s wait)
-    - Cancel order side requirements
+    Fibbo strategy with universal FreqAI prediction interpretation.
+
+    - Model selected via --freqaimodel
+    - Prediction interpretation driven by add_config_files JSON
+    - Supports single-target and multi-target FreqAI models
     """
 
     # Strategy interface version - allow new iterations of the strategy interface.
@@ -226,6 +319,9 @@ class Fibbo(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
+
+        # Loaded via add_config_files
+        self.freqai_pred_schema = config["schema"]
 
         # Override settings ONLY during hyperopt
         if self.config.get('runmode') == 'hyperopt':
