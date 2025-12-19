@@ -9,9 +9,9 @@ from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
 logger = logging.getLogger(__name__)
 
-class BlendingRegressor(BaseRegressionModel):
+class UnifyingRegressor(BaseRegressionModel):
     """
-    Blending Regressor using holdout set for meta-learner
+    Unifying Regressor using holdout set for meta-learner
     """
     
     def __init__(self, **kwargs):
@@ -21,7 +21,7 @@ class BlendingRegressor(BaseRegressionModel):
         
     def fit(self, data_dictionary: Dict[str, Any], dk: FreqaiDataKitchen, **kwargs) -> Any:
         """
-        Fit the blending model
+        Fit the unifying model
         """
         # Initialize base models
         self.base_models['rf'] = RandomForestRegressor(
@@ -52,7 +52,7 @@ class BlendingRegressor(BaseRegressionModel):
         
     def predict(self, unfiltered_df: pd.DataFrame, dk: FreqaiDataKitchen, **kwargs) -> tuple[pd.DataFrame, np.ndarray]:
         """
-        Predict using blending
+        Predict using unifying
         """
         features_filtered, _ = dk.filter_features(
             unfiltered_df, dk.training_features_list, dk.label_list, training_filter=False
