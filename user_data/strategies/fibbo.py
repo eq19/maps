@@ -543,6 +543,17 @@ class Fibbo(IStrategy):
         :param metadata: metadata of current pair
         usage example: dataframe["&-target"] = dataframe["close"].shift(-1) / dataframe["close"]
         """
+        model_name = self.freqai_info.get("model", "").lower()
+        is_classifier = "classifier" in model_name
+        is_multi_target = "multitarget" in model_name
+
+        # Classifiers are typically set up with strings as targets:
+
+        # self.freqai.class_names = ["down", "up"]
+        # dataframe["&s-up_or_down"] = np.where(
+        #     dataframe["close"].shift(-50) > dataframe["close"], "up", "down"
+        # )
+
         dataframe["&-s_close"] = (
             dataframe["close"]
             .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
@@ -551,13 +562,6 @@ class Fibbo(IStrategy):
             / dataframe["close"]
             - 1
         )
-
-        # Classifiers are typically set up with strings as targets:
-
-        # self.freqai.class_names = ["down", "up"]
-        # dataframe["&s-up_or_down"] = np.where(
-        #     dataframe["close"].shift(-50) > dataframe["close"], "up", "down"
-        # )
 
         # If user wishes to use multiple targets, they can add more by
         # appending more columns with '&'. User should keep in mind that multi targets
