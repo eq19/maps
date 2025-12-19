@@ -10,7 +10,7 @@ calculate_score() {
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
   if [[ -z "$latest_zip" ]]; then
     echo "No ZIP file found in $dir"
-    return 1
+    exit 1
   fi
   unzip -q "$latest_zip" -d "$dir"
 
@@ -195,8 +195,8 @@ hyperopt() {
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --random-state ${id} ${enable_protections} \
-      --logfile /dev/null > /dev/null 2>&1
-      #--print-json
+      --print-json
+      #--logfile /dev/null > /dev/null 2>&1
       freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
