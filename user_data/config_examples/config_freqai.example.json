@@ -3,7 +3,7 @@
     "enabled": true,
     "identifier": "indodax-bootstrap-v1",
     "purge_old_models": 2,
-    "train_period_days": 30,
+    "train_period_days": 21,
     "backtest_period_days": 7,
     "live_retrain_hours": 0,
 
