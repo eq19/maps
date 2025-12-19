@@ -548,20 +548,20 @@ class Fibbo(IStrategy):
         is_multi_target = "multitarget" in model_name
 
         # Classifiers are typically set up with strings as targets:
-
-        # self.freqai.class_names = ["down", "up"]
-        # dataframe["&s-up_or_down"] = np.where(
-        #     dataframe["close"].shift(-50) > dataframe["close"], "up", "down"
-        # )
-
-        dataframe["&-s_close"] = (
-            dataframe["close"]
-            .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-            .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-            .mean()
-            / dataframe["close"]
-            - 1
-        )
+        if is_classifier:
+            self.freqai.class_names = ["down", "up"]
+            dataframe["&s-up_or_down"] = np.where(
+                dataframe["close"].shift(-50) > dataframe["close"], "up", "down"
+            )
+        else:
+            dataframe["&-s_close"] = (
+                dataframe["close"]
+                .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
+                .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
+                .mean()
+                / dataframe["close"]
+                - 1
+            )
 
         # If user wishes to use multiple targets, they can add more by
         # appending more columns with '&'. User should keep in mind that multi targets
