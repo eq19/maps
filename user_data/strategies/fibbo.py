@@ -529,24 +529,71 @@ class Fibbo(IStrategy):
         dataframe["%-hour_of_day"] = dataframe["date"].dt.hour
         return dataframe
 
-    def set_freqai_targets(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
+    def set_freqai_targets(
+        self,
+        dataframe: DataFrame,
+        metadata: dict,
+        **kwargs,
+    ) -> DataFrame:
         """
         *Only functional with FreqAI enabled strategies*
-        Required function to set the targets for the model.
-        All targets must be prepended with `&` to be recognized by the FreqAI internals.
 
-        More details about feature engineering available:
+        Sets FreqAI targets.
+        Works for BOTH regression and classification models.
 
-        https://www.freqtrade.io/en/latest/freqai-feature-engineering
-
-        :param dataframe: strategy dataframe which will receive the targets
-        :param metadata: metadata of current pair
-        usage example: dataframe["&-target"] = dataframe["close"].shift(-1) / dataframe["close"]
+        All targets must be prepended with '&' to be recognized by FreqAI.
         """
-        self.freqai.class_names = ["down", "up"]
-        dataframe["&s-up_or_down"] = np.where(
-            dataframe["close"].shift(-50) > dataframe["close"], "up", "down"
+
+        label_period = self.freqai_info["feature_parameters"]["label_period_candles"]
+
+        # ------------------------------------------------------------
+        # Base future return (numeric, used by regressors)
+        # ------------------------------------------------------------
+        future_return = (
+            dataframe["close"]
+            .shift(-label_period)
+            .rolling(label_period)
+            .mean()
+            / dataframe["close"]
+            - 1.0
         )
+
+        # ------------------------------------------------------------
+        # Detect model type
+        # ------------------------------------------------------------
+        model_name = self.freqai_info.get("model", "").lower()
+
+        is_classifier = any(
+            key in model_name
+            for key in ["classifier", "classification"]
+        )
+
+        # ------------------------------------------------------------
+        # REGRESSION TARGET
+        # ------------------------------------------------------------
+        if not is_classifier:
+            dataframe["&-s_close"] = future_return.astype("float32")
+
+        # ------------------------------------------------------------
+        # CLASSIFICATION TARGET
+        # ------------------------------------------------------------
+        else:
+            dataframe["&-s_close"] = np.where(
+                future_return > 0,
+                "up",
+                "down",
+            ).astype("object")
+
+            # Optional neutral zone
+            # threshold = 0.001
+            # dataframe["&-s_close"] = np.select(
+            #     [
+            #         future_return > threshold,
+            #         future_return < -threshold,
+            #     ],
+            #     ["up", "down"],
+            #     default="neutral",
+            # ).astype("object")
 
         return dataframe
 
