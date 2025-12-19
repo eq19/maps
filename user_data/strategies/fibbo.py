@@ -536,14 +536,19 @@ class Fibbo(IStrategy):
         **kwargs,
     ) -> DataFrame:
         """
-        Multi-target FreqAI setup.
-        Supports both regression and classification models.
+        Universal FreqAI target generator.
+
+        Supports:
+        - Single-target regression
+        - Multi-target regression
+        - Single-target classification
+        - Multi-target classification
         """
 
         label_period = self.freqai_info["feature_parameters"]["label_period_candles"]
 
         # ------------------------------------------------------------
-        # Base future metrics
+        # Base future metrics (computed once)
         # ------------------------------------------------------------
         future_close = (
             dataframe["close"]
@@ -552,7 +557,7 @@ class Fibbo(IStrategy):
             .mean()
         )
 
-        future_return = (future_close / dataframe["close"] - 1.0)
+        future_return = future_close / dataframe["close"] - 1.0
 
         future_range = (
             dataframe["close"]
@@ -577,20 +582,41 @@ class Fibbo(IStrategy):
         )
 
         # ------------------------------------------------------------
-        # REGRESSION TARGETS
+        # Decide target mode
         # ------------------------------------------------------------
-        dataframe["&-ret"] = future_return.astype("float32")
-        dataframe["&-range"] = future_range.astype("float32")
+        # If multi-target model is used, expose more targets.
+        # Otherwise fall back to single target.
+        is_multi_target = "MultiTarget" in model_name
 
         # ------------------------------------------------------------
-        # CLASSIFICATION TARGET (optional)
+        # REGRESSION TARGETS
         # ------------------------------------------------------------
-        if is_classifier:
+        if not is_classifier:
+            # Always expose primary target
+            dataframe["&-ret"] = future_return.astype("float32")
+
+            # Optional secondary target
+            if is_multi_target:
+                dataframe["&-range"] = future_range.astype("float32")
+
+        # ------------------------------------------------------------
+        # CLASSIFICATION TARGETS
+        # ------------------------------------------------------------
+        else:
+            # Always expose primary direction target
             dataframe["&-dir"] = np.where(
                 future_return > 0,
                 "up",
                 "down",
             ).astype("object")
+
+            # Optional secondary class (example)
+            if is_multi_target:
+                dataframe["&-vol"] = np.where(
+                    future_range > future_range.median(),
+                    "high",
+                    "low",
+                ).astype("object")
 
         return dataframe
 
