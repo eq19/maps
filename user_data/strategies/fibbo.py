@@ -579,7 +579,6 @@ class Fibbo(IStrategy):
 
         return dataframe
 
-
     # ============ Entry/Exit Logic ============
 
     def informative_pairs(self):
