@@ -536,14 +536,19 @@ class Fibbo(IStrategy):
         **kwargs,
     ) -> DataFrame:
         """
-        Safe universal FreqAI target generator.
-
-        Guarantees:
-        - No mixed label types
-        - Single-target or multi-target
-        - Classifier-safe
-        - Regressor-safe
+        Fully safe FreqAI target generator.
+        Handles:
+        - classifier vs regressor
+        - single vs multi target
+        - stale target cleanup (CRITICAL)
         """
+
+        # ------------------------------------------------------------
+        # CRITICAL: remove stale targets from previous runs
+        # ------------------------------------------------------------
+        target_cols = [c for c in dataframe.columns if c.startswith("&")]
+        if target_cols:
+            dataframe.drop(columns=target_cols, inplace=True)
 
         label_period = self.freqai_info["feature_parameters"]["label_period_candles"]
         model_name = self.freqai_info.get("model", "").lower()
@@ -552,7 +557,7 @@ class Fibbo(IStrategy):
         is_multi_target = "multitarget" in model_name
 
         # ------------------------------------------------------------
-        # Compute base future metrics (NO targets yet)
+        # Compute base future metrics (not targets yet)
         # ------------------------------------------------------------
         future_close = (
             dataframe["close"]
@@ -576,7 +581,7 @@ class Fibbo(IStrategy):
         ) / dataframe["close"]
 
         # ------------------------------------------------------------
-        # REGRESSION MODE (numeric targets ONLY)
+        # REGRESSION MODE (floats only)
         # ------------------------------------------------------------
         if not is_classifier:
             dataframe["&-ret"] = future_return.astype("float32")
@@ -585,7 +590,7 @@ class Fibbo(IStrategy):
                 dataframe["&-range"] = future_range.astype("float32")
 
         # ------------------------------------------------------------
-        # CLASSIFICATION MODE (categorical targets ONLY)
+        # CLASSIFICATION MODE (strings only)
         # ------------------------------------------------------------
         else:
             dataframe["&-dir"] = np.where(
