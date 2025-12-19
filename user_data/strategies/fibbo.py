@@ -569,17 +569,18 @@ class Fibbo(IStrategy):
         # freqai/prediction_models/CatboostRegressorMultiTarget.py,
         # freqtrade trade --freqaimodel CatboostRegressorMultiTarget
 
-        # dataframe["&-s_range"] = (
-        #     dataframe["close"]
-        #     .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-        #     .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-        #     .max()
-        #     -
-        #     dataframe["close"]
-        #     .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-        #     .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-        #     .min()
-        # )
+        if is_multi_target:
+            dataframe["&-s_range"] = (
+                dataframe["close"]
+                .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
+                .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
+                .max()
+                -
+                dataframe["close"]
+                .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
+                .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
+                .min()
+            )
 
         return dataframe
 
