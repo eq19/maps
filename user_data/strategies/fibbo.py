@@ -227,7 +227,7 @@ class Fibbo(IStrategy):
         super().__init__(config)
 
         # Loaded via add_config_files
-        self.freqai_pred_schema = config["schema"]
+        self.freqai_schema = config["schema"]
 
         # Override settings ONLY during hyperopt
         if self.config.get('runmode') == 'hyperopt':
@@ -529,6 +529,44 @@ class Fibbo(IStrategy):
         """
         dataframe["%-day_of_week"] = dataframe["date"].dt.dayofweek
         dataframe["%-hour_of_day"] = dataframe["date"].dt.hour
+
+        # --------------------------------------------------
+        # Universal FreqAI prediction interpretation
+        # (POST-INFERENCE, model-agnostic)
+        # --------------------------------------------------
+        pred_cols = sorted(
+            c for c in dataframe.columns if c.startswith("freqai_pred")
+        )
+
+        if pred_cols:
+            # Select schema depending on output dimensionality
+            if len(pred_cols) > 1:
+                schema = self.freqai_schema["multi_target"]
+            else:
+                schema = self.freqai_schema["default"]
+
+            threshold = schema["threshold"]
+            buy_cfg = schema["buy"]
+            sell_cfg = schema["sell"]
+
+            # Compute buy / sell boolean masks
+            buy_signal = self._apply_operator(
+                dataframe[pred_cols[buy_cfg["column_index"]]],
+                buy_cfg["operator"],
+                threshold,
+            )
+
+            sell_signal = self._apply_operator(
+                dataframe[pred_cols[sell_cfg["column_index"]]],
+                sell_cfg["operator"],
+                threshold,
+            )
+
+            # Produce the canonical signal expected by fibbo v0.2.8
+            dataframe["do_predict"] = 0
+            dataframe.loc[buy_signal, "do_predict"] = 1
+            dataframe.loc[sell_signal, "do_predict"] = -1
+
         return dataframe
 
     def set_freqai_targets(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
