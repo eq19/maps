@@ -29,12 +29,12 @@
     },
 
     "data_split_parameters": {
-      "test_size": 0,
+      "test_size": 0.25,
       "random_state": 1
     },
 
     "model_training_parameters": {
-      "n_estimators": 800,
+      "n_estimators": 150,
       "learning_rate": 0.1,
       "max_depth": 6
     }
