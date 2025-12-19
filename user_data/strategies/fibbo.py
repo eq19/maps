@@ -578,7 +578,7 @@ class Fibbo(IStrategy):
 
         is_classifier = any(
             k in model_name
-            for k in ["Classifier", "Classification"]
+            for k in ["classifier", "classification"]
         )
 
         # ------------------------------------------------------------
@@ -586,7 +586,7 @@ class Fibbo(IStrategy):
         # ------------------------------------------------------------
         # If multi-target model is used, expose more targets.
         # Otherwise fall back to single target.
-        is_multi_target = "MultiTarget" in model_name
+        is_multi_target = "multitarget" in model_name
 
         # ------------------------------------------------------------
         # REGRESSION TARGETS
