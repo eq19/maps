@@ -532,57 +532,86 @@ class Fibbo(IStrategy):
         dataframe["%-hour_of_day"] = dataframe["date"].dt.hour
         return dataframe
 
-    def set_freqai_targets(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
+    def set_freqai_targets(
+        self,
+        dataframe: DataFrame,
+        metadata: dict,
+        **kwargs
+    ) -> DataFrame:
         """
-        *Only functional with FreqAI enabled strategies*
-        Required function to set the targets for the model.
-        All targets must be prepended with `&` to be recognized by the FreqAI internals.
-
-        More details about feature engineering available:
-
-        https://www.freqtrade.io/en/latest/freqai-feature-engineering
-
-        :param dataframe: strategy dataframe which will receive the targets
-        :param metadata: metadata of current pair
-        usage example: dataframe["&-target"] = dataframe["close"].shift(-1) / dataframe["close"]
+        FreqAI target definition for:
+        - CatboostClassifier
+        - CatboostClassifierMultiTarget
+        - CatboostRegressor
+        - CatboostRegressorMultiTarget
         """
-        is_classifier = "classifier" in self.model_name.lower()
-        is_multi_target = "multitarget" in self.model_name.lower()
 
-        # Classifiers are typically set up with strings as targets:
+        model_name = self.model_name.lower()
+        is_classifier = "classifier" in model_name
+        is_multi_target = "multitarget" in model_name
+
+        label_period = self.freqai_info["feature_parameters"]["label_period_candles"]
+
         if is_classifier:
-            self.freqai.class_names = ["down", "up"]
-            dataframe["&s-up_or_down"] = np.where(
-                dataframe["close"].shift(-50) > dataframe["close"], "up", "down"
-            )
+            # ==================================================
+            # CLASSIFIERS
+            # ==================================================
+            self.freqai.class_names = [0, 1]
+
+            if is_multi_target:
+                # ClassifierMultiTarget
+                dataframe["&s-up_or_down"] = (
+                    dataframe["close"].shift(-label_period) > dataframe["close"]
+                ).astype(int)
+
+                dataframe["&s-volatility"] = (
+                    dataframe["close"].rolling(label_period).std()
+                    > dataframe["close"].rolling(label_period).std().median()
+                ).astype(int)
+
+            else:
+                # Classifier
+                dataframe["&s-up_or_down"] = (
+                    dataframe["close"].shift(-label_period) > dataframe["close"]
+                ).astype(int)
+
         else:
-            dataframe["&-s_close"] = (
-                dataframe["close"]
-                .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-                .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-                .mean()
-                / dataframe["close"]
-                - 1
-            )
+            # ==================================================
+            # REGRESSORS
+            # ==================================================
+            if is_multi_target:
+                # RegressorMultiTarget
+                dataframe["&-s_close"] = (
+                    dataframe["close"]
+                    .shift(-label_period)
+                    .rolling(label_period)
+                    .mean()
+                    / dataframe["close"]
+                    - 1
+                )
 
-        # If user wishes to use multiple targets, they can add more by
-        # appending more columns with '&'. User should keep in mind that multi targets
-        # requires a multioutput prediction model such as
-        # freqai/prediction_models/CatboostRegressorMultiTarget.py,
-        # freqtrade trade --freqaimodel CatboostRegressorMultiTarget
+                dataframe["&-s_range"] = (
+                    dataframe["close"]
+                    .shift(-label_period)
+                    .rolling(label_period)
+                    .max()
+                    -
+                    dataframe["close"]
+                    .shift(-label_period)
+                    .rolling(label_period)
+                    .min()
+                )
 
-        if is_multi_target:
-            dataframe["&-s_range"] = (
-                dataframe["close"]
-                .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-                .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-                .max()
-                -
-                dataframe["close"]
-                .shift(-self.freqai_info["feature_parameters"]["label_period_candles"])
-                .rolling(self.freqai_info["feature_parameters"]["label_period_candles"])
-                .min()
-            )
+            else:
+                # Regressor
+                dataframe["&-s_close"] = (
+                    dataframe["close"]
+                    .shift(-label_period)
+                    .rolling(label_period)
+                    .mean()
+                    / dataframe["close"]
+                    - 1
+                )
 
         return dataframe
 
