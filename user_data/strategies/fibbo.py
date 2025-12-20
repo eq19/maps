@@ -540,10 +540,10 @@ class Fibbo(IStrategy):
     ) -> DataFrame:
         """
         FreqAI target definition for:
-        - CatboostClassifier
-        - CatboostClassifierMultiTarget
-        - CatboostRegressor
-        - CatboostRegressorMultiTarget
+        - Classifier
+        - ClassifierMultiTarget
+        - Regressor
+        - RegressorMultiTarget
         """
 
         model_name = self.model_name.lower()
