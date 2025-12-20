@@ -22,6 +22,7 @@ from freqtrade.exceptions import OperationalException
 
 # --------------------------------
 # Add your lib to import here
+import os
 import json
 import random
 import logging
@@ -199,6 +200,8 @@ class Fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
     position_adjustment_enable = False
     #max_entry_position_adjustment = 2
+    model_name = os.environ.get('FREQAI_MODEL', 'LightGBMClassifier')
+    
 
     # Plot config
     plot_config = {
@@ -543,9 +546,8 @@ class Fibbo(IStrategy):
         :param metadata: metadata of current pair
         usage example: dataframe["&-target"] = dataframe["close"].shift(-1) / dataframe["close"]
         """
-        model_name = self.freqai_info.get("model", "").lower()
-        is_classifier = "classifier" in model_name
-        is_multi_target = "multitarget" in model_name
+        is_classifier = "classifier" in self.model_name
+        is_multi_target = "multitarget" in self.model_name
 
         # Classifiers are typically set up with strings as targets:
         #if is_classifier:
