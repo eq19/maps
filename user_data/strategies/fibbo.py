@@ -556,21 +556,33 @@ class Fibbo(IStrategy):
             # ==================================================
             # CLASSIFIERS
             # ==================================================
-            self.freqai.class_names = [0, 1]
 
             if is_multi_target:
-                # ClassifierMultiTarget
+                # CatboostClassifierMultiTarget
+                # IMPORTANT:
+                # - class labels must be UNIQUE across targets
+                # - target 1 uses {0, 1}
+                # - target 2 uses {2, 3}
+                self.freqai.class_names = [0, 1, 2, 3]
+
+                # Target 1: direction (0 = down, 1 = up)
                 dataframe["&s-up_or_down"] = (
                     dataframe["close"].shift(-label_period) > dataframe["close"]
                 ).astype(int)
 
+                # Target 2: volatility (2 = low, 3 = high)
                 dataframe["&s-volatility"] = (
-                    dataframe["close"].rolling(label_period).std()
-                    > dataframe["close"].rolling(label_period).std().median()
-                ).astype(int)
+                    (
+                        dataframe["close"].rolling(label_period).std()
+                        > dataframe["close"].rolling(label_period).std().median()
+                    ).astype(int)
+                    + 2
+                )
 
             else:
-                # Classifier
+                # CatboostClassifier (single target)
+                self.freqai.class_names = [0, 1]
+
                 dataframe["&s-up_or_down"] = (
                     dataframe["close"].shift(-label_period) > dataframe["close"]
                 ).astype(int)
@@ -580,7 +592,7 @@ class Fibbo(IStrategy):
             # REGRESSORS
             # ==================================================
             if is_multi_target:
-                # RegressorMultiTarget
+                # CatboostRegressorMultiTarget
                 dataframe["&-s_close"] = (
                     dataframe["close"]
                     .shift(-label_period)
@@ -603,7 +615,7 @@ class Fibbo(IStrategy):
                 )
 
             else:
-                # Regressor
+                # CatboostRegressor
                 dataframe["&-s_close"] = (
                     dataframe["close"]
                     .shift(-label_period)
