@@ -155,6 +155,7 @@ hyperopt() {
 
     # dispatch only for main workflow 
     if [[ "$GITHUB_JOB" == "lexering" ]]; then
+      [[ "$REDUCE_EPOCH" == "true" ]] && epochs=$((epochs / 2))
       curl -s -X POST \
         -H "Authorization: token $GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
