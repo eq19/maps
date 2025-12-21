@@ -200,7 +200,7 @@ class Fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
     position_adjustment_enable = False
     #max_entry_position_adjustment = 2
-    model_name = os.environ.get('FREQAI_MODEL', 'LightGBMClassifier')
+    model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifierMultiTarget')
     
 
     # Plot config
