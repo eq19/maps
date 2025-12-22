@@ -736,20 +736,15 @@ class Fibbo(IStrategy):
             informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=int(period))
 
         # Merge informative pair data into main dataframe
-        merged_dataframe = merge_informative_pair(dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True)
+        dataframe = merge_informative_pair(
+            dataframe,
+            informative,
+            self.timeframe,
+            self.informative_timeframe,
+            ffill=True
+        )
 
-        # Check for length mismatch
-        if len(merged_dataframe) != len(dataframe):
-            logger.warning(
-                f"Dataframe length mismatch after merging informative pair: {metadata['pair']} "
-                f"(before: {len(dataframe)}, after: {len(merged_dataframe)})"
-            )
-
-        # IMPORTANT: FreqAI will automatically add prediction columns AFTER this function
-        # Columns like 'do_predict', 'DI_values' will be available in populate_entry_trend
-
-        logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
-        return merged_dataframe
+        return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
