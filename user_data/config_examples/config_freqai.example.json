@@ -1,14 +1,17 @@
 {
   "freqai": {
     "enabled": true,
-    "identifier": "indodax-bootstrap-v1",
-    "purge_old_models": 2,
-    "train_period_days": 30,
+    "identifier": "indodax-1h-24h-v1",
+
+    "purge_old_models": 1,
+
+    "train_period_days": 21,
     "backtest_period_days": 7,
-    "live_retrain_hours": 0,
+
+    "live_retrain_hours": 24,
 
     "feature_parameters": {
-      "include_timeframes": ["15m", "1h"],
+      "include_timeframes": ["1h"],
 
       "include_corr_pairlist": [
         "BTC/IDR",
@@ -16,10 +19,11 @@
       ],
 
       "label_period_candles": 24,
-      "include_shifted_candles": 5,
+
+      "include_shifted_candles": 3,
       "indicator_periods_candles": [12, 24],
 
-      "DI_threshold": 0.8,
+      "DI_threshold": 0.75,
       "weight_factor": 0.9,
 
       "principal_component_analysis": false,
@@ -30,13 +34,13 @@
 
     "data_split_parameters": {
       "test_size": 0,
-      "random_state": 1
+      "random_state": 42
     },
 
     "model_training_parameters": {
-      "n_estimators": 800,
-      "learning_rate": 0.1,
-      "max_depth": 6
+      "n_estimators": 600,
+      "learning_rate": 0.05,
+      "max_depth": 5
     }
   }
 }
