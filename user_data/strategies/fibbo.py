@@ -744,6 +744,7 @@ class Fibbo(IStrategy):
             ffill=True
         )
 
+        logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
