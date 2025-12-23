@@ -54,7 +54,7 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
     # Set CURRENT to first model
     export FREQAI_MODEL="${MODELS[0]}"
     export FREQAI_NEXT="${MODELS[1]}"
-    export SCORE=100
+    [[ "$REDUCE_EPOCH" == "false" ]] && export SCORE=100
   else
     # Find index of CURRENT in list
     index=-1
