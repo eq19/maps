@@ -153,9 +153,9 @@ hyperopt() {
     epochs=$(echo "$pipeline" | jq -r '.epochs')
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
-    # dispatch only for main workflow 
+    # dispatch only for main workflow
+    [[ "$REDUCE_EPOCH" == "true" ]] && epochs=$((epochs / 2))          
     if [[ "$GITHUB_JOB" == "lexering" ]]; then
-      [[ "$REDUCE_EPOCH" == "true" ]] && epochs=$((epochs / 2))
       curl -s -X POST \
         -H "Authorization: token $GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
@@ -164,7 +164,7 @@ hyperopt() {
           --arg runId "$GITHUB_RUN_ID" \
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
-          --arg epochs "$epochs" \
+          --arg epochs "$REDUCE_EPOCH" \
           --arg freqai "$FREQAI_MODEL" \
           '{ref: $ref, inputs: {
            matrix_json: (
@@ -192,9 +192,9 @@ hyperopt() {
         prot="enable"
     fi
 
-    echo -e "\n$hr\nID: $id | FreqAImodel: $FREQAI_MODEL | Days: $days | Epochs: ${EPOCHS:-$epochs}\n👉 Running ${HYPEROPT:-$loss} | Spaces: $spaces\n$hr"
+    echo -e "\n$hr\nID: $id | FreqAImodel: $FREQAI_MODEL | Days: $days | Epochs: $epochs\n👉 Running ${HYPEROPT:-$loss} | Spaces: $spaces\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
-      --spaces ${spaces} --ignore-missing-spaces --epochs ${EPOCHS:-$epochs} --fee=$FEE -j 4 \
+      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --random-state ${id} ${enable_protections} \
       --logfile /dev/null > /dev/null 2>&1
       #--print-json
