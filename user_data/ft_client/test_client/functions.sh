@@ -164,16 +164,16 @@ hyperopt() {
           --arg runId "$GITHUB_RUN_ID" \
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
-          --arg epochs "$REDUCE_EPOCH" \
           --arg freqai "$FREQAI_MODEL" \
+          --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
            matrix_json: (
              {
                score: $score,
                run_id: $runId,
-               epochs: $epochs,
                freqai: $freqai,
-               hyperopts: $hyperopts
+               hyperopts: $hyperopts,
+               reduce_epoch: $reduce_epoch
              } | @json
            )
          }}')" \
