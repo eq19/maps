@@ -219,14 +219,14 @@ hyperopt() {
          https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
       gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" && gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" && gh variable set SCORE --body "${NEW_SCORE}" && gh variable set JOB --body "${GITHUB_JOB}"
       if [[ "$GITHUB_JOB" != "lexering" ]]; then
-        gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL"
+        gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       else
         if [[ "$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi      
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
-          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL"
+          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
           if [[ "$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
         fi
