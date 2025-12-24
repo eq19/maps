@@ -107,7 +107,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
   echo -e "\n$hr\nTEST PAIRLIST\n$hr"
   freqtrade test-pairlist --help
-  #freqtrade test-pairlist --one-column --print-json
+  freqtrade test-pairlist --one-column --print-json
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     echo -e "\n$hr\nTEST CCXT\n$hr"
