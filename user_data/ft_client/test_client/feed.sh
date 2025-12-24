@@ -78,12 +78,6 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
       export FREQAI_NEXT="false"
     fi
   fi
-
-  # Print results
-  echo -e "\n$hr\nLIST FREQAI_MODEL\n$hr"
-  freqtrade list-freqaimodels --one-column
-  echo -e "\nCURRENT FREQAI_MODEL=${FREQAI_MODEL}"
-  echo "FREQAI_NEXT=${FREQAI_NEXT}"
 fi
 
 if [[ "$1" != "hyperopt" ]]; then
@@ -114,6 +108,11 @@ if [[ "$1" != "hyperopt" ]]; then
     echo -e "\n$hr\nTEST PAIRLIST\n$hr"
     freqtrade test-pairlist --help
     freqtrade test-pairlist --one-column --print-json
+
+    echo -e "\n$hr\nLIST FREQAI_MODEL\n$hr"
+    freqtrade list-freqaimodels --one-column
+    echo -e "\nCURRENT FREQAI_MODEL=${FREQAI_MODEL}"
+    echo "FREQAI_NEXT=${FREQAI_NEXT}"
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
