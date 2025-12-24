@@ -107,13 +107,13 @@ if [[ "$1" != "hyperopt" ]]; then
   #freqtrade install-ui
   #freqtrade webserver
 
-  echo -e "\n$hr\nTEST PAIRLIST\n$hr"
-  freqtrade test-pairlist --help
-  freqtrade test-pairlist --one-column --print-json
-
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
+
+    echo -e "\n$hr\nTEST PAIRLIST\n$hr"
+    freqtrade test-pairlist --help
+    freqtrade test-pairlist --one-column --print-json
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     freqtrade trade --help && echo "Starting freqtrade trade..."
