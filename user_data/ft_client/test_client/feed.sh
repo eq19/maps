@@ -80,7 +80,9 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
   fi
 
   # Print results
-  echo "FREQAI_MODEL=${FREQAI_MODEL}"
+  echo -e "\n$hr\nLIST FREQAI_MODEL\n$hr"
+  freqtrade list-freqaimodels --one-column
+  echo -e "\nCURRENT FREQAI_MODEL=${FREQAI_MODEL}"
   echo "FREQAI_NEXT=${FREQAI_NEXT}"
 fi
 
