@@ -14,7 +14,7 @@ from pythonCode import *
 from datetime import datetime
 
 
-script, output, id, param, epochs = argv
+script, input, output, id, param, epochs = argv
 
 # Number parameters for the range of numbers to be tested
 lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
