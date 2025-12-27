@@ -14,7 +14,7 @@ from pythonCode import *
 from datetime import datetime
 
 
-script, input, output, id, param, epochs = argv
+script, input, id, param, epochs = argv
 
 # Number parameters for the range of numbers to be tested
 lower_bound = 0#Decimal( str(input("What is the lower bound? ")) )
@@ -65,8 +65,8 @@ while (current.val <= upper_bound):
 
 
 # write contents to file/process etc.
-fibbo_path = 'user_data/strategies/fibbo.json'
-output_path = 'user_data/ft_client/test_client/results/{}'.format(output)
+fibbo_path = '{}/strategies/fibbo.json'.format(input)
+output_path = '{}/ft_client/test_client/results/orgs.json'.format(input)
 
 # First load the JSON files
 with open(fibbo_path, "r") as fibbo_file:
