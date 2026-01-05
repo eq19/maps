@@ -190,12 +190,12 @@ else
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
   if [[ "$SCORE" == "100" ]]; then
-    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
+    FREQAIMODEL=$(gh variable get FREQAIMODEL)
+    echo -e "\n$hr\nRUN BACKTEST with $FREQAIMODEL\n$hr"
     freqtrade backtesting --help
     cat $STRATEGY > /tmp/store.json
     #rm -rf user_data/backtest_results/*
-    #freqtrade backtesting --fee=$FEE --timerange="$TB"
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
 
     # Scoring breakdown:
     # Winrate: 25 pts
