@@ -1523,11 +1523,11 @@
     {
       "id": 169,
       "description": "Comprehensive optimization with all parameters (last 180 days)",
-      "days": 11,
-      "epochs": 31,
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["protection"],
-      "hyperopt_loss": "DefaultSpaceCombinedHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 170,
