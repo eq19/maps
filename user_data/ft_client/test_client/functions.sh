@@ -198,7 +198,7 @@ hyperopt() {
       --random-state ${id} ${enable_protections} \
       --logfile /dev/null > /dev/null 2>&1
       #--print-json
-    #freqtrade hyperopt-list
+    freqtrade hyperopt-list
 
     echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
