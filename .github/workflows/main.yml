@@ -109,10 +109,17 @@ jobs:
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           config: ${{ secrets.CONFIG_JSON }}
+          chat_id: ${{ secrets.MESSAGE_API }}
+          api_key: ${{ secrets.ACCESS_API }}
+          api_secret: ${{ secrets.ACCESS_KEY }}
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          bot_token: ${{ secrets.MONITOR_TOKEN }}
+          live_token: ${{ secrets.LIVE_TOKEN }}
+          logs_token: ${{ secrets.WARNING_TOKEN }}
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          initiate_pauli_sum: ${{ toJSON(steps.feed-mapping.outputs) }}
+          initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
 
       - name: 📋 Generate Outputs
         shell: bash
