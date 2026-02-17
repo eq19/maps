@@ -90,7 +90,7 @@ jekyll_build() {
   if [[ $1 == "Chetabahana.github.io" ]]; then
     SITEID=1
   elif [[ $1 == "eq19.github.io" ]]; then
-    SITEID=170
+    SITEID=30
   else
     SITEID=$(( $3 + 2 ))
   fi
@@ -114,6 +114,7 @@ jekyll_build() {
   
   TARGET_REPOSITORY="${OWNER}/$1"
   echo 'repo='${TARGET_REPOSITORY} >> ${GITHUB_OUTPUT}
+  [[ "$TARGET_REPOSITORY" == "eq19/maps" ]] && SITEID=31
   gh variable set TARGET_REPOSITORY --body "$TARGET_REPOSITORY"
   echo 'TARGET_REPOSITORY='${TARGET_REPOSITORY} >> ${GITHUB_ENV}
 

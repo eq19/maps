@@ -169,4 +169,4 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"

@@ -36,7 +36,6 @@ jobs:
         id: build-parser
         env:
           JOBS_ID: 1
-          EPOCHS: ${{ fromJson(inputs.matrix_json).epochs }}
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           chat_id: ${{ secrets.MESSAGE_API }}
@@ -52,12 +51,20 @@ jobs:
       - name: 🪂 Install freqtrade
         shell: bash
         run: |
-          cd user_data/build_helpers && ./install_ta-lib.sh > /dev/null 2>&1
-          cd ${{ github.workspace }} && python -m venv venv && source venv/bin/activate
-          pip install -qq --no-cache-dir ta "numpy<3.0" "plotly==6.1.2"
-          pip install -qq --no-cache-dir -r user_data/build_helpers/requirements-hyperopt.txt
-          pip install -qq --no-cache-dir -r user_data/build_helpers/requirements-freqai-rl.txt
-          pip install -qq --no-cache-dir --no-build-isolation --upgrade freqtrade
+          cd user_data/build_helpers
+          ./install_ta-lib.sh > /dev/null 2>&1 && rm -rf *.txt
+
+          # Download requirement files from Freqtrade 2025.10 (corrected)
+          curl -s https://api.github.com/repos/freqtrade/freqtrade/contents?ref=2025.10 \
+            | jq -r '.[] | select(.name | test("^requirements(-.*)?\\.txt$")) | .path' \
+            | xargs -I{} curl -sO "https://raw.githubusercontent.com/freqtrade/freqtrade/2025.10/{}"
+
+          pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-plot.txt
+          pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-hyperopt.txt
+          pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-freqai-rl.txt
+
+          #pip install -qq --no-cache-dir --no-build-isolation --upgrade freqtrade
+          pip install -qq --no-cache-dir ta "numpy<3.0" "aiodns<3.0" "freqtrade==2025.10"
 
       - name: ⚙️ Get artifact ID
         id: get-artifact-id
@@ -95,19 +102,15 @@ jobs:
         run: ls -R user_data/data
 
       - name: 🧠 Run Hyperopt
+        timeout-minutes: 360
         env:
           HYPEROPT: ${{ matrix.hyperopts }}
           SPACE: ${{ fromJson(inputs.matrix_json).space }}
           SCORE: ${{ fromJson(inputs.matrix_json).score }}
-          FREQAIMODEL: ${{ fromJson(inputs.matrix_json).freqai }}
+          FREQAI_MODEL: ${{ fromJson(inputs.matrix_json).freqai }}
+          REDUCE_EPOCH: ${{ fromJson(inputs.matrix_json).reduce_epoch }}
         run: |
           echo "Running hyperopt..."
-          echo "Space: $SPACE"
           echo "Score: $SCORE"
+          echo "Reduce epoch: $REDUCE_EPOCH"
           bash user_data/ft_client/test_client/feed.sh hyperopt
-
-          # echo -e "\n$hr\nID: $id 👉 Running $hyperopt_loss\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-          # freqtrade hyperopt --timerange ${start_date}-${end_date} --epochs ${epochs} -j 4 \
-          #   --spaces ${spaces} --ignore-missing-spaces --hyperopt-loss ${hyperopt_loss} \
-          #   --enable-protections --analyze-per-epoch  --random-state ${id} \
-          #   --fee=$FEE --logfile /dev/null > /dev/null 2>&1

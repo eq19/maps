@@ -7,6 +7,10 @@ inputs:
   id:
     description: The deploy id
     required: false
+  run_id:
+    description: 'The run_id'
+    default: ${{ github.run_id }}
+    required: false
   hub_username:
     description: Username for Docker Hub
     default: ${{ github.actor }}
@@ -90,6 +94,34 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Detect if jobs_id=1 was cancelled
+      shell: bash
+      run: |
+        echo "Checking if job 1 was cancelled…"
+        run_id=${{ inputs.run_id }}
+
+        for i in {1..12}; do
+          echo "Polling attempt $i…"
+
+          curl -s -H "Authorization: Bearer ${{ inputs.token }}" \
+            "https://api.github.com/repos/${{ inputs.repository }}/actions/runs/$run_id/jobs" \
+            > jobs.json
+
+          job1_status=$(jq -r '.jobs[] | select(.labels[]?=="ubuntu-latest") | .conclusion' jobs.json)
+          echo "Job 1 conclusion = $job1_status"
+          if [ "$job1_status" != "null" ]; then
+            break
+          fi
+          sleep 10
+        done
+
+        if [ "$job1_status" = "cancelled" ]; then
+          echo "Job 1 was cancelled (timeout confirmed)."
+          gh workflow run "main.yml" --repo $REPO_NAME --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=true"
+        else
+          echo "Job 1 was NOT cancelled."
+        fi
+
     - name: Login to DockerHub
       uses: docker/login-action@v3
       if: runner.os == '-Windows'
@@ -158,4 +190,4 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"

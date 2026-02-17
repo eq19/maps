@@ -23,8 +23,8 @@ set_monitor() {
       $DOCKER exec mydb supervisorctl start monitor_freqtrade
       $DOCKER exec mydb service cron start
 
-      echo -e "\n$hr\nMemory Usage\n$hr"
-      $DOCKER exec mydb free -h
+      #echo -e "\n$hr\nMemory Usage\n$hr"
+      #$DOCKER exec mydb free -h
 
       echo -e "\n$hr\njob completed ✅"
       exit 0
@@ -64,9 +64,9 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
   $DOCKER exec mydb supervisorctl reread
   $DOCKER exec mydb supervisorctl update
   if [[ "$RERUN_RUNNER" == "true" ]]; then
-    echo "🚀 Run all applications upon the given configuration."
-    $DOCKER exec mydb supervisorctl start freqtrade_dry
+    echo "🚀 Start all applications."
     $DOCKER exec mydb supervisorctl start freqtrade_live
+    $DOCKER exec mydb supervisorctl start freqtrade_dry
     set_monitor
 
   #Check if ✅ $APP is running inside $CONTAINER
@@ -79,12 +79,20 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
       $DOCKER exec runner1 /home/runner/scripts/exitpoint.sh $REMOVE_REPOSITORY $TARGET_REPOSITORY
     fi
 
+    echo "🌀 Reload all application's configs upon the updated configuration."
+    if $DOCKER exec mydb supervisorctl status freqtrade_dry | grep -q "STOPPED"; then       
+      $DOCKER exec mydb supervisorctl start freqtrade_dry
+    fi
+
   else
-    # Optionally restart:
-    # docker start "$CONTAINER" && docker exec "$CONTAINER" supervisorctl start "$APP"
-    echo "🌀 Rerun all applications upon the updated configuration."
-    $DOCKER exec mydb supervisorctl start freqtrade_dry
-    $DOCKER exec mydb supervisorctl start freqtrade_live
-    set_monitor
+    # Optionally reload:
+    echo "🏃 Rerun all applications upon the given configuration."
+    if $DOCKER exec mydb supervisorctl status freqtrade_dry | grep -q "STOPPED"; then       
+      $DOCKER exec mydb supervisorctl start freqtrade_dry
+    fi
+    if $DOCKER exec mydb supervisorctl status freqtrade_live | grep -q "STOPPED"; then       
+      $DOCKER exec mydb supervisorctl start freqtrade_live
+      set_monitor
+    fi
   fi
 fi

@@ -115,18 +115,11 @@ runs:
           #Jekyll Quick Reference https://gist.github.com/DrOctogon/bfb6e392aa5654c63d12
           JEKYLL_GITHUB_TOKEN=${{ inputs.token }} DISABLE_WHITELIST=true bundle exec jekyll build --profile --trace -t -d ./docs
 
-          if [[ "${TARGET_REPOSITORY}" == "eq19/eq19.github.io" ]]; then
-            if host "$DOMAIN" &> /dev/null; then
-              if curl -s --head --request GET "https://$DOMAIN" | grep "200\|301\|302" > /dev/null; then
-                echo "✅ $DOMAIN is registered and responding."
-                echo "$DOMAIN" > ./docs/CNAME
-              else
-                echo "⚠️ $DOMAIN resolves but no valid HTTP response."
-              fi
-            else
-              echo "❌ $DOMAIN does not resolve."
-            fi
-          fi
+          # Find and sed to Non binary files only
+          find ./docs -type f -exec grep -Iq . {} \; -exec sed -i 's/www\.eq19\.com/eq19.github.io/g' {} +
+          find ./docs -type f -exec grep -Iq . {} \; -exec sed -i 's/eq19\.com/eq19.github.io/g' {} +
+          #find ./docs -type f -exec sed -i 's/www\.eq19\.com/eq19.github.io/g' {} +
+          #find ./docs -type f -exec sed -i 's/eq19\.com/eq19.github.io/g' {} +
           rm -rf ./docs/.nojekyll && touch ./docs/.nojekyll
 
           echo -e "\n$hr\nFinal Pages\n$hr"
@@ -182,8 +175,8 @@ runs:
           # Commit and push changes
           git add . && git commit --allow-empty -m "$MESSAGE" && git push
 
-          if [[ "$TARGET_REPOSITORY" == *"eq19/"* ]]; then
-          #if [[ "$TARGET_REPOSITORY" != *"eq19/"* ]]; then
+          #if [[ "$TARGET_REPOSITORY" == *"eq19/"* ]]; then
+          if [[ "$TARGET_REPOSITORY" != *"eq19/"* ]]; then
             # Unpublish existing GitHub Pages
             curl -s -X DELETE \
               -H "Authorization: token $GH_TOKEN" \
@@ -198,11 +191,11 @@ runs:
               -d '{"build_type":"legacy","source":null}' > /dev/null
 
             # Trigger a dispaches action
-            curl -s -X POST \
-              -H "Authorization: token $GH_TOKEN" \
-              -H "Accept: application/vnd.github.v3+json" \
-              "https://api.github.com/repos/$TARGET_REPOSITORY/dispatches" \
-              -d '{"event_type": "trigger_action", "client_payload": {"env": "prod", "version": "1.0"}}'
+            #curl -s -X POST \
+              #-H "Authorization: token $GH_TOKEN" \
+              #-H "Accept: application/vnd.github.v3+json" \
+              #"https://api.github.com/repos/$TARGET_REPOSITORY/dispatches" \
+              #-d '{"event_type": "trigger_action", "client_payload": {"env": "prod", "version": "1.0"}}'
           fi  
           echo -e "\nDispatched to https://github.com/${{ env.TARGET_REPOSITORY }}/actions"
         fi
@@ -211,4 +204,4 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"
+        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"

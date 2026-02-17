@@ -102,28 +102,6 @@ runs:
         mv -f ${{ inputs.action_path }} ${{ github.workspace }}/_site
         mkdir -p ${{ inputs.action_path }} && cp -R ${{ github.workspace }}/_site/. ${{ inputs.action_path }}/
   
-    - name: 🪂 Download data
-      if: env.RERUN_RUNNER == 'false'
-      shell: bash
-      run: |
-        cd user_data/build_helpers
-        ./install_ta-lib.sh > /dev/null 2>&1 && rm -rf *.txt
-        curl -s https://api.github.com/repos/freqtrade/freqtrade/contents | jq -r '.[] | select(.name | test("^requirements(-.*)?\\.txt$")) | .download_url' | xargs -n1 curl -sO
-        python -m venv ${{ github.workspace }}/venv && source ${{ github.workspace }}/venv/bin/activate
-        pip install -qq --no-cache-dir ta "numpy<3.0"
-        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-plot.txt
-        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-hyperopt.txt
-        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-freqai-rl.txt
-        pip install -qq --no-cache-dir --no-build-isolation --upgrade freqtrade
-        cd ${{ github.workspace }} && bash user_data/ft_client/test_client/feed.sh
-
-    - name: Upload downloaded data as artifact
-      uses: actions/upload-artifact@v4
-      if: env.RERUN_RUNNER == 'false'
-      with:
-        name: freqtrade-data
-        path: user_data/data/
-
     - uses: ikalnytskyi/action-setup-postgres@v7
       if: env.RERUN_RUNNER == 'false'
       id: postgres
@@ -134,6 +112,32 @@ runs:
         port: 34837
         postgres-version: "17"
         ssl: true
+
+    - name: 🪂 Download data
+      if: env.RERUN_RUNNER == 'false'
+      shell: bash
+      run: |
+        cd user_data/build_helpers
+        ./install_ta-lib.sh > /dev/null 2>&1 && rm -rf *.txt
+
+        # Download requirement files from Freqtrade 2025.10 (corrected)
+        curl -s https://api.github.com/repos/freqtrade/freqtrade/contents?ref=2025.10 \
+          | jq -r '.[] | select(.name | test("^requirements(-.*)?\\.txt$")) | .path' \
+          | xargs -I{} curl -sO "https://raw.githubusercontent.com/freqtrade/freqtrade/2025.10/{}"
+
+        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-plot.txt
+        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-hyperopt.txt
+        pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-freqai-rl.txt
+
+        pip install -qq --no-cache-dir ta "numpy<3.0" "aiodns<3.0" "freqtrade==2025.10"
+        cd ${{ github.workspace }} && bash user_data/ft_client/test_client/feed.sh
+
+    - name: Upload downloaded data as artifact
+      uses: actions/upload-artifact@v4
+      if: env.RERUN_RUNNER == 'false'
+      with:
+        name: freqtrade-data
+        path: user_data/data/
 
     - name: 🪂 Test postgres
       if: env.RERUN_RUNNER == 'false'
@@ -197,4 +201,4 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"

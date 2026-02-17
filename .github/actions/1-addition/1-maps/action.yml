@@ -127,19 +127,48 @@ runs:
       with:
         script: console.log(context)
 
+    - name: Setup Workspace
+      shell: bash
+      run: |
+        echo "🧹 Free disk"
+        sudo rm -rf /usr/share/dotnet
+        sudo rm -rf /usr/local/lib/android
+        sudo rm -rf /usr/lib/google-cloud-sdk
+        docker system prune -af || true
+        docker builder prune -af || true
+
+        echo "⏫ Setting up 100GB tmpfs"
+        sudo mkdir -p /mnt/extra
+        sudo mount -t tmpfs -o size=100G tmpfs /mnt/extra
+          
+        echo "➡️ Syncing workspace"
+        sudo rsync -a "$GITHUB_WORKSPACE/" /mnt/extra/
+
+        echo "➡️ Switching workspace"
+        echo "GITHUB_WORKSPACE=/mnt/extra" >> $GITHUB_ENV
+        echo "GITHUB_WORKSPACE=/mnt/extra" >> $GITHUB_OUTPUT
+
+        # optional symlink to avoid tool breakage
+        sudo rm -rf "$GITHUB_WORKSPACE"
+        sudo ln -s /mnt/extra "$GITHUB_WORKSPACE"
+
+        echo "📌 Workspace successfully expanded." && df -h
+
     - uses: actions/setup-python@v5
       with:
-        python-version: 3.12
+        python-version: 3.11
         allow-prereleases: true
 
     - uses: actions/cache@v4
+      if: runner.os == 'Redis'
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip
 
     - name: 💎 Set ID Token
-      id: 'auth'
+      if:  ${{ env.RERUN_RUNNER == 'false' }}
       uses: 'google-github-actions/auth@v2'
+      id: 'auth'
       with:
         token_format: 'id_token'
         create_credentials_file: false
@@ -147,27 +176,21 @@ runs:
         id_token_audience: 'https://us-central1-marketleader.cloudfunctions.net/function'
 
     - name: Install dependencies
+      if:  ${{ env.RERUN_RUNNER == 'false' }}
       shell: bash
       env:
-        ACCESS_API: ${{ inputs.api_key }}
-        ACCESS_KEY: ${{ inputs.api_secret }}
-        ACCESS_TOKEN: ${{ inputs.token }}
-        MESSAGE_API: ${{ inputs.chat_id }}
-        MONITOR_TOKEN: ${{ inputs.bot_token }}
-        WARNING_TOKEN: ${{ inputs.logs_token }}
-        PYPI_TOKEN: ${{ inputs.pypi_token }}        
-        DOCKER_HUB_TOKEN: ${{ inputs.hub_token }}
-        DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
-        GCP_CREDENTIALS: ${{ inputs.credentials }}
+        BEARER: ${{ steps.auth.outputs.id_token }}
+        HYPEROPT_PARAM: "user_data/strategies/hyperopt_params.json"
+        ARTIFACT: "user_data/ft_client/test_client/results/orgs.json"
       run: |
         python -m pip -q install --upgrade pip
-        python -m pip -qqq install tensorflow-cpu
+        python -m pip -qqq install "tensorflow-cpu==2.20.0"
         #python -m pip -qqq install -r ${{ inputs.action_path }}/dataFile/requirements.txt
 
         ##Ref: https://iree.dev/guides/ml-frameworks/tensorflow/
-        #pip uninstall -y iree-base-compiler iree-base-runtime iree-compiler iree-tools-tf
         python -m pip -q install --pre iree-base-compiler iree-base-runtime iree-tools-tf -f https://iree.dev/pip-release-links.html
-        python user_data/ft_client/test_client/app.py orgs.json ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
+        python user_data/ft_client/test_client/app.py user_data ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
+        bash user_data/ft_client/test_client/maps.sh
   
         ##python -m pip -q install -e ./.github/entrypoint/artifact/python
         ##iree-compile --iree-llvmcpu-list-targets && iree-run-module --list_drivers
@@ -184,25 +207,23 @@ runs:
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
         ##cd ${{ inputs.action_path }}/pythonCode && python npreader.py -h && python map.py -h
 
-        # Get all secrets from source repository
-        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
-        for secret in $secrets; do gh secret set $secret --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"; done
-
     - name: Login to DockerHub
       uses: docker/login-action@v3
+      if:  ${{ env.RERUN_RUNNER == 'true' }}
       with:
         username: ${{ inputs.hub_username }}
         password: ${{ inputs.hub_token }}
 
     - name: 🚀 Initiate Lexer
       uses: devcontainers/ci@v0.3
+      if:  ${{ env.RERUN_RUNNER == 'true' }}
       with:
         skipContainerUserIdUpdate: true
         imageName: ${{ inputs.image_name }}
         imageTag: target-${{ github.run_number }}
         configFile: ${{ inputs.action_path }}/.devcontainer.json
         push: ${{ env.RERUN_RUNNER == 'true' && 'always' || 'never' }}
-        runCmd: bash user_data/ft_client/test_client/maps.sh            
+        #runCmd: bash user_data/ft_client/test_client/maps.sh            
         env: |
           ID=${{ env.ID }}
           GH_TOKEN=${{ env.GH_TOKEN }}
@@ -215,6 +236,7 @@ runs:
           ARTIFACT=user_data/ft_client/test_client/results/orgs.json
 
     - name: 🗑️ Delete Docker Tags AND Images
+      if:  ${{ env.RERUN_RUNNER == 'true' }}
       id: delete_images
       shell: bash
       env:
@@ -223,10 +245,12 @@ runs:
         HUB_PASSWORD: "${{ inputs.hub_password }}"
         MAX_DELETIONS: 15
       run: |
+        #python -m pip -qqq uninstall -y tensorflow tensorflow-cpu keras keras-preprocessing keras-nightly
         ./.github/entrypoint/remote.sh
+                
 
     - name: ⚧️ Rerun workflow if failed
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"

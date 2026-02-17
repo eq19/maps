@@ -138,7 +138,7 @@ runs:
             [Service]
             Type=oneshot
             RemainAfterExit=true
-            ExecStart=/sbin/iptables -A INPUT -p tcp --match multiport --dports 80,5432,6379,8080 -j ACCEPT
+            ExecStart=/sbin/iptables -A INPUT -p tcp --match multiport --dports 80,5432,6379,8080,8081,8082 -j ACCEPT
 
         - path: /etc/systemd/system/runner1.service
           permissions: "0644"
@@ -172,7 +172,7 @@ runs:
             Environment="HOME=/home/runner"
             ExecStop=/usr/bin/docker exec mydb -s quit
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --memory=512M --memory-swap=10G --name=mydb -p 5432:5432 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --memory=512M --memory-swap=10G --name=mydb -p 5432:5432 -p 8080:8080 -p 8081:8081 -p 8082:8082 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
 
         - path: /etc/systemd/system/runner2.service
           permissions: "0644"
@@ -250,4 +250,4 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
