@@ -262,84 +262,84 @@
     },
     {
       "id": 29,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "SharpeHyperOptLossDaily"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 30,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "SortinoHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 31,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "SortinoHyperOptLossDaily"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 32,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "CalmarHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 33,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "ProfitDrawDownHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 34,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "MultiMetricHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 35,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "MaxDrawDownHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 36,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 37,
-      "description": "Optimize sell (last 60 days)",
-      "days": 6,
-      "epochs": 13,
+      "description": "Optimize buy (use the last 30 days for robust results)",
+      "days": 7,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
-      "hyperopt_loss": "MaxDrawDownPerPairHyperOptLoss"
+      "spaces": ["all"],
+      "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 38,
