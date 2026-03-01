@@ -223,7 +223,7 @@ hyperopt() {
       else
         if [[ "$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi      
       fi
-    elif (( $(echo "$NEW_SCORE <= $OLD_SCORE" | bc -l) )); then
+    elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
           gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
