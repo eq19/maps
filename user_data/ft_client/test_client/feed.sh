@@ -48,7 +48,7 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
       
   # Read FreqAI models into an array
   mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
-  CURRENT="${FREQAI_MODEL}"
+  export CURRENT="${FREQAI_MODEL}"
 
   if [[ "$CURRENT" == "false" ]]; then
     # Set CURRENT to first model
