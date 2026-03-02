@@ -205,9 +205,10 @@ hyperopt() {
     #rm -rf user_data/backtest_results/*
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
   
+    SCORE=$(gh variable get SCORE)
+    OLD_SCORE=$SCORE
     calculate_score
     NEW_SCORE=$SCORE
-    OLD_SCORE=$(gh variable get SCORE)
 
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
       cat $STRATEGY
@@ -223,7 +224,7 @@ hyperopt() {
       else
         if [[ "$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi      
       fi
-    elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
+    elif (( $(echo "$NEW_SCORE <= $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
           gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
