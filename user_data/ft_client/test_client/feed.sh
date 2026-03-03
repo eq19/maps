@@ -206,12 +206,12 @@ else
     calculate_score
   fi
   
-  OLD_SCORE=$SCORE
+  export OLD_SCORE=$SCORE
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     if [[ "$OLD_SCORE" == "100" ]]; then
       gh workflow run "main.yml"
     else
-      gh variable set SCORE --body "${SCORE}"
+      if [[ "$CURRENT" == "false" ]]; then gh variable set SCORE --body "${SCORE}"
     fi
   fi
 
