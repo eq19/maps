@@ -48,7 +48,7 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
       
   # Read FreqAI models into an array
   mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
-  export CURRENT="${FREQAI_MODEL}"
+  CURRENT="${FREQAI_MODEL}"
 
   if [[ "$CURRENT" == "false" ]]; then
     # Set CURRENT to first model
@@ -189,6 +189,7 @@ else
   jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
+  export CALCULATION="false"
   if [[ "$SCORE" == "100" ]]; then
     FREQAIMODEL=$(gh variable get FREQAIMODEL)
     echo -e "\n$hr\nRUN BACKTEST with $FREQAIMODEL\n$hr"
@@ -211,7 +212,7 @@ else
     if [[ "$OLD_SCORE" == "100" ]]; then
       gh workflow run "main.yml"
     else
-      [[ "$CURRENT" != "false" ]] && gh variable set SCORE --body "${SCORE}"
+      [[ "$CALCULATION" != "false" ]] && gh variable set SCORE --body "${SCORE}"
     fi
   fi
 
