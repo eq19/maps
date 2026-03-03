@@ -212,7 +212,10 @@ else
     if [[ "$OLD_SCORE" == "100" ]]; then
       gh workflow run "main.yml"
     else
-      [[ "$CALCULATION" != "false" ]] && gh variable set SCORE --body "${SCORE}"
+      if [[ "$CALCULATION" != "false" ]]; then
+        gh variable set SCORE --body "${SCORE}"
+        export CALCULATION="false"
+      fi
     fi
   fi
 
