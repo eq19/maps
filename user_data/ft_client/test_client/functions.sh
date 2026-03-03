@@ -205,7 +205,6 @@ hyperopt() {
     #rm -rf user_data/backtest_results/*
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
   
-    # Environment SCORE is unchanged in case calculation is failed
     calculate_score
     NEW_SCORE=$SCORE
 
@@ -231,6 +230,7 @@ hyperopt() {
           if [["$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
         fi
       fi
+    # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$CURRENT" == "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
