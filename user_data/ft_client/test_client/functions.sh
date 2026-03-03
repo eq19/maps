@@ -205,9 +205,7 @@ hyperopt() {
     #rm -rf user_data/backtest_results/*
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
   
-    # Let's SCORE unchanged in case calculation is failed
-    SCORE=$(gh variable get SCORE)
-    OLD_SCORE=$SCORE
+    # Environment SCORE is unchanged in case calculation is failed
     calculate_score
     NEW_SCORE=$SCORE
 
