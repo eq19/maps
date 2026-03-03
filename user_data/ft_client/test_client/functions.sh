@@ -6,7 +6,6 @@
 calculate_score() {
 
   sleep 5
-  CURRENT="false"
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
   if [[ -z "$latest_zip" ]]; then
@@ -109,7 +108,7 @@ calculate_score() {
   fi
 
   SCORE=$(printf "%.2f" "$SCORE")
-  CURRENT="true"
+  CALCULATION="true"
 
   echo ""
   echo "📈 Strategy Summary for 'Fibbo'"
@@ -235,7 +234,7 @@ hyperopt() {
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        if [[ "$CURRENT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
+        if [[ "$CALCULATION" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
       fi
     fi
   done
