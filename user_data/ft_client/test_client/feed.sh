@@ -211,7 +211,7 @@ else
     if [[ "$OLD_SCORE" == "100" ]]; then
       gh workflow run "main.yml"
     else
-      [[ "$CURRENT" == "false" ]] && gh variable set SCORE --body "${SCORE}"
+      [[ "$CURRENT" != "false" ]] && gh variable set SCORE --body "${SCORE}"
     fi
   fi
 
