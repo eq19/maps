@@ -209,6 +209,7 @@ hyperopt() {
     calculate_score
     NEW_SCORE=$SCORE
 
+    OLD_SCORE=$(gh variable get SCORE)
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
       cat $STRATEGY
       curl -L -s -X PATCH \
