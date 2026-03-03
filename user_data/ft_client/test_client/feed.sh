@@ -220,18 +220,4 @@ else
   freqtrade hyperopt --help
   hyperopt $ID
 
-  #echo -e "\n$hr\nANALYSIS\n$hr"
-  #freqtrade backtesting-analysis --help
-  #freqtrade lookahead-analysis
-  #freqtrade recursive-analysis
-  #freqtrade backtesting-analysis --timerange="$TB" --indicator-list all
-  #jq --slurpfile new_pairlists $PAIRFILE '.pairlists = $new_pairlists[0].pairlists' $CONFIG > config.json
-  
-  #echo -e "\n$hr\nPLOT DATAFRAME\n$hr"
-  #freqtrade plot-dataframe
-  #freqtrade plot-profit --timerange="$TB"
-
-  #rm -rf *.json freqtrade_pid.txt freqtrade.log /tmp/wiki /tmp/dummy
-  #rm -rf user_data/build_helpers user_data/hyperopt*
-
 fi
