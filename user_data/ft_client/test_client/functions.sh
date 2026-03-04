@@ -200,6 +200,7 @@ hyperopt() {
       --logfile /dev/null > /dev/null 2>&1
       #--print-json
     #freqtrade hyperopt-list
+    cat "$STRATEGY"
 
     echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
