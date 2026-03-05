@@ -131,7 +131,7 @@
   "add_config_files": [
     "config_examples/config_freqai.example.json",
     "config_examples/config_pairlist.example.json",
-    "config_examples/config_hyperopt.example.json",
-    "config_examples/config_exchange.example.json"
+    "config_examples/config_exchange.example.json",
+    "config_examples/config_hyperopt.example.json"
   ]
 }
