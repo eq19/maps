@@ -273,27 +273,27 @@
       "id": 30,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 7,
-      "epochs": 2500,
+      "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["sell trailing stoploss"],
+      "spaces": ["all"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 31,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 7,
-      "epochs": 5000,
+      "epochs": 2500,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["buy"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
       "id": 32,
       "description": "Optimize buy (use the last 30 days for robust results)",
       "days": 7,
-      "epochs": 5000,
+      "epochs": 2500,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["sell trailing stoploss"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
