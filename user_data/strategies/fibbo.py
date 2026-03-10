@@ -39,7 +39,7 @@ from utils.indodax_patch import *
 
 # Define indicator sets (could also come from the JSON if needed)
 buy_indicators = ["BB", "ATR", "TTM", "VWAP", "MACD", "DEMA", "FIBBO", "STOCHRSI"]
-sell_indicators = ["ATR", "TTM", "MACD", "FIBBO", "STOCHRSI"]
+sell_indicators = ["BB", "ATR", "TTM", "MACD", "FIBBO", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
 # ✅ 1. Recursively find the first occurrence of the 'span' key
@@ -130,7 +130,7 @@ span["buy"]["buy_additional_indicator"]["choices"] = sorted(
     indicator_permutations(buy_indicators, max_indicators=2, include_none=True)
 )
 span["sell"]["sell_additional_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
+    indicator_permutations(sell_indicators, max_indicators=4, include_none=True)
 )
 
 # Preload strategy attributes
@@ -858,6 +858,8 @@ class Fibbo(IStrategy):
         ATR = (dataframe['atr'] < dataframe['atr'].shift(1))
         MACD = (dataframe['macd'] < dataframe['macdsignal'])
         FIBBO = (dataframe['close'] >= dataframe['fib_236'])
+        # Exit at middle band (safer, more consistent) with a small buffer for noise
+        BB = (dataframe['close'] > dataframe['bb_middleband'] * 1.01)
         STOCHRSI = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
@@ -866,6 +868,8 @@ class Fibbo(IStrategy):
         # Always include RSI
         exit_conditions.append(RSI)
         
+        if "BB" in self.sell_additional_indicator.value:
+            exit_conditions.append(BB)
         if "ATR" in self.sell_additional_indicator.value:
             exit_conditions.append(ATR)
         if "MACD" in self.sell_additional_indicator.value:
