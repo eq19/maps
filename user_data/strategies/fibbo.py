@@ -811,7 +811,7 @@ class Fibbo(IStrategy):
             
             # Method 2: If confidence column exists
             if 'DI_values' in dataframe.columns:
-                freqai_confident = (dataframe['DI_values'] > float(self.freqaithreshold.value))
+                freqai_confident = (dataframe['DI_values'] > float(self.buy_freqai.value))
                 freqai_signal = freqai_buy_signal & freqai_confident
             else:
                 freqai_signal = freqai_buy_signal
@@ -888,7 +888,7 @@ class Fibbo(IStrategy):
             
             # Add confidence filter if available
             if 'DI_values' in dataframe.columns:
-                freqai_sell_confident = freqai_sell_signal & (dataframe['DI_values'] > float(self.freqaithreshold.value))
+                freqai_sell_confident = freqai_sell_signal & (dataframe['DI_values'] < float(self.sell_freqai.value))
                 exit_conditions.append(freqai_sell_confident)
             else:
                 exit_conditions.append(freqai_sell_signal)
