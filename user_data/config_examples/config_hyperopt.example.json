@@ -275,7 +275,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["buy sell roi"],
+      "spaces": ["all"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -284,7 +284,7 @@
       "days": 7,
       "epochs": 2500,
       "parallel_jobs": 4,
-      "spaces": ["buy"],
+      "spaces": ["buy sell roi"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -302,7 +302,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["sell trailing stoploss"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
