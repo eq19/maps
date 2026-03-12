@@ -799,50 +799,28 @@ class Fibbo(IStrategy):
             momentum_positive = dataframe['momentum_hist'] > 0
             entry_conditions.append(squeeze_on & momentum_positive)
         
-        # === FreqAI Integration ===
-        # Check if FreqAI predictions are available
-        # According to FreqAI example, columns like 'do_predict' and 'DI_values' are added automatically
-
+        # === FreqAI Entry Signals ===
         if 'do_predict' in dataframe.columns:
-            logger.debug("FreqAI predictions available")
-            
-            # Method 1: Standard FreqAI signal (1 = buy, -1 = sell)
+
+            # FreqAI buy signal (1 = buy, -1 = sell)
             freqai_buy_signal = (dataframe['do_predict'] == 1)
             
-            # Method 2: If confidence column exists
+            # Add confidence filter if available
             if 'DI_values' in dataframe.columns:
                 dataframe['di_percentile'] = (dataframe['DI_values'].rolling(200).rank(pct=True))
-                freqai_confident = (dataframe['di_percentile'] < float(self.buy_freqai.value))
-                freqai_signal = freqai_buy_signal & freqai_confident
+                freqai_buy_confident = freqai_buy_signal & (dataframe['di_percentile'] < float(self.buy_freqai.value))
+                entry_conditions.append(freqai_buy_confident)
             else:
-                freqai_signal = freqai_buy_signal
-            
-            # Combine FreqAI with your strategy
-            if entry_conditions:
-                # Option A: FreqAI must agree with ALL your conditions (conservative)
-                fibbo_conditions = reduce(lambda x, y: x & y, entry_conditions)
-                combined_signal = fibbo_conditions & freqai_signal
-                
-                # Option B: FreqAI can trigger with fewer conditions (aggressive)
-                # combined_signal = freqai_signal & RSI  # Only require RSI + FreqAI
-                
-                dataframe.loc[combined_signal, 'enter_long'] = 1
-                
-                # Tag entries that were FreqAI confirmed
-                dataframe.loc[freqai_signal & (dataframe['enter_long'] == 1), 'freqai_confirmed'] = 1
-            else:
-                # If no Fibbo conditions, use FreqAI alone
-                dataframe.loc[freqai_signal, 'enter_long'] = 1
-            
-        else:
-            # Fallback to original Fibbo strategy if no FreqAI
-            logger.debug("No FreqAI predictions, using original Fibbo strategy")
-            if entry_conditions:
-                dataframe.loc[
-                    reduce(lambda x, y: x & y, entry_conditions),
-                    'enter_long'
-                ] = 1
+                entry_conditions.append(freqai_buy_signal)
         
+        # Combine entry conditions with AND logic
+        # Enter if ALL conditions are met
+        if entry_conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, entry_conditions),
+                'enter_long'
+            ] = 1
+
         logger.debug(f"Generated {dataframe['enter_long'].sum()} entry signals")
         return dataframe
 
@@ -907,7 +885,7 @@ class Fibbo(IStrategy):
                 reduce(lambda x, y: x & y, exit_conditions),
                 'exit_long'
             ] = 1
-        
+
         logger.debug(f"Generated {dataframe['exit_long'].sum()} exit signals")
         return dataframe
 
