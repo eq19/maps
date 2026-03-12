@@ -802,7 +802,7 @@ class Fibbo(IStrategy):
         # === FreqAI Integration ===
         # Check if FreqAI predictions are available
         # According to FreqAI example, columns like 'do_predict' and 'DI_values' are added automatically
-        
+
         if 'do_predict' in dataframe.columns:
             logger.debug("FreqAI predictions available")
             
@@ -811,7 +811,8 @@ class Fibbo(IStrategy):
             
             # Method 2: If confidence column exists
             if 'DI_values' in dataframe.columns:
-                freqai_confident = (dataframe['DI_values'] > float(self.buy_freqai.value))
+                dataframe['di_percentile'] = (dataframe['DI_values'].rolling(200).rank(pct=True))
+                freqai_confident = (dataframe['di_percentile'] < float(self.buy_freqai.value))
                 freqai_signal = freqai_buy_signal & freqai_confident
             else:
                 freqai_signal = freqai_buy_signal
@@ -887,12 +888,14 @@ class Fibbo(IStrategy):
         
         # === FreqAI Exit Signals ===
         if 'do_predict' in dataframe.columns:
+
             # FreqAI sell signal (standard is -1)
             freqai_sell_signal = (dataframe['do_predict'] == -1)
             
             # Add confidence filter if available
             if 'DI_values' in dataframe.columns:
-                freqai_sell_confident = freqai_sell_signal & (dataframe['DI_values'] > float(self.sell_freqai.value))
+                dataframe['di_percentile'] = (dataframe['DI_values'].rolling(200).rank(pct=True))
+                freqai_sell_confident = freqai_sell_signal & (dataframe['di_percentile'] < float(self.sell_freqai.value))
                 exit_conditions.append(freqai_sell_confident)
             else:
                 exit_conditions.append(freqai_sell_signal)
