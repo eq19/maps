@@ -275,7 +275,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["buy sell roi"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
