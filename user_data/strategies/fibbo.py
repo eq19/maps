@@ -744,7 +744,6 @@ class Fibbo(IStrategy):
             ffill=True
         )
 
-        logger.debug(f"Finished populating indicators. Total columns: {len(dataframe.columns)}")
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -821,7 +820,6 @@ class Fibbo(IStrategy):
                 'enter_long'
             ] = 1
 
-        logger.debug(f"Generated {dataframe['enter_long'].sum()} entry signals")
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -886,7 +884,6 @@ class Fibbo(IStrategy):
                 'exit_long'
             ] = 1
 
-        logger.debug(f"Generated {dataframe['exit_long'].sum()} exit signals")
         return dataframe
 
 # Inject hyperopt parameters AFTER class definition
