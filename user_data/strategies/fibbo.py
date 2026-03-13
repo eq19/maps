@@ -876,11 +876,11 @@ class Fibbo(IStrategy):
             else:
                 exit_conditions.append(freqai_sell_signal)
         
-        # Combine exit conditions with AND logic
-        # Exit if ALL conditions are met
+        # Combine exit conditions with OR logic
+        # Exit if ANY condition is met
         if exit_conditions:
             dataframe.loc[
-                reduce(lambda x, y: x & y, exit_conditions),
+                reduce(lambda x, y: x | y, exit_conditions),
                 'exit_long'
             ] = 1
 
