@@ -16,7 +16,7 @@ echo "--------------------"
 # Pass to decoder
 ./float_decoder "$RAW_OUTPUT"
 
-cat $ARTIFACT
+#cat $ARTIFACT
 if curl -s -X POST \
   -H "Authorization: Bearer ${BEARER}" \
   -H "Content-Type: application/json" \
