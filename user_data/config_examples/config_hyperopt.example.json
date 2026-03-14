@@ -275,7 +275,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["buy sell roi trailing stoploss trades"],
+      "spaces": ["buy sell roi trailing stoploss"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
