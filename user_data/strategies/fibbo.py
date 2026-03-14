@@ -666,14 +666,14 @@ class Fibbo(IStrategy):
                         dataframe['di_percentile'] = (dataframe['DI_values']
                                                       .rolling(self.di_rolling_window)
                                                       .rank(pct=True))
-                        self.logger.debug(f"FreqAI DI_percentile calculated for {pair}")
+                        logger.debug(f"FreqAI DI_percentile calculated for {pair}")
                     else:
                         # Not enough data yet, use neutral value
                         dataframe['di_percentile'] = 0.5
-                        self.logger.debug(f"FreqAI: Insufficient data for {pair}, using neutral confidence")
+                        logger.debug(f"FreqAI: Insufficient data for {pair}, using neutral confidence")
                         
                     # Log DI_values stats for debugging
-                    self.logger.debug(f"DI_values - min: {dataframe['DI_values'].min():.3f}, "
+                    logger.debug(f"DI_values - min: {dataframe['DI_values'].min():.3f}, "
                                      f"max: {dataframe['DI_values'].max():.3f}, "
                                      f"mean: {dataframe['DI_values'].mean():.3f}")
                 
@@ -681,17 +681,17 @@ class Fibbo(IStrategy):
                 if 'do_predict' in dataframe.columns:
                     buy_signals = (dataframe['do_predict'] == 1).sum()
                     sell_signals = (dataframe['do_predict'] == -1).sum()
-                    self.logger.debug(f"FreqAI signals for {pair}: {buy_signals} buy, {sell_signals} sell")
+                    logger.debug(f"FreqAI signals for {pair}: {buy_signals} buy, {sell_signals} sell")
                     
             except KeyError:
                 # Pair introduced dynamically without FreqAI history/model
-                self.logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
+                logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
             except Exception as e:
                 # Extra safety: never let AI crash the strategy
-                self.logger.warning(f"FreqAI error for {pair}: {e}")
+                logger.warning(f"FreqAI error for {pair}: {e}")
         else:
             if self.freqai is None:
-                self.logger.debug("FreqAI not initialized for this strategy")
+                logger.debug("FreqAI not initialized for this strategy")
 
         # --- Classical indicators (always run) ---
 
