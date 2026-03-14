@@ -226,7 +226,6 @@ class Fibbo(IStrategy):
         },
     }
 
-
     def __init__(self, config: dict) -> None:
         super().__init__(config)
 
@@ -244,6 +243,10 @@ class Fibbo(IStrategy):
         # Optional: apply hyperopt value of max_open_trades to config
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
             self.config['max_open_trades'] = self.max_open_trades.value
+
+        # Make rolling window configurable
+        self.di_rolling_window = getattr(self, 'di_rolling_window', 200)
+        self.freqai_enabled = getattr(self, 'freqai_enabled', True)
 
     def bot_start(self, **kwargs) -> None:
         """Called once after the bot has started and dependencies are available."""
@@ -651,15 +654,44 @@ class Fibbo(IStrategy):
         pair = metadata["pair"]
 
         # --- FreqAI (robust for dynamic pairs) ---
-        if self.freqai is not None:
+        if self.freqai is not None and self.freqai_enabled:
             try:
+                # Start FreqAI
                 dataframe = self.freqai.start(dataframe, metadata, self)
+                
+                # Process DI_values if available
+                if 'DI_values' in dataframe.columns:
+                    # Check if we have enough data for meaningful percentile
+                    if len(dataframe) >= self.di_rolling_window:
+                        dataframe['di_percentile'] = (dataframe['DI_values']
+                                                      .rolling(self.di_rolling_window)
+                                                      .rank(pct=True))
+                        self.logger.debug(f"FreqAI DI_percentile calculated for {pair}")
+                    else:
+                        # Not enough data yet, use neutral value
+                        dataframe['di_percentile'] = 0.5
+                        self.logger.debug(f"FreqAI: Insufficient data for {pair}, using neutral confidence")
+                        
+                    # Log DI_values stats for debugging
+                    self.logger.debug(f"DI_values - min: {dataframe['DI_values'].min():.3f}, "
+                                     f"max: {dataframe['DI_values'].max():.3f}, "
+                                     f"mean: {dataframe['DI_values'].mean():.3f}")
+                
+                # Also log do_predict stats
+                if 'do_predict' in dataframe.columns:
+                    buy_signals = (dataframe['do_predict'] == 1).sum()
+                    sell_signals = (dataframe['do_predict'] == -1).sum()
+                    self.logger.debug(f"FreqAI signals for {pair}: {buy_signals} buy, {sell_signals} sell")
+                    
             except KeyError:
                 # Pair introduced dynamically without FreqAI history/model
-                pass
+                self.logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
             except Exception as e:
                 # Extra safety: never let AI crash the strategy
-                self.logger.debug(f"FreqAI skipped for {pair}: {e}")
+                self.logger.warning(f"FreqAI error for {pair}: {e}")
+        else:
+            if self.freqai is None:
+                self.logger.debug("FreqAI not initialized for this strategy")
 
         # --- Classical indicators (always run) ---
 
@@ -805,10 +837,9 @@ class Fibbo(IStrategy):
             freqai_buy_signal = (dataframe['do_predict'] == 1)
             
             # Add confidence filter if available
-            if 'DI_values' in dataframe.columns:
-                dataframe['di_percentile'] = (dataframe['DI_values'].rolling(200).rank(pct=True))
-                freqai_buy_confident = freqai_buy_signal & (dataframe['di_percentile'] < float(self.buy_freqai.value))
-                entry_conditions.append(freqai_buy_confident)
+            if 'di_percentile' in dataframe.columns:
+                freqai_buy_confident = (dataframe['di_percentile'] < float(self.buy_freqai.value))
+                entry_conditions.append(freqai_buy_signal & freqai_buy_confident)
             else:
                 entry_conditions.append(freqai_buy_signal)
         
@@ -869,10 +900,9 @@ class Fibbo(IStrategy):
             freqai_sell_signal = (dataframe['do_predict'] == -1)
             
             # Add confidence filter if available
-            if 'DI_values' in dataframe.columns:
-                dataframe['di_percentile'] = (dataframe['DI_values'].rolling(200).rank(pct=True))
-                freqai_sell_confident = freqai_sell_signal & (dataframe['di_percentile'] < float(self.sell_freqai.value))
-                exit_conditions.append(freqai_sell_confident)
+            if 'di_percentile' in dataframe.columns:
+                freqai_sell_confident = (dataframe['di_percentile'] < float(self.sell_freqai.value))
+                exit_conditions.append(freqai_sell_signal & freqai_sell_confident)
             else:
                 exit_conditions.append(freqai_sell_signal)
         
