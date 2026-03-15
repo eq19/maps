@@ -23,5 +23,12 @@ echo "--------------------"
   #exit 1
 #fi
 
+# Show the first part of your JSON file
+head -50 user_data/ft_client/test_client/results/orgs.json
+
+# Or use jq to pretty print and show structure
+cat user_data/ft_client/test_client/results/orgs.json | jq '. | type'
+cat user_data/ft_client/test_client/results/orgs.json | jq 'if type=="array" then "Array with \(length) items" else "Object with keys: \(keys)" end'
+
 curl -s -X POST -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" https://us-central1-marketleader.cloudfunctions.net/function -d @$ARTIFACT > $HYPEROPT_PARAM
 cat $HYPEROPT_PARAM
