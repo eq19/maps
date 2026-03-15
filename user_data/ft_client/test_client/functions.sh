@@ -214,7 +214,7 @@ hyperopt() {
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
       cat $STRATEGY
       sed -i "s|Infinity|10|g" $STRATEGY
-      sed -i 's|"max_open_trades": -1|"max_open_trades": 10|g' $STRATEGY
+      sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
 
       curl -L -s -X PATCH \
         -H "Accept: application/vnd.github+json" \
