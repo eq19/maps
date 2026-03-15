@@ -16,12 +16,12 @@ echo "--------------------"
 # Pass to decoder
 ./float_decoder "$RAW_OUTPUT"
 
-cat $ARTIFACT
+#cat $ARTIFACT
 #if curl -s -X POST -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" https://us-central1-marketleader.cloudfunctions.net/function --data @${ARTIFACT} | jq '.' > $HYPEROPT_PARAM; then
   #cat $HYPEROPT_PARAM
 #else
   #exit 1
 #fi
 
-curl -s -X POST -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" https://us-central1-marketleader.cloudfunctions.net/function -d @$ARTIFACT | jq '.' > $HYPEROPT_PARAM
+curl -s -X POST -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" https://us-central1-marketleader.cloudfunctions.net/function -d @$ARTIFACT > $HYPEROPT_PARAM
 cat $HYPEROPT_PARAM
