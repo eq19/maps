@@ -24,6 +24,6 @@ if curl -s -X POST \
   --data @${ARTIFACT} | jq '.' > $HYPEROPT_PARAM; then
   cat $HYPEROPT_PARAM
 else
-  echo "Please change if max_open_order is 'Infinity' or -1 to an integer number"
+  echo "Please change if max_open_trades is 'Infinity' or -1 to an integer number"
   exit 1
 fi
