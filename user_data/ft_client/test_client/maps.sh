@@ -23,6 +23,6 @@ echo "--------------------"
   #exit 1
 #fi
 
-curl -s -X POST -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" https://us-central1-marketleader.cloudfunctions.net/function > $HYPEROPT_PARAM
+curl -s -X POST -H "Authorization: Bearer ${BEARER}" -H "Content-Type: application/json" https://us-central1-marketleader.cloudfunctions.net/function | jq '.' > $HYPEROPT_PARAM
 cat $HYPEROPT_PARAM
   
