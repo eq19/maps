@@ -1,6 +1,367 @@
 # pragma pylint: disable=missing-docstring, invalid-name, pointless-string-statement
 # flake8: noqa: F401
 # isort: skip_file
+# --- Do not remove these imports ---
+import numpy as np
+import pandas as pd
+from pandas import DataFrame
+from datetime import datetime
+from typing import Optional, Union
+
+from freqtrade.strategy import (IStrategy, IntParameter, DecimalParameter, 
+                                BooleanParameter, CategoricalParameter, 
+                                merge_informative_pair, stoploss_from_open,
+                                IStrategy, Trade, Order, PairLocks)
+
+# --------------------------------
+# Add your lib to import here
+import talib.abstract as ta
+from functools import reduce
+import warnings
+warnings.simplefilter("ignore", RuntimeWarning)
+
+
+class FibonacciRetracementStrategy(IStrategy):
+    """
+    Strategy using Fibonacci retracement levels for entries and exits
+    """
+    
+    # Strategy interface version
+    INTERFACE_VERSION = 3
+    
+    # Optimal timeframe for the strategy
+    timeframe = '5m'
+    
+    # Can this strategy go short?
+    can_short: bool = True
+    
+    # Minimal ROI designed for the strategy
+    minimal_roi = {
+        "60": 0.01,
+        "30": 0.02,
+        "0": 0.04
+    }
+    
+    # Optimal stoploss
+    stoploss = -0.10
+    
+    # Trailing stop
+    trailing_stop = True
+    trailing_stop_positive = 0.01
+    trailing_stop_positive_offset = 0.02
+    trailing_only_offset_is_reached = True
+    
+    # Run "populate_indicators()" only for new candle
+    process_only_new_candles = True
+    
+    # These values can be overridden in the "ask_strategy" section in the config
+    use_exit_signal = True
+    exit_profit_only = False
+    ignore_roi_if_entry_signal = False
+    
+    # Number of candles the strategy requires before producing valid signals
+    startup_candle_count: int = 100
+    
+    # Optional order type mapping
+    order_types = {
+        'entry': 'limit',
+        'exit': 'limit',
+        'stoploss': 'market',
+        'stoploss_on_exchange': False
+    }
+    
+    # Optional parameter for position adjustment
+    position_adjustment_enable = False
+    
+    # Hyperparameters
+    fib_entry_level = DecimalParameter(0.236, 0.786, default=0.618, decimals=3, space="buy")
+    fib_exit_level = DecimalParameter(0.236, 0.786, default=0.786, decimals=3, space="sell")
+    rsi_lookback = IntParameter(10, 30, default=14, space="buy")
+    rsi_oversold = IntParameter(20, 40, default=30, space="buy")
+    rsi_overbought = IntParameter(60, 80, default=70, space="sell")
+    
+    def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        Adds several different TA indicators to the given DataFrame
+        """
+        
+        # Calculate RSI
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        
+        # Calculate MACD
+        macd = ta.MACD(dataframe)
+        dataframe['macd'] = macd['macd']
+        dataframe['macdsignal'] = macd['macdsignal']
+        dataframe['macdhist'] = macd['macdhist']
+        
+        # Calculate moving averages for trend confirmation
+        dataframe['ema_20'] = ta.EMA(dataframe, timeperiod=20)
+        dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
+        dataframe['sma_200'] = ta.SMA(dataframe, timeperiod=200)
+        
+        # Calculate swing highs and lows for Fibonacci levels
+        dataframe['roll_max_cp'] = dataframe['high'].rolling(window=50).max()
+        dataframe['roll_min_cp'] = dataframe['low'].rolling(window=50).min()
+        
+        # Identify swing high and low points
+        dataframe['swing_high'] = dataframe['high'] == dataframe['roll_max_cp']
+        dataframe['swing_low'] = dataframe['low'] == dataframe['roll_min_cp']
+        
+        # Find recent swing high and low
+        dataframe['recent_high'] = dataframe['roll_max_cp'].ffill()
+        dataframe['recent_low'] = dataframe['roll_min_cp'].ffill()
+        
+        # Calculate Fibonacci levels
+        dataframe['fib_high'] = dataframe['recent_high']
+        dataframe['fib_low'] = dataframe['recent_low']
+        
+        # Calculate the difference between high and low
+        dataframe['fib_range'] = dataframe['fib_high'] - dataframe['fib_low']
+        
+        # Fibonacci retracement levels
+        dataframe['fib_236'] = dataframe['fib_high'] - (dataframe['fib_range'] * 0.236)
+        dataframe['fib_382'] = dataframe['fib_high'] - (dataframe['fib_range'] * 0.382)
+        dataframe['fib_500'] = dataframe['fib_high'] - (dataframe['fib_range'] * 0.500)
+        dataframe['fib_618'] = dataframe['fib_high'] - (dataframe['fib_range'] * 0.618)
+        dataframe['fib_786'] = dataframe['fib_high'] - (dataframe['fib_range'] * 0.786)
+        
+        # Also calculate extension levels (for potential targets)
+        dataframe['fib_1272'] = dataframe['fib_high'] + (dataframe['fib_range'] * 0.272)  # 127.2%
+        dataframe['fib_1618'] = dataframe['fib_high'] + (dataframe['fib_range'] * 0.618)  # 161.8%
+        dataframe['fib_2618'] = dataframe['fib_high'] + (dataframe['fib_range'] * 1.618)  # 261.8%
+        
+        # Distance from Fibonacci levels
+        for level in ['236', '382', '500', '618', '786']:
+            dataframe[f'dist_to_fib_{level}'] = abs(dataframe['close'] - dataframe[f'fib_{level}']) / dataframe['close'] * 100
+        
+        # Volume indicator
+        dataframe['volume_mean'] = dataframe['volume'].rolling(window=20).mean()
+        dataframe['volume_ratio'] = dataframe['volume'] / dataframe['volume_mean']
+        
+        # ADX for trend strength
+        dataframe['adx'] = ta.ADX(dataframe)
+        
+        # Bollinger Bands
+        bollinger = ta.BBANDS(dataframe, timeperiod=20, nbdevup=2, nbdevdn=2)
+        dataframe['bb_lowerband'] = bollinger['lowerband']
+        dataframe['bb_middleband'] = bollinger['middleband']
+        dataframe['bb_upperband'] = bollinger['upperband']
+        
+        return dataframe
+    
+    def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        Based on TA indicators, populates the entry signals
+        """
+        conditions_long = []
+        conditions_short = []
+        
+        # LONG ENTRY CONDITIONS
+        # Price is near Fibonacci 0.618 level (or configurable level)
+        fib_buy_condition = (
+            (dataframe['close'] <= dataframe[f'fib_{str(self.fib_entry_level.value).replace(".", "")}'] * 1.005) &
+            (dataframe['close'] >= dataframe[f'fib_{str(self.fib_entry_level.value).replace(".", "")}'] * 0.995)
+        )
+        
+        # RSI oversold condition
+        rsi_condition = (dataframe['rsi'] < self.rsi_oversold.value)
+        
+        # MACD bullish crossover
+        macd_condition = (
+            (dataframe['macd'] > dataframe['macdsignal']) &
+            (dataframe['macd'].shift(1) <= dataframe['macdsignal'].shift(1))
+        )
+        
+        # Trend condition - price above major moving averages
+        trend_condition = (
+            (dataframe['close'] > dataframe['ema_20']) |
+            (dataframe['close'] > dataframe['sma_200'])
+        )
+        
+        # Volume confirmation
+        volume_condition = (dataframe['volume_ratio'] > 1.2)
+        
+        # ADX trend strength
+        adx_condition = (dataframe['adx'] > 20)
+        
+        # Combine conditions for long entry
+        conditions_long.append(fib_buy_condition)
+        conditions_long.append(rsi_condition)
+        conditions_long.append(macd_condition)
+        conditions_long.append(volume_condition)
+        
+        # Apply conditions
+        if conditions_long:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions_long),
+                'enter_long'] = 1
+        
+        # SHORT ENTRY CONDITIONS
+        # Price is near Fibonacci 0.618 level (resistance)
+        fib_sell_condition = (
+            (dataframe['close'] <= dataframe[f'fib_{str(self.fib_entry_level.value).replace(".", "")}'] * 1.005) &
+            (dataframe['close'] >= dataframe[f'fib_{str(self.fib_entry_level.value).replace(".", "")}'] * 0.995)
+        )
+        
+        # RSI overbought for short
+        rsi_short_condition = (dataframe['rsi'] > self.rsi_overbought.value)
+        
+        # MACD bearish crossover
+        macd_short_condition = (
+            (dataframe['macd'] < dataframe['macdsignal']) &
+            (dataframe['macd'].shift(1) >= dataframe['macdsignal'].shift(1))
+        )
+        
+        # Price below moving averages
+        trend_short_condition = (dataframe['close'] < dataframe['ema_20'])
+        
+        conditions_short.append(fib_sell_condition)
+        conditions_short.append(rsi_short_condition)
+        conditions_short.append(macd_short_condition)
+        conditions_short.append(volume_condition)
+        conditions_short.append(adx_condition)
+        
+        if conditions_short:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions_short),
+                'enter_short'] = 1
+        
+        return dataframe
+    
+    def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        """
+        Based on TA indicators, populates the exit signals
+        """
+        conditions_long_exit = []
+        conditions_short_exit = []
+        
+        # LONG EXIT CONDITIONS
+        # Price reaches Fibonacci 0.786 level (or configurable exit level)
+        fib_exit_long_condition = (
+            (dataframe['close'] >= dataframe[f'fib_{str(self.fib_exit_level.value).replace(".", "")}'] * 0.995) &
+            (dataframe['close'] <= dataframe[f'fib_{str(self.fib_exit_level.value).replace(".", "")}'] * 1.005)
+        )
+        
+        # RSI overbought
+        rsi_exit_condition = (dataframe['rsi'] > self.rsi_overbought.value)
+        
+        # MACD bearish crossover
+        macd_exit_condition = (
+            (dataframe['macd'] < dataframe['macdsignal']) &
+            (dataframe['macd'].shift(1) >= dataframe['macdsignal'].shift(1))
+        )
+        
+        # Price touches upper Bollinger Band
+        bb_exit_condition = (dataframe['close'] >= dataframe['bb_upperband'])
+        
+        conditions_long_exit.append(fib_exit_long_condition)
+        conditions_long_exit.append(rsi_exit_condition | bb_exit_condition)
+        
+        if conditions_long_exit:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions_long_exit),
+                'exit_long'] = 1
+        
+        # SHORT EXIT CONDITIONS
+        # Price reaches Fibonacci 0.382 level (for short covering)
+        fib_exit_short_condition = (
+            (dataframe['close'] <= dataframe['fib_382'] * 1.005) &
+            (dataframe['close'] >= dataframe['fib_382'] * 0.995)
+        )
+        
+        # RSI oversold
+        rsi_short_exit = (dataframe['rsi'] < self.rsi_oversold.value)
+        
+        # MACD bullish crossover
+        macd_short_exit = (
+            (dataframe['macd'] > dataframe['macdsignal']) &
+            (dataframe['macd'].shift(1) <= dataframe['macdsignal'].shift(1))
+        )
+        
+        # Price touches lower Bollinger Band
+        bb_short_exit = (dataframe['close'] <= dataframe['bb_lowerband'])
+        
+        conditions_short_exit.append(fib_exit_short_condition)
+        conditions_short_exit.append(rsi_short_exit | bb_short_exit)
+        
+        if conditions_short_exit:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, conditions_short_exit),
+                'exit_short'] = 1
+        
+        return dataframe
+    
+    def custom_stake_amount(self, pair: str, current_time: datetime, current_rate: float,
+                           proposed_stake: float, min_stake: Optional[float], max_stake: float,
+                           leverage: float, entry_tag: Optional[str], side: str,
+                           **kwargs) -> float:
+        """
+        Custom stake amount calculation based on distance to Fibonacci levels
+        """
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if dataframe is not None and not dataframe.empty:
+            current_candle = dataframe.iloc[-1].squeeze()
+            
+            # Check distance to Fibonacci level
+            if 'dist_to_fib_618' in current_candle:
+                distance = current_candle['dist_to_fib_618']
+                
+                # Adjust stake based on distance (smaller distance = larger stake)
+                if distance < 0.5:
+                    # Very close to Fibonacci level - full stake
+                    return proposed_stake
+                elif distance < 1.0:
+                    # Moderately close - half stake
+                    return proposed_stake * 0.5
+                else:
+                    # Far from level - quarter stake
+                    return proposed_stake * 0.25
+        
+        return proposed_stake
+    
+    def custom_exit(self, pair: str, trade: Trade, current_time: datetime, current_rate: float,
+                   current_profit: float, **kwargs) -> Optional[Union[str, bool]]:
+        """
+        Custom exit logic based on Fibonacci levels
+        """
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if dataframe is not None and not dataframe.empty:
+            current_candle = dataframe.iloc[-1].squeeze()
+            
+            # For long trades
+            if trade.is_short == False:
+                # Check if we've hit the next Fibonacci level for partial profits
+                if 'fib_500' in current_candle and current_rate >= current_candle['fib_500']:
+                    if current_profit > 0.02:  # At least 2% profit
+                        return 'fib_50_percent'
+                
+                if 'fib_618' in current_candle and current_rate >= current_candle['fib_618']:
+                    if current_profit > 0.03:  # At least 3% profit
+                        return 'fib_618_target'
+            
+            # For short trades
+            else:
+                if 'fib_500' in current_candle and current_rate <= current_candle['fib_500']:
+                    if current_profit > 0.02:
+                        return 'fib_50_percent_short'
+                
+                if 'fib_382' in current_candle and current_rate <= current_candle['fib_382']:
+                    if current_profit > 0.03:
+                        return 'fib_382_target_short'
+        
+        return None
+
+
+
+
+-----------------------------------------
+
+
+
+
+# pragma pylint: disable=missing-docstring, invalid-name, pointless-string-statement
+# flake8: noqa: F401
+# isort: skip_file
 # --- Do not remove these libs ---
 import numpy as np  # noqa
 import pandas as pd  # noqa
