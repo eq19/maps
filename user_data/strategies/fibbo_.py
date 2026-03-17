@@ -1,26 +1,3 @@
-# pragma pylint: disable=missing-docstring, invalid-name, pointless-string-statement
-# flake8: noqa: F401
-# isort: skip_file
-# --- Do not remove these imports ---
-import numpy as np
-import pandas as pd
-from pandas import DataFrame
-from datetime import datetime
-from typing import Optional, Union
-
-from freqtrade.strategy import (IStrategy, IntParameter, DecimalParameter, 
-                                BooleanParameter, CategoricalParameter, 
-                                merge_informative_pair, stoploss_from_open,
-                                IStrategy, Trade, Order, PairLocks)
-
-# --------------------------------
-# Add your lib to import here
-import talib.abstract as ta
-from functools import reduce
-import warnings
-warnings.simplefilter("ignore", RuntimeWarning)
-
-
 class FibonacciRetracementStrategy(IStrategy):
     """
     Strategy using Fibonacci retracement levels for entries and exits
@@ -355,6 +332,8 @@ class FibonacciRetracementStrategy(IStrategy):
 
 
 -----------------------------------------
+
+
 
 
 
