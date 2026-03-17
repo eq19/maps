@@ -1,55 +1,4 @@
 class FibonacciRetracementStrategy(IStrategy):
-    """
-    Strategy using Fibonacci retracement levels for entries and exits
-    """
-    
-    # Strategy interface version
-    INTERFACE_VERSION = 3
-    
-    # Optimal timeframe for the strategy
-    timeframe = '5m'
-    
-    # Can this strategy go short?
-    can_short: bool = True
-    
-    # Minimal ROI designed for the strategy
-    minimal_roi = {
-        "60": 0.01,
-        "30": 0.02,
-        "0": 0.04
-    }
-    
-    # Optimal stoploss
-    stoploss = -0.10
-    
-    # Trailing stop
-    trailing_stop = True
-    trailing_stop_positive = 0.01
-    trailing_stop_positive_offset = 0.02
-    trailing_only_offset_is_reached = True
-    
-    # Run "populate_indicators()" only for new candle
-    process_only_new_candles = True
-    
-    # These values can be overridden in the "ask_strategy" section in the config
-    use_exit_signal = True
-    exit_profit_only = False
-    ignore_roi_if_entry_signal = False
-    
-    # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 100
-    
-    # Optional order type mapping
-    order_types = {
-        'entry': 'limit',
-        'exit': 'limit',
-        'stoploss': 'market',
-        'stoploss_on_exchange': False
-    }
-    
-    # Optional parameter for position adjustment
-    position_adjustment_enable = False
-    
     # Hyperparameters
     fib_entry_level = DecimalParameter(0.236, 0.786, default=0.618, decimals=3, space="buy")
     fib_exit_level = DecimalParameter(0.236, 0.786, default=0.786, decimals=3, space="sell")
@@ -540,7 +489,7 @@ class Fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
     position_adjustment_enable = False
     #max_entry_position_adjustment = 2
-    model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifierMultiTarget')
+    model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifier')
     
 
     # Plot config
