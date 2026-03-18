@@ -200,7 +200,7 @@ class Fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
     position_adjustment_enable = False
     #max_entry_position_adjustment = 2
-    model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifierMultiTarget')
+    model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifier')
     
 
     # Plot config
@@ -806,21 +806,21 @@ class Fibbo(IStrategy):
             ((dataframe['close'].shift(1) < dataframe['fib_786']) & (dataframe['close'] > dataframe['fib_786']))
         )
         
-        # Always include RSI
-        entry_conditions.append(RSI)
+        # Always include FIBBO
+        entry_conditions.append(FIBBO)
         
         if "BB" in self.buy_additional_indicator.value:
             entry_conditions.append(BB)
         if "ATR" in self.buy_additional_indicator.value:
             entry_conditions.append(ATR)
+        if "RSI" in self.buy_additional_indicator.value:
+            entry_conditions.append(RSI)
         if "VWAP" in self.buy_additional_indicator.value:
             entry_conditions.append(VWAP)
         if "MACD" in self.buy_additional_indicator.value:
             entry_conditions.append(MACD)
         if "DEMA" in self.buy_additional_indicator.value:
             entry_conditions.append(DEMA)
-        if "FIBBO" in self.buy_additional_indicator.value:
-            entry_conditions.append(FIBBO)
         if "STOCHRSI" in self.buy_additional_indicator.value:
             entry_conditions.append(STOCHRSI)
         
@@ -873,17 +873,17 @@ class Fibbo(IStrategy):
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
         
-        # Always include RSI
-        exit_conditions.append(RSI)
+        # Always include FIBBO
+        exit_conditions.append(FIBBO)
         
         if "BB" in self.sell_additional_indicator.value:
             exit_conditions.append(BB)
         if "ATR" in self.sell_additional_indicator.value:
             exit_conditions.append(ATR)
+        if "RSI" in self.sell_additional_indicator.value:
+            exit_conditions.append(RSI)
         if "MACD" in self.sell_additional_indicator.value:
             exit_conditions.append(MACD)
-        if "FIBBO" in self.sell_additional_indicator.value:
-            exit_conditions.append(FIBBO)
         if "STOCHRSI" in self.sell_additional_indicator.value:
             exit_conditions.append(STOCHRSI)
 
