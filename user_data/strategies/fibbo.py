@@ -736,7 +736,7 @@ class Fibbo(IStrategy):
         for period in span["buy"]["buy_fast_dema"]["choices"]:
             dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=int(period))
 
-        # Swing high/low for Fibonacci levels
+        # SWING high/low for Fibonacci levels
         dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
         dataframe['swing_low'] = dataframe['low'].rolling(self.buy_swing_period.value).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
