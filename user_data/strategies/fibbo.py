@@ -741,15 +741,17 @@ class Fibbo(IStrategy):
         dataframe['swing_low'] = dataframe['low'].rolling(self.buy_swing_period.value).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
 
-        dataframe['fib_high_0236'] = dataframe['swing_high'] - swing_range * 0.236
-        dataframe['fib_high_0382'] = dataframe['swing_high'] - swing_range * 0.382
-        dataframe['fib_high_0618'] = dataframe['swing_high'] - swing_range * 0.618
-        dataframe['fib_high_0786'] = dataframe['swing_high'] - swing_range * 0.786
+        # LONG (retracement in uptrend)
+        dataframe['fib_long_0236'] = dataframe['swing_high'] - swing_range * 0.236
+        dataframe['fib_long_0382'] = dataframe['swing_high'] - swing_range * 0.382
+        dataframe['fib_long_0618'] = dataframe['swing_high'] - swing_range * 0.618
+        dataframe['fib_long_0786'] = dataframe['swing_high'] - swing_range * 0.786
 
-        dataframe['fib_low_0236'] = dataframe['swing_low'] + swing_range * 0.236
-        dataframe['fib_low_0382'] = dataframe['swing_low'] + swing_range * 0.382
-        dataframe['fib_low_0618'] = dataframe['swing_low'] + swing_range * 0.618
-        dataframe['fib_low_0786'] = dataframe['swing_low'] + swing_range * 0.786
+        # SHORT (retracement in downtrend)
+        dataframe['fib_short_0236'] = dataframe['swing_low'] + swing_range * 0.236
+        dataframe['fib_short_0382'] = dataframe['swing_low'] + swing_range * 0.382
+        dataframe['fib_short_0618'] = dataframe['swing_low'] + swing_range * 0.618
+        dataframe['fib_short_0786'] = dataframe['swing_low'] + swing_range * 0.786
 
         # ---- Fetch and merge informative timeframe ----
         logger.debug("Informative pairs data: %s", self.informative_pairs)
