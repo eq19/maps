@@ -155,7 +155,7 @@ hyperopt() {
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
     # dispatch only for main workflow
-    [[ "$REDUCE_EPOCH" == "true" ]] && epochs=$((epochs / 2))          
+    [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
     if [[ "$GITHUB_JOB" == "lexering" ]]; then
       curl -s -X POST \
         -H "Authorization: token $GH_TOKEN" \
