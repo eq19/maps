@@ -810,10 +810,9 @@ class Fibbo(IStrategy):
             dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
         FIBBO = (
-            ((dataframe['close'].shift(1) < dataframe['fib_618']) & (dataframe['close'] > dataframe['fib_618'])) |
-            ((dataframe['close'].shift(1) < dataframe['fib_786']) & (dataframe['close'] > dataframe['fib_786']))
-        )
-        
+            abs(dataframe['close'] - fib_long) / dataframe['close'] < dataframe['atr_pct']
+        )        
+
         # Always include FIBBO
         entry_conditions.append(FIBBO)
         
@@ -879,8 +878,7 @@ class Fibbo(IStrategy):
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
         FIBBO = (
-            abs(dataframe['close'] - fib_tp1_long) /
-            dataframe['close'] < dataframe['atr_pct']
+            abs(dataframe['close'] - fib_tp1_long) / dataframe['close'] < dataframe['atr_pct']
         )
        
         # Always include FIBBO
