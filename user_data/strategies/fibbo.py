@@ -708,6 +708,7 @@ class Fibbo(IStrategy):
 
         # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
+        dataframe['atr_pct'] = dataframe['atr'] / dataframe['close']
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
