@@ -222,6 +222,9 @@ else
   echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   freqtrade hyperopt --help
-  hyperopt $ID
-
+  if [[ "$REDUCE_EPOCH" == "false" ]]; then
+    hyperopt $ID
+  else
+    if [[ "$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
+  fi
 fi
