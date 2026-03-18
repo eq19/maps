@@ -239,7 +239,7 @@
       "days": 6,
       "epochs": 13,
       "parallel_jobs": 4,
-      "spaces": ["sell"],
+      "spaces": ["trailing stoploss protection"],
       "hyperopt_loss": "ShortTradeDurHyperOptLoss"
     },
     {
