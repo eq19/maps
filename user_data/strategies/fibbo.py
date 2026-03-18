@@ -810,7 +810,7 @@ class Fibbo(IStrategy):
             dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
         FIBBO = (
-            abs(dataframe['close'] - dataframe[f'fib_long_{str(self.fib_buy_level.value).replace(".", "")}']) / dataframe['close'] < dataframe['atr_pct']
+            abs(dataframe['close'] - dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}']) / dataframe['close'] < dataframe['atr_pct']
         )        
 
         # Always include FIBBO
@@ -878,7 +878,7 @@ class Fibbo(IStrategy):
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
         FIBBO = (
-            abs(dataframe['close'] - dataframe[f'fib_long_{str(self.fib_sell_level.value).replace(".", "")}']) / dataframe['close'] < dataframe['atr_pct']
+            abs(dataframe['close'] - dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}']) / dataframe['close'] < dataframe['atr_pct']
         )
        
         # Always include FIBBO
@@ -914,11 +914,11 @@ class Fibbo(IStrategy):
             else:
                 exit_conditions.append(freqai_sell_signal)
         
-        # Combine exit conditions with OR logic
-        # Exit if ANY condition is met
+        # Combine exit conditions with AND logic
+        # Exit if ALL condition are met
         if exit_conditions:
             dataframe.loc[
-                reduce(lambda x, y: x | y, exit_conditions),
+                reduce(lambda x, y: x & y, exit_conditions),
                 'exit_long'
             ] = 1
 
