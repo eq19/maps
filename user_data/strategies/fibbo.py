@@ -38,8 +38,8 @@ from utils.indodax_patch import *
 
 
 # Define indicator sets (could also come from the JSON if needed)
-buy_indicators = ["BB", "ATR", "TTM", "VWAP", "MACD", "DEMA", "FIBBO", "STOCHRSI"]
-sell_indicators = ["BB", "ATR", "TTM", "MACD", "FIBBO", "STOCHRSI"]
+buy_indicators = ["BB", "ATR", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
+sell_indicators = ["BB", "ATR", "RSI", "TTM", "MACD", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
 # ✅ 1. Recursively find the first occurrence of the 'span' key
