@@ -708,7 +708,7 @@ class Fibbo(IStrategy):
 
         # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_pct'] = dataframe['atr'] / dataframe['close']
+        dataframe['atr_pct'] = 1.5 * dataframe['atr'] / dataframe['close']
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
@@ -873,14 +873,16 @@ class Fibbo(IStrategy):
         RSI = (dataframe['rsi'] >= self.sell_rsi.value)
         ATR = (dataframe['atr'] < dataframe['atr'].shift(1))
         MACD = (dataframe['macd'] < dataframe['macdsignal'])
-        FIBBO = (dataframe['close'] >= dataframe['fib_236'])
-        # Exit at middle band (safer, more consistent) with a small buffer for noise
         BB = (dataframe['close'] > dataframe['bb_middleband'] * 1.01)
         STOCHRSI = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
-        
+        FIBBO = (
+            abs(dataframe['close'] - fib_tp1_long) /
+            dataframe['close'] < dataframe['atr_pct']
+        )
+       
         # Always include FIBBO
         exit_conditions.append(FIBBO)
         
