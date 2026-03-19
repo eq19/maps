@@ -884,9 +884,9 @@ class Fibbo(IStrategy):
             momentum_positive = dataframe['momentum_hist'] > 0
             entry_long_conditions.append(squeeze_on & momentum_positive)
         if "TTM" in self.buy_short_indicator.value:
-            squeeze_on = dataframe['squeeze_on']
-            momentum_positive = dataframe['momentum_hist'] > 0
-            entry_short_conditions.append(squeeze_on & momentum_positive)
+            squeeze_off = dataframe['squeeze_off']
+            momentum_negative = dataframe['momentum_hist'] < 0
+            entry_short_conditions.append(squeeze_off & momentum_negative)
 
         # === FreqAI Entry Signals ===
         if 'do_predict' in dataframe.columns:
@@ -993,9 +993,9 @@ class Fibbo(IStrategy):
             momentum_negative = dataframe['momentum_hist'] < 0
             exit_long_conditions.append(squeeze_off & momentum_negative)
         if "TTM" in self.sell_short_indicator.value:
-            squeeze_off = dataframe['squeeze_off']
-            momentum_negative = dataframe['momentum_hist'] < 0
-            exit_short_conditions.append(squeeze_off & momentum_negative)
+            squeeze_on = dataframe['squeeze_on']
+            momentum_positive = dataframe['momentum_hist'] > 0
+            exit_short_conditions.append(squeeze_on & momentum_positive)
 
         # === FreqAI Exit Signals ===
         if 'do_predict' in dataframe.columns:
