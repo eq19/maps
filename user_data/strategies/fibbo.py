@@ -40,7 +40,9 @@ from utils.indodax_patch import *
 # Define indicator sets (could also come from the JSON if needed)
 buy_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
 sell_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
+
 logger = logging.getLogger(__name__)
+
 
 # ✅ 1. Recursively find the first occurrence of the 'span' key
 def find_span(obj):
