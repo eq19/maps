@@ -803,19 +803,39 @@ class Fibbo(IStrategy):
         entry_short_conditions = []
         
         # === Your existing Fibbo conditions ===
-        RSI = (dataframe['rsi'] < self.buy_rsi.value)
-        VWAP = (dataframe['close'] > dataframe['vwap'])
-        ATR = (dataframe['atr'] > dataframe['atr'].shift(1))
-        BB = (dataframe['close'] <= dataframe['bb_lowerband'])
-        MACD = (dataframe['macd'] > dataframe['macdsignal'])
-        STOCHRSI = (
+        RSI_LONG_ENTRY = (dataframe['rsi'] < self.buy_rsi.value)
+        RSI_SHORT_ENTRY = (dataframe['rsi'] > self.buy_rsi.value)
+
+        VWAP_LONG_ENTRY = (dataframe['close'] > dataframe['vwap'])
+        VWAP_SHORT_ENTRY = (dataframe['close'] < dataframe['vwap'])
+
+        ATR_LONG_ENTRY = (dataframe['atr'] > dataframe['atr'].shift(1))
+        ATR_SHORT_ENTRY = (dataframe['atr'] < dataframe['atr'].shift(1))
+
+        BB_LONG_ENTRY = (dataframe['close'] <= dataframe['bb_lowerband'])
+        BB_SHORT_ENTRY = (dataframe['close'] >= dataframe['bb_lowerband'])
+
+        MACD_LONG_ENTRY = (dataframe['macd'] > dataframe['macdsignal'])
+        MACD_SHORT_ENTRY = (dataframe['macd'] < dataframe['macdsignal'])
+
+        STOCHRSI_LONG_ENTRY = (
             (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         )
-        DEMA = (
+        STOCHRSI_LONG_ENTRY = (
+            (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
+            (dataframe['fastk_rsi'] > self.buy_stoch_osc.value)
+        )
+
+        DEMA_LONG_ENTRY = (
             dataframe[f"dema{self.buy_fast_dema.value}"] >
             dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
+        DEMA_LONG_ENTRY = (
+            dataframe[f"dema{self.buy_fast_dema.value}"] <
+            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
+        )
+
         FIBBO_LONG_ENTRY = (
             (dataframe['close'] >= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
             (dataframe['close'] <= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
@@ -830,33 +850,33 @@ class Fibbo(IStrategy):
         entry_short_conditions.append(FIBBO_SHORT_ENTRY)
         
         if "BB" in self.buy_long_indicator.value:
-            entry_long_conditions.append(BB)
+            entry_long_conditions.append(BB_LONG_ENTRY)
         if "BB" in self.buy_short_indicator.value:
-            entry_short_conditions.append(BB)
+            entry_short_conditions.append(BB_SHORT_ENTRY)
         if "ATR" in self.buy_long_indicator.value:
-            entry_long_conditions.append(ATR)
+            entry_long_conditions.append(ATR_LONG_ENTRY)
         if "ATR" in self.buy_short_indicator.value:
-            entry_short_conditions.append(ATR)
+            entry_short_conditions.append(ATR_SHORT_ENTRY)
         if "RSI" in self.buy_long_indicator.value:
-            entry_long_conditions.append(RSI)
+            entry_long_conditions.append(RSI_LONG_ENTRY)
         if "RSI" in self.buy_short_indicator.value:
-            entry_short_conditions.append(RSI)
+            entry_short_conditions.append(RSI_SHORT_ENTRY)
         if "VWAP" in self.buy_long_indicator.value:
-            entry_long_conditions.append(VWAP)
+            entry_long_conditions.append(VWAP_LONG_ENTRY)
         if "VWAP" in self.buy_short_indicator.value:
-            entry_short_conditions.append(VWAP)
+            entry_short_conditions.append(VWAP_SHORT_ENTRY)
         if "MACD" in self.buy_long_indicator.value:
-            entry_long_conditions.append(MACD)
+            entry_long_conditions.append(MACD_LONG_ENTRY)
         if "MACD" in self.buy_short_indicator.value:
-            entry_short_conditions.append(MACD)
+            entry_short_conditions.append(MACD_SHORT_ENTRY)
         if "DEMA" in self.buy_long_indicator.value:
-            entry_long_conditions.append(DEMA)
+            entry_long_conditions.append(DEMA_LONG_ENTRY)
         if "DEMA" in self.buy_short_indicator.value:
-            entry_short_conditions.append(DEMA)
+            entry_short_conditions.append(DEMA_SHORT_ENTRY)
         if "STOCHRSI" in self.buy_long_indicator.value:
-            entry_long_conditions.append(STOCHRSI)
+            entry_long_conditions.append(STOCHRSI_LONG_ENTRY)
         if "STOCHRSI" in self.buy_short_indicator.value:
-            entry_short_conditions.append(STOCHRSI)
+            entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
 
         # TTM Squeeze
         if "TTM" in self.buy_long_indicator.value:
