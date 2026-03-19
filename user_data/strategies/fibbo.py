@@ -879,6 +879,7 @@ class Fibbo(IStrategy):
                 long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
                 short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
+                # Enter LONG when bullish, Enter SHORT when bearish
                 entry_long_conditions.append(freqai_bullish & long_conf)
                 entry_short_conditions.append(freqai_bearish & short_conf)
 
@@ -974,10 +975,8 @@ class Fibbo(IStrategy):
                 long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
                 short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
-                # Exit LONG when bearish
+                # Exit LONG when bearish, Exit SHORT when bullish
                 exit_long_conditions.append(freqai_bearish & short_conf)
-
-                # Exit SHORT when bullish
                 exit_short_conditions.append(freqai_bullish & long_conf)
 
             else:
