@@ -821,6 +821,7 @@ class Fibbo(IStrategy):
 
         # Always include FIBBO
         entry_long_conditions.append(FIBBO_LONG_ENTRY)
+        entry_short_conditions.append(FIBBO_SHORT_ENTRY)
         
         if "BB" in self.buy_additional_indicator.value:
             entry_long_conditions.append(BB)
@@ -895,6 +896,7 @@ class Fibbo(IStrategy):
        
         # Always include FIBBO
         exit_long_conditions.append(FIBBO_LONG_EXIT)
+        exit_short_conditions.append(FIBBO_SHORT_EXIT)
         
         if "BB" in self.sell_additional_indicator.value:
             exit_long_conditions.append(BB)
