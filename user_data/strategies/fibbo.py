@@ -873,11 +873,11 @@ class Fibbo(IStrategy):
         if "STOCHRSI" in self.buy_short_indicator.value:
             entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
 
-        # TTM Squeeze entry
+        # === TTM Squeeze ENTRY (breakout model) ===
         if "TTM" in self.buy_long_indicator.value:
-            squeeze_on = dataframe['squeeze_on']
+            squeeze_off = dataframe['squeeze_off']
             momentum_positive = dataframe['momentum_hist'] > 0
-            entry_long_conditions.append(squeeze_on & momentum_positive)
+            entry_long_conditions.append(squeeze_off & momentum_positive)
         if "TTM" in self.buy_short_indicator.value:
             squeeze_off = dataframe['squeeze_off']
             momentum_negative = dataframe['momentum_hist'] < 0
@@ -995,11 +995,11 @@ class Fibbo(IStrategy):
         if "STOCHRSI" in self.sell_short_indicator.value:
             exit_short_conditions.append(STOCHRSI_SHORT_EXIT)
 
-        # TTM Squeeze exit
+        # === TTM Squeeze EXIT ===
         if "TTM" in self.sell_long_indicator.value:
-            squeeze_off = dataframe['squeeze_off']
+            squeeze_on = dataframe['squeeze_on']
             momentum_negative = dataframe['momentum_hist'] < 0
-            exit_long_conditions.append(squeeze_off & momentum_negative)
+            exit_long_conditions.append(squeeze_on & momentum_negative)
         if "TTM" in self.sell_short_indicator.value:
             squeeze_on = dataframe['squeeze_on']
             momentum_positive = dataframe['momentum_hist'] > 0
