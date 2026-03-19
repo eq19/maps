@@ -717,6 +717,7 @@ class Fibbo(IStrategy):
         dataframe['atr_pct'] = dataframe['atr'] / dataframe['close']
 
         # STOCHRSI (Missaligned Issue)
+        #stoch_rsi = ta.STOCHRSI(dataframe)
         rsi_min = dataframe['rsi'].rolling(self.period.value).min()
         rsi_max = dataframe['rsi'].rolling(self.period.value).max()
         stoch_rsi = (dataframe['rsi'] - rsi_min) / ((rsi_max - rsi_min).replace(0, 1e-10))
