@@ -793,7 +793,8 @@ class Fibbo(IStrategy):
         """
         logger.debug(f"Generating entry signals for {metadata['pair']}")
         
-        entry_conditions = []
+        entry_long_conditions = []
+        entry_short_conditions = []
         
         # === Your existing Fibbo conditions ===
         RSI = (dataframe['rsi'] < self.buy_rsi.value)
@@ -819,28 +820,28 @@ class Fibbo(IStrategy):
         )
 
         # Always include FIBBO
-        entry_conditions.append(FIBBO_LONG_ENTRY)
+        entry_long_conditions.append(FIBBO_LONG_ENTRY)
         
         if "BB" in self.buy_additional_indicator.value:
-            entry_conditions.append(BB)
+            entry_long_conditions.append(BB)
         if "ATR" in self.buy_additional_indicator.value:
-            entry_conditions.append(ATR)
+            entry_long_conditions.append(ATR)
         if "RSI" in self.buy_additional_indicator.value:
-            entry_conditions.append(RSI)
+            entry_long_conditions.append(RSI)
         if "VWAP" in self.buy_additional_indicator.value:
-            entry_conditions.append(VWAP)
+            entry_long_conditions.append(VWAP)
         if "MACD" in self.buy_additional_indicator.value:
-            entry_conditions.append(MACD)
+            entry_long_conditions.append(MACD)
         if "DEMA" in self.buy_additional_indicator.value:
-            entry_conditions.append(DEMA)
+            entry_long_conditions.append(DEMA)
         if "STOCHRSI" in self.buy_additional_indicator.value:
-            entry_conditions.append(STOCHRSI)
+            entry_long_conditions.append(STOCHRSI)
         
         # TTM Squeeze
         if "TTM" in self.buy_additional_indicator.value:
             squeeze_on = dataframe['squeeze_on']
             momentum_positive = dataframe['momentum_hist'] > 0
-            entry_conditions.append(squeeze_on & momentum_positive)
+            entry_long_conditions.append(squeeze_on & momentum_positive)
         
         # === FreqAI Entry Signals ===
         if 'do_predict' in dataframe.columns:
@@ -851,15 +852,15 @@ class Fibbo(IStrategy):
             # Add confidence filter if available
             if 'di_percentile' in dataframe.columns:
                 freqai_buy_confident = (dataframe['di_percentile'] < float(self.buy_freqai.value))
-                entry_conditions.append(freqai_buy_signal & freqai_buy_confident)
+                entry_long_conditions.append(freqai_buy_signal & freqai_buy_confident)
             else:
-                entry_conditions.append(freqai_buy_signal)
+                entry_long_conditions.append(freqai_buy_signal)
         
         # Combine entry conditions with AND logic
         # Enter if ALL conditions are met
-        if entry_conditions:
+        if entry_long_conditions:
             dataframe.loc[
-                reduce(lambda x, y: x & y, entry_conditions),
+                reduce(lambda x, y: x & y, entry_long_conditions),
                 'enter_long'
             ] = 1
 
@@ -871,7 +872,8 @@ class Fibbo(IStrategy):
         """
         logger.debug(f"Generating exit signals for {metadata['pair']}")
         
-        exit_conditions = []
+        exit_long_conditions = []
+        exit_short_conditions = []
         
         # === Your existing Fibbo exit conditions ===
         RSI = (dataframe['rsi'] >= self.sell_rsi.value)
@@ -892,24 +894,24 @@ class Fibbo(IStrategy):
         )
        
         # Always include FIBBO
-        exit_conditions.append(FIBBO_LONG_EXIT)
+        exit_long_conditions.append(FIBBO_LONG_EXIT)
         
         if "BB" in self.sell_additional_indicator.value:
-            exit_conditions.append(BB)
+            exit_long_conditions.append(BB)
         if "ATR" in self.sell_additional_indicator.value:
-            exit_conditions.append(ATR)
+            exit_long_conditions.append(ATR)
         if "RSI" in self.sell_additional_indicator.value:
-            exit_conditions.append(RSI)
+            exit_long_conditions.append(RSI)
         if "MACD" in self.sell_additional_indicator.value:
-            exit_conditions.append(MACD)
+            exit_long_conditions.append(MACD)
         if "STOCHRSI" in self.sell_additional_indicator.value:
-            exit_conditions.append(STOCHRSI)
+            exit_long_conditions.append(STOCHRSI)
 
         # TTM Squeeze exit
         if "TTM" in self.sell_additional_indicator.value:
             squeeze_off = dataframe['squeeze_off']
             momentum_negative = dataframe['momentum_hist'] < 0
-            exit_conditions.append(squeeze_off & momentum_negative)
+            exit_long_conditions.append(squeeze_off & momentum_negative)
         
         # === FreqAI Exit Signals ===
         if 'do_predict' in dataframe.columns:
@@ -920,15 +922,15 @@ class Fibbo(IStrategy):
             # Add confidence filter if available
             if 'di_percentile' in dataframe.columns:
                 freqai_sell_confident = (dataframe['di_percentile'] < float(self.sell_freqai.value))
-                exit_conditions.append(freqai_sell_signal & freqai_sell_confident)
+                exit_long_conditions.append(freqai_sell_signal & freqai_sell_confident)
             else:
-                exit_conditions.append(freqai_sell_signal)
+                exit_long_conditions.append(freqai_sell_signal)
         
         # Combine exit conditions with AND logic
         # Exit if ALL condition are met
-        if exit_conditions:
+        if exit_long_conditions:
             dataframe.loc[
-                reduce(lambda x, y: x & y, exit_conditions),
+                reduce(lambda x, y: x & y, exit_long_conditions),
                 'exit_long'
             ] = 1
 
