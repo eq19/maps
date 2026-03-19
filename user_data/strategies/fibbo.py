@@ -708,7 +708,7 @@ class Fibbo(IStrategy):
 
         # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
-        dataframe['atr_pct'] = 1.5 * dataframe['atr'] / dataframe['close']
+        dataframe['atr_pct'] = dataframe['atr'] / dataframe['close']
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
@@ -817,14 +817,6 @@ class Fibbo(IStrategy):
             (dataframe['close'] >= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
             (dataframe['close'] <= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
         )
-        FIBBO_LONG_EXIT = (
-            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
-            (dataframe['close'].shift(1) < (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])))
-        )
-        FIBBO_SHORT_EXIT = (
-            (dataframe['close'] <= (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct']))) &
-            (dataframe['close'].shift(1) > (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
-        )
 
         # Always include FIBBO
         entry_conditions.append(FIBBO_LONG_ENTRY)
@@ -890,12 +882,17 @@ class Fibbo(IStrategy):
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
-        FIBBO_LONG = (
-            abs(dataframe['close'] - dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}']) / dataframe['close'] < dataframe['atr_pct']
+        FIBBO_LONG_EXIT = (
+            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
+            (dataframe['close'].shift(1) < (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])))
+        )
+        FIBBO_SHORT_EXIT = (
+            (dataframe['close'] <= (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct']))) &
+            (dataframe['close'].shift(1) > (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
         )
        
         # Always include FIBBO
-        exit_conditions.append(FIBBO_LONG)
+        exit_conditions.append(FIBBO_LONG_EXIT)
         
         if "BB" in self.sell_additional_indicator.value:
             exit_conditions.append(BB)
