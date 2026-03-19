@@ -72,9 +72,9 @@ class ParamBuilder:
                 elif isinstance(value, str):
                     if key == "buy_fib_level" or key == "sell_fib_level":
                         choices = ["0.236", "0.382", "0.618", "0.786"]
-                    elif key == "buy_fast_dema":
+                    elif key == "buy_fast_dema" or key == "sell_fast_dema":
                         choices = ["5", "8", "13", "21"]
-                    elif key == "buy_slow_ema":
+                    elif key == "buy_slow_ema" or key == "sell_slow_ema":
                         choices = ["34", "55", "89", "144"]
                     elif "indicator" in key:
                         choices = ["NONE"]
