@@ -847,6 +847,9 @@ class Fibbo(IStrategy):
         # === FreqAI Entry Signals ===
         if 'do_predict' in dataframe.columns:
 
+            # LONG/SHORT entry side
+            # enter_long  ← do_predict == 1
+            # enter_short ← do_predict == -1
             freqai_long_signal = (dataframe['do_predict'] == 1)
             freqai_short_signal = (dataframe['do_predict'] == -1)
 
@@ -923,8 +926,11 @@ class Fibbo(IStrategy):
         # === FreqAI Exit Signals ===
         if 'do_predict' in dataframe.columns:
 
-            freqai_long_signal = (dataframe['do_predict'] == 1)
-            freqai_short_signal = (dataframe['do_predict'] == -1)
+            # LONG/SHORT exit side
+            # exit_long   ← do_predict == -1
+            # exit_short  ← do_predict == 1
+            freqai_long_signal = (dataframe['do_predict'] == -1)
+            freqai_short_signal = (dataframe['do_predict'] == 1)
 
             if 'di_percentile' in dataframe.columns:
                 long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
