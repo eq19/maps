@@ -803,37 +803,37 @@ class Fibbo(IStrategy):
         entry_short_conditions = []
         
         # === Your existing Fibbo conditions ===
-        RSI_LONG_ENTRY = (dataframe['rsi'] < self.buy_rsi.value)
-        RSI_SHORT_ENTRY = (dataframe['rsi'] > self.buy_rsi.value)
+        RSI_LONG_ENTRY = dataframe['rsi'] < self.buy_rsi.value
+        RSI_SHORT_ENTRY = dataframe['rsi'] > self.buy_rsi.value
 
-        VWAP_LONG_ENTRY = (dataframe['close'] > dataframe['vwap'])
-        VWAP_SHORT_ENTRY = (dataframe['close'] < dataframe['vwap'])
+        VWAP_LONG_ENTRY = dataframe['close'] > dataframe['vwap']
+        VWAP_SHORT_ENTRY = dataframe['close'] < dataframe['vwap']
 
-        ATR_LONG_ENTRY = (dataframe['atr'] > dataframe['atr'].shift(1))
-        ATR_SHORT_ENTRY = (dataframe['atr'] < dataframe['atr'].shift(1))
+        ATR_LONG_ENTRY = dataframe['atr_pct'] > self.buy_atr_threshold.value
+        ATR_SHORT_ENTRY = dataframe['atr_pct'] < self.buy_atr_threshold.value
 
-        BB_LONG_ENTRY = (dataframe['close'] <= dataframe['bb_lowerband'])
-        BB_SHORT_ENTRY = (dataframe['close'] >= dataframe['bb_lowerband'])
+        BB_LONG_ENTRY = dataframe['close'] <= dataframe['bb_lowerband']
+        BB_SHORT_ENTRY = dataframe['close'] >= dataframe['bb_upperband']
 
-        MACD_LONG_ENTRY = (dataframe['macd'] > dataframe['macdsignal'])
-        MACD_SHORT_ENTRY = (dataframe['macd'] < dataframe['macdsignal'])
+        MACD_LONG_ENTRY = dataframe['macd'] > dataframe['macdsignal']
+        MACD_SHORT_ENTRY = dataframe['macd'] < dataframe['macdsignal']
 
         STOCHRSI_LONG_ENTRY = (
             (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
         )
-        STOCHRSI_LONG_ENTRY = (
+        STOCHRSI_SHORT_ENTRY = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.buy_stoch_osc.value)
         )
 
         DEMA_LONG_ENTRY = (
             dataframe[f"dema{self.buy_fast_dema.value}"] >
-            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
+            dataframe[f"ema{self.buy_slow_ema.value}"]
         )
-        DEMA_LONG_ENTRY = (
+        DEMA_SHORT_ENTRY = (
             dataframe[f"dema{self.buy_fast_dema.value}"] <
-            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
+            dataframe[f"ema{self.buy_slow_ema.value}"]
         )
 
         FIBBO_LONG_ENTRY = (
