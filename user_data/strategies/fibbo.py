@@ -855,12 +855,12 @@ class Fibbo(IStrategy):
                 long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
                 short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
-                enter_long_conditions.append(freqai_long_signal & long_conf)
-                enter_short_conditions.append(freqai_short_signal & short_conf)
+                entry_long_conditions.append(freqai_long_signal & long_conf)
+                entry_short_conditions.append(freqai_short_signal & short_conf)
 
             else:
-                enter_long_conditions.append(freqai_long_signal)
-                enter_short_conditions.append(freqai_short_signal)
+                entry_long_conditions.append(freqai_long_signal)
+                entry_short_conditions.append(freqai_short_signal)
            
         # Combine entry conditions with AND logic
         # Enter if ALL conditions are met
@@ -923,16 +923,23 @@ class Fibbo(IStrategy):
         # === FreqAI Exit Signals ===
         if 'do_predict' in dataframe.columns:
 
-            # FreqAI sell signal (standard is -1)
-            freqai_sell_signal = (dataframe['do_predict'] == -1)
-            
-            # Add confidence filter if available
+            freqai_long_signal = (dataframe['do_predict'] == 1)
+            freqai_short_signal = (dataframe['do_predict'] == -1)
+
             if 'di_percentile' in dataframe.columns:
-                freqai_sell_confident = (dataframe['di_percentile'] < float(self.sell_freqai.value))
-                exit_long_conditions.append(freqai_sell_signal & freqai_sell_confident)
+                long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
+                short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
+
+                # Exit LONG when bearish signal
+                exit_long_conditions.append(freqai_short_signal & short_conf)
+
+                # Exit SHORT when bullish signal
+                exit_short_conditions.append(freqai_long_signal & long_conf)
+
             else:
-                exit_long_conditions.append(freqai_sell_signal)
-        
+                exit_long_conditions.append(freqai_short_signal)
+                exit_short_conditions.append(freqai_long_signal)
+
         # Combine exit conditions with AND logic
         # Exit if ALL condition are met
         if exit_long_conditions:
