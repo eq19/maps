@@ -809,12 +809,17 @@ class Fibbo(IStrategy):
             dataframe[f"dema{self.buy_fast_dema.value}"] >
             dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
-        FIBBO = (
-            abs(dataframe['close'] - dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}']) / dataframe['close'] < dataframe['atr_pct']
-        )        
+        FIBBO_LONG_ENTRY = (
+            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])) &
+            (dataframe['close'] <= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
+        )
+        FIBBO_SHORT_ENTRY = (
+            (dataframe['close'] >= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])) &
+            (dataframe['close'] <= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
+        )
 
         # Always include FIBBO
-        entry_conditions.append(FIBBO)
+        entry_conditions.append(FIBBO_LONG_ENTRY)
         
         if "BB" in self.buy_additional_indicator.value:
             entry_conditions.append(BB)
@@ -877,12 +882,12 @@ class Fibbo(IStrategy):
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
-        FIBBO = (
+        FIBBO_LONG = (
             abs(dataframe['close'] - dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}']) / dataframe['close'] < dataframe['atr_pct']
         )
        
         # Always include FIBBO
-        exit_conditions.append(FIBBO)
+        exit_conditions.append(FIBBO_LONG)
         
         if "BB" in self.sell_additional_indicator.value:
             exit_conditions.append(BB)
