@@ -966,25 +966,23 @@ class Fibbo(IStrategy):
         # === FreqAI Exit Signals ===
         if 'do_predict' in dataframe.columns:
 
-            # LONG/SHORT exit side
-            # exit_long   ← do_predict == -1
-            # exit_short  ← do_predict == 1
-            freqai_long_signal = (dataframe['do_predict'] == -1)
-            freqai_short_signal = (dataframe['do_predict'] == 1)
+            freqai_bullish = (dataframe['do_predict'] == 1)
+            freqai_bearish = (dataframe['do_predict'] == -1)
 
             if 'di_percentile' in dataframe.columns:
+
                 long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
                 short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
-                # Exit LONG when bearish signal
-                exit_long_conditions.append(freqai_short_signal & short_conf)
+                # Exit LONG when bearish
+                exit_long_conditions.append(freqai_bearish & short_conf)
 
-                # Exit SHORT when bullish signal
-                exit_short_conditions.append(freqai_long_signal & long_conf)
+                # Exit SHORT when bullish
+                exit_short_conditions.append(freqai_bullish & long_conf)
 
             else:
-                exit_long_conditions.append(freqai_short_signal)
-                exit_short_conditions.append(freqai_long_signal)
+                exit_long_conditions.append(freqai_bearish)
+                exit_short_conditions.append(freqai_bullish)
 
         # Combine exit conditions with AND logic
         # Exit if ALL condition are met
