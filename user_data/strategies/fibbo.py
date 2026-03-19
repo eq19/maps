@@ -828,11 +828,11 @@ class Fibbo(IStrategy):
 
         DEMA_LONG_ENTRY = (
             dataframe[f"dema{self.buy_fast_dema.value}"] >
-            dataframe[f"ema{self.buy_slow_ema.value}"]
+            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
         DEMA_SHORT_ENTRY = (
             dataframe[f"dema{self.buy_fast_dema.value}"] <
-            dataframe[f"ema{self.buy_slow_ema.value}"]
+            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
 
         FIBBO_LONG_ENTRY = (
@@ -941,11 +941,11 @@ class Fibbo(IStrategy):
 
         DEMA_LONG_EXIT = (
             dataframe[f"dema{self.sell_fast_dema.value}"] <
-            dataframe[f"ema{self.sell_slow_ema.value}"]
+            dataframe[f"ema{self.sell_slow_ema.value}_{self.informative_timeframe}"]
         )
         DEMA_SHORT_EXIT = (
             dataframe[f"dema{self.sell_fast_dema.value}"] >
-            dataframe[f"ema{self.sell_slow_ema.value}"]
+            dataframe[f"ema{self.sell_slow_ema.value}_{self.informative_timeframe}"]
         )
 
         STOCHRSI_LONG_EXIT = (
