@@ -817,6 +817,14 @@ class Fibbo(IStrategy):
             (dataframe['close'] >= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])) &
             (dataframe['close'] <= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
         )
+        FIBBO_LONG_EXIT = (
+            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
+            (dataframe['close'].shift(1) < (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])))
+        )
+        FIBBO_SHORT_EXIT = (
+            (dataframe['close'] <= (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct']))) &
+            (dataframe['close'].shift(1) > (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
+        )
 
         # Always include FIBBO
         entry_conditions.append(FIBBO_LONG_ENTRY)
