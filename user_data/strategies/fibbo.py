@@ -810,11 +810,11 @@ class Fibbo(IStrategy):
             dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
         )
         FIBBO_LONG_ENTRY = (
-            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])) &
+            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
             (dataframe['close'] <= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
         )
         FIBBO_SHORT_ENTRY = (
-            (dataframe['close'] >= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])) &
+            (dataframe['close'] >= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
             (dataframe['close'] <= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
         )
         FIBBO_LONG_EXIT = (
