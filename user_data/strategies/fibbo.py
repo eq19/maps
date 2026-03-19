@@ -126,11 +126,17 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
     return profile_permutations
 
 # Insert computed categories into the JSON-loaded span
-span["buy"]["buy_additional_indicator"]["choices"] = sorted(
-    indicator_permutations(buy_indicators, max_indicators=2, include_none=True)
+span["buy"]["buy_long_indicator"]["choices"] = sorted(
+    indicator_permutations(buy_indicators, max_indicators=4, include_none=True)
 )
-span["sell"]["sell_additional_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=4, include_none=True)
+span["buy"]["buy_short_indicator"]["choices"] = sorted(
+    indicator_permutations(buy_indicators, max_indicators=4, include_none=True)
+)
+span["sell"]["sell_long_indicator"]["choices"] = sorted(
+    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
+)
+span["sell"]["sell_short_indicator"]["choices"] = sorted(
+    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
 )
 
 # Preload strategy attributes
@@ -823,27 +829,31 @@ class Fibbo(IStrategy):
         entry_long_conditions.append(FIBBO_LONG_ENTRY)
         entry_short_conditions.append(FIBBO_SHORT_ENTRY)
         
-        if "BB" in self.buy_additional_indicator.value:
+        if "BB" in self.buy_long_indicator.value:
             entry_long_conditions.append(BB)
-        if "ATR" in self.buy_additional_indicator.value:
+        if "ATR" in self.buy_long_indicator.value:
             entry_long_conditions.append(ATR)
-        if "RSI" in self.buy_additional_indicator.value:
+        if "RSI" in self.buy_long_indicator.value:
             entry_long_conditions.append(RSI)
-        if "VWAP" in self.buy_additional_indicator.value:
+        if "VWAP" in self.buy_long_indicator.value:
             entry_long_conditions.append(VWAP)
-        if "MACD" in self.buy_additional_indicator.value:
+        if "MACD" in self.buy_long_indicator.value:
             entry_long_conditions.append(MACD)
-        if "DEMA" in self.buy_additional_indicator.value:
+        if "DEMA" in self.buy_long_indicator.value:
             entry_long_conditions.append(DEMA)
-        if "STOCHRSI" in self.buy_additional_indicator.value:
+        if "STOCHRSI" in self.buy_long_indicator.value:
             entry_long_conditions.append(STOCHRSI)
-        
+
         # TTM Squeeze
-        if "TTM" in self.buy_additional_indicator.value:
+        if "TTM" in self.buy_long_indicator.value:
             squeeze_on = dataframe['squeeze_on']
             momentum_positive = dataframe['momentum_hist'] > 0
             entry_long_conditions.append(squeeze_on & momentum_positive)
-        
+        if "TTM" in self.buy_short_indicator.value:
+            squeeze_on = dataframe['squeeze_on']
+            momentum_positive = dataframe['momentum_hist'] > 0
+            entry_short_conditions.append(squeeze_on & momentum_positive)
+
         # === FreqAI Entry Signals ===
         if 'do_predict' in dataframe.columns:
 
@@ -906,23 +916,27 @@ class Fibbo(IStrategy):
         exit_long_conditions.append(FIBBO_LONG_EXIT)
         exit_short_conditions.append(FIBBO_SHORT_EXIT)
         
-        if "BB" in self.sell_additional_indicator.value:
+        if "BB" in self.sell_long_indicator.value:
             exit_long_conditions.append(BB)
-        if "ATR" in self.sell_additional_indicator.value:
+        if "ATR" in self.sell_long_indicator.value:
             exit_long_conditions.append(ATR)
-        if "RSI" in self.sell_additional_indicator.value:
+        if "RSI" in self.sell_long_indicator.value:
             exit_long_conditions.append(RSI)
-        if "MACD" in self.sell_additional_indicator.value:
+        if "MACD" in self.sell_long_indicator.value:
             exit_long_conditions.append(MACD)
-        if "STOCHRSI" in self.sell_additional_indicator.value:
+        if "STOCHRSI" in self.sell_long_indicator.value:
             exit_long_conditions.append(STOCHRSI)
 
         # TTM Squeeze exit
-        if "TTM" in self.sell_additional_indicator.value:
+        if "TTM" in self.sell_long_indicator.value:
             squeeze_off = dataframe['squeeze_off']
             momentum_negative = dataframe['momentum_hist'] < 0
             exit_long_conditions.append(squeeze_off & momentum_negative)
-        
+        if "TTM" in self.sell_short_indicator.value:
+            squeeze_off = dataframe['squeeze_off']
+            momentum_negative = dataframe['momentum_hist'] < 0
+            exit_short_conditions.append(squeeze_off & momentum_negative)
+
         # === FreqAI Exit Signals ===
         if 'do_predict' in dataframe.columns:
 
