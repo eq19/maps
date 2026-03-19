@@ -70,8 +70,10 @@ class ParamBuilder:
                     self.params[section][key] = self.dec_param(value, low, high, decimals)
 
                 elif isinstance(value, str):
-                    if key == "buy_fib_level" or key == "sell_fib_level":
-                        choices = ["0.236", "0.382", "0.618", "0.786"]
+                    if key == "buy_fib_level":
+                        choices = ["0.618", "0.786"]
+                    elif key == "sell_fib_level":
+                        choices = ["0.236", "0.382"]
                     elif key == "buy_fast_dema" or key == "sell_fast_dema":
                         choices = ["5", "8", "13", "21"]
                     elif key == "buy_slow_ema" or key == "sell_slow_ema":
