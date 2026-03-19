@@ -871,24 +871,21 @@ class Fibbo(IStrategy):
         # === FreqAI Entry Signals ===
         if 'do_predict' in dataframe.columns:
 
-            # LONG/SHORT entry side
-            # enter_long  ← do_predict == 1
-            # enter_short ← do_predict == -1
-            freqai_long_signal = (dataframe['do_predict'] == 1)
-            freqai_short_signal = (dataframe['do_predict'] == -1)
+            freqai_bullish = (dataframe['do_predict'] == 1)
+            freqai_bearish = (dataframe['do_predict'] == -1)
 
             if 'di_percentile' in dataframe.columns:
 
                 long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
                 short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
-                entry_long_conditions.append(freqai_long_signal & long_conf)
-                entry_short_conditions.append(freqai_short_signal & short_conf)
+                entry_long_conditions.append(freqai_bullish & long_conf)
+                entry_short_conditions.append(freqai_bearish & short_conf)
 
             else:
-                entry_long_conditions.append(freqai_long_signal)
-                entry_short_conditions.append(freqai_short_signal)
-           
+                entry_long_conditions.append(freqai_bullish)
+                entry_short_conditions.append(freqai_bearish)
+
         # Combine entry conditions with AND logic
         # Enter if ALL conditions are met
         if entry_long_conditions:
