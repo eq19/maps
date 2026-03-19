@@ -717,10 +717,9 @@ class Fibbo(IStrategy):
         dataframe['atr_pct'] = dataframe['atr'] / dataframe['close']
 
         # STOCHRSI (Missaligned Issue)
-        #stoch_rsi = ta.STOCHRSI(dataframe)
-        #dataframe['fastd_rsi'] = stoch_rsi['fastd']
-        #dataframe['fastk_rsi'] = stoch_rsi['fastk']
-        stoch_rsi = (dataframe['rsi'] - dataframe['rsi'].rolling(self.period.value).min()) / (dataframe['rsi'].rolling(self.period.value).max() - dataframe['rsi'].rolling(self.period.value).min())
+        rsi_min = dataframe['rsi'].rolling(self.period.value).min()
+        rsi_max = dataframe['rsi'].rolling(self.period.value).max()
+        stoch_rsi = (dataframe['rsi'] - rsi_min) / ((rsi_max - rsi_min).replace(0, 1e-10))
         dataframe['fastk_rsi'] = (stoch_rsi * 100).rolling(self.smoothK.value).mean()
         dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(self.smoothD.value).mean()
 
