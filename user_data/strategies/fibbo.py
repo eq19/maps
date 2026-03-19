@@ -873,7 +873,7 @@ class Fibbo(IStrategy):
         if "STOCHRSI" in self.buy_short_indicator.value:
             entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
 
-        # TTM Squeeze
+        # TTM Squeeze entry
         if "TTM" in self.buy_long_indicator.value:
             squeeze_on = dataframe['squeeze_on']
             momentum_positive = dataframe['momentum_hist'] > 0
