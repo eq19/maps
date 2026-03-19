@@ -831,18 +831,32 @@ class Fibbo(IStrategy):
         
         if "BB" in self.buy_long_indicator.value:
             entry_long_conditions.append(BB)
+        if "BB" in self.buy_short_indicator.value:
+            entry_short_conditions.append(BB)
         if "ATR" in self.buy_long_indicator.value:
             entry_long_conditions.append(ATR)
+        if "ATR" in self.buy_short_indicator.value:
+            entry_short_conditions.append(ATR)
         if "RSI" in self.buy_long_indicator.value:
             entry_long_conditions.append(RSI)
+        if "RSI" in self.buy_short_indicator.value:
+            entry_short_conditions.append(RSI)
         if "VWAP" in self.buy_long_indicator.value:
             entry_long_conditions.append(VWAP)
+        if "VWAP" in self.buy_short_indicator.value:
+            entry_short_conditions.append(VWAP)
         if "MACD" in self.buy_long_indicator.value:
             entry_long_conditions.append(MACD)
+        if "MACD" in self.buy_short_indicator.value:
+            entry_short_conditions.append(MACD)
         if "DEMA" in self.buy_long_indicator.value:
             entry_long_conditions.append(DEMA)
+        if "DEMA" in self.buy_short_indicator.value:
+            entry_short_conditions.append(DEMA)
         if "STOCHRSI" in self.buy_long_indicator.value:
             entry_long_conditions.append(STOCHRSI)
+        if "STOCHRSI" in self.buy_short_indicator.value:
+            entry_short_conditions.append(STOCHRSI)
 
         # TTM Squeeze
         if "TTM" in self.buy_long_indicator.value:
@@ -882,6 +896,11 @@ class Fibbo(IStrategy):
                 reduce(lambda x, y: x & y, entry_long_conditions),
                 'enter_long'
             ] = 1
+        if entry_short_conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, entry_short_conditions),
+                'enter_long'
+            ] = 1
 
         return dataframe
 
@@ -918,14 +937,24 @@ class Fibbo(IStrategy):
         
         if "BB" in self.sell_long_indicator.value:
             exit_long_conditions.append(BB)
+        if "BB" in self.sell_short_indicator.value:
+            exit_short_conditions.append(BB)
         if "ATR" in self.sell_long_indicator.value:
             exit_long_conditions.append(ATR)
+        if "ATR" in self.sell_short_indicator.value:
+            exit_short_conditions.append(ATR)
         if "RSI" in self.sell_long_indicator.value:
             exit_long_conditions.append(RSI)
+        if "RSI" in self.sell_short_indicator.value:
+            exit_short_conditions.append(RSI)
         if "MACD" in self.sell_long_indicator.value:
             exit_long_conditions.append(MACD)
+        if "MACD" in self.sell_short_indicator.value:
+            exit_short_conditions.append(MACD)
         if "STOCHRSI" in self.sell_long_indicator.value:
             exit_long_conditions.append(STOCHRSI)
+        if "STOCHRSI" in self.sell_short_indicator.value:
+            exit_short_conditions.append(STOCHRSI)
 
         # TTM Squeeze exit
         if "TTM" in self.sell_long_indicator.value:
