@@ -38,8 +38,8 @@ from utils.indodax_patch import *
 
 
 # Define indicator sets (could also come from the JSON if needed)
-buy_indicators = ["BB", "ATR", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
-sell_indicators = ["BB", "ATR", "RSI", "TTM", "MACD", "STOCHRSI"]
+buy_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
+sell_indicators = ["BB", "RSI", "TTM", "DEMA", "MACD", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
 # ✅ 1. Recursively find the first occurrence of the 'span' key
@@ -809,9 +809,6 @@ class Fibbo(IStrategy):
         VWAP_LONG_ENTRY = dataframe['close'] > dataframe['vwap']
         VWAP_SHORT_ENTRY = dataframe['close'] < dataframe['vwap']
 
-        ATR_LONG_ENTRY = dataframe['atr_pct'] > self.buy_atr_threshold.value
-        ATR_SHORT_ENTRY = dataframe['atr_pct'] < self.buy_atr_threshold.value
-
         BB_LONG_ENTRY = dataframe['close'] <= dataframe['bb_lowerband']
         BB_SHORT_ENTRY = dataframe['close'] >= dataframe['bb_upperband']
 
@@ -853,10 +850,6 @@ class Fibbo(IStrategy):
             entry_long_conditions.append(BB_LONG_ENTRY)
         if "BB" in self.buy_short_indicator.value:
             entry_short_conditions.append(BB_SHORT_ENTRY)
-        if "ATR" in self.buy_long_indicator.value:
-            entry_long_conditions.append(ATR_LONG_ENTRY)
-        if "ATR" in self.buy_short_indicator.value:
-            entry_short_conditions.append(ATR_SHORT_ENTRY)
         if "RSI" in self.buy_long_indicator.value:
             entry_long_conditions.append(RSI_LONG_ENTRY)
         if "RSI" in self.buy_short_indicator.value:
@@ -932,17 +925,17 @@ class Fibbo(IStrategy):
         exit_short_conditions = []
         
         # === Your existing Fibbo exit conditions ===
-        RSI_LONG_EXIT = (dataframe['rsi'] >= self.sell_rsi.value)
-        RSI_SHORT_EXIT = (dataframe['rsi'] <= self.sell_rsi.value)
+        RSI_LONG_EXIT = dataframe['rsi'] >= self.sell_rsi.value
+        RSI_SHORT_EXIT = dataframe['rsi'] <= self.sell_rsi.value
 
-        ATR_LONG_EXIT = (dataframe['atr'] < dataframe['atr'].shift(1))
-        ATR_SHORT_EXIT = (dataframe['atr'] > dataframe['atr'].shift(1))
+        VWAP_LONG_EXIT = dataframe['close'] < dataframe['vwap']
+        VWAP_SHORT_EXIT = dataframe['close'] > dataframe['vwap']
 
-        MACD_LONG_EXIT = (dataframe['macd'] < dataframe['macdsignal'])
-        MACD_SHORT_EXIT = (dataframe['macd'] > dataframe['macdsignal'])
+        BB_LONG_EXIT = dataframe['close'] > dataframe['bb_middleband']
+        BB_SHORT_EXIT = dataframe['close'] < dataframe['bb_middleband']
 
-        BB_LONG_EXIT = (dataframe['close'] > dataframe['bb_middleband'] * 1.01)
-        BB_SHORT_EXIT = (dataframe['close'] < dataframe['bb_middleband'] * 1.01)
+        MACD_LONG_EXIT = dataframe['macd'] < dataframe['macdsignal']
+        MACD_SHORT_EXIT = dataframe['macd'] > dataframe['macdsignal']
 
         STOCHRSI_LONG_EXIT = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
@@ -951,6 +944,15 @@ class Fibbo(IStrategy):
         STOCHRSI_SHORT_EXIT = (
             (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] < self.sell_stoch_osc.value)
+        )
+
+        DEMA_LONG_EXIT = (
+            dataframe[f"dema{self.sell_fast_dema.value}"] <
+            dataframe[f"ema{self.sell_slow_ema.value}"]
+        )
+        DEMA_SHORT_EXIT = (
+            dataframe[f"dema{self.sell_fast_dema.value}"] >
+            dataframe[f"ema{self.sell_slow_ema.value}"]
         )
 
         FIBBO_LONG_EXIT = (
@@ -970,14 +972,14 @@ class Fibbo(IStrategy):
             exit_long_conditions.append(BB_LONG_EXIT)
         if "BB" in self.sell_short_indicator.value:
             exit_short_conditions.append(BB_SHORT_EXIT)
-        if "ATR" in self.sell_long_indicator.value:
-            exit_long_conditions.append(ATR_LONG_EXIT)
-        if "ATR" in self.sell_short_indicator.value:
-            exit_short_conditions.append(ATR_SHORT_EXIT)
         if "RSI" in self.sell_long_indicator.value:
             exit_long_conditions.append(RSI_LONG_EXIT)
         if "RSI" in self.sell_short_indicator.value:
             exit_short_conditions.append(RSI_SHORT_EXIT)
+        if "DEMA" in self.sell_long_indicator.value:
+            exit_long_conditions.append(DEMA_LONG_EXIT)
+        if "DEMA" in self.sell_short_indicator.value:
+            exit_short_conditions.append(DEMA_SHORT_EXIT)
         if "MACD" in self.sell_long_indicator.value:
             exit_long_conditions.append(MACD_LONG_EXIT)
         if "MACD" in self.sell_short_indicator.value:
