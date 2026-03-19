@@ -948,7 +948,7 @@ class Fibbo(IStrategy):
             dataframe[f"ema{self.sell_slow_ema.value}"]
         )
 
-         STOCHRSI_LONG_EXIT = (
+        STOCHRSI_LONG_EXIT = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
