@@ -932,14 +932,27 @@ class Fibbo(IStrategy):
         exit_short_conditions = []
         
         # === Your existing Fibbo exit conditions ===
-        RSI = (dataframe['rsi'] >= self.sell_rsi.value)
-        ATR = (dataframe['atr'] < dataframe['atr'].shift(1))
-        MACD = (dataframe['macd'] < dataframe['macdsignal'])
-        BB = (dataframe['close'] > dataframe['bb_middleband'] * 1.01)
-        STOCHRSI = (
+        RSI_LONG_EXIT = (dataframe['rsi'] >= self.sell_rsi.value)
+        RSI_SHORT_EXIT = (dataframe['rsi'] <= self.sell_rsi.value)
+
+        ATR_LONG_EXIT = (dataframe['atr'] < dataframe['atr'].shift(1))
+        ATR_SHORT_EXIT = (dataframe['atr'] > dataframe['atr'].shift(1))
+
+        MACD_LONG_EXIT = (dataframe['macd'] < dataframe['macdsignal'])
+        MACD_SHORT_EXIT = (dataframe['macd'] > dataframe['macdsignal'])
+
+        BB_LONG_EXIT = (dataframe['close'] > dataframe['bb_middleband'] * 1.01)
+        BB_SHORT_EXIT = (dataframe['close'] < dataframe['bb_middleband'] * 1.01)
+
+        STOCHRSI_LONG_EXIT = (
             (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
             (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
         )
+        STOCHRSI_SHORT_EXIT = (
+            (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
+            (dataframe['fastk_rsi'] < self.sell_stoch_osc.value)
+        )
+
         FIBBO_LONG_EXIT = (
             (dataframe['close'] >= (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
             (dataframe['close'].shift(1) < (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])))
@@ -954,25 +967,25 @@ class Fibbo(IStrategy):
         exit_short_conditions.append(FIBBO_SHORT_EXIT)
         
         if "BB" in self.sell_long_indicator.value:
-            exit_long_conditions.append(BB)
+            exit_long_conditions.append(BB_LONG_EXIT)
         if "BB" in self.sell_short_indicator.value:
-            exit_short_conditions.append(BB)
+            exit_short_conditions.append(BB_SHORT_EXIT)
         if "ATR" in self.sell_long_indicator.value:
-            exit_long_conditions.append(ATR)
+            exit_long_conditions.append(ATR_LONG_EXIT)
         if "ATR" in self.sell_short_indicator.value:
-            exit_short_conditions.append(ATR)
+            exit_short_conditions.append(ATR_SHORT_EXIT)
         if "RSI" in self.sell_long_indicator.value:
-            exit_long_conditions.append(RSI)
+            exit_long_conditions.append(RSI_LONG_EXIT)
         if "RSI" in self.sell_short_indicator.value:
-            exit_short_conditions.append(RSI)
+            exit_short_conditions.append(RSI_SHORT_EXIT)
         if "MACD" in self.sell_long_indicator.value:
-            exit_long_conditions.append(MACD)
+            exit_long_conditions.append(MACD_LONG_EXIT)
         if "MACD" in self.sell_short_indicator.value:
-            exit_short_conditions.append(MACD)
+            exit_short_conditions.append(MACD_SHORT_EXIT)
         if "STOCHRSI" in self.sell_long_indicator.value:
-            exit_long_conditions.append(STOCHRSI)
+            exit_long_conditions.append(STOCHRSI_LONG_EXIT)
         if "STOCHRSI" in self.sell_short_indicator.value:
-            exit_short_conditions.append(STOCHRSI)
+            exit_short_conditions.append(STOCHRSI_SHORT_EXIT)
 
         # TTM Squeeze exit
         if "TTM" in self.sell_long_indicator.value:
