@@ -899,7 +899,7 @@ class Fibbo(IStrategy):
         if entry_short_conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, entry_short_conditions),
-                'enter_long'
+                'enter_short'
             ] = 1
 
         return dataframe
@@ -995,6 +995,11 @@ class Fibbo(IStrategy):
             dataframe.loc[
                 reduce(lambda x, y: x & y, exit_long_conditions),
                 'exit_long'
+            ] = 1
+        if exit_short_conditions:
+            dataframe.loc[
+                reduce(lambda x, y: x & y, exit_short_conditions),
+                'exit_short'
             ] = 1
 
         return dataframe
