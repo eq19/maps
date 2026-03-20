@@ -720,19 +720,17 @@ class Fibbo(IStrategy):
 
         # STOCHRSI (Missaligned Issue)
         #stoch_rsi = ta.STOCHRSI(dataframe)
-        rsi_min = dataframe['rsi'].rolling(self.period.value).min()
-        rsi_max = dataframe['rsi'].rolling(self.period.value).max()
+        rsi_min = dataframe['rsi'].rolling(self.shared_stoch_period.value).min()
+        rsi_max = dataframe['rsi'].rolling(self.shared_stoch_period.value).max()
         stoch_rsi = (dataframe['rsi'] - rsi_min) / ((rsi_max - rsi_min).replace(0, 1e-10))
-        dataframe['fastk_rsi'] = (stoch_rsi * 100).rolling(self.smoothK.value).mean()
-        dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(self.smoothD.value).mean()
 
         # --- buy smoothing ---
-        #dataframe['fastk_rsi_buy'] = (stoch_rsi * 100).rolling(self.buy_smoothK.value).mean()
-        #dataframe['fastd_rsi_buy'] = dataframe['fastk_rsi_buy'].rolling(self.buy_smoothD.value).mean()
+        dataframe['fastk_rsi_buy'] = (stoch_rsi * 100).rolling(self.buy_smoothK.value).mean()
+        dataframe['fastd_rsi_buy'] = dataframe['fastk_rsi_buy'].rolling(self.buy_smoothD.value).mean()
 
         # --- sell smoothing ---
-        #dataframe['fastk_rsi_sell'] = (stoch_rsi * 100).rolling(self.sell_smoothK.value).mean()
-        #dataframe['fastd_rsi_sell'] = dataframe['fastk_rsi_sell'].rolling(self.sell_smoothD.value).mean()
+        dataframe['fastk_rsi_sell'] = (stoch_rsi * 100).rolling(self.sell_smoothK.value).mean()
+        dataframe['fastd_rsi_sell'] = dataframe['fastk_rsi_sell'].rolling(self.sell_smoothD.value).mean()
 
         # MACD (See Hyperopt Table)
         macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
@@ -826,12 +824,12 @@ class Fibbo(IStrategy):
         MACD_SHORT_ENTRY = dataframe['macd'] < dataframe['macdsignal']
 
         STOCHRSI_LONG_ENTRY = (
-            (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
-            (dataframe['fastk_rsi'] < self.buy_stoch_osc.value)
+            (dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) &
+            (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value)
         )
         STOCHRSI_SHORT_ENTRY = (
-            (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
-            (dataframe['fastk_rsi'] > self.buy_stoch_osc.value)
+            (dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) &
+            (dataframe['fastk_rsi_buy'] > self.buy_stoch_osc.value)
         )
 
         DEMA_LONG_ENTRY = (
@@ -957,12 +955,12 @@ class Fibbo(IStrategy):
         )
 
         STOCHRSI_LONG_EXIT = (
-            (dataframe['fastk_rsi'] < dataframe['fastd_rsi']) &
-            (dataframe['fastk_rsi'] > self.sell_stoch_osc.value)
+            (dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) &
+            (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value)
         )
         STOCHRSI_SHORT_EXIT = (
-            (dataframe['fastk_rsi'] > dataframe['fastd_rsi']) &
-            (dataframe['fastk_rsi'] < self.sell_stoch_osc.value)
+            (dataframe['fastk_rsi_sell'] > dataframe['fastd_rsi_sell']) &
+            (dataframe['fastk_rsi_sell'] < self.sell_stoch_osc.value)
         )
 
         FIBBO_LONG_EXIT = (
