@@ -707,8 +707,8 @@ class Fibbo(IStrategy):
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
         # VWAP
-        # dataframe['vwap'] = qtpylib.vwap(dataframe)
-        dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
+        dataframe['vwap'] = qtpylib.vwap(dataframe)
+        #dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
 
         # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
