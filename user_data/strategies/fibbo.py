@@ -704,7 +704,7 @@ class Fibbo(IStrategy):
         # --- Classical indicators (always run) ---
 
         # RSI 
-        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=self.buy_rsi_period.value)
 
         # VWAP (Lookahead bias Issue)
         #dataframe['vwap'] = qtpylib.vwap(dataframe)
@@ -713,7 +713,7 @@ class Fibbo(IStrategy):
 
         # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
-        dataframe['volume_mean'] = dataframe['volume'].rolling(20).mean()
+        dataframe['volume_mean'] = dataframe['volume'].rolling(self.shared_ttm_window.value).mean()
 
         # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
@@ -740,7 +740,7 @@ class Fibbo(IStrategy):
         dataframe['macdsignal'] = macd['macdsignal']
 
         # Bollinger Bands
-        bollinger = ta.BBANDS(dataframe, timeperiod=20, nbdevup=2.0, nbdevdn=2.0, matype=0)
+        bollinger = ta.BBANDS(dataframe, timeperiod=self.buy_bb_period.value, nbdevup=2.0, nbdevdn=2.0, matype=0)
         dataframe['bb_upperband'] = bollinger['upperband']
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
@@ -777,8 +777,8 @@ class Fibbo(IStrategy):
             return dataframe  # Return original dataframe to prevent crashing
     
         # Now it's safe to use 'close'
-        informative['rsi'] = ta.RSI(informative, timeperiod=14)
         informative['atr'] = ta.ATR(informative, timeperiod=14)
+        informative['rsi'] = ta.RSI(informative, timeperiod=self.buy_rsi_period.value)
 
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
