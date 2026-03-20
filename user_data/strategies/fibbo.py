@@ -135,10 +135,10 @@ span["buy"]["buy_short_indicator"]["choices"] = sorted(
     indicator_permutations(buy_indicators, max_indicators=4, include_none=True)
 )
 span["sell"]["sell_long_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
+    indicator_permutations(sell_indicators, max_indicators=4, include_none=True)
 )
 span["sell"]["sell_short_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=2, include_none=True)
+    indicator_permutations(sell_indicators, max_indicators=4, include_none=True)
 )
 
 # Preload strategy attributes
