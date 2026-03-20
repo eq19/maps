@@ -706,8 +706,9 @@ class Fibbo(IStrategy):
         # RSI 
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
 
-        # VWAP
-        dataframe['vwap'] = qtpylib.vwap(dataframe)
+        # VWAP (Lookahead bias Issue)
+        #dataframe['vwap'] = qtpylib.vwap(dataframe)
+        dataframe['vwap'] = qtpylib.rolling_vwap(dataframe, window=self.shared_vwap_window.value)
         #dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
 
         # TTM Squeeze
