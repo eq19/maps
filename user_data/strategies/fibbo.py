@@ -726,6 +726,16 @@ class Fibbo(IStrategy):
         dataframe['fastk_rsi'] = (stoch_rsi * 100).rolling(self.smoothK.value).mean()
         dataframe['fastd_rsi'] = dataframe['fastk_rsi'].rolling(self.smoothD.value).mean()
 
+        # --- BUY STOCHRSI ---
+        #stoch_rsi_buy = (dataframe['rsi'] - rsi_min_buy) / denom_buy
+        #dataframe['fastk_rsi_buy'] = (stoch_rsi_buy * 100).rolling(self.buy_smoothK.value).mean()
+        #dataframe['fastd_rsi_buy'] = dataframe['fastk_rsi_buy'].rolling(self.buy_smoothD.value).mean()
+
+        # --- SELL STOCHRSI ---
+        #stoch_rsi_sell = (dataframe['rsi'] - rsi_min_sell) / denom_sell
+        #dataframe['fastk_rsi_sell'] = (stoch_rsi_sell * 100).rolling(self.sell_smoothK.value).mean()
+        #dataframe['fastd_rsi_sell'] = dataframe['fastk_rsi_sell'].rolling(self.sell_smoothD.value).mean()
+
         # MACD (See Hyperopt Table)
         macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
         dataframe['macd'] = macd['macd']
