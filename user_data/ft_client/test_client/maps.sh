@@ -22,7 +22,7 @@ echo "--------------------"
 
 #cat $ARTIFACT
 while true; do
-  echo "Attempt $((COUNT+1))..."
+  #echo "Attempt $((COUNT+1))..."
 
   if curl -s -X POST \
     -H "Authorization: Bearer ${BEARER}" \
@@ -30,7 +30,7 @@ while true; do
     https://us-central1-marketleader.cloudfunctions.net/function \
     --data @"${ARTIFACT}" | jq '.' > "${HYPEROPT_PARAM}"; then
 
-    echo "Request succeeded."
+    #echo "Request succeeded."
     cat "${HYPEROPT_PARAM}"
     break
   fi
@@ -38,10 +38,10 @@ while true; do
   COUNT=$((COUNT+1))
 
   if [ "$COUNT" -ge "$MAX_RETRIES" ]; then
-    echo "Failed after $MAX_RETRIES attempts."
+    #echo "Failed after $MAX_RETRIES attempts."
     exit 1
   fi
 
-  echo "Request failed. Retrying in ${DELAY}s..."
+  #echo "Request failed. Retrying in ${DELAY}s..."
   sleep "$DELAY"
 done
