@@ -740,7 +740,7 @@ class Fibbo(IStrategy):
         dataframe['macdsignal'] = macd['macdsignal']
 
         # Bollinger Bands
-        bollinger = ta.BBANDS(dataframe, timeperiod=self.buy_bb_period.value, nbdevup=2.0, nbdevdn=2.0, matype=0)
+        bollinger = ta.BBANDS(dataframe, timeperiod=max(2, int(self.buy_bb_period.value if self.buy_bb_period.value else 20)), nbdevup=2.0, nbdevdn=2.0, matype=0)
         dataframe['bb_upperband'] = bollinger['upperband']
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
