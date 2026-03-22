@@ -238,8 +238,12 @@ hyperopt() {
       fi
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
-      if [[ "$GITHUB_JOB" == "lexering" && "$CALCULATION" != "false" ]]; then
-        gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
+      if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        if [[ "$CALCULATION" != "false" ]]; then
+          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
+        else
+          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        fi
       fi
     fi
   done
