@@ -162,7 +162,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
     
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedLightGBMRegressor':
         """Train the LightGBM model with optimized early stopping"""
-        self.validate_data(X, y)
+        #self.validate_data(X, y)
         X = self.preprocess_features(X)
         
         # Set feature names
@@ -263,7 +263,7 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
     
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedXGBoostRegressor':
         """Train the XGBoost model with optimized early stopping"""
-        self.validate_data(X, y)
+        #self.validate_data(X, y)
         X = self.preprocess_features(X)
         
         # Create validation dataset for early stopping
