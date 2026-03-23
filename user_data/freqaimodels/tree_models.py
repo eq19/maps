@@ -81,9 +81,15 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         if not CATBOOST_AVAILABLE:
             raise ImportError("CatBoost is required. Install with: pip install catboost")
+
         self.catboost = cb
+
+        # Merge default + user config
+        self.parameters = self.default_parameters.copy()
+        self.parameters.update(kwargs.get("model_parameters", {}))
     
     def fit(self, data: Dict, dk: Any, **kwargs):
         """Train the CatBoost model"""
