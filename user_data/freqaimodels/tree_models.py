@@ -88,7 +88,7 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedCatboostRegressor':
         """Train the CatBoost model with enhanced logging"""
         #self.validate_data(X, y)
-        X = self.preprocess_features(X)
+        #X = self.preprocess_features(X)
         
         # Create CatBoost dataset
         train_data = self.catboost.Pool(X, y)
@@ -112,7 +112,7 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
         if not getattr(self, "is_trained", False):
             raise ValueError("Model must be trained before making predictions")
 
-        X = self.preprocess_features(X)
+        #X = self.preprocess_features(X)
         return self.model.predict(X)
       
     def get_feature_importance(self) -> Optional[np.ndarray]:
