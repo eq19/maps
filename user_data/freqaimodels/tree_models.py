@@ -151,7 +151,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         "learning_rate": 0.02,
         "num_leaves": 31,
         "min_data_in_leaf": 20,
-        "feature_fraction": 0.5,   # reduced to prevent overfitting
+        "feature_fraction": 0.5,
         "bagging_fraction": 0.8,
         "bagging_freq": 5,
         "verbose": -1,
@@ -170,33 +170,40 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         self.feature_names = None
         self.is_trained = False
 
-    def fit(self, dd: dict, dk=None, **kwargs) -> "EnhancedLightGBMRegressor":
+    def _extract_xy(self, dd):
         """
-        Train the LightGBM model using FreqAI data dictionary.
-        Expected:
-            dd["X"] -> features
-            dd["y"] -> targets
+        Handle multiple possible FreqAI data formats safely
         """
 
+        if "X" in dd and "y" in dd:
+            return dd["X"], dd["y"]
+
+        elif "train_features" in dd and "train_labels" in dd:
+            return dd["train_features"], dd["train_labels"]
+
+        elif "features" in dd and "labels" in dd:
+            return dd["features"], dd["labels"]
+
+        else:
+            raise KeyError(f"Unknown dd format. Keys found: {list(dd.keys())}")
+
+    def fit(self, dd: dict, dk=None, **kwargs):
         import numpy as np
 
-        # ✅ Extract from FreqAI dict
-        X = np.array(dd["X"])
-        y = np.array(dd["y"])
+        # ✅ Robust extraction
+        X, y = self._extract_xy(dd)
 
-        # ✅ Feature names
+        X = np.array(X)
+        y = np.array(y)
+
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
-        # Copy parameters safely
         model_params = self.parameters.copy()
-
-        # Remove unsupported constructor params if present
         model_params.pop("early_stopping_rounds", None)
         model_params.pop("eval_metric", None)
 
         self.model = self.lightgbm.LGBMRegressor(**model_params)
 
-        # ✅ Train with validation if enough data
         if X.shape[0] > 100:
             split_idx = int(0.8 * X.shape[0])
 
@@ -209,32 +216,22 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
                 eval_set=[(X_val, y_val)],
                 callbacks=[self.lightgbm.early_stopping(10, verbose=False)],
             )
-
         else:
-            # Small dataset → no validation
             self.model.fit(X, y)
 
         self.is_trained = True
         return self
 
-    def predict(self, X, dk=None) -> np.ndarray:
-        """
-        Make predictions (FreqAI passes dk as second argument).
-        """
-
+    def predict(self, X, dk=None):
         import numpy as np
 
         if not self.is_trained:
             raise ValueError("Model must be trained before making predictions")
 
         X = np.array(X)
-
         return self.model.predict(X)
 
     def get_feature_importance(self):
-        """
-        Return feature importance if available.
-        """
         if self.is_trained and hasattr(self.model, "feature_importances_"):
             return self.model.feature_importances_
         return None
