@@ -88,14 +88,14 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
     def fit(self, data: Dict, dk: Any, **kwargs):
         """Train the CatBoost model"""
 
-        # Extract features and labels from FreqAI dict
-        X = data["X"]
-        y = data["y"]
+        # Extract correct keys from FreqAI
+        X = data["train_features"]
+        y = data["train_labels"]
 
-        # Convert to numpy (safe for CatBoost)
+        # Convert to numpy (safe)
         if isinstance(X, pd.DataFrame):
             X = X.values
-        if isinstance(y, pd.Series):
+        if isinstance(y, (pd.Series, pd.DataFrame)):
             y = y.values
 
         train_data = self.catboost.Pool(X, y)
