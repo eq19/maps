@@ -87,7 +87,7 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
     
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedCatboostRegressor':
         """Train the CatBoost model with enhanced logging"""
-        self.validate_data(X, y)
+        #self.validate_data(X, y)
         X = self.preprocess_features(X)
         
         # Create CatBoost dataset
