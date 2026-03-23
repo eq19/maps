@@ -107,14 +107,14 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
         self.logger.info(f"CatBoost model trained with {X.shape[0]} samples, {X.shape[1]} features")
         return self
     
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, X: np.ndarray, dk: Optional[Any] = None) -> np.ndarray:
         """Make predictions"""
-        if not self.is_trained:
+        if not getattr(self, "is_trained", False):
             raise ValueError("Model must be trained before making predictions")
-        
+
         X = self.preprocess_features(X)
         return self.model.predict(X)
-    
+      
     def get_feature_importance(self) -> Optional[np.ndarray]:
         """Get CatBoost feature importance"""
         if self.is_trained and hasattr(self.model, 'get_feature_importance'):
