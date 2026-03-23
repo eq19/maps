@@ -171,7 +171,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedLightGBMRegressor':
         """Train the LightGBM model with optimized early stopping"""
         #self.validate_data(X, y)
-        X = self.preprocess_features(X)
+        #X = self.preprocess_features(X)
         
         # Set feature names
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
@@ -196,8 +196,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
             # Train model with validation
             self.model.fit(X_train, y_train, eval_set=[(X_val, y_val)], **kwargs)
             
-            self._setup_logging()
-            self.logger.info(f"LightGBM model trained with {X_train.shape[0]} samples, {X_val.shape[0]} validation samples, {X.shape[1]} features")
+            logger.info(f"LightGBM model trained with {X_train.shape[0]} samples, {X_val.shape[0]} validation samples, {X.shape[1]} features")
         else:
             # For small datasets, train without validation
             model_params = self.parameters.copy()
@@ -208,8 +207,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
             self.model = self.lightgbm.LGBMRegressor(**model_params)
             self.model.fit(X, y, feature_name=self.feature_names, **kwargs)
             
-            self._setup_logging()
-            self.logger.info(f"LightGBM model trained with {X.shape[0]} samples, {X.shape[1]} features (no validation)")
+            logger.info(f"LightGBM model trained with {X.shape[0]} samples, {X.shape[1]} features (no validation)")
         
         self.is_trained = True
         return self
@@ -219,7 +217,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         if not self.is_trained:
             raise ValueError("Model must be trained before making predictions")
         
-        X = self.preprocess_features(X)
+        #X = self.preprocess_features(X)
         
         # Create DataFrame with feature names for prediction
         import pandas as pd
@@ -272,7 +270,7 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedXGBoostRegressor':
         """Train the XGBoost model with optimized early stopping"""
         #self.validate_data(X, y)
-        X = self.preprocess_features(X)
+        #X = self.preprocess_features(X)
         
         # Create validation dataset for early stopping
         if X.shape[0] > 100:  # Only use validation if we have enough data
@@ -292,8 +290,7 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
             # Train model with validation
             self.model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False, **kwargs)
             
-            self._setup_logging()
-            self.logger.info(f"XGBoost model trained with {X_train.shape[0]} samples, {X_val.shape[0]} validation samples, {X.shape[1]} features")
+            logger.info(f"XGBoost model trained with {X_train.shape[0]} samples, {X_val.shape[0]} validation samples, {X.shape[1]} features")
         else:
             # For small datasets, train without validation
             model_params = self.parameters.copy()
@@ -304,8 +301,7 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
             self.model = self.xgboost.XGBRegressor(**model_params)
             self.model.fit(X, y, **kwargs)
             
-            self._setup_logging()
-            self.logger.info(f"XGBoost model trained with {X.shape[0]} samples, {X.shape[1]} features (no validation)")
+            logger.info(f"XGBoost model trained with {X.shape[0]} samples, {X.shape[1]} features (no validation)")
         
         self.is_trained = True
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
