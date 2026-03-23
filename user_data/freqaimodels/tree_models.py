@@ -111,8 +111,6 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
 
         self.is_trained = True
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
-
-        self._setup_logging()
         self.logger.info(f"CatBoost model trained with {X.shape[0]} samples, {X.shape[1]} features")
 
         return self
