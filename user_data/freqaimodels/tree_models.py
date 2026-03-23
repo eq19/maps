@@ -85,28 +85,32 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
             raise ImportError("CatBoost is required. Install with: pip install catboost")
         self.catboost = cb
     
-    def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedCatboostRegressor':
-        """Train the CatBoost model with enhanced logging"""
-        #self.validate_data(X, y)
-        #X = self.preprocess_features(X)
-        
-        # Create CatBoost dataset
+    def fit(self, data: Dict, dk: Any, **kwargs):
+        """Train the CatBoost model"""
+
+        # Extract features and labels from FreqAI dict
+        X = data["X"]
+        y = data["y"]
+
+        # Convert to numpy (safe for CatBoost)
+        if isinstance(X, pd.DataFrame):
+            X = X.values
+        if isinstance(y, pd.Series):
+            y = y.values
+
         train_data = self.catboost.Pool(X, y)
-        
-        # Initialize model
+
         self.model = self.catboost.CatBoostRegressor(**self.parameters)
-        
-        # Train model
         self.model.fit(train_data, **kwargs)
-        
+
         self.is_trained = True
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
-        
-        # Log training completion
+
         self._setup_logging()
         self.logger.info(f"CatBoost model trained with {X.shape[0]} samples, {X.shape[1]} features")
+
         return self
-    
+
     def predict(self, X: np.ndarray, dk: Optional[Any] = None) -> np.ndarray:
         """Make predictions"""
         if not getattr(self, "is_trained", False):
