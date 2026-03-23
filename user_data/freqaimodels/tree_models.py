@@ -129,7 +129,6 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
             return self.model.get_feature_importance()
         return None
 
-
 class EnhancedLightGBMRegressor(BaseFreqAIModel):
     """
     Enhanced LightGBM Regressor for FreqAI
@@ -152,85 +151,93 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         "learning_rate": 0.02,
         "num_leaves": 31,
         "min_data_in_leaf": 20,
-        "feature_fraction": 0.8,
+        "feature_fraction": 0.5,   # reduced to prevent overfitting
         "bagging_fraction": 0.8,
         "bagging_freq": 5,
         "verbose": -1,
         "random_state": 42,
         "n_estimators": 100,
-        "early_stopping_rounds": 10,
-        "eval_metric": "rmse"
     }
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         if not LIGHTGBM_AVAILABLE:
             raise ImportError("LightGBM is required. Install with: pip install lightgbm")
+
         self.lightgbm = lgb
-    
-    def fit(self, X: np.ndarray, y: np.ndarray, **kwargs) -> 'EnhancedLightGBMRegressor':
-        """Train the LightGBM model with optimized early stopping"""
-        #self.validate_data(X, y)
-        #X = self.preprocess_features(X)
-        
-        # Set feature names
+        self.model = None
+        self.feature_names = None
+        self.is_trained = False
+
+    def fit(self, dd: dict, dk=None, **kwargs) -> "EnhancedLightGBMRegressor":
+        """
+        Train the LightGBM model using FreqAI data dictionary.
+        Expected:
+            dd["X"] -> features
+            dd["y"] -> targets
+        """
+
+        import numpy as np
+
+        # ✅ Extract from FreqAI dict
+        X = np.array(dd["X"])
+        y = np.array(dd["y"])
+
+        # ✅ Feature names
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
-        
-        # Create validation dataset for early stopping
-        if X.shape[0] > 100:  # Only use validation if we have enough data
+
+        # Copy parameters safely
+        model_params = self.parameters.copy()
+
+        # Remove unsupported constructor params if present
+        model_params.pop("early_stopping_rounds", None)
+        model_params.pop("eval_metric", None)
+
+        self.model = self.lightgbm.LGBMRegressor(**model_params)
+
+        # ✅ Train with validation if enough data
+        if X.shape[0] > 100:
             split_idx = int(0.8 * X.shape[0])
+
             X_train, X_val = X[:split_idx], X[split_idx:]
             y_train, y_val = y[:split_idx], y[split_idx:]
-            
-            # Initialize model with early stopping
-            model_params = self.parameters.copy()
-            model_params.update({
-                'callbacks': [self.lightgbm.early_stopping(stopping_rounds=10, verbose=False)],
-                'eval_metric': 'rmse',
-                'valid_sets': [(X_val, y_val)],
-                'valid_names': ['validation']
-            })
-            
-            self.model = self.lightgbm.LGBMRegressor(**model_params)
-            
-            # Train model with validation
-            self.model.fit(X_train, y_train, eval_set=[(X_val, y_val)], **kwargs)
-            
-            logger.info(f"LightGBM model trained with {X_train.shape[0]} samples, {X_val.shape[0]} validation samples, {X.shape[1]} features")
+
+            self.model.fit(
+                X_train,
+                y_train,
+                eval_set=[(X_val, y_val)],
+                callbacks=[self.lightgbm.early_stopping(10, verbose=False)],
+            )
+
         else:
-            # For small datasets, train without validation
-            model_params = self.parameters.copy()
-            # Remove early stopping parameters for small datasets
-            model_params.pop('early_stopping_rounds', None)
-            model_params.pop('eval_metric', None)
-            
-            self.model = self.lightgbm.LGBMRegressor(**model_params)
-            self.model.fit(X, y, feature_name=self.feature_names, **kwargs)
-            
-            logger.info(f"LightGBM model trained with {X.shape[0]} samples, {X.shape[1]} features (no validation)")
-        
+            # Small dataset → no validation
+            self.model.fit(X, y)
+
         self.is_trained = True
         return self
-    
-    def predict(self, X: np.ndarray) -> np.ndarray:
-        """Make predictions"""
+
+    def predict(self, X, dk=None) -> np.ndarray:
+        """
+        Make predictions (FreqAI passes dk as second argument).
+        """
+
+        import numpy as np
+
         if not self.is_trained:
             raise ValueError("Model must be trained before making predictions")
-        
-        #X = self.preprocess_features(X)
-        
-        # Create DataFrame with feature names for prediction
-        import pandas as pd
-        X_df = pd.DataFrame(X, columns=self.feature_names)
-        
-        return self.model.predict(X_df)
-    
-    def get_feature_importance(self) -> Optional[np.ndarray]:
-        """Get LightGBM feature importance"""
-        if self.is_trained and hasattr(self.model, 'feature_importances_'):
+
+        X = np.array(X)
+
+        return self.model.predict(X)
+
+    def get_feature_importance(self):
+        """
+        Return feature importance if available.
+        """
+        if self.is_trained and hasattr(self.model, "feature_importances_"):
             return self.model.feature_importances_
         return None
-
 
 class EnhancedXGBoostRegressor(BaseFreqAIModel):
     """
