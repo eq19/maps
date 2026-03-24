@@ -661,42 +661,44 @@ class Fibbo(IStrategy):
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = metadata["pair"]
 
-        # --- FreqAI (robust for dynamic pairs) ---
+        # --- FreqAI (robust + recursion-safe) ---
         if self.freqai is not None and self.freqai_enabled:
             try:
-                # Start FreqAI
-                dataframe = self.freqai.start(dataframe, metadata, self)
-                
-                # Process DI_values if available
+                # ✅ CRITICAL FIX: prevent recursion (only run once)
+                if "do_predict" not in dataframe.columns:
+                    dataframe = self.freqai.start(dataframe, metadata, self)
+
+                # --- Process DI_values ---
                 if 'DI_values' in dataframe.columns:
-                    # Check if we have enough data for meaningful percentile
                     if len(dataframe) >= self.di_rolling_window:
-                        dataframe['di_percentile'] = (dataframe['DI_values']
-                                                      .rolling(self.di_rolling_window)
-                                                      .rank(pct=True))
+                        dataframe['di_percentile'] = (
+                            dataframe['DI_values']
+                            .rolling(self.di_rolling_window)
+                            .rank(pct=True)
+                        )
                         logger.debug(f"FreqAI DI_percentile calculated for {pair}")
                     else:
-                        # Not enough data yet, use neutral value
                         dataframe['di_percentile'] = 0.5
                         logger.debug(f"FreqAI: Insufficient data for {pair}, using neutral confidence")
-                        
-                    # Log DI_values stats for debugging
-                    logger.debug(f"DI_values - min: {dataframe['DI_values'].min():.3f}, "
-                                     f"max: {dataframe['DI_values'].max():.3f}, "
-                                     f"mean: {dataframe['DI_values'].mean():.3f}")
-                
-                # Also log do_predict stats
+
+                    logger.debug(
+                        f"DI_values - min: {dataframe['DI_values'].min():.3f}, "
+                        f"max: {dataframe['DI_values'].max():.3f}, "
+                        f"mean: {dataframe['DI_values'].mean():.3f}"
+                    )
+
+                # --- Debug signals ---
                 if 'do_predict' in dataframe.columns:
                     buy_signals = (dataframe['do_predict'] == 1).sum()
                     sell_signals = (dataframe['do_predict'] == -1).sum()
                     logger.debug(f"FreqAI signals for {pair}: {buy_signals} buy, {sell_signals} sell")
-                    
+
             except KeyError:
-                # Pair introduced dynamically without FreqAI history/model
                 logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
+
             except Exception as e:
-                # Extra safety: never let AI crash the strategy
                 logger.warning(f"FreqAI error for {pair}: {e}")
+
         else:
             if self.freqai is None:
                 logger.debug("FreqAI not initialized for this strategy")
