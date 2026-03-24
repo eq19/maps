@@ -166,31 +166,27 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
             raise ImportError("LightGBM is required. Install with: pip install lightgbm")
 
         self.lightgbm = lgb
+
+        # ✅ FIX: initialize parameters
+        self.parameters = self.default_parameters.copy()
+
         self.model = None
         self.feature_names = None
         self.is_trained = False
 
     def _extract_xy(self, dd):
-        """
-        Handle multiple possible FreqAI data formats safely
-        """
-
         if "X" in dd and "y" in dd:
             return dd["X"], dd["y"]
-
         elif "train_features" in dd and "train_labels" in dd:
             return dd["train_features"], dd["train_labels"]
-
         elif "features" in dd and "labels" in dd:
             return dd["features"], dd["labels"]
-
         else:
             raise KeyError(f"Unknown dd format. Keys found: {list(dd.keys())}")
 
     def fit(self, dd: dict, dk=None, **kwargs):
         import numpy as np
 
-        # ✅ Robust extraction
         X, y = self._extract_xy(dd)
 
         X = np.array(X)
@@ -198,7 +194,10 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
 
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
+        # Safe copy
         model_params = self.parameters.copy()
+
+        # Remove unsupported params
         model_params.pop("early_stopping_rounds", None)
         model_params.pop("eval_metric", None)
 
