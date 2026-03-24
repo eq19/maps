@@ -694,14 +694,14 @@ class Fibbo(IStrategy):
                     logger.debug(f"FreqAI signals for {pair}: {buy_signals} buy, {sell_signals} sell")
 
             except KeyError:
-                logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
+                logger.warning(f"FreqAI model not ready for {pair} - skipping AI signals")
 
             except Exception as e:
                 logger.warning(f"FreqAI error for {pair}: {e}")
 
         else:
             if self.freqai is None:
-                logger.debug("FreqAI not initialized for this strategy")
+                logger.warning("FreqAI not initialized for this strategy")
 
         # --- Classical indicators (always run) ---
 
