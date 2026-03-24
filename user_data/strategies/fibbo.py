@@ -661,49 +661,57 @@ class Fibbo(IStrategy):
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = metadata["pair"]
 
-        # --- FreqAI (robust + recursion-safe) ---
+        # --------------------------------------------------
+        # HARD RECURSION GUARD (this is the real fix)
+        # --------------------------------------------------
+        if getattr(self, "_freqai_running", False):
+            return dataframe
+
+        # --- FreqAI (safe + recursion-proof) ---
         if self.freqai is not None and self.freqai_enabled:
             try:
-                # ✅ CRITICAL FIX: prevent recursion (only run once)
+                # Run FreqAI only once per cycle
                 if "do_predict" not in dataframe.columns:
+                    self._freqai_running = True
                     dataframe = self.freqai.start(dataframe, metadata, self)
+                    self._freqai_running = False
 
-                # --- Process DI_values ---
-                if 'DI_values' in dataframe.columns:
+                # ------------------------------
+                # Process DI_values safely
+                # ------------------------------
+                if "DI_values" in dataframe.columns:
+
                     if len(dataframe) >= self.di_rolling_window:
-                        dataframe['di_percentile'] = (
-                            dataframe['DI_values']
+                        dataframe["di_percentile"] = (
+                            dataframe["DI_values"]
                             .rolling(self.di_rolling_window)
                             .rank(pct=True)
                         )
-                        logger.debug(f"FreqAI DI_percentile calculated for {pair}")
                     else:
-                        dataframe['di_percentile'] = 0.5
-                        logger.debug(f"FreqAI: Insufficient data for {pair}, using neutral confidence")
+                        dataframe["di_percentile"] = 0.5
+
+                # Debug signals (optional)
+                if "do_predict" in dataframe.columns:
+                    buy_signals = (dataframe["do_predict"] == 1).sum()
+                    sell_signals = (dataframe["do_predict"] == -1).sum()
 
                     logger.debug(
-                        f"DI_values - min: {dataframe['DI_values'].min():.3f}, "
-                        f"max: {dataframe['DI_values'].max():.3f}, "
-                        f"mean: {dataframe['DI_values'].mean():.3f}"
+                        f"FreqAI signals for {pair}: {buy_signals} buy / {sell_signals} sell"
                     )
 
-                # --- Debug signals ---
-                if 'do_predict' in dataframe.columns:
-                    buy_signals = (dataframe['do_predict'] == 1).sum()
-                    sell_signals = (dataframe['do_predict'] == -1).sum()
-                    logger.debug(f"FreqAI signals for {pair}: {buy_signals} buy, {sell_signals} sell")
-
             except KeyError:
-                logger.warning(f"FreqAI model not ready for {pair} - skipping AI signals")
+                logger.debug(f"FreqAI model not ready for {pair}")
 
             except Exception as e:
                 logger.warning(f"FreqAI error for {pair}: {e}")
 
-        else:
-            if self.freqai is None:
-                logger.warning("FreqAI not initialized for this strategy")
+            finally:
+                # ALWAYS release the lock
+                self._freqai_running = False
 
-        # --- Classical indicators (always run) ---
+        # --------------------------------------------------
+        # Your normal indicators continue below this line
+        # --------------------------------------------------
 
         # RSI 
         dataframe['rsi'] = ta.RSI(dataframe, timeperiod=self.buy_rsi_period.value)
