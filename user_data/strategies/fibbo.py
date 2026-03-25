@@ -731,22 +731,22 @@ class Fibbo(IStrategy):
         dataframe['fastd_rsi_sell'] = dataframe['fastk_rsi_sell'].rolling(self.sell_smoothD.value).mean()
 
         # MACD (See Hyperopt Table)
-        macd = ta.MACD(dataframe['close'], fastperiod=6, slowperiod=13, signalperiod=4)
+        macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
         dataframe['macd'] = macd['macd']
         dataframe['macdhist'] = macd['macdhist']
         dataframe['macdsignal'] = macd['macdsignal']
 
         # Bollinger Bands
-        bollinger = ta.BBANDS(dataframe['close'], timeperiod=max(2, int(self.buy_bb_period.value if self.buy_bb_period.value else 20)), nbdevup=2.0, nbdevdn=2.0, matype=0)
+        bollinger = ta.BBANDS(dataframe, timeperiod=max(2, int(self.buy_bb_period.value if self.buy_bb_period.value else 20)), nbdevup=2.0, nbdevdn=2.0, matype=0)
         dataframe['bb_upperband'] = bollinger['upperband']
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
 
         # EMA & DEMA
         for period in span["buy"]["buy_slow_ema"]["choices"]:
-            dataframe[f'ema{period}'] = ta.EMA(dataframe['close'], timeperiod=int(period))
+            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=int(period))
         for period in span["buy"]["buy_fast_dema"]["choices"]:
-            dataframe[f'dema{period}'] = ta.DEMA(dataframe['close'], timeperiod=int(period))
+            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=int(period))
 
         # SWING high/low for Fibonacci levels
         dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
@@ -777,15 +777,15 @@ class Fibbo(IStrategy):
         informative['atr'] = ta.ATR(informative, timeperiod=14)
         informative['rsi'] = ta.RSI(informative['close'], timeperiod=self.buy_rsi_period.value)
 
-        macd_inf = ta.MACD(informative['close'], fastperiod=12, slowperiod=26, signalperiod=9)
+        macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
         informative['macdhist'] = macd_inf['macdhist']
         informative['macdsignal'] = macd_inf['macdsignal']
 
         for period in span["buy"]["buy_slow_ema"]["choices"]:
-            informative[f'ema{period}'] = ta.EMA(informative['close'], timeperiod=int(period))
+            informative[f'ema{period}'] = ta.EMA(informative, timeperiod=int(period))
         for period in span["buy"]["buy_fast_dema"]["choices"]:
-            informative[f'dema{period}'] = ta.DEMA(informative['close'], timeperiod=int(period))
+            informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=int(period))
 
         # Merge informative pair data into main dataframe
         dataframe = merge_informative_pair(
