@@ -689,7 +689,7 @@ class Fibbo(IStrategy):
                     buy_signals = (dataframe["do_predict"] == 1).sum()
                     sell_signals = (dataframe["do_predict"] == -1).sum()
 
-                    logger.debug(
+                    logger.info(
                         f"FreqAI signals for {pair}: {buy_signals} buy / {sell_signals} sell"
                     )
 
