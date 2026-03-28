@@ -778,7 +778,7 @@ class Fibbo(IStrategy):
     
         # Now it's safe to use 'close'
         informative['atr'] = ta.ATR(informative, timeperiod=14)
-        informative['rsi'] = ta.RSI(informative['close'], timeperiod=self.buy_rsi_period.value)
+        informative['rsi'] = ta.RSI(informative['close'], timeperiod=max(2, int(self.buy_bb_period.value if self.buy_rsi_period.value else 14)))
 
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
