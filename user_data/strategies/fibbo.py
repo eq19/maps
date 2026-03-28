@@ -704,7 +704,7 @@ class Fibbo(IStrategy):
         # --- Classical indicators (always run) ---
 
         # RSI 
-        dataframe['rsi'] = ta.RSI(dataframe['close'], timeperiod=self.buy_rsi_period.value)
+        dataframe['rsi'] = ta.RSI(dataframe['close'], timeperiod=max(2, int(self.buy_bb_period.value if self.buy_rsi_period.value else 14)))
 
         # VWAP (Lookahead bias Issue)
         #dataframe['vwap'] = qtpylib.vwap(dataframe)
