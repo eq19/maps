@@ -667,6 +667,10 @@ class Fibbo(IStrategy):
 
         if self.freqai_enabled:
 
+            if not hasattr(self, "_freqai_initialized"):
+                self._freqai_initialized = True
+                dataframe = self.freqai.start(dataframe, metadata, self)
+     
             try:
                 # ------------------------------
                 # Process DI_values (already provided by FreqAI)
