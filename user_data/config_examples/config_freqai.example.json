@@ -1,42 +1,34 @@
 {
   "freqai": {
     "enabled": true,
-    "identifier": "indodax-15m-optimized-v3",
-
-    "purge_old_models": 1,
+    "identifier": "debug-model",
 
     "train_period_days": 14,
     "backtest_period_days": 7,
-
     "live_retrain_hours": 24,
 
     "feature_parameters": {
       "include_timeframes": ["15m"],
-
       "include_corr_pairlist": [],
 
       "label_period_candles": 48,
-
-      "include_shifted_candles": 24,
-      "indicator_periods_candles": [12, 24, 48],
+      "include_shifted_candles": 12,
+      "indicator_periods_candles": [12, 24],
 
       "DI_threshold": 0.6,
       "weight_factor": 0.9,
 
       "principal_component_analysis": false,
-      "use_SVM_to_remove_outliers": true,
-
-      "plot_feature_importances": 0
+      "use_SVM_to_remove_outliers": false
     },
 
     "data_split_parameters": {
-      "test_size": 0.2,
-      "random_state": 42
+      "test_size": 0.2
     },
 
     "model_training_parameters": {
-      "n_estimators": 300,
-      "learning_rate": 0.07,
+      "n_estimators": 200,
+      "learning_rate": 0.1,
       "max_depth": 5
     }
   }
