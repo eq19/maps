@@ -1,7 +1,7 @@
 {
   "freqai": {
     "enabled": true,
-    "identifier": "indodax-15m-24h-v1",
+    "identifier": "indodax-15m-24h-v2",
 
     "purge_old_models": 1,
 
