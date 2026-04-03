@@ -53,6 +53,7 @@ calculate_score() {
 
   local winrate=$(echo "$json_data" | jq -r '.winrate')
   local profit_mean=$(echo "$json_data" | jq -r '.profit_mean')
+  local profit_mean_pct=$(echo "$json_data" | jq -r '.profit_mean_pct')
   local profit_total_pct=$(echo "$json_data" | jq -r '.profit_total_pct')
   local max_drawdown_account=$(echo "$json_data" | jq -r '.max_drawdown_account')
   local trades=$(echo "$json_data" | jq -r '.trades')
@@ -113,7 +114,10 @@ calculate_score() {
   SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $bonus" | bc -l)
 
   # 🔻 Apply penalties for low trade count
-  SCORE=$(echo "$SCORE * $trades / 100" | bc -l)
+  if (( $(echo "$trades < 100" | bc -l) )); then
+    SCORE=$(echo "$SCORE * $trades / 100" | bc -l)
+  fi
+
   SCORE=$(printf "%.2f" "$SCORE")
   CALCULATION="true"
 
