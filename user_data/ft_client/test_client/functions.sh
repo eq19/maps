@@ -52,7 +52,7 @@ calculate_score() {
   fi
 
   local winrate=$(echo "$json_data" | jq -r '.winrate')
-  local profit_mean_pct=$(echo "$json_data" | jq -r '.profit_mean_pct')
+  local profit_mean=$(echo "$json_data" | jq -r '.profit_mean')
   local profit_total_pct=$(echo "$json_data" | jq -r '.profit_total_pct')
   local max_drawdown_account=$(echo "$json_data" | jq -r '.max_drawdown_account')
   local trades=$(echo "$json_data" | jq -r '.trades')
