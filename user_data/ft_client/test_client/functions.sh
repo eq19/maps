@@ -84,12 +84,6 @@ calculate_score() {
   else
     drawdown_score=0
   fi
-
-  local trade_score=0
-  if (( $(echo "$trades > 2000" | bc -l) )); then
-    trade_score=5
-  fi
-
   local bonus=0
   if (( $(echo "$sharpe > 1.0" | bc -l) )); then
     bonus=$(echo "$bonus + 2" | bc)
@@ -101,19 +95,10 @@ calculate_score() {
     bonus=$(echo "$bonus - 3" | bc)
   fi
 
-  SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $trade_score + $bonus" | bc -l)
+  SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $bonus" | bc -l)
 
   # 🔻 Apply penalties for low trade count
-  if (( $(echo "$trades < 3" | bc -l) )); then
-    SCORE=0
-  elif (( $(echo "$trades < 10" | bc -l) )); then
-    SCORE=$(echo "$SCORE * 0.25" | bc -l)
-  elif (( $(echo "$trades < 20" | bc -l) )); then
-    SCORE=$(echo "$SCORE * 0.5" | bc -l)
-  elif (( $(echo "$trades < 30" | bc -l) )); then
-    SCORE=$(echo "$SCORE * 0.75" | bc -l)
-  fi
-
+  SCORE=$(echo "$SCORE * $trades / 100" | bc -l)
   SCORE=$(printf "%.2f" "$SCORE")
   CALCULATION="true"
 
@@ -121,14 +106,15 @@ calculate_score() {
   echo "📈 Strategy Summary for 'Fibbo'"
   echo "---------------------------------"
   echo "🧮 SCORE: $SCORE"
-  echo "💰 Total Profit: $profit_total_pct%"
-  echo "📊 Winrate: $winrate"
-  echo "🔁 Trades: $trades"
-  echo "📉 Max Drawdown: $max_drawdown_account%"
-  echo "📈 CAGR: $cagr"
-  echo "📦 Expectancy: $expectancy"
-  echo "📌 Sharpe: $sharpe"
-  echo "📌 Sortino: $sortino"
+  echo "💰 Profit Total: $profit_total_pct% (score: $profit_total_score)"
+  echo "💰 Profit Mean: $profit_mean_pct% (score: $profit_mean_score)"
+  echo "📊 Winrate: $winrate (score: $winrate_score)"
+  echo "📈 CAGR: $cagr (score: $cagr_score)"
+  echo "📦 Expectancy: $expectancy (score: $expectancy_score)"
+  echo "📌 Sharpe: $sharpe (not affected yet to the score)"
+  echo "📌 Sortino: $sortino (not affected yet to the score)"
+  echo "📉 Max Drawdown: $max_drawdown_account% (bonus applied if < 20)"
+  echo "🔁 Trades: $trades (penalties applied if < 100)"
 
   echo ""
   echo "🔍 Behavior Profile:"
