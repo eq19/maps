@@ -61,7 +61,7 @@ calculate_score() {
   local sharpe=$(echo "$json_data" | jq -r '.sharpe')
   local sortino=$(echo "$json_data" | jq -r '.sortino')
 
-  if [[ -z "$winrate" || -z "$profit_mean_pct" || -z "$profit_total_pct" || -z "$max_drawdown_account" || -z "$trades" ]]; then
+  if [[ -z "$winrate" || -z "$profit_mean" || -z "$profit_total_pct" || -z "$max_drawdown_account" || -z "$trades" ]]; then
     echo "Missing one or more required values."
     return 1
   fi
