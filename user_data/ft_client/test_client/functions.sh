@@ -118,6 +118,9 @@ calculate_score() {
     SCORE=$(echo "$SCORE * $trades / 100" | bc -l)
   fi
 
+  WINRATE=$(echo "$winrate * 100" | bc -l)
+  WINRATE=$(printf "%.2f" "$WINRATE")
+
   SCORE=$(printf "%.2f" "$SCORE")
   CALCULATION="true"
 
@@ -125,9 +128,9 @@ calculate_score() {
   echo "📈 Strategy Summary for 'Fibbo'"
   echo "---------------------------------"
   echo "🧮 SCORE: $SCORE"
-  echo "💰 Profit Total: $profit_total_pct% (score: $profit_total_score)"
-  echo "💰 Profit Mean: $profit_mean_pct% (score: $profit_mean_score)"
-  echo "📊 Winrate: $winrate (score: $winrate_score)"
+  echo "💰 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score"))"
+  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score"))"
+  echo "📊 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score"))"
   echo "📈 CAGR: $cagr (score: $cagr_score)"
   echo "📦 Expectancy: $expectancy (score: $expectancy_score)"
   echo "📌 Sharpe: $sharpe (bonus applied if > 0)"
