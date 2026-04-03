@@ -5,6 +5,13 @@
 
 calculate_score() {
 
+  # Scoring breakdown:
+  # Winrate: 25 pts
+  # Profit per trade: 25 pts
+  # Total profit: 25 pts
+  # Drawdown ratio: 20 pts
+  # Trade count bonus (capped): 5 pts
+    
   sleep 5
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
