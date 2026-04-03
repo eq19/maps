@@ -114,8 +114,8 @@ calculate_score() {
   SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $bonus" | bc -l)
 
   # 🔻 Apply penalties for low trade count
-  if (( $(echo "$trades < 100" | bc -l) )); then
-    SCORE=$(echo "$SCORE * $trades / 100" | bc -l)
+  if (( $(echo "$trades < 200" | bc -l) )); then
+    SCORE=$(echo "$SCORE * $trades / 200" | bc -l)
   fi
 
   WINRATE=$(echo "$winrate * 100" | bc -l)
