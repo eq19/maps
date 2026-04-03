@@ -75,15 +75,16 @@ calculate_score() {
   local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
     drawdown_score=10
-  elif (( $(echo "$max_drawdown_account < 5" | bc -l) )); then
+  elif (( $(echo "$max_drawdown_account < 0.05" | bc -l) )); then
     drawdown_score=7
-  elif (( $(echo "$max_drawdown_account < 10" | bc -l) )); then
+  elif (( $(echo "$max_drawdown_account < 0.10" | bc -l) )); then
     drawdown_score=5
-  elif (( $(echo "$max_drawdown_account < 20" | bc -l) )); then
+  elif (( $(echo "$max_drawdown_account < 0.20" | bc -l) )); then
     drawdown_score=2
   else
     drawdown_score=0
   fi
+
   local bonus=0
   if (( $(echo "$sharpe > 1.0" | bc -l) )); then
     bonus=$(echo "$bonus + 2" | bc)
@@ -111,9 +112,9 @@ calculate_score() {
   echo "📊 Winrate: $winrate (score: $winrate_score)"
   echo "📈 CAGR: $cagr (score: $cagr_score)"
   echo "📦 Expectancy: $expectancy (score: $expectancy_score)"
-  echo "📌 Sharpe: $sharpe (not affected yet to the score)"
-  echo "📌 Sortino: $sortino (not affected yet to the score)"
-  echo "📉 Max Drawdown: $max_drawdown_account% (bonus applied if < 20)"
+  echo "📌 Sharpe: $sharpe (bonus applied if > 0)"
+  echo "📌 Sortino: $sortino (bonus applied if > 0)"
+  echo "📉 Max Drawdown: $max_drawdown_account% (bonus applied if < 0.20)"
   echo "🔁 Trades: $trades (penalties applied if < 100)"
 
   echo ""
@@ -124,7 +125,7 @@ calculate_score() {
     echo "⚖️ High-profit but with fewer trades – consider increasing volume"
   elif (( $(echo "$profit_total_pct < 20" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
     echo "⚠️ Active trading but low profitability – review signal precision"
-  elif (( $(echo "$max_drawdown_account > 20" | bc -l) )); then
+  elif (( $(echo "$max_drawdown_account > 0.20" | bc -l) )); then
     echo "🛑 Risky strategy with high drawdown – requires protection tuning"
   else
     echo "📌 Balanced strategy – decent trade-off between risk and return"
