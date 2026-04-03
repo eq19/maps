@@ -6,12 +6,27 @@
 calculate_score() {
 
   # Scoring breakdown:
-  # Winrate: 25 pts
-  # Profit per trade: 25 pts
-  # Total profit: 25 pts
-  # Drawdown ratio: 20 pts
-  # Trade count bonus (capped): 5 pts
-    
+
+  # Profit Block (40%)
+    # profit_total   = 20%
+    # profit_mean    = 10%
+    # winrate        = 10%
+
+  # Risk Block (30%)
+    # max_drawdown_account = 15%
+    # calmar               = 10%
+    # sharpe               = 5%
+
+  # Quality Block (30%)
+    # expectancy_ratio = 10%
+    # profit_factor    = 10%
+    # sortino          = 5%
+    # sqn              = 5%
+
+  # Optional
+    # cagr as bonus (0 - 5)%
+    # trades as penalties if lower than 100
+
   sleep 5
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
