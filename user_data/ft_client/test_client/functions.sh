@@ -186,9 +186,24 @@ calculate_score() {
   echo "📊 Risk Block: $(printf "%.2f" "$risk") of 30"
   echo -e "\n"
 
-  [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
-  [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
-  local expectancy_score=$(echo "$expectancy * 5" | bc -l)
+  local expectancy_score=$(echo "
+    scale=6
+    e = $expectancy
+
+    if (e < 0.02) {
+      e * 100
+    } else if (e < 0.05) {
+      2 + (e - 0.02) * (2 / 0.03)
+    } else if (e < 0.1) {
+      4 + (e - 0.05) * (2 / 0.05)
+    } else if (e < 0.2) {
+      6 + (e - 0.1) * (2 / 0.1)
+    } else if (e < 0.3) {
+      8 + (e - 0.2) * (2 / 0.1)
+    } else {
+      10
+    }
+  " | bc -l)
 
   local sortino_score=$(echo "
     scale=6
