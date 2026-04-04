@@ -84,12 +84,11 @@ calculate_score() {
   [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
 
   local winrate_score=$(echo "$winrate * 10" | bc -l)
-  local profit_mean_score=$(echo "$trades * $profit_mean * $trades / 200 * 10" | bc -l)
   local profit_total_score=$(echo "$profit_total_pct * 1" | bc -l)
   local cagr_score=$(echo "$cagr * 10" | bc -l)
   local expectancy_score=$(echo "$expectancy * 5" | bc -l)
 
-  SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score" | bc -l)
+  SCORE=$(echo "$winrate_score + $profit_total_score + $cagr_score + $expectancy_score" | bc -l)
 
   local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
@@ -119,7 +118,7 @@ calculate_score() {
 
   SCORE=$(echo "$SCORE + $bonus" | bc -l)
 
-  local profit_mean_weight=$(echo "
+  local profit_mean_score=$(echo "
     scale=6
 
     t = sqrt($trades / 200)
@@ -149,6 +148,7 @@ calculate_score() {
     " | bc -l)
 
   # 🔻 Apply penalties for low trade count
+  SCORE=$(echo "$SCORE + $profit_mean_score" | bc -l)
   if (( $(echo "$trades < 200" | bc -l) )); then
     SCORE=$(echo "$SCORE * $trades / 200" | bc -l)
   fi
@@ -164,7 +164,7 @@ calculate_score() {
   echo "---------------------------------"
   echo "🧮 SCORE: $SCORE"
   echo "💰 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score") of 20)"
-  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_weight") of 10)"
+  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
   echo "📊 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
   echo "📈 CAGR: $cagr (score: $cagr_score)"
   echo "📦 Expectancy: $expectancy (score: $expectancy_score)"
