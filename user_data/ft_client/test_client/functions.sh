@@ -59,6 +59,8 @@ calculate_score() {
   local trades=$(echo "$json_data" | jq -r '.trades')
   local cagr=$(echo "$json_data" | jq -r '.cagr')
   local expectancy=$(echo "$json_data" | jq -r '.expectancy')
+  local expectancy_ratio=$(echo "$json_data" | jq -r '.expectancy_ratio')
+  local profit_factor=$(echo "$json_data" | jq -r '.profit_factor')
   local sharpe=$(echo "$json_data" | jq -r '.sharpe')
   local sortino=$(echo "$json_data" | jq -r '.sortino')
 
@@ -86,6 +88,26 @@ calculate_score() {
   local profit_total_score=$(echo "$profit_total_pct * 1" | bc -l)
   local cagr_score=$(echo "$cagr * 10" | bc -l)
   local expectancy_score=$(echo "$expectancy * 5" | bc -l)
+
+  local profit_mean_weight=$(echo "
+    scale=6
+
+    # Components
+    t = sqrt($trades / 200)
+    e = $expectancy_ratio / 0.1
+
+    pm = $profit_mean / 0.02
+    pm_factor = (pm > 1) ? 1 : pm
+
+    pf = $profit_factor / 2
+    pf_factor = (pf > 1) ? 1 : pf
+
+    # Raw weight
+    w = 10 * t * e * pm_factor * pf_factor
+
+    # Cap at 10
+    (w > 10) ? 10 : w
+  " | bc -l)
 
   local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
@@ -129,7 +151,7 @@ calculate_score() {
   echo "---------------------------------"
   echo "🧮 SCORE: $SCORE"
   echo "💰 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score") of 20)"
-  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
+  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_weight") of 10)"
   echo "📊 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
   echo "📈 CAGR: $cagr (score: $cagr_score)"
   echo "📦 Expectancy: $expectancy (score: $expectancy_score)"
