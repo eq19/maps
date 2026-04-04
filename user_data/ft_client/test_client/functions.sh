@@ -82,7 +82,7 @@ calculate_score() {
   [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
 
   local winrate_score=$(echo "$winrate * 10" | bc -l)
-  local profit_mean_score=$(echo "$profit_mean * $trades * 25" | bc -l)
+  local profit_mean_score=$(echo "$profit_mean * $trades * 10" | bc -l)
   local profit_total_score=$(echo "$profit_total_pct * 1" | bc -l)
   local cagr_score=$(echo "$cagr * 10" | bc -l)
   local expectancy_score=$(echo "$expectancy * 5" | bc -l)
@@ -128,9 +128,9 @@ calculate_score() {
   echo "📈 Strategy Summary for 'Fibbo'"
   echo "---------------------------------"
   echo "🧮 SCORE: $SCORE"
-  echo "💰 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score"))"
-  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score"))"
-  echo "📊 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score"))"
+  echo "💰 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score") of 20)"
+  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
+  echo "📊 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
   echo "📈 CAGR: $cagr (score: $cagr_score)"
   echo "📦 Expectancy: $expectancy (score: $expectancy_score)"
   echo "📌 Sharpe: $sharpe (bonus applied if > 0)"
