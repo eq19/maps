@@ -160,18 +160,24 @@ calculate_score() {
     }
   " | bc -l) 
 
-  local calmar_score
-  if (( $(echo "$calmar < 0" | bc -l) )); then
-    calmar_score=0
-  elif (( $(echo "$calmar < 5" | bc -l) )); then
-    calmar_score=5 
-  elif (( $(echo "$calmar < 10" | bc -l) )); then
-    calmar_score=3
-  elif (( $(echo "$calmar < 20" | bc -l) )); then
-    calmar_score=2
-  else
-    calmar_score=1
-  fi
+  local calmar_score=$(echo "
+    scale=6
+    c = $calmar
+
+    if (c < 0.5) {
+      c * 2
+    } else if (c < 1) {
+      1 + (c - 0.5) * 2
+    } else if (c < 2) {
+      2 + (c - 1)
+    } else if (c < 3) {
+      3 + (c - 2)
+    } else if (c < 5) {
+      4 + (c - 3) * 0.5
+    } else {
+      5
+    }
+  " | bc -l)
 
   echo "📌 2.2 Sharpe: $sharpe (score: $sharpe_score of 10)"
   echo "📌 2.3 Calmar: $calmar (score: $calmar_score of 5)"
