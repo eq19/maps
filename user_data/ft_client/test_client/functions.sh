@@ -174,15 +174,14 @@ calculate_score() {
   [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
   [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
   local cagr_score=$(echo "$cagr * 10" | bc -l)
+  echo "📈 CAGR: $cagr (score: $cagr_score)"
 
   # 🔻 Apply penalties for low trade count
-  SCORE=$(echo "$profit + $risk + $quality + $optional" | bc -l)
+  SCORE=$(echo "$profit + $risk + $quality + $cagr_score" | bc -l)
   if (( $(echo "$trades < 200" | bc -l) )); then
+    echo "🔁 Trades: $trades (penalties applied to $(printf "%.2f" "$SCORE"))"
     SCORE=$(echo "$SCORE * $trades / 200" | bc -l)
   fi
-
-  echo "📈 CAGR: $cagr (score: $cagr_score)"
-  echo "🔁 Trades: $trades (penalties applied to $(printf "%.2f" "$SCORE"))"
 
   SCORE=$(printf "%.2f" "$SCORE")
   echo "🧮 SCORE: $SCORE"
