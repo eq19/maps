@@ -76,7 +76,7 @@ calculate_score() {
     return
   fi
 
-  echo ""
+  echo -e "\n"
   echo "📈 Strategy Summary for 'Fibbo'"
   echo "---------------------------------"
 
@@ -125,7 +125,7 @@ calculate_score() {
 
   local profit=$(echo "$profit_total_score + $profit_mean_score + $winrate_score" | bc -l)
   echo "📊 Profit Block: $(printf "%.2f" "$profit") of 40"
-  echo ""
+  echo -e "\n"
 
   local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
@@ -158,7 +158,7 @@ calculate_score() {
 
   local risk=$(echo "$drawdown_score" | bc -l)
   echo "📊 Risk Block: $(printf "%.2f" "$risk") of 30"
-  echo ""
+  echo -e "\n"
 
   [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
   [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
@@ -171,7 +171,7 @@ calculate_score() {
 
   local quality=$(echo "$expectancy_score" | bc -l)
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
-  echo ""
+  echo -e "\n"
   
   [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
   [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
@@ -189,7 +189,7 @@ calculate_score() {
   echo "🧮 SCORE: $SCORE"
   CALCULATION="true"
 
-  echo ""
+  echo -e "\n"
   echo "🔍 Behavior Profile:"
   if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
     echo "✅ High-profit and active trading strategy"
