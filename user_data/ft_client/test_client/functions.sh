@@ -127,23 +127,30 @@ calculate_score() {
   echo "📊 Profit Block: $(printf "%.2f" "$profit") of 40"
   echo -e "\n"
 
-  local drawdown_score
-  if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
-    drawdown_score=15
-  elif (( $(echo "$max_drawdown_account < 0.05" | bc -l) )); then
-    drawdown_score=10  
-  elif (( $(echo "$max_drawdown_account < 0.10" | bc -l) )); then
-    drawdown_score=5
-  elif (( $(echo "$max_drawdown_account < 0.20" | bc -l) )); then
-    drawdown_score=2
-  else
-    drawdown_score=0
-  fi
+  local dd_score=$(echo "
+    scale=6
+
+    dd = $max_drawdown_account * 100
+
+    if (dd < 2) {
+      13 + (2 - dd)
+    } else if (dd < 5) {
+      10 + (5 - dd)
+    } else if (dd < 10) {
+      7 + (10 - dd) * (3 / 5)
+    } else if (dd < 20) {
+      4 + (20 - dd) * (3 / 10)
+    } else if (dd < 30) {
+      2 + (30 - dd) * (2 / 10)
+    } else {
+      0
+    }
+  " | bc -l)
 
   DRAWDOWN=$(echo "$max_drawdown_account * 100" | bc -l)
   DRAWDOWN=$(printf "%.2f" "$DRAWDOWN")
 
-  echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $drawdown_score of 15)"
+  echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $dd_score of 15)"
 
   local sharpe_score=$(echo "
     scale=6
@@ -182,7 +189,7 @@ calculate_score() {
   echo "📌 2.2 Sharpe: $sharpe (score: $sharpe_score of 10)"
   echo "📌 2.3 Calmar: $calmar (score: $calmar_score of 5)"
 
-  local risk=$(echo "$drawdown_score + $sharpe_score + $calmar_score" | bc -l)
+  local risk=$(echo "$dd_score + $sharpe_score + $calmar_score" | bc -l)
   echo "📊 Risk Block: $(printf "%.2f" "$risk") of 30"
   echo -e "\n"
 
