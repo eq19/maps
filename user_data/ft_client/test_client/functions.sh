@@ -265,9 +265,25 @@ calculate_score() {
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
   echo -e "\n"
   
-  [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
-  [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
-  local cagr_score=$(echo "$cagr * 10" | bc -l)
+  local cagr_score=$(echo "
+    scale=6
+    c = $cagr
+
+    if (c < 5) {
+      c / 5
+    } else if (c < 15) {
+      1 + (c - 5) * (1 / 10)
+    } else if (c < 30) {
+      2 + (c - 15) * (1 / 15)
+    } else if (c < 60) {
+      3 + (c - 30) * (1 / 30)
+    } else if (c < 100) {
+      4 + (c - 60) * (1 / 40)
+    } else {
+      5
+    }
+  " | bc -l)
+
   echo "📈 CAGR: $cagr (score: $cagr_score)"
 
   # 🔻 Apply penalties for low trade count
