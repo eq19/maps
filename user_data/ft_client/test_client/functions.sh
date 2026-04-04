@@ -89,6 +89,36 @@ calculate_score() {
   local cagr_score=$(echo "$cagr * 10" | bc -l)
   local expectancy_score=$(echo "$expectancy * 5" | bc -l)
 
+  SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score" | bc -l)
+
+  local drawdown_score
+  if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
+    drawdown_score=10
+  elif (( $(echo "$max_drawdown_account < 0.05" | bc -l) )); then
+    drawdown_score=7
+  elif (( $(echo "$max_drawdown_account < 0.10" | bc -l) )); then
+    drawdown_score=5
+  elif (( $(echo "$max_drawdown_account < 0.20" | bc -l) )); then
+    drawdown_score=2
+  else
+    drawdown_score=0
+  fi
+
+  SCORE=$(echo "$SCORE + $drawdown_score" | bc -l)
+
+  local bonus=0
+  if (( $(echo "$sharpe > 1.0" | bc -l) )); then
+    bonus=$(echo "$bonus + 2" | bc)
+  fi
+  if (( $(echo "$sortino > 1.0" | bc -l) )); then
+    bonus=$(echo "$bonus + 2" | bc)
+  fi
+  if (( $(echo "$sortino < 0" | bc -l) )); then
+    bonus=$(echo "$bonus - 3" | bc)
+  fi
+
+  SCORE=$(echo "$SCORE + $bonus" | bc -l)
+
   local profit_mean_weight=$(echo "
     scale=6
 
@@ -117,32 +147,6 @@ calculate_score() {
       w
     }
     " | bc -l)
-
-  local drawdown_score
-  if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
-    drawdown_score=10
-  elif (( $(echo "$max_drawdown_account < 0.05" | bc -l) )); then
-    drawdown_score=7
-  elif (( $(echo "$max_drawdown_account < 0.10" | bc -l) )); then
-    drawdown_score=5
-  elif (( $(echo "$max_drawdown_account < 0.20" | bc -l) )); then
-    drawdown_score=2
-  else
-    drawdown_score=0
-  fi
-
-  local bonus=0
-  if (( $(echo "$sharpe > 1.0" | bc -l) )); then
-    bonus=$(echo "$bonus + 2" | bc)
-  fi
-  if (( $(echo "$sortino > 1.0" | bc -l) )); then
-    bonus=$(echo "$bonus + 2" | bc)
-  fi
-  if (( $(echo "$sortino < 0" | bc -l) )); then
-    bonus=$(echo "$bonus - 3" | bc)
-  fi
-
-  SCORE=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $cagr_score + $expectancy_score + $drawdown_score + $bonus" | bc -l)
 
   # 🔻 Apply penalties for low trade count
   if (( $(echo "$trades < 200" | bc -l) )); then
