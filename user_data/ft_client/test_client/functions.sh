@@ -25,7 +25,7 @@ calculate_score() {
 
   # Optional
     # cagr as bonus (0 - 5)%
-    # trades as penalties if lower than 100
+    # trades as penalties if lower than 200
 
   sleep 5
   local dir="user_data/backtest_results"
