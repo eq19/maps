@@ -145,21 +145,36 @@ calculate_score() {
 
   echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $drawdown_score of 15)"
 
-  local bonus=0
-  if (( $(echo "$sharpe > 1.0" | bc -l) )); then
-    bonus=$(echo "$bonus + 2" | bc)
-  fi
-  if (( $(echo "$sortino > 1.0" | bc -l) )); then
-    bonus=$(echo "$bonus + 2" | bc)
-  fi
-  if (( $(echo "$sortino < 0" | bc -l) )); then
-    bonus=$(echo "$bonus - 3" | bc)
+  local sharpe_score
+  if (( $(echo "$sharpe < 0" | bc -l) )); then
+    sharpe_score=0
+  elif (( $(echo "$sharpe < 5" | bc -l) )); then
+    sharpe_score=10  
+  elif (( $(echo "$sharpe < 10" | bc -l) )); then
+    sharpe_score=5
+  elif (( $(echo "$sharpe < 20" | bc -l) )); then
+    sharpe_score=2
+  else
+    sharpe_score=1
   fi
 
-  echo "📌 2.2 Sharpe: $sharpe (score: $drawdown_score of 10)"
-  echo "📌 2.3 Calmar: $calmar (score: $drawdown_score of 5)"
+  local calmar_score
+  if (( $(echo "$calmar < 0" | bc -l) )); then
+    calmar_score=0
+  elif (( $(echo "$calmar < 5" | bc -l) )); then
+    calmar_score=5 
+  elif (( $(echo "$calmar < 10" | bc -l) )); then
+    calmar_score=3
+  elif (( $(echo "$calmar < 20" | bc -l) )); then
+    calmar_score=2
+  else
+    calmar_score=1
+  fi
 
-  local risk=$(echo "$drawdown_score" | bc -l)
+  echo "📌 2.2 Sharpe: $sharpe (score: $sharpe_score of 10)"
+  echo "📌 2.3 Calmar: $calmar (score: $calmar_score of 5)"
+
+  local risk=$(echo "$drawdown_score + $sharpe_score + $calmar_score" | bc -l)
   echo "📊 Risk Block: $(printf "%.2f" "$risk") of 30"
   echo -e "\n"
 
