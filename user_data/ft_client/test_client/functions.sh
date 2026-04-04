@@ -136,7 +136,7 @@ calculate_score() {
   echo "📌 Sharpe: $sharpe (bonus applied if > 0)"
   echo "📌 Sortino: $sortino (bonus applied if > 0)"
   echo "📉 Max Drawdown: $max_drawdown_account% (bonus applied if < 0.20)"
-  echo "🔁 Trades: $trades (penalties applied if < 100)"
+  echo "🔁 Trades: $trades (penalties applied if < 200)"
 
   echo ""
   echo "🔍 Behavior Profile:"
