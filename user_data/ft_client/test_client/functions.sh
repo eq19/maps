@@ -130,7 +130,9 @@ calculate_score() {
   local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
     drawdown_score=15
-  elif (( $(echo "$max_drawdown_account < 0.05" | bc "$max_drawdown_account < 0.10" | bc -l) )); then
+  elif (( $(echo "$max_drawdown_account < 0.05" | bc -l) )); then
+    drawdown_score=10  
+  elif (( $(echo "$max_drawdown_account < 0.10" | bc -l) )); then
     drawdown_score=5
   elif (( $(echo "$max_drawdown_account < 0.20" | bc -l) )); then
     drawdown_score=2
