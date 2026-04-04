@@ -188,7 +188,7 @@ calculate_score() {
 
   local expectancy_score=$(echo "
     scale=6
-    e = $expectancy
+    e = $expectancy_ratio
 
     if (e < 0.02) {
       e * 100
@@ -200,6 +200,25 @@ calculate_score() {
       6 + (e - 0.1) * (2 / 0.1)
     } else if (e < 0.3) {
       8 + (e - 0.2) * (2 / 0.1)
+    } else {
+      10
+    }
+  " | bc -l)
+
+  local profit_factor_score=$(echo "
+    scale=6
+    p = $profit_factor
+
+    if (p < 1) {
+      0
+    } else if (p < 1.2) {
+      (p - 1) * (3 / 0.2)
+    } else if (p < 1.5) {
+      3 + (p - 1.2) * (2 / 0.3)
+    } else if (p < 2) {
+      5 + (p - 1.5) * (2 / 0.5)
+    } else if (p < 3) {
+      7 + (p - 2) * 2
     } else {
       10
     }
@@ -220,12 +239,12 @@ calculate_score() {
     }
   " | bc -l)
 
-  echo "📦 3.1 Expectancy: $expectancy (score: $expectancy_score of 10)"
-  echo "📦 3.2 Profit Factor: $profit_factor (score: $expectancy_score of 10)"
+  echo "📦 3.1 Expectancy: $expectancy_ratio (score: $expectancy_score of 10)"
+  echo "📦 3.2 Profit Factor: $profit_factor (score: $profit_factor_score of 10)"
   echo "📌 3.3 Sortino: $sortino (score: $sortino_score of 5)"
   echo "📌 3.4 SQN: $sqn (score: $expectancy_score of 5)"
 
-  local quality=$(echo "$expectancy_score + $sortino_score" | bc -l)
+  local quality=$(echo "$expectancy_score + $profit_factor_score + $sortino_score" | bc -l)
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
   echo -e "\n"
   
