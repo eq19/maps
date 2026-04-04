@@ -74,7 +74,7 @@ calculate_score() {
 
   [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
   [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
-  [[ $(echo "$profit_total_pct > 25" | bc -l) -eq 1 ]] && profit_total_pct=25
+  [[ $(echo "$profit_total_pct > 20" | bc -l) -eq 1 ]] && profit_total_pct=20
 
   [[ $(echo "$profit_mean < 0" | bc -l) -eq 1 ]] && profit_mean=0
   [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_pct=0
