@@ -182,12 +182,25 @@ calculate_score() {
   [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
   local expectancy_score=$(echo "$expectancy * 5" | bc -l)
 
+  local sortino_score
+  if (( $(echo "$sortino < 0" | bc -l) )); then
+    sortino_score=0
+  elif (( $(echo "$sortino < 5" | bc -l) )); then
+    sortino_score=5
+  elif (( $(echo "$sortino < 10" | bc -l) )); then
+    sortino_score=3
+  elif (( $(echo "$sortino < 20" | bc -l) )); then
+    sortino_score=2
+  else
+    sortino_score=1
+  fi
+
   echo "📦 3.1 Expectancy: $expectancy (score: $expectancy_score of 10)"
   echo "📦 3.2 Profit Factor: $profit_factor (score: $expectancy_score of 10)"
-  echo "📌 3.3 Sortino: $sortino (score: $expectancy_score of 5)"
+  echo "📌 3.3 Sortino: $sortino (score: $sortino_score of 5)"
   echo "📌 3.4 SQN: $sqn (score: $expectancy_score of 5)"
 
-  local quality=$(echo "$expectancy_score" | bc -l)
+  local quality=$(echo "$expectancy_score + $sortino_score" | bc -l)
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
   echo -e "\n"
   
