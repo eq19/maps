@@ -147,7 +147,8 @@ calculate_score() {
     }
   " | bc -l)
 
-  DRAWDOWN=$(echo "$max_drawdown_account * 100" | bc -l)
+  local DRAWDOWN=$(echo "$max_drawdown_account * 100" | bc -l)
+  if (DRAWDOWN > 15) {dd_score=$(echo "$dd_score * 0.7" | bc -l)}
   DRAWDOWN=$(printf "%.2f" "$DRAWDOWN")
 
   echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $dd_score of 15)"
