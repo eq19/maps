@@ -140,7 +140,10 @@ calculate_score() {
     drawdown_score=0
   fi
 
-  echo "📉 2.1 Max Drawdown: $max_drawdown_account% (score: $drawdown_score of 15)"
+  DRAWDOWN=$(echo "$max_drawdown_account * 100" | bc -l)
+  DRAWDOWN=$(printf "%.2f" "$DRAWDOWN")
+
+  echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $drawdown_score of 15)"
 
   local bonus=0
   if (( $(echo "$sharpe > 1.0" | bc -l) )); then
