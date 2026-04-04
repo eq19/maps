@@ -58,6 +58,7 @@ calculate_score() {
   local max_drawdown_account=$(echo "$json_data" | jq -r '.max_drawdown_account')
   local trades=$(echo "$json_data" | jq -r '.trades')
   local cagr=$(echo "$json_data" | jq -r '.cagr')
+  local calmar=$(echo "$json_data" | jq -r '.calmar')
   local expectancy=$(echo "$json_data" | jq -r '.expectancy')
   local expectancy_ratio=$(echo "$json_data" | jq -r '.expectancy_ratio')
   local profit_factor=$(echo "$json_data" | jq -r '.profit_factor')
@@ -74,51 +75,16 @@ calculate_score() {
     return
   fi
 
-  [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
-  [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
+  echo ""
+  echo "📈 Strategy Summary for 'Fibbo'"
+  echo "---------------------------------"
 
-  [[ $(echo "$profit_mean < 0" | bc -l) -eq 1 ]] && profit_mean=0
-  [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
-  [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
-
-  local winrate_score=$(echo "$winrate * 10" | bc -l)
-  local cagr_score=$(echo "$cagr * 10" | bc -l)
-  local expectancy_score=$(echo "$expectancy * 5" | bc -l)
   local profit_total_score=$(echo "$profit_total_pct * 1" | bc -l)
-
   [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_score=0
   [[ $(echo "$profit_total_pct > 20" | bc -l) -eq 1 ]] && profit_total_score=20
-  
-  SCORE=$(echo "$winrate_score + $profit_total_score + $cagr_score + $expectancy_score" | bc -l)
+  echo "💰 1.1 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score") of 20)"
 
-  local drawdown_score
-  if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
-    drawdown_score=10
-  elif (( $(echo "$max_drawdown_account < 0.05" | bc -l) )); then
-    drawdown_score=7
-  elif (( $(echo "$max_drawdown_account < 0.10" | bc -l) )); then
-    drawdown_score=5
-  elif (( $(echo "$max_drawdown_account < 0.20" | bc -l) )); then
-    drawdown_score=2
-  else
-    drawdown_score=0
-  fi
-
-  SCORE=$(echo "$SCORE + $drawdown_score" | bc -l)
-
-  local bonus=0
-  if (( $(echo "$sharpe > 1.0" | bc -l) )); then
-    bonus=$(echo "$bonus + 2" | bc)
-  fi
-  if (( $(echo "$sortino > 1.0" | bc -l) )); then
-    bonus=$(echo "$bonus + 2" | bc)
-  fi
-  if (( $(echo "$sortino < 0" | bc -l) )); then
-    bonus=$(echo "$bonus - 3" | bc)
-  fi
-
-  SCORE=$(echo "$SCORE + $bonus" | bc -l)
-
+  [[ $(echo "$profit_mean < 0" | bc -l) -eq 1 ]] && profit_mean=0
   local profit_mean_score=$(echo "
     scale=6
 
@@ -148,31 +114,83 @@ calculate_score() {
     }
     " | bc -l)
 
+  echo "💰 1.2 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
+
+  WINRATE=$(echo "$winrate * 100" | bc -l)
+  WINRATE=$(printf "%.2f" "$WINRATE")
+
+  local winrate_score=$(echo "$winrate * 10" | bc -l)
+  echo "📊 1.3 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
+
+  SCORE=$(echo "$profit_total_score + $profit_mean_score + $winrate_score" | bc -l)
+  echo "📊 Profit Block: $(printf "%.2f" "$SCORE") of 40"
+  echo ""
+
+  local drawdown_score
+  if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
+    drawdown_score=15
+  elif (( $(echo "$max_drawdown_account < 0.05" | bc "$max_drawdown_account < 0.10" | bc -l) )); then
+    drawdown_score=5
+  elif (( $(echo "$max_drawdown_account < 0.20" | bc -l) )); then
+    drawdown_score=2
+  else
+    drawdown_score=0
+  fi
+
+  echo "📉 2.1 Max Drawdown: $max_drawdown_account% ($drawdown_score of 15)"
+
+  local bonus=0
+  if (( $(echo "$sharpe > 1.0" | bc -l) )); then
+    bonus=$(echo "$bonus + 2" | bc)
+  fi
+  if (( $(echo "$sortino > 1.0" | bc -l) )); then
+    bonus=$(echo "$bonus + 2" | bc)
+  fi
+  if (( $(echo "$sortino < 0" | bc -l) )); then
+    bonus=$(echo "$bonus - 3" | bc)
+  fi
+
+  echo "📌 2.2 Sharpe: $sharpe (bonus applied if > 0)"
+  echo "📌 2.3 Calmar: $calmar (bonus applied if > 0)"
+  echo "📊 Risk Block: $(printf "%.2f" "$SCORE") of 30"
+  echo ""
+
+  [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
+  [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
+  local expectancy_score=$(echo "$expectancy * 5" | bc -l)
+
+  echo "📦 3.1 Expectancy: $expectancy (score: $expectancy_score of 10)"
+  echo "📦 3.2 Profit Factor: $profit_factor (score: $expectancy_score of 10)"
+  echo "📌 3.3 Sortino: $sortino (score: $expectancy_score of 5)"
+  echo "📌 3.4 SQN: $sortino (score: $expectancy_score of 5)"
+  echo "📊 Quality Block: $(printf "%.2f" "$SCORE") of 30"
+  echo ""
+  
+  [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
+  [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
+  local cagr_score=$(echo "$cagr * 10" | bc -l)
+
+  
+  SCORE=$(echo "$winrate_score + $profit_total_score + $cagr_score + $expectancy_score" | bc -l)
+
+
+  SCORE=$(echo "$SCORE + $drawdown_score" | bc -l)
+
+
+  SCORE=$(echo "$SCORE + $bonus" | bc -l)
+
   # 🔻 Apply penalties for low trade count
   SCORE=$(echo "$SCORE + $profit_mean_score" | bc -l)
   if (( $(echo "$trades < 200" | bc -l) )); then
     SCORE=$(echo "$SCORE * $trades / 200" | bc -l)
   fi
 
-  WINRATE=$(echo "$winrate * 100" | bc -l)
-  WINRATE=$(printf "%.2f" "$WINRATE")
+  echo "📈 CAGR: $cagr (score: $cagr_score)"
+  echo "🔁 Trades: $trades (penalties applied if < 200)"
 
   SCORE=$(printf "%.2f" "$SCORE")
-  CALCULATION="true"
-
-  echo ""
-  echo "📈 Strategy Summary for 'Fibbo'"
-  echo "---------------------------------"
   echo "🧮 SCORE: $SCORE"
-  echo "💰 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score") of 20)"
-  echo "💰 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
-  echo "📊 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
-  echo "📈 CAGR: $cagr (score: $cagr_score)"
-  echo "📦 Expectancy: $expectancy (score: $expectancy_score)"
-  echo "📌 Sharpe: $sharpe (bonus applied if > 0)"
-  echo "📌 Sortino: $sortino (bonus applied if > 0)"
-  echo "📉 Max Drawdown: $max_drawdown_account% (bonus applied if < 0.20)"
-  echo "🔁 Trades: $trades (penalties applied if < 200)"
+  CALCULATION="true"
 
   echo ""
   echo "🔍 Behavior Profile:"
