@@ -76,18 +76,19 @@ calculate_score() {
 
   [[ $(echo "$cagr > 1.0" | bc -l) -eq 1 ]] && cagr=1.0
   [[ $(echo "$expectancy > 1.0" | bc -l) -eq 1 ]] && expectancy=1.0
-  [[ $(echo "$profit_total_pct > 20" | bc -l) -eq 1 ]] && profit_total_pct=20
 
   [[ $(echo "$profit_mean < 0" | bc -l) -eq 1 ]] && profit_mean=0
-  [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_pct=0
   [[ $(echo "$cagr < 0" | bc -l) -eq 1 ]] && cagr=0
   [[ $(echo "$expectancy < 0" | bc -l) -eq 1 ]] && expectancy=0
 
   local winrate_score=$(echo "$winrate * 10" | bc -l)
-  local profit_total_score=$(echo "$profit_total_pct * 1" | bc -l)
   local cagr_score=$(echo "$cagr * 10" | bc -l)
   local expectancy_score=$(echo "$expectancy * 5" | bc -l)
+  local profit_total_score=$(echo "$profit_total_pct * 1" | bc -l)
 
+  [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_score=0
+  [[ $(echo "$profit_total_pct > 20" | bc -l) -eq 1 ]] && profit_total_score=20
+  
   SCORE=$(echo "$winrate_score + $profit_total_score + $cagr_score + $expectancy_score" | bc -l)
 
   local drawdown_score
