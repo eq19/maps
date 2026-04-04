@@ -239,12 +239,29 @@ calculate_score() {
     }
   " | bc -l)
 
+  local sqn_score=$(echo "
+    scale=6
+    s = $sqn
+
+    if (s < 1) {
+      s
+    } else if (s < 2) {
+      1 + (s - 1)
+    } else if (s < 3) {
+      2 + (s - 2)
+    } else if (s < 5) {
+      3 + (s - 3) * 0.5
+    } else {
+      5
+    }
+  " | bc -l)
+
   echo "📦 3.1 Expectancy: $expectancy_ratio (score: $expectancy_score of 10)"
   echo "📦 3.2 Profit Factor: $profit_factor (score: $profit_factor_score of 10)"
   echo "📌 3.3 Sortino: $sortino (score: $sortino_score of 5)"
-  echo "📌 3.4 SQN: $sqn (score: $expectancy_score of 5)"
+  echo "📌 3.4 SQN: $sqn (score: $sqn_score of 5)"
 
-  local quality=$(echo "$expectancy_score + $profit_factor_score + $sortino_score" | bc -l)
+  local quality=$(echo "$expectancy_score + $profit_factor_score + $sortino_score + $sqn_score" | bc -l)
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
   echo -e "\n"
   
