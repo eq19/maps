@@ -92,22 +92,31 @@ calculate_score() {
   local profit_mean_weight=$(echo "
     scale=6
 
-    # Components
     t = sqrt($trades / 200)
     e = $expectancy_ratio / 0.1
 
     pm = $profit_mean / 0.02
-    pm_factor = (pm > 1) ? 1 : pm
+    if (pm > 1) {
+      pm_factor = 1
+    } else {
+      pm_factor = pm
+    }
 
     pf = $profit_factor / 2
-    pf_factor = (pf > 1) ? 1 : pf
+    if (pf > 1) {
+      pf_factor = 1
+    } else {
+      pf_factor = pf
+    }
 
-    # Raw weight
     w = 10 * t * e * pm_factor * pf_factor
 
-    # Cap at 10
-    (w > 10) ? 10 : w
-  " | bc -l)
+    if (w > 10) {
+      10
+    } else {
+      w
+    }
+    " | bc -l)
 
   local drawdown_score
   if (( $(echo "$max_drawdown_account == 0" | bc -l) )); then
