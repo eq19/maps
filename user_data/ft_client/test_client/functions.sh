@@ -284,6 +284,9 @@ calculate_score() {
     }
   " | bc -l)
 
+  if (( $(echo "$cagr > 200" | bc -l) )); then
+    cagr_score=$(echo "$cagr_score * 0.7" | bc -l)
+  fi
   echo "📈 CAGR: $cagr (score: $cagr_score)"
 
   # 🔻 Apply penalties for low trade count
