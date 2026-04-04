@@ -145,18 +145,20 @@ calculate_score() {
 
   echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $drawdown_score of 15)"
 
-  local sharpe_score
-  if (( $(echo "$sharpe < 0" | bc -l) )); then
-    sharpe_score=0
-  elif (( $(echo "$sharpe < 5" | bc -l) )); then
-    sharpe_score=10  
-  elif (( $(echo "$sharpe < 10" | bc -l) )); then
-    sharpe_score=5
-  elif (( $(echo "$sharpe < 20" | bc -l) )); then
-    sharpe_score=2
-  else
-    sharpe_score=1
-  fi
+  local sharpe_score=$(echo "
+    scale=6
+    s = $sharpe
+
+    if (s < 1) {
+      2 * s
+    } else if (s < 3) {
+      2 + (s - 1) * 3
+    } else if (s < 5) {
+      8 + (s - 3)
+    } else {
+      10
+    }
+  " | bc -l) 
 
   local calmar_score
   if (( $(echo "$calmar < 0" | bc -l) )); then
