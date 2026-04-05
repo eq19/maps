@@ -18,6 +18,97 @@ def patch_indodax_create_order():
         side = kwargs.get("side")
         amount = kwargs.get("amount")
 
+        # --- ✅ 1. Validate pair ---
+        if pair not in self._api.markets:
+            raise ValueError(f"[Indodax Patch] Invalid pair: {pair}")
+
+        # --- ✅ 2. Normalize order type ---
+        is_market = ordertype in (None, "market")
+
+        if is_market:
+            try:
+                orderbook = self._api.fetch_order_book(pair)
+
+                bids = orderbook.get("bids", [])
+                asks = orderbook.get("asks", [])
+
+                if not bids or not asks:
+                    raise RuntimeError(f"No liquidity for {pair}")
+
+                best_bid = bids[0][0]
+                best_ask = asks[0][0]
+                spread = best_ask - best_bid
+
+                # --- ✅ 3. Adaptive slippage ---
+                if side == "sell":
+                    raw_price = best_bid - (spread * 0.3)
+                elif side == "buy":
+                    raw_price = best_ask + (spread * 0.3)
+                else:
+                    raise ValueError(f"Invalid side: {side}")
+
+                # --- ✅ 4. Precision-safe price ---
+                price = self._api.price_to_precision(pair, raw_price)
+                price = float(price)
+
+                total = price * amount
+
+                # --- ✅ 5. Minimum trade check ---
+                if total < 1000:
+                    raise ValueError(
+                        f"[Indodax Patch] Trade too small: {amount} × {price} = {total} IDR"
+                    )
+
+                # --- ✅ 6. Convert to limit order ---
+                kwargs["ordertype"] = "limit"
+                kwargs["rate"] = price
+
+                logger.info(
+                    f"[Indodax Patch] Simulated {side.upper()} market -> LIMIT @ {price} ({pair})"
+                )
+
+            except Exception as e:
+                logger.error(f"[Indodax Patch] Failed to simulate market order: {e}")
+                raise  # 🔥 Fail hard (important)
+
+        # --- ✅ 7. Place order ---
+        order = original_create_order(self, *args, **kwargs)
+
+        # --- ✅ 8. Non-blocking refresh loop ---
+        for attempt in range(5):
+            try:
+                refreshed = self.fetch_order(order["id"], pair)
+                if refreshed:
+                    order.update(refreshed)
+
+                    # Exit early if filled or closed
+                    if refreshed.get("status") in ("closed", "filled"):
+                        break
+
+                time.sleep(1.5 * (attempt + 1))  # small backoff
+
+            except Exception as e:
+                logger.warning(f"[Indodax Patch] Refresh attempt {attempt+1} failed: {e}")
+
+        return order
+
+    Exchange.create_order = patched_create_order
+    Exchange.create_order._is_patched = True
+    logger.info("🛠️ Indodax create_order() patched.")
+
+def patch_indodax_create_order():
+    """Monkey-patch Freqtrade's Exchange.create_order for Indodax to simulate market sell."""
+    if hasattr(Exchange.create_order, '_is_patched'):
+        return
+
+    original_create_order = Exchange.create_order
+
+    def patched_create_order(self, *args, **kwargs):
+        pair = kwargs.get("pair", "unknown")
+        ordertype = kwargs.get("ordertype") or kwargs.get("type")
+        side = kwargs.get("side")
+        amount = kwargs.get("amount")
+
         #logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={ordertype}, side={side})")
 
         if side == 'sell' and (ordertype is None or ordertype == 'market'):
