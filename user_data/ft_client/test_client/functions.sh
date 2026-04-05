@@ -76,7 +76,7 @@ calculate_score() {
     return
   fi
 
-  echo -e "\n"
+  echo ""
   echo "📈 Strategy Summary for 'Fibbo'"
   echo "---------------------------------"
 
@@ -125,7 +125,7 @@ calculate_score() {
 
   local profit=$(echo "$profit_total_score + $profit_mean_score + $winrate_score" | bc -l)
   echo "📊 Profit Block: $(printf "%.2f" "$profit") of 40"
-  echo -e "\n"
+  echo ""
 
   local dd_score=$(echo "
     scale=6
@@ -194,7 +194,7 @@ calculate_score() {
 
   local risk=$(echo "$dd_score + $sharpe_score + $calmar_score" | bc -l)
   echo "📊 Risk Block: $(printf "%.2f" "$risk") of 30"
-  echo -e "\n"
+  echo ""
 
   local expectancy_score=$(echo "
     scale=6
@@ -273,7 +273,7 @@ calculate_score() {
 
   local quality=$(echo "$expectancy_score + $profit_factor_score + $sortino_score + $sqn_score" | bc -l)
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
-  echo -e "\n"
+  echo ""
   
   local cagr_score=$(echo "
     scale=6
@@ -310,7 +310,7 @@ calculate_score() {
   echo "🧮 SCORE: $SCORE"
   CALCULATION="true"
 
-  echo -e "\n"
+  echo ""
   echo "🔍 Behavior Profile:"
   if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
     echo "✅ High-profit and active trading strategy"
