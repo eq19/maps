@@ -205,6 +205,9 @@ else
       if [[ "$CALCULATION" != "false" ]]; then
         if [[ "$OLD_SCORE" == "100" ]]; then       
           gh variable set SCORE --body "${SCORE}"
+        elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
+          gh variable set SCORE --body "${SCORE}"
+          gh variable set FREQAI_MODEL --body "${$FREQAI_MODEL}"                 
         fi
         export CALCULATION="false"
       fi
