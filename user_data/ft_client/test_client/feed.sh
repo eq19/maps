@@ -205,7 +205,6 @@ else
         if [[ "$OLD_SCORE" == "100" ]]; then       
           gh variable set SCORE --body "${SCORE}"
         elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
-          OLD_SCORE=$SCORE
           gh variable set SCORE --body "${SCORE}"
           gh variable set FREQAIMODEL --body "${$FREQAI_MODEL}"                 
         fi
@@ -216,6 +215,8 @@ else
 
   echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
+  SCORE=$(gh variable get SCORE)
   freqtrade hyperopt --help
+  OLD_SCORE=$SCORE            
   hyperopt $ID
 fi
