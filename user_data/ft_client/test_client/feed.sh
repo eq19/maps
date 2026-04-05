@@ -199,6 +199,7 @@ else
     freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
     calculate_score
   fi
+  echo "XXXXX"
   
   OLD_SCORE=$SCORE
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
