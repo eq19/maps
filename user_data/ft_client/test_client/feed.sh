@@ -189,25 +189,23 @@ else
   jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
+  OLD_SCORE=$SCORE
   export CALCULATION="false"
-  if [[ "$SCORE" == "100" ]]; then
+  if [[ "$GITHUB_JOB" == "lexering" ]]; then
     FREQAIMODEL=$(gh variable get FREQAIMODEL)
     echo -e "\n$hr\nRUN BACKTEST with $FREQAIMODEL\n$hr"
     freqtrade backtesting --help
     cat $STRATEGY > /tmp/store.json
-    #rm -rf user_data/backtest_results/*
     freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
+
     calculate_score
-  fi
-  echo "XXXXX"
-  
-  OLD_SCORE=$SCORE
-  if [[ "$GITHUB_JOB" == "lexering" ]]; then
-    if [[ "$OLD_SCORE" == "100" ]]; then
+    if [[ "$SCORE" == "100" ]]; then
       gh workflow run "main.yml"
     else
       if [[ "$CALCULATION" != "false" ]]; then
-        gh variable set SCORE --body "${SCORE}"
+        if [[ "$OLD_SCORE" == "100" ]]; then       
+          gh variable set SCORE --body "${SCORE}"
+        fi
         export CALCULATION="false"
       fi
     fi
@@ -216,5 +214,6 @@ else
   echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   freqtrade hyperopt --help
+  OLD_SCORE=$SCORE
   hyperopt $ID
 fi
