@@ -192,11 +192,10 @@ else
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
-    #FREQAIMODEL=$(gh variable get FREQAIMODEL)
-    echo -e "\n$hr\nRUN BACKTEST with $FREQAIMODEL\n$hr"
+    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
     cat $STRATEGY > /tmp/store.json
-    freqtrade backtesting --freqaimodel $FREQAIMODEL --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
 
     calculate_score
     if [[ "$SCORE" == "100" ]]; then
