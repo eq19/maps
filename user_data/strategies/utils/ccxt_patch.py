@@ -1,4 +1,4 @@
-import ccxt
+⛔import ccxt
 import logging
 import time
 
@@ -31,7 +31,7 @@ def patch_ccxt_create_order():
 
         # --- ✅ 1. Block cached invalid pairs ---
         if symbol in _invalid_pairs_cache:
-            logger.warning(f"⛔ Skipping cached invalid pair: {symbol}")
+            logger.warning(f"🔁 Skipping cached invalid pair: {symbol}")
             raise ccxt.ExchangeError(f"Invalid pair (cached): {symbol}")
 
         # --- ✅ 2. Handle spread-block expiry ---
@@ -39,7 +39,7 @@ def patch_ccxt_create_order():
             blocked_time = _spread_blocked_pairs[symbol]
 
             if now - blocked_time < SPREAD_BLOCK_TTL:
-                logger.warning(f"⛔ Skipping spread-blocked pair: {symbol}")
+                logger.warning(f"🔂 Skipping spread-blocked pair: {symbol}")
                 raise ccxt.ExchangeError(f"Spread blocked: {symbol}")
             else:
                 # Expired → allow re-check
@@ -122,7 +122,7 @@ def patch_ccxt_create_order():
                 _invalid_pairs_cache.add(symbol)
                 BLACKLISTED_PAIRS.add(symbol)
 
-                logger.error(f"🚫 Marking pair as invalid + blacklisted: {symbol}")
+                logger.error(f"❌ Marking pair as invalid + blacklisted: {symbol}")
 
                 if symbol in self.markets:
                     self.markets[symbol]["active"] = False
