@@ -100,5 +100,4 @@ def patch_ccxt_create_order():
 
     exchange_class.create_order = patched
     exchange_class.create_order._is_patched = True
-
     logger.info("🛠️ CCXT create_order patched.")
