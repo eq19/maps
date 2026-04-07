@@ -1,6 +1,6 @@
-⛔import ccxt
-import logging
+import ccxt
 import time
+import logging
 
 logger = logging.getLogger(__name__)
 
