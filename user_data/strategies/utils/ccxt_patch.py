@@ -32,7 +32,7 @@ def patch_ccxt_create_order():
         # --- ✅ 1. Block cached invalid pairs ---
         if symbol in _invalid_pairs_cache:
             logger.warning(f"🔁 Skipping cached invalid pair: {symbol}")
-            raise ccxt.ExchangeError(f"Invalid pair (cached): {symbol}")
+            raise ccxt.ExchangeError(f"[PATCH] Invalid pair (cached): {symbol}")
 
         # --- ✅ 2. Handle spread-block expiry ---
         if symbol in _spread_blocked_pairs:
@@ -40,7 +40,7 @@ def patch_ccxt_create_order():
 
             if now - blocked_time < SPREAD_BLOCK_TTL:
                 logger.warning(f"🔂 Skipping spread-blocked pair: {symbol}")
-                raise ccxt.ExchangeError(f"Spread blocked: {symbol}")
+                raise ccxt.ExchangeError(f"[PATCH] Spread blocked: {symbol}")
             else:
                 # Expired → allow re-check
                 logger.info(f"♻️ Spread block expired for {symbol}")
@@ -48,7 +48,7 @@ def patch_ccxt_create_order():
 
         # --- ✅ 3. Validate symbol exists in CCXT ---
         if symbol not in self.markets:
-            raise ccxt.ExchangeError(f"Not in CCXT markets: {symbol}")
+            raise ccxt.ExchangeError(f"[PATCH] Not in CCXT markets: {symbol}")
 
         market = self.markets[symbol]
         indodax_id = market.get("id")
@@ -61,10 +61,10 @@ def patch_ccxt_create_order():
             bids = orderbook.get("bids", [])
             asks = orderbook.get("asks", [])
         except Exception as e:
-            raise ccxt.ExchangeError(f"Orderbook fetch failed: {e}")
+            raise ccxt.ExchangeError(f"[PATCH] Orderbook fetch failed: {e}")
 
         if not bids or not asks:
-            raise ccxt.ExchangeError(f"No liquidity for {symbol}")
+            raise ccxt.ExchangeError(f"[PATCH] No liquidity for {symbol}")
 
         best_bid = bids[0][0]
         best_ask = asks[0][0]
@@ -78,7 +78,7 @@ def patch_ccxt_create_order():
 
             _spread_blocked_pairs[symbol] = now
 
-            raise ccxt.ExchangeError(f"Spread too large: {symbol}")
+            raise ccxt.ExchangeError(f"[PATCH] Spread too large: {symbol}")
 
         # --- ✅ 5. Simulate market order ---
         if type == "market":
@@ -88,7 +88,7 @@ def patch_ccxt_create_order():
                 elif side == "buy":
                     raw_price = best_ask + (spread * 0.3)
                 else:
-                    raise ccxt.ExchangeError(f"Invalid side: {side}")
+                    raise ccxt.ExchangeError(f"[PATCH] Invalid side: {side}")
 
                 price = float(self.price_to_precision(symbol, raw_price))
                 type = "limit"
@@ -101,7 +101,7 @@ def patch_ccxt_create_order():
                 total = price * amount
                 if total < 1000:
                     raise ccxt.ExchangeError(
-                        f"Trade too small: {amount} × {price} = {total}"
+                        f"[PATCH] Trade too small: {amount} × {price} = {total}"
                     )
 
             except ccxt.BaseError:
@@ -127,7 +127,7 @@ def patch_ccxt_create_order():
                 if symbol in self.markets:
                     self.markets[symbol]["active"] = False
 
-                raise ccxt.ExchangeError(f"Invalid pair (API): {symbol}")
+                raise ccxt.ExchangeError(f"[PATCH] Invalid pair (API): {symbol}")
 
             raise
 
