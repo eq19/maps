@@ -36,7 +36,7 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 from utils.ccxt_patch import *
 from utils.indodax_patch import *
-
+from utils.ccxt_patch import BLACKLISTED_PAIRS, _spread_blocked_pairs
 
 # Define indicator sets (could also come from the JSON if needed)
 buy_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
@@ -641,6 +641,26 @@ class Fibbo(IStrategy):
         return dataframe
 
     # ============ Entry/Exit Logic ============
+
+    def confirm_trade_entry(
+        self,
+        pair: str,
+        order_type: str,
+        amount: float,
+        rate: float,
+        time_in_force: str,
+        **kwargs
+    ) -> bool:
+
+        # --- Block invalid pairs ---
+        if pair in BLACKLISTED_PAIRS:
+            return False
+
+        # --- Block high spread pairs ---
+        if pair in _spread_blocked_pairs:
+            return False
+
+        return True
 
     def informative_pairs(self):
         """
