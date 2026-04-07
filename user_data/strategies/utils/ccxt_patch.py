@@ -1,4 +1,8 @@
 import ccxt
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def patch_ccxt_create_order():
     exchange_class = ccxt.indodax
