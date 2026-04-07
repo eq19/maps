@@ -110,4 +110,28 @@ def patch_ccxt_create_order():
                 logger.error(f"[CCXT Patch] Market simulation failed: {e}")
                 raise ccxt.ExchangeError(str(e))
 
-        #
+        # --- ✅ 6. Execute order ---
+        try:
+            return original(self, symbol, type, side, amount, price, params)
+
+        except Exception as e:
+            error_msg = str(e)
+
+            # --- 🔥 Detect Indodax invalid pair ---
+            if "Invalid pair" in error_msg:
+                _invalid_pairs_cache.add(symbol)
+                BLACKLISTED_PAIRS.add(symbol)
+
+                logger.error(f"🚫 Marking pair as invalid + blacklisted: {symbol}")
+
+                if symbol in self.markets:
+                    self.markets[symbol]["active"] = False
+
+                raise ccxt.ExchangeError(f"Invalid pair (API): {symbol}")
+
+            raise
+
+    exchange_class.create_order = patched
+    exchange_class.create_order._is_patched = True
+
+    logger.info("🛠️ CCXT create_order patched (spread TTL + blacklist).")
