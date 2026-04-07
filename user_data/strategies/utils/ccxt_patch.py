@@ -1,6 +1,6 @@
 import ccxt
 
-def patch_ccxt_indodax_create_order():
+def patch_ccxt_create_order():
     exchange_class = ccxt.indodax
 
     if hasattr(exchange_class.create_order, "_is_patched"):
@@ -44,5 +44,5 @@ def patch_ccxt_indodax_create_order():
     exchange_class.create_order = patched
     exchange_class.create_order._is_patched = True
 
-    logger.info("✅ CCXT Indodax create_order patched.")
+    logger.info("✅ CCXT create_order patched.")
   
