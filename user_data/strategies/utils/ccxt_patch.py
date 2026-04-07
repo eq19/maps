@@ -3,8 +3,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# --- 🔥 Global cache ---
+# --- 🔥 Global caches ---
 _invalid_pairs_cache = set()
+BLACKLISTED_PAIRS = set()
 
 
 def patch_ccxt_create_order():
@@ -35,21 +36,30 @@ def patch_ccxt_create_order():
 
         logger.info(f"[Indodax Debug] symbol={symbol} | id={indodax_id}")
 
-        # --- ✅ 3. Simulate market order ---
+        # --- ✅ 3. Fetch orderbook once (used for multiple checks) ---
+        try:
+            orderbook = self.fetch_order_book(symbol)
+            bids = orderbook.get("bids", [])
+            asks = orderbook.get("asks", [])
+        except Exception as e:
+            raise ccxt.ExchangeError(f"Orderbook fetch failed: {e}")
+
+        if not bids or not asks:
+            raise ccxt.ExchangeError(f"No liquidity for {symbol}")
+
+        best_bid = bids[0][0]
+        best_ask = asks[0][0]
+        spread = best_ask - best_bid
+
+        # --- 🔥 NEW: Spread guard (protects from bad trades) ---
+        spread_ratio = spread / best_bid
+        if spread_ratio > 0.02:  # 2% threshold (tune this)
+            logger.warning(f"🚫 Spread too large for {symbol}: {spread_ratio:.2%}")
+            raise ccxt.ExchangeError(f"Spread too large: {symbol}")
+
+        # --- ✅ 4. Simulate market order ---
         if type == "market":
             try:
-                orderbook = self.fetch_order_book(symbol)
-
-                bids = orderbook.get("bids", [])
-                asks = orderbook.get("asks", [])
-
-                if not bids or not asks:
-                    raise ccxt.ExchangeError(f"No liquidity for {symbol}")
-
-                best_bid = bids[0][0]
-                best_ask = asks[0][0]
-                spread = best_ask - best_bid
-
                 if side == "sell":
                     raw_price = best_bid - (spread * 0.3)
                 elif side == "buy":
@@ -77,7 +87,7 @@ def patch_ccxt_create_order():
                 logger.error(f"[CCXT Patch] Market simulation failed: {e}")
                 raise ccxt.ExchangeError(str(e))
 
-        # --- ✅ 4. Execute order ---
+        # --- ✅ 5. Execute order ---
         try:
             return original(self, symbol, type, side, amount, price, params)
 
@@ -87,8 +97,9 @@ def patch_ccxt_create_order():
             # --- 🔥 Detect Indodax invalid pair ---
             if "Invalid pair" in error_msg:
                 _invalid_pairs_cache.add(symbol)
+                BLACKLISTED_PAIRS.add(symbol)
 
-                logger.error(f"🚫 Marking pair as invalid: {symbol}")
+                logger.error(f"🚫 Marking pair as invalid + blacklisted: {symbol}")
 
                 # Optional: deactivate pair in runtime
                 if symbol in self.markets:
@@ -100,4 +111,4 @@ def patch_ccxt_create_order():
 
     exchange_class.create_order = patched
     exchange_class.create_order._is_patched = True
-    logger.info("🛠️ CCXT create_order patched.")
+    logger.info("🛠️ CCXT create_order patched (with blacklist + spread guard).")
