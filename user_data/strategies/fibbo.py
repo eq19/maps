@@ -34,6 +34,7 @@ import talib.abstract as ta
 import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
+from utils.ccxt_patch import *
 from utils.indodax_patch import *
 
 
@@ -260,6 +261,7 @@ class Fibbo(IStrategy):
         """Called once after the bot has started and dependencies are available."""
 
         if not self.config.get("dry_run", False):
+            patch_ccxt_create_order()
             patch_indodax_create_order()
             patch_indodax_cancel_order()
             patch_indodax_fetch_order()
