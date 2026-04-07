@@ -34,9 +34,14 @@ import talib.abstract as ta
 import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
-from utils.ccxt_patch import *
-from utils.indodax_patch import *
-from utils.ccxt_patch import BLACKLISTED_PAIRS, _spread_blocked_pairs
+from utils import (
+    BLACKLISTED_PAIRS,
+    _spread_blocked_pairs,
+    patch_ccxt_create_order,
+    patch_indodax_create_order,
+    patch_indodax_cancel_order,
+    patch_indodax_fetch_order,
+)
 
 # Define indicator sets (could also come from the JSON if needed)
 buy_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
