@@ -15,16 +15,20 @@ def patch_ccxt_create_order():
 
     original = exchange_class.create_order
 
-    def patched(self, symbol, type, side, amount, price=None, params={}):
+    def patched(self, symbol, type, side, amount, price=None, params=None):
+        if params is None:
+            params = {}
+
         logger.warning(f"🔥 [CCXT PATCH HIT] {symbol} {side} {type}")
 
         # --- ✅ 1. Block cached invalid pairs ---
         if symbol in _invalid_pairs_cache:
-            raise ValueError(f"[CCXT Patch] Cached invalid pair: {symbol}")
+            logger.warning(f"⛔ Skipping cached invalid pair: {symbol}")
+            raise ccxt.ExchangeError(f"Invalid pair (cached): {symbol}")
 
         # --- ✅ 2. Validate symbol exists in CCXT ---
         if symbol not in self.markets:
-            raise ValueError(f"[CCXT Patch] Not in CCXT markets: {symbol}")
+            raise ccxt.ExchangeError(f"Not in CCXT markets: {symbol}")
 
         market = self.markets[symbol]
         indodax_id = market.get("id")
@@ -40,7 +44,7 @@ def patch_ccxt_create_order():
                 asks = orderbook.get("asks", [])
 
                 if not bids or not asks:
-                    raise RuntimeError(f"No liquidity for {symbol}")
+                    raise ccxt.ExchangeError(f"No liquidity for {symbol}")
 
                 best_bid = bids[0][0]
                 best_ask = asks[0][0]
@@ -51,7 +55,7 @@ def patch_ccxt_create_order():
                 elif side == "buy":
                     raw_price = best_ask + (spread * 0.3)
                 else:
-                    raise ValueError(f"Invalid side: {side}")
+                    raise ccxt.ExchangeError(f"Invalid side: {side}")
 
                 price = float(self.price_to_precision(symbol, raw_price))
                 type = "limit"
@@ -63,13 +67,15 @@ def patch_ccxt_create_order():
                 # --- Minimum trade check (IDR) ---
                 total = price * amount
                 if total < 1000:
-                    raise ValueError(
-                        f"[CCXT Patch] Trade too small: {amount} × {price} = {total}"
+                    raise ccxt.ExchangeError(
+                        f"Trade too small: {amount} × {price} = {total}"
                     )
 
+            except ccxt.BaseError:
+                raise
             except Exception as e:
                 logger.error(f"[CCXT Patch] Market simulation failed: {e}")
-                raise
+                raise ccxt.ExchangeError(str(e))
 
         # --- ✅ 4. Execute order ---
         try:
@@ -88,9 +94,11 @@ def patch_ccxt_create_order():
                 if symbol in self.markets:
                     self.markets[symbol]["active"] = False
 
+                raise ccxt.ExchangeError(f"Invalid pair (API): {symbol}")
+
             raise
 
     exchange_class.create_order = patched
     exchange_class.create_order._is_patched = True
 
-    logger.info("🛠️ CCXT create_order patched (production mode).")
+    logger.info("🛠️ CCXT create_order patched.")
