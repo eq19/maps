@@ -266,7 +266,7 @@ class Fibbo(IStrategy):
         """Called once after the bot has started and dependencies are available."""
 
         if not self.config.get("dry_run", False):
-            patch_ccxt_create_order()
+            #patch_ccxt_create_order()
             patch_indodax_create_order()
             patch_indodax_cancel_order()
             patch_indodax_fetch_order()
