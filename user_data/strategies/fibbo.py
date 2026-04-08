@@ -272,6 +272,7 @@ class Fibbo(IStrategy):
             patch_indodax_fetch_order()
             logger.info("✅ Indodax patches applied (live mode).")
         else:
+            patch_ccxt_create_order()
             logger.info(f"ℹ️ Indodax patches skipped (dry_run mode).")
 
     def update_roi(self):
