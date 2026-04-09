@@ -6,7 +6,6 @@ logger = logging.getLogger(__name__)
 
 
 def patch_indodax_create_order():
-    """Monkey-patch Freqtrade's Exchange.create_order for Indodax to simulate market sell."""
     if hasattr(Exchange.create_order, '_is_patched'):
         return
 
@@ -14,11 +13,9 @@ def patch_indodax_create_order():
 
     def patched_create_order(self, *args, **kwargs):
         pair = kwargs.get("pair", "unknown")
-        ordertype = kwargs.get("ordertype") or kwargs.get("type")
+        ordertype = kwargs.get("type") or kwargs.get("ordertype")
         side = kwargs.get("side")
         amount = kwargs.get("amount")
-
-        #logger.info(f"⏳ [Indodax Patch] Creating order for: {pair} (type={ordertype}, side={side})")
 
         if side == 'sell' and (ordertype is None or ordertype == 'market'):
             try:
@@ -30,37 +27,45 @@ def patch_indodax_create_order():
                     total = simulated_price * amount
 
                     if total < 1000:
-                        logger.warning(f"❌ [Indodax Patch] Sell amount too small: {amount} × {simulated_price} = {total} IDR")
-                        raise ValueError("Simulated sell order below 1000 IDR")
+                        logger.warning(
+                            f"❌ Sell too small: {amount} × {simulated_price} = {total}"
+                        )
+                        raise ValueError("Below minimum trade")
 
-                    #logger.warning(f"⚠️ [Indodax Patch] Simulating market sell with limit price {simulated_price} IDR")
+                    # ✅ FIXED KEYS HERE
+                    kwargs["type"] = "limit"
+                    kwargs["price"] = simulated_price
 
-                    kwargs["ordertype"] = "limit"
-                    kwargs["rate"] = simulated_price
+                    logger.warning(
+                        f"⚙️ Simulated SELL market → LIMIT @ {simulated_price} ({pair})"
+                    )
+
                 else:
-                    logger.warning("❌ [Indodax Patch] No bids available to simulate market sell.")
-            except Exception as e:
-                logger.warning(f"⛔ [Indodax Patch] Error simulating market sell: {e}")
+                    logger.warning("❌ No bids available")
 
+            except Exception as e:
+                logger.warning(f"⛔ Simulation error: {e}")
+
+        # ✅ Call original safely
         order = original_create_order(self, *args, **kwargs)
 
-        time.sleep(20)  # Let the exchange register the order
+        # --- Optional: keep your retry logic ---
+        time.sleep(20)
 
         for attempt in range(3):
             try:
                 refreshed_order = self.fetch_order(order['id'], pair)
                 order.update(refreshed_order)
-                #logger.info(f"✅ [Indodax Patch] Order refreshed: {order['id']}")
                 break
             except Exception as e:
-                logger.warning(f"⛔ [Indodax Patch] Fetch attempt {attempt+1} failed: {e}")
+                logger.warning(f"⛔ Fetch attempt {attempt+1} failed: {e}")
                 time.sleep(2 ** attempt)
 
         return order
 
     Exchange.create_order = patched_create_order
     Exchange.create_order._is_patched = True
-    logger.info("🛠️ Indodax create_order() patched.")
+    logger.info("🛠️ Indodax create_order() patched (FIXED).")
 
 def patch_indodax_cancel_order():
     """Monkey-patch Exchange.cancel_order() for Indodax."""
