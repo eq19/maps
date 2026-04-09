@@ -675,7 +675,7 @@ class Fibbo(IStrategy):
                 return False
             else:
                 # Expired → clean up
-                logger.debugf"♻️ Unblocking expired pair: {pair}")
+                logger.debug(f"♻️ Unblocking expired pair: {pair}")
                 del _spread_blocked_pairs[pair]
 
         # --- ✅ Allow trade ---
