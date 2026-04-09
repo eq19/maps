@@ -662,7 +662,7 @@ class Fibbo(IStrategy):
 
         # --- 🚫 1. Permanent blacklist ---
         if pair in BLACKLISTED_PAIRS:
-            self.logger.warning(f"⛔ Blocked (blacklist): {pair}")
+            #logger.warning(f"⛔ Blocked (blacklist): {pair}")
             return False
 
         # --- ⏳ 2. Temporary spread/API block ---
@@ -671,11 +671,11 @@ class Fibbo(IStrategy):
 
             # Sync with ccxt_patch TTL (5 minutes)
             if now - blocked_time < 300:
-                self.logger.warning(f"🔁 Blocked (temp): {pair}")
+                #logger.warning(f"🔁 Blocked (temp): {pair}")
                 return False
             else:
                 # Expired → clean up
-                self.logger.info(f"♻️ Unblocking expired pair: {pair}")
+                #logger.info(f"♻️ Unblocking expired pair: {pair}")
                 del _spread_blocked_pairs[pair]
 
         # --- ✅ Allow trade ---
