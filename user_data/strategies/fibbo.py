@@ -647,25 +647,25 @@ class Fibbo(IStrategy):
 
     # ============ Entry/Exit Logic ============
 
-    #def confirm_trade_entry(
-        #self,
-        #pair: str,
-        #order_type: str,
-        #amount: float,
-        #rate: float,
-        #time_in_force: str,
-        #**kwargs
-    #) -> bool:
+    def confirm_trade_entry(
+        self,
+        pair: str,
+        order_type: str,
+        amount: float,
+        rate: float,
+        time_in_force: str,
+        **kwargs
+    ) -> bool:
 
         # --- Block invalid pairs ---
-        #if pair in BLACKLISTED_PAIRS:
-            #return False
+        if pair in BLACKLISTED_PAIRS:
+            return False
 
         # --- Block high spread pairs ---
-        #if pair in _spread_blocked_pairs:
-            #return False
+        if pair in _spread_blocked_pairs:
+            return False
 
-        #return True
+        return True
 
     def informative_pairs(self):
         """
