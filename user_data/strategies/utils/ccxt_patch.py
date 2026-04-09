@@ -1,114 +1,78 @@
 import ccxt
-import time
 import logging
 
 logger = logging.getLogger(__name__)
 
-# --- Debug flags ---
-DEBUG_MODE = True
 
-# --- Global caches (keep minimal for now) ---
-_invalid_pairs_cache = set()
-BLACKLISTED_PAIRS = set()
+def _to_indodax_pair(symbol: str):
+    """
+    Convert CCXT symbol → Indodax format
+    ADA/IDR → ada_idr
+    """
+    base, quote = symbol.split("/")
+    return f"{base.lower()}_{quote.lower()}"
 
-_spread_blocked_pairs = {}
-_temp_blocked_pairs = _spread_blocked_pairs
 
-
-def patch_ccxt_create_order():
+def patch_ccxt_all():
     exchange_class = ccxt.indodax
 
-    if hasattr(exchange_class.create_order, "_is_patched"):
+    if hasattr(exchange_class, "_is_patched"):
         return
 
-    original = exchange_class.create_order
+    # =========================
+    # CREATE ORDER
+    # =========================
+    original_create = exchange_class.create_order
 
-    def patched(self, symbol, type, side, amount, price=None, params=None):
+    def create_order_patched(self, symbol, type, side, amount, price=None, params=None):
         if params is None:
             params = {}
 
-        now = time.time()
+        pair = _to_indodax_pair(symbol)
 
-        # --- 🔍 1. Print CCXT version once ---
-        if DEBUG_MODE and not hasattr(self, "_debug_ccxt_printed"):
-            logger.error(f"🧪 CCXT VERSION: {ccxt.__version__}")
-            self._debug_ccxt_printed = True
+        logger.warning(f"🔥 CREATE PATCH → {symbol} → {pair}")
 
-        logger.warning(f"🔥 [PATCH HIT] {symbol} {side} {type}")
+        params["pair"] = pair
 
-        # --- 🔍 2. Market mapping debug ---
-        if symbol not in self.markets:
-            logger.error(f"❌ Symbol not in markets: {symbol}")
-            raise ccxt.ExchangeError(f"Symbol not found: {symbol}")
+        return original_create(self, symbol, type, side, amount, price, params)
 
-        market = self.markets[symbol]
-        pair_id = market.get("id")
-        base = market.get("base")
-        quote = market.get("quote")
+    # =========================
+    # FETCH ORDER
+    # =========================
+    original_fetch = exchange_class.fetch_order
 
-        logger.error(
-            f"🧪 MARKET DEBUG → symbol={symbol} | id={pair_id} | base={base} | quote={quote}"
-        )
+    def fetch_order_patched(self, id, symbol=None, params=None):
+        if params is None:
+            params = {}
 
-        # --- 🔍 3. Show ALL possible pair formats ---
-        try:
-            base_raw, quote_raw = symbol.split("/")
-        except Exception:
-            base_raw, quote_raw = base, quote
+        if symbol:
+            pair = _to_indodax_pair(symbol)
+            params["pair"] = pair
+            logger.warning(f"🔥 FETCH PATCH → {symbol} → {pair}")
 
-        normalized_pair = f"{base_raw.lower()}_{quote_raw.lower()}"
-        alt_pair = f"{base_raw.lower()}{quote_raw.lower()}"
+        return original_fetch(self, id, symbol, params)
 
-        logger.error(
-            f"🧪 PAIR FORMATS → ccxt_id={pair_id} | normalized={normalized_pair} | alt={alt_pair}"
-        )
+    # =========================
+    # CANCEL ORDER
+    # =========================
+    original_cancel = exchange_class.cancel_order
 
-        # --- 🔍 4. Orderbook check ---
-        try:
-            orderbook = self.fetch_order_book(symbol)
-            best_bid = orderbook["bids"][0][0] if orderbook["bids"] else None
-            best_ask = orderbook["asks"][0][0] if orderbook["asks"] else None
+    def cancel_order_patched(self, id, symbol=None, params=None):
+        if params is None:
+            params = {}
 
-            logger.error(
-                f"🧪 ORDERBOOK → bid={best_bid} | ask={best_ask}"
-            )
-        except Exception as e:
-            logger.error(f"❌ ORDERBOOK ERROR: {e}")
+        if symbol:
+            pair = _to_indodax_pair(symbol)
+            params["pair"] = pair
+            logger.warning(f"🔥 CANCEL PATCH → {symbol} → {pair}")
 
-        # --- 🔍 5. Final params BEFORE sending ---
-        logger.error(
-            f"🧪 BEFORE ORDER → symbol={symbol} | type={type} | side={side} | amount={amount} | price={price} | params={params}"
-        )
+        return original_cancel(self, id, symbol, params)
 
-        # --- 🚀 6. Execute order ---
-        try:
-            result = original(self, symbol, type, side, amount, price, params)
+    # APPLY PATCH
+    exchange_class.create_order = create_order_patched
+    exchange_class.fetch_order = fetch_order_patched
+    exchange_class.cancel_order = cancel_order_patched
 
-            logger.error(f"✅ ORDER SUCCESS: {result}")
-            return result
+    exchange_class._is_patched = True
 
-        except Exception as e:
-            logger.error(f"🔥 RAW ERROR: {e}")
-
-            # --- 🔍 7. Try manual pair injection test ---
-            try:
-                logger.error("🧪 RETRY WITH MANUAL PAIR FORMAT...")
-
-                test_params = params.copy()
-                test_params["pair"] = normalized_pair
-
-                logger.error(f"🧪 RETRY PARAMS: {test_params}")
-
-                result = original(self, symbol, type, side, amount, price, test_params)
-
-                logger.error(f"✅ RETRY SUCCESS: {result}")
-                return result
-
-            except Exception as e2:
-                logger.error(f"❌ RETRY FAILED: {e2}")
-
-            raise
-
-    exchange_class.create_order = patched
-    exchange_class.create_order._is_patched = True
-    logger.info("🧪 CCXT create_order patched (DEBUG MODE).")
+    logger.info("🛠️ CCXT FULL PATCH APPLIED (PAIR FORMAT FIX)")
