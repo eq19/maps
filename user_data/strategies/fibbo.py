@@ -36,7 +36,7 @@ import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 from utils import (
-    patch_ccxt_all(),
+    patch_ccxt_all,
     patch_indodax_create_order,
     patch_indodax_cancel_order,
     patch_indodax_fetch_order,
