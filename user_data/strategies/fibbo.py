@@ -242,9 +242,6 @@ class Fibbo(IStrategy):
     def __init__(self, config: dict) -> None:
         super().__init__(config)
 
-        # 🔥 Apply FIX ONCE
-        patch_ccxt_all()
-
         # Override settings ONLY during hyperopt
         if self.config.get('runmode') == 'hyperopt':
             self.trailing_stop = True
@@ -267,7 +264,9 @@ class Fibbo(IStrategy):
     def bot_start(self, **kwargs) -> None:
         """Called once after the bot has started and dependencies are available."""
 
+        # 🔥 Apply FIX ONCE
         if not self.config.get("dry_run", False):
+            patch_ccxt_all()
             patch_indodax_create_order()
             patch_indodax_cancel_order()
             patch_indodax_fetch_order()
