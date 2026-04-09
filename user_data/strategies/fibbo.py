@@ -23,6 +23,7 @@ from freqtrade.exceptions import OperationalException
 # --------------------------------
 # Add your lib to import here
 import os
+import time
 import json
 import random
 import logging
@@ -657,14 +658,27 @@ class Fibbo(IStrategy):
         **kwargs
     ) -> bool:
 
-        # --- Block invalid pairs ---
+        now = time.time()
+
+        # --- 🚫 1. Permanent blacklist ---
         if pair in BLACKLISTED_PAIRS:
+            self.logger.warning(f"⛔ Blocked (blacklist): {pair}")
             return False
 
-        # --- Block high spread pairs ---
+        # --- ⏳ 2. Temporary spread/API block ---
         if pair in _spread_blocked_pairs:
-            return False
+            blocked_time = _spread_blocked_pairs[pair]
 
+            # Sync with ccxt_patch TTL (5 minutes)
+            if now - blocked_time < 300:
+                self.logger.warning(f"🔁 Blocked (temp): {pair}")
+                return False
+            else:
+                # Expired → clean up
+                self.logger.info(f"♻️ Unblocking expired pair: {pair}")
+                del _spread_blocked_pairs[pair]
+
+        # --- ✅ Allow trade ---
         return True
 
     def informative_pairs(self):
