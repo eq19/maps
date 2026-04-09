@@ -6,17 +6,16 @@ logger = logging.getLogger(__name__)
 
 # --- 🔥 Global caches ---
 _invalid_pairs_cache = set()
-BLACKLISTED_PAIRS = set()
+_temp_blocked_pairs = {}  # pair -> timestamp
 
-# --- 🔥 Spread cache with expiry ---
-_spread_blocked_pairs = {}  # pair -> timestamp
-SPREAD_BLOCK_TTL = 300  # seconds (5 minutes)
+# --- 🔥 Config ---
+BLOCK_TTL = 300  # 5 minutes
+SPREAD_LIMIT = 0.02  # 2%
 
 
 def patch_ccxt_create_order():
     exchange_class = ccxt.indodax
 
-    # جلوگیری از patch دوباره
     if hasattr(exchange_class.create_order, "_is_patched"):
         return
 
@@ -30,62 +29,71 @@ def patch_ccxt_create_order():
 
         logger.warning(f"🔥 [CCXT PATCH HIT] {symbol} {side} {type}")
 
-        # --- ✅ 1. Skip cached invalid pairs (only truly invalid)
+        # --- ✅ 1. Permanent invalid pairs ---
         if symbol in _invalid_pairs_cache:
-            logger.warning(f"🔁 Skipping cached invalid pair: {symbol}")
+            logger.warning(f"⛔ Permanently blocked pair: {symbol}")
             raise ccxt.ExchangeError(f"[PATCH] Invalid pair (cached): {symbol}")
 
-        # --- ✅ 2. Spread block handling
-        if symbol in _spread_blocked_pairs:
-            blocked_time = _spread_blocked_pairs[symbol]
+        # --- ✅ 2. Temporary block (anti-spam) ---
+        if symbol in _temp_blocked_pairs:
+            blocked_time = _temp_blocked_pairs[symbol]
 
-            if now - blocked_time < SPREAD_BLOCK_TTL:
-                logger.warning(f"🔂 Skipping spread-blocked pair: {symbol}")
-                raise ccxt.ExchangeError(f"[PATCH] Spread blocked: {symbol}")
+            if now - blocked_time < BLOCK_TTL:
+                logger.warning(f"🔁 Temporarily blocked: {symbol}")
+                raise ccxt.ExchangeError(f"[PATCH] Temporarily blocked: {symbol}")
             else:
-                logger.info(f"♻️ Spread block expired for {symbol}")
-                del _spread_blocked_pairs[symbol]
+                logger.info(f"♻️ Unblocking pair: {symbol}")
+                del _temp_blocked_pairs[symbol]
 
-        # --- ✅ 3. Validate symbol exists in CCXT
+        # --- ✅ 3. Validate market ---
         if symbol not in self.markets:
-            raise ccxt.ExchangeError(f"[PATCH] Not in CCXT markets: {symbol}")
+            raise ccxt.ExchangeError(f"[PATCH] Not in markets: {symbol}")
 
         market = self.markets[symbol]
-        indodax_id = market.get("id")
+        pair_id = market.get("id")
 
-        logger.info(f"[Indodax Debug] symbol={symbol} | id={indodax_id}")
+        logger.info(f"[MARKET] {symbol} → id={pair_id}")
 
-        # --- ✅ 4. Fetch orderbook
+        # --- 🚫 Skip inactive markets ---
+        if not market.get("active", True):
+            logger.warning(f"🚫 Inactive market: {symbol}")
+            raise ccxt.ExchangeError(f"[PATCH] Inactive market: {symbol}")
+
+        # --- 🚫 Validate pair format ---
+        if not pair_id or not pair_id.endswith("idr"):
+            logger.warning(f"🚫 Invalid market id: {symbol} → {pair_id}")
+            raise ccxt.ExchangeError(f"[PATCH] Invalid market id: {symbol}")
+
+        # --- ✅ 4. Fetch orderbook ---
         try:
             orderbook = self.fetch_order_book(symbol)
             bids = orderbook.get("bids", [])
             asks = orderbook.get("asks", [])
         except Exception as e:
-            logger.error(f"❌ Orderbook fetch failed: {e}")
-            raise ccxt.ExchangeError(f"[PATCH] Orderbook fetch failed: {e}")
+            logger.error(f"❌ Orderbook error: {e}")
+            raise ccxt.ExchangeError(f"[PATCH] Orderbook failed: {e}")
 
         if not bids or not asks:
-            raise ccxt.ExchangeError(f"[PATCH] No liquidity for {symbol}")
+            raise ccxt.ExchangeError(f"[PATCH] No liquidity: {symbol}")
 
         best_bid = bids[0][0]
         best_ask = asks[0][0]
         spread = best_ask - best_bid
-
         spread_ratio = spread / best_bid
 
-        # --- 🔥 Spread guard
-        if spread_ratio > 0.02:
-            logger.warning(f"🚫 Spread too large for {symbol}: {spread_ratio:.2%}")
-            _spread_blocked_pairs[symbol] = now
+        # --- 🚫 Spread guard ---
+        if spread_ratio > SPREAD_LIMIT:
+            logger.warning(f"🚫 Spread too large: {symbol} ({spread_ratio:.2%})")
+            _temp_blocked_pairs[symbol] = now
             raise ccxt.ExchangeError(f"[PATCH] Spread too large: {symbol}")
 
-        # --- ✅ 5. Simulate market order
+        # --- ✅ 5. Simulate market order ---
         if type == "market":
             try:
-                if side == "sell":
-                    raw_price = best_bid - (spread * 0.3)
-                elif side == "buy":
+                if side == "buy":
                     raw_price = best_ask + (spread * 0.3)
+                elif side == "sell":
+                    raw_price = best_bid - (spread * 0.3)
                 else:
                     raise ccxt.ExchangeError(f"[PATCH] Invalid side: {side}")
 
@@ -93,10 +101,9 @@ def patch_ccxt_create_order():
                 type = "limit"
 
                 logger.warning(
-                    f"⚙️ Simulated {side.upper()} market → LIMIT @ {price} ({symbol})"
+                    f"⚙️ Simulated {side.upper()} MARKET → LIMIT @ {price} ({symbol})"
                 )
 
-                # --- Minimum trade check (Indodax rule)
                 total = price * amount
                 if total < 1000:
                     raise ccxt.InvalidOrder(
@@ -106,10 +113,10 @@ def patch_ccxt_create_order():
             except ccxt.BaseError:
                 raise
             except Exception as e:
-                logger.error(f"[CCXT Patch] Market simulation failed: {e}")
+                logger.error(f"❌ Market simulation error: {e}")
                 raise ccxt.ExchangeError(str(e))
 
-        # --- ✅ 6. Execute order
+        # --- ✅ 6. Execute order ---
         try:
             return original(self, symbol, type, side, amount, price, params)
 
@@ -117,38 +124,39 @@ def patch_ccxt_create_order():
             error_msg = str(e)
             error_msg_lower = error_msg.lower()
 
-            # 🔥 Always log raw error
             logger.error(f"🔥 RAW API ERROR for {symbol}: {error_msg}")
 
-            # --- ✅ SAFE error classification (NO false blacklist)
+            # --- 💰 Insufficient funds ---
             if "insufficient" in error_msg_lower:
                 raise ccxt.InsufficientFunds(error_msg)
 
-            elif "minimum" in error_msg_lower or "too small" in error_msg_lower:
+            # --- 📉 Invalid order (size / price) ---
+            elif any(x in error_msg_lower for x in ["minimum", "too small", "price"]):
                 raise ccxt.InvalidOrder(error_msg)
 
-            elif "price" in error_msg_lower:
-                raise ccxt.InvalidOrder(error_msg)
-
+            # --- ❌ REAL invalid pair (rare) ---
             elif "symbol not found" in error_msg_lower:
-                # ONLY true invalid case
-                logger.error(f"❌ Confirmed invalid symbol: {symbol}")
+                logger.error(f"⛔ Confirmed invalid pair: {symbol}")
                 _invalid_pairs_cache.add(symbol)
-                BLACKLISTED_PAIRS.add(symbol)
+                raise ccxt.ExchangeError(f"[PATCH] Invalid pair: {symbol}")
 
-                raise ccxt.ExchangeError(f"[PATCH] Invalid pair (confirmed): {symbol}")
-
-            # ⚠️ DO NOT treat "Invalid pair" as real invalid pair
+            # --- ⚠️ Indodax fake invalid pair ---
             elif "invalid pair" in error_msg_lower:
-                logger.warning(
-                    f"⚠️ Ignoring false 'Invalid pair' for {symbol} (Indodax quirk)"
-                )
-                raise ccxt.ExchangeError(error_msg)
+                logger.warning(f"⚠️ API rejected pair (likely not tradable): {symbol}")
 
+                # TEMP block to avoid spam loop
+                _temp_blocked_pairs[symbol] = now
+
+                raise ccxt.ExchangeError(
+                    f"[PATCH] API rejected pair (blocked): {symbol}"
+                )
+
+            # --- ❓ Unknown error ---
             else:
-                logger.error(f"⚠️ Unknown API error: {error_msg}")
+                logger.error(f"❓ Unknown error: {error_msg}")
+                _temp_blocked_pairs[symbol] = now
                 raise
 
     exchange_class.create_order = patched
     exchange_class.create_order._is_patched = True
-    logger.info("🛠️ CCXT create_order patched (SAFE MODE).")
+    logger.info("🛠️ CCXT create_order patched (FINAL STABLE).")
