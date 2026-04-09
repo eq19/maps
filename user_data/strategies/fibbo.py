@@ -266,10 +266,10 @@ class Fibbo(IStrategy):
         """Called once after the bot has started and dependencies are available."""
 
         if not self.config.get("dry_run", False):
-            #patch_ccxt_create_order()
-            #patch_indodax_create_order()
-            #patch_indodax_cancel_order()
-            #patch_indodax_fetch_order()
+            patch_ccxt_create_order()
+            patch_indodax_create_order()
+            patch_indodax_cancel_order()
+            patch_indodax_fetch_order()
             logger.info("✅ Indodax patches applied (live mode).")
         else:
             logger.info(f"ℹ️ Indodax patches skipped (dry_run mode).")
@@ -647,25 +647,25 @@ class Fibbo(IStrategy):
 
     # ============ Entry/Exit Logic ============
 
-    #def confirm_trade_entry(
-        #self,
-        #pair: str,
-        #order_type: str,
-        #amount: float,
-        #rate: float,
-        #time_in_force: str,
-        #**kwargs
-    #) -> bool:
+    def confirm_trade_entry(
+        self,
+        pair: str,
+        order_type: str,
+        amount: float,
+        rate: float,
+        time_in_force: str,
+        **kwargs
+    ) -> bool:
 
         # --- Block invalid pairs ---
-        #if pair in BLACKLISTED_PAIRS:
-            #return False
+        if pair in BLACKLISTED_PAIRS:
+            return False
 
         # --- Block high spread pairs ---
-        #if pair in _spread_blocked_pairs:
-            #return False
+        if pair in _spread_blocked_pairs:
+            return False
 
-        #return True
+        return True
 
     def informative_pairs(self):
         """
