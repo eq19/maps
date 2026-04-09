@@ -242,6 +242,9 @@ class Fibbo(IStrategy):
     def __init__(self, config: dict) -> None:
         super().__init__(config)
 
+        # 🔥 Apply FIX ONCE
+        patch_ccxt_all()
+
         # Override settings ONLY during hyperopt
         if self.config.get('runmode') == 'hyperopt':
             self.trailing_stop = True
@@ -265,7 +268,6 @@ class Fibbo(IStrategy):
         """Called once after the bot has started and dependencies are available."""
 
         if not self.config.get("dry_run", False):
-            patch_ccxt_create_order()
             patch_indodax_create_order()
             patch_indodax_cancel_order()
             patch_indodax_fetch_order()
@@ -655,28 +657,6 @@ class Fibbo(IStrategy):
         time_in_force: str,
         **kwargs
     ) -> bool:
-
-        now = time.time()
-
-        # --- 🚫 1. Permanent blacklist ---
-        if pair in BLACKLISTED_PAIRS:
-            logger.debug(f"Blocked (blacklist): {pair}")
-            return False
-
-        # --- ⏳ 2. Temporary spread/API block ---
-        if pair in _spread_blocked_pairs:
-            blocked_time = _spread_blocked_pairs[pair]
-
-            # Sync with ccxt_patch TTL (5 minutes)
-            if now - blocked_time < 300:
-                logger.debug(f"Blocked (temp): {pair}")
-                return False
-            else:
-                # Expired → clean up
-                logger.debug(f"Unblocking expired pair: {pair}")
-                del _spread_blocked_pairs[pair]
-
-        # --- ✅ Allow trade ---
         return True
 
     def informative_pairs(self):
