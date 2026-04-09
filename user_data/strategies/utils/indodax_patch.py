@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def patch_indodax_create_order():
-    if hasattr(Exchange.create_order, '_is_patched'):
+    if hasattr(Exchange.create_order, "_is_patched"):
         return
 
     original_create_order = Exchange.create_order
@@ -27,45 +27,38 @@ def patch_indodax_create_order():
                     total = simulated_price * amount
 
                     if total < 1000:
-                        logger.warning(
-                            f"❌ Sell too small: {amount} × {simulated_price} = {total}"
-                        )
                         raise ValueError("Below minimum trade")
 
-                    # ✅ FIXED KEYS HERE
+                    # ✅ CORRECT KEYS
                     kwargs["type"] = "limit"
                     kwargs["price"] = simulated_price
 
                     logger.warning(
-                        f"⚙️ Simulated SELL market → LIMIT @ {simulated_price} ({pair})"
+                        f"⚙️ Simulated SELL MARKET → LIMIT @ {simulated_price} ({pair})"
                     )
-
-                else:
-                    logger.warning("❌ No bids available")
 
             except Exception as e:
                 logger.warning(f"⛔ Simulation error: {e}")
 
-        # ✅ Call original safely
         order = original_create_order(self, *args, **kwargs)
 
-        # --- Optional: keep your retry logic ---
+        # --- Refresh order ---
         time.sleep(20)
 
         for attempt in range(3):
             try:
-                refreshed_order = self.fetch_order(order['id'], pair)
-                order.update(refreshed_order)
+                refreshed = self.fetch_order(order['id'], pair)
+                order.update(refreshed)
                 break
             except Exception as e:
-                logger.warning(f"⛔ Fetch attempt {attempt+1} failed: {e}")
+                logger.warning(f"⛔ Fetch retry {attempt+1}: {e}")
                 time.sleep(2 ** attempt)
 
         return order
 
     Exchange.create_order = patched_create_order
     Exchange.create_order._is_patched = True
-    logger.info("🛠️ Indodax create_order() patched (FIXED).")
+    logger.info("🛠️ Indodax create_order patched (FINAL).")
 
 def patch_indodax_cancel_order():
     """Monkey-patch Exchange.cancel_order() for Indodax."""
