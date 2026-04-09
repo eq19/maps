@@ -6,6 +6,7 @@ logger = logging.getLogger(__name__)
 
 # --- 🔥 Global caches ---
 _invalid_pairs_cache = set()
+BLACKLISTED_PAIRS = set()  # ✅ RESTORED (for fibbo.py compatibility)
 _temp_blocked_pairs = {}  # pair -> timestamp
 
 # --- 🔥 Config ---
@@ -130,21 +131,22 @@ def patch_ccxt_create_order():
             if "insufficient" in error_msg_lower:
                 raise ccxt.InsufficientFunds(error_msg)
 
-            # --- 📉 Invalid order (size / price) ---
+            # --- 📉 Invalid order ---
             elif any(x in error_msg_lower for x in ["minimum", "too small", "price"]):
                 raise ccxt.InvalidOrder(error_msg)
 
-            # --- ❌ REAL invalid pair (rare) ---
+            # --- ❌ REAL invalid pair ---
             elif "symbol not found" in error_msg_lower:
                 logger.error(f"⛔ Confirmed invalid pair: {symbol}")
                 _invalid_pairs_cache.add(symbol)
+                BLACKLISTED_PAIRS.add(symbol)  # ✅ RESTORED
                 raise ccxt.ExchangeError(f"[PATCH] Invalid pair: {symbol}")
 
-            # --- ⚠️ Indodax fake invalid pair ---
+            # --- ⚠️ Indodax fake / API reject ---
             elif "invalid pair" in error_msg_lower:
-                logger.warning(f"⚠️ API rejected pair (likely not tradable): {symbol}")
+                logger.warning(f"⚠️ API rejected pair (blocked): {symbol}")
 
-                # TEMP block to avoid spam loop
+                # TEMP block (avoid spam loop)
                 _temp_blocked_pairs[symbol] = now
 
                 raise ccxt.ExchangeError(
@@ -159,4 +161,5 @@ def patch_ccxt_create_order():
 
     exchange_class.create_order = patched
     exchange_class.create_order._is_patched = True
-    logger.info("🛠️ CCXT create_order patched (FINAL STABLE).")
+
+    logger.info("🛠️ CCXT create_order patched (FINAL + COMPAT MODE).")
