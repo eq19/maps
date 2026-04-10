@@ -31,7 +31,7 @@
   },
   "order_types": {
     "entry": "limit",
-    "exit": "limit",
+    "exit": "market",
     "emergency_exit": "market",
     "force_entry": "market",
     "force_exit": "market",
