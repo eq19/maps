@@ -267,12 +267,12 @@ class Fibbo(IStrategy):
         # 🔥 Apply FIX ONCE
         if not self.config.get("dry_run", False):
             patch_ccxt_all()
-            patch_indodax_create_order()
-            patch_indodax_cancel_order()
-            patch_indodax_fetch_order()
-            logger.info("✅ Indodax patches applied (live mode).")
+            #patch_indodax_create_order()
+            #patch_indodax_cancel_order()
+            #patch_indodax_fetch_order()
+            logger.info("✅ CCXT patches applied (live mode).")
         else:
-            logger.info(f"ℹ️ Indodax patches skipped (dry_run mode).")
+            logger.info(f"ℹ️ CCXT patches skipped (dry_run mode).")
 
     def update_roi(self):
         """Update ROI based on current parameter values"""
