@@ -23,10 +23,10 @@ def patch_ccxt_pair_only():
     def create_order_patched(self, *args, **kwargs):
         args = list(args)
 
-        # Extract values safely
+        # ✅ Correct extraction (FIXED)
         symbol = kwargs.get("symbol") or (args[0] if len(args) > 0 else None)
-        side = kwargs.get("side") or (args[1] if len(args) > 1 else None)
-        type_ = kwargs.get("type") or (args[2] if len(args) > 2 else None)
+        type_  = kwargs.get("type")  or (args[1] if len(args) > 1 else None)
+        side   = kwargs.get("side")  or (args[2] if len(args) > 2 else None)
 
         if symbol:
             pair = _to_indodax_pair(symbol)
@@ -57,21 +57,24 @@ def patch_ccxt_pair_only():
                         raise Exception("Empty orderbook")
 
                     if side == "sell":
-                        price = bid * 0.995   # slightly below best bid
+                        price = bid * 0.995
                     else:
-                        price = ask * 1.005   # slightly above best ask
+                        price = ask * 1.005
+
+                    # ✅ CRITICAL: apply precision
+                    price = float(self.price_to_precision(symbol, price))
 
                     logger.warning(
                         f"⚡ MARKET→LIMIT {side.upper()} {symbol} @ {price}"
                     )
 
                     # Replace order type
-                    if len(args) > 2:
-                        args[2] = "limit"
+                    if len(args) > 1:
+                        args[1] = "limit"
                     else:
                         kwargs["type"] = "limit"
 
-                    # Inject price
+                    # Inject price safely
                     if len(args) > 3:
                         args[3] = price
                     else:
@@ -79,7 +82,30 @@ def patch_ccxt_pair_only():
 
                 except Exception as e:
                     logger.error(f"❌ Market conversion failed: {e}")
-                    logger.warning("⚠️ Fallback: keeping original order")
+
+                    # 🟡 SAFE FALLBACK (VERY IMPORTANT)
+                    fallback_price = 1
+
+                    try:
+                        fallback_price = float(
+                            self.price_to_precision(symbol, fallback_price)
+                        )
+                    except Exception:
+                        pass
+
+                    logger.warning(
+                        f"⚠️ Fallback LIMIT order @ {fallback_price}"
+                    )
+
+                    if len(args) > 1:
+                        args[1] = "limit"
+                    else:
+                        kwargs["type"] = "limit"
+
+                    if len(args) > 3:
+                        args[3] = fallback_price
+                    else:
+                        kwargs["price"] = fallback_price
 
         return original_create(self, *args, **kwargs)
 
@@ -110,7 +136,7 @@ def patch_ccxt_pair_only():
         return original_cancel(self, id, symbol, params)
 
     # =========================
-    # PARSE ORDER FIX (CRITICAL)
+    # PARSE ORDER FIX
     # =========================
     original_parse = exchange_class.parse_order
 
