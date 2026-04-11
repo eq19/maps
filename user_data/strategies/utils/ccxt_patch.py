@@ -16,31 +16,70 @@ def patch_ccxt_pair_only():
         return
 
     # =========================
-    # CREATE ORDER (PAIR FIX ONLY)
+    # CREATE ORDER (PAIR + MARKET FIX)
     # =========================
     original_create = exchange_class.create_order
 
     def create_order_patched(self, *args, **kwargs):
         args = list(args)
 
-        symbol = kwargs.get("symbol")
-        if not symbol and len(args) > 0:
-            symbol = args[0]
+        # Extract values safely
+        symbol = kwargs.get("symbol") or (args[0] if len(args) > 0 else None)
+        side = kwargs.get("side") or (args[1] if len(args) > 1 else None)
+        type_ = kwargs.get("type") or (args[2] if len(args) > 2 else None)
 
         if symbol:
             pair = _to_indodax_pair(symbol)
 
-            # CASE 1: params in args
+            # Ensure params exists
             if len(args) >= 6:
                 params = args[5] or {}
-                params["pair"] = pair
                 args[5] = params
             else:
                 params = kwargs.get("params", {}) or {}
-                params["pair"] = pair
                 kwargs["params"] = params
 
+            params["pair"] = pair
+
             logger.debug(f"PAIR PATCH → {symbol} → {pair}")
+
+            # =========================
+            # 🔥 MARKET → SAFE LIMIT
+            # =========================
+            if type_ == "market":
+                try:
+                    orderbook = self.fetch_order_book(symbol)
+
+                    bid = orderbook["bids"][0][0] if orderbook["bids"] else None
+                    ask = orderbook["asks"][0][0] if orderbook["asks"] else None
+
+                    if bid is None or ask is None:
+                        raise Exception("Empty orderbook")
+
+                    if side == "sell":
+                        price = bid * 0.995   # slightly below best bid
+                    else:
+                        price = ask * 1.005   # slightly above best ask
+
+                    logger.warning(
+                        f"⚡ MARKET→LIMIT {side.upper()} {symbol} @ {price}"
+                    )
+
+                    # Replace order type
+                    if len(args) > 2:
+                        args[2] = "limit"
+                    else:
+                        kwargs["type"] = "limit"
+
+                    # Inject price
+                    if len(args) > 3:
+                        args[3] = price
+                    else:
+                        kwargs["price"] = price
+
+                except Exception as e:
+                    logger.error(f"❌ Market conversion failed: {e}")
+                    logger.warning("⚠️ Fallback: keeping original order")
 
         return original_create(self, *args, **kwargs)
 
@@ -104,4 +143,4 @@ def patch_ccxt_pair_only():
 
     exchange_class._pair_patched = True
 
-    logger.info("✅ CCXT Indodax patch applied (PAIR + PARSE FIX)")
+    logger.info("✅ CCXT Indodax patch applied (PAIR + MARKET FIX + PARSE FIX)")
