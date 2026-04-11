@@ -263,12 +263,14 @@ class Fibbo(IStrategy):
     def bot_start(self, **kwargs) -> None:
         """Called once after the bot has started and dependencies are available."""
 
-        # 🔥 Apply FIX ONCE
         if not self.config.get("dry_run", False):
-            patch_ccxt_pair_only()
-            patch_indodax_cancel_order()
-            patch_indodax_fetch_order()
-            logger.info("✅ CCXT patches applied (live mode).")
+
+            # ✅ ONLY SAFE PATCHES
+            patch_ccxt_pair_only()       # 🔥 REQUIRED (fix invalid pair)
+            patch_indodax_fetch_order()  # 🔥 REQUIRED (fix amount=0)
+            patch_indodax_cancel_order() # 👍 optional but recommended
+
+            logger.info("✅ Indodax patches applied (SAFE MODE).")
         else:
             logger.info(f"ℹ️ CCXT patches skipped (dry_run mode).")
 
