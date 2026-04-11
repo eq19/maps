@@ -15,26 +15,43 @@ def patch_ccxt_pair_only():
     if hasattr(exchange_class, "_pair_patched"):
         return
 
-    # =========================
-    # CREATE ORDER (SAFE)
-    # =========================
     original_create = exchange_class.create_order
 
     def create_order_patched(self, *args, **kwargs):
-        symbol = kwargs.get("symbol") or (args[0] if args else None)
+        args = list(args)
+
+        # =========================
+        # Extract symbol safely
+        # =========================
+        symbol = kwargs.get("symbol")
+        if not symbol and len(args) > 0:
+            symbol = args[0]
 
         if symbol:
             pair = _to_indodax_pair(symbol)
-            params = kwargs.get("params", {}) or {}
-            params["pair"] = pair
-            kwargs["params"] = params
+
+            # =========================
+            # CASE 1: params in args
+            # =========================
+            if len(args) >= 6:
+                params = args[5] or {}
+                params["pair"] = pair
+                args[5] = params
+
+            # =========================
+            # CASE 2: params in kwargs
+            # =========================
+            else:
+                params = kwargs.get("params", {}) or {}
+                params["pair"] = pair
+                kwargs["params"] = params
 
             logger.warning(f"🔥 PAIR PATCH → {symbol} → {pair}")
 
         return original_create(self, *args, **kwargs)
 
     # =========================
-    # FETCH ORDER (SAFE)
+    # FETCH ORDER
     # =========================
     original_fetch = exchange_class.fetch_order
 
@@ -43,13 +60,12 @@ def patch_ccxt_pair_only():
             params = {}
 
         if symbol:
-            pair = _to_indodax_pair(symbol)
-            params["pair"] = pair
+            params["pair"] = _to_indodax_pair(symbol)
 
         return original_fetch(self, id, symbol, params)
 
     # =========================
-    # CANCEL ORDER (SAFE)
+    # CANCEL ORDER
     # =========================
     original_cancel = exchange_class.cancel_order
 
@@ -58,8 +74,7 @@ def patch_ccxt_pair_only():
             params = {}
 
         if symbol:
-            pair = _to_indodax_pair(symbol)
-            params["pair"] = pair
+            params["pair"] = _to_indodax_pair(symbol)
 
         return original_cancel(self, id, symbol, params)
 
@@ -70,4 +85,4 @@ def patch_ccxt_pair_only():
 
     exchange_class._pair_patched = True
 
-    logger.info("🛠️ CCXT PAIR PATCH APPLIED (SAFE)")
+    logger.info("🛠️ CCXT PAIR PATCH APPLIED (FIXED PARAMS)")
