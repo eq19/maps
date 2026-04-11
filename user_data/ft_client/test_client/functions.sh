@@ -386,6 +386,8 @@ hyperopt() {
       --random-state ${id} ${enable_protections} \
       --logfile /dev/null > /dev/null 2>&1; then
       freqtrade hyperopt-list --best
+    else
+      echo "Hyperopt failed, continuing anyway..."
     fi
 
     echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
