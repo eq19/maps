@@ -37,8 +37,9 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 from utils import (
     patch_ccxt_pair_only,
+    patch_indodax_fetch_order, 
     patch_indodax_cancel_order,
-    patch_indodax_fetch_order,
+    patch_indodax_create_order,
 )
 
 # Define indicator sets (could also come from the JSON if needed)
@@ -261,16 +262,15 @@ class Fibbo(IStrategy):
         self.freqai_enabled = getattr(self, 'freqai_enabled', True)
 
     def bot_start(self, **kwargs) -> None:
-        """Called once after the bot has started and dependencies are available."""
 
         if not self.config.get("dry_run", False):
 
-            # ✅ ONLY SAFE PATCHES
-            patch_ccxt_pair_only()       # 🔥 REQUIRED (fix invalid pair)
-            patch_indodax_fetch_order()  # 🔥 REQUIRED (fix amount=0)
-            patch_indodax_cancel_order() # 👍 optional but recommended
+            patch_ccxt_pair_only()          # 🔥 REQUIRED
+            patch_indodax_fetch_order()     # 🔥 REQUIRED
+            patch_indodax_cancel_order()    # 🔥 REQUIRED
+            patch_indodax_create_order()    # ⚠️ optional but recommended
 
-            logger.info("✅ Indodax patches applied (SAFE MODE).")
+            logger.info("✅ Indodax fully patched (stable mode)")
         else:
             logger.info(f"ℹ️ CCXT patches skipped (dry_run mode).")
 
