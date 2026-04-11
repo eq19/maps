@@ -36,7 +36,7 @@ import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 from utils import (
-    patch_ccxt_all,
+    patch_ccxt_pair_only,
     patch_indodax_cancel_order,
     patch_indodax_fetch_order,
 )
@@ -265,7 +265,7 @@ class Fibbo(IStrategy):
 
         # 🔥 Apply FIX ONCE
         if not self.config.get("dry_run", False):
-            patch_ccxt_all()
+            patch_ccxt_pair_only()
             patch_indodax_cancel_order()
             patch_indodax_fetch_order()
             logger.info("✅ CCXT patches applied (live mode).")
