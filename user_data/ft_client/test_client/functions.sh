@@ -384,7 +384,7 @@ hyperopt() {
     if freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --random-state ${id} ${enable_protections} \
-      --logfile /dev/null > /dev/null 2>&1; then # --print-json
+      --logfile /dev/null > /dev/null 2>&1; then
       freqtrade hyperopt-list --best
     fi
 
