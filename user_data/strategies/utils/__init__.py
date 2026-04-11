@@ -3,12 +3,14 @@ from .ccxt_patch import (
 )
 
 from .indodax_patch import (
-    patch_indodax_cancel_order,
     patch_indodax_fetch_order,
+    patch_indodax_create_order,
+    patch_indodax_cancel_order,
 )
 
 __all__ = [
     "patch_ccxt_pair_only",
-    "patch_indodax_cancel_order",
     "patch_indodax_fetch_order",
+    "patch_indodax_create_order",
+    "patch_indodax_cancel_order",
 ]
