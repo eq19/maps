@@ -381,13 +381,14 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nID: $id | FreqAImodel: $FREQAI_MODEL | Days: $days | Epochs: $epochs\n👉 Running ${HYPEROPT:-$loss} | Spaces: $spaces\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
+    if freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --random-state ${id} ${enable_protections} \
       --logfile /dev/null > /dev/null 2>&1
       #--print-json
-    freqtrade hyperopt-list --best
-    #cat "$STRATEGY"
+    ; then
+      freqtrade hyperopt-list --best
+    fi
 
     echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
