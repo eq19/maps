@@ -23,7 +23,7 @@ def patch_ccxt_pair_only():
     def create_order_patched(self, *args, **kwargs):
         args = list(args)
 
-        # ✅ Correct extraction (FIXED)
+        # Correct extraction
         symbol = kwargs.get("symbol") or (args[0] if len(args) > 0 else None)
         type_  = kwargs.get("type")  or (args[1] if len(args) > 1 else None)
         side   = kwargs.get("side")  or (args[2] if len(args) > 2 else None)
@@ -61,31 +61,28 @@ def patch_ccxt_pair_only():
                     else:
                         price = ask * 1.005
 
-                    # ✅ CRITICAL: apply precision
                     price = float(self.price_to_precision(symbol, price))
 
                     logger.warning(
                         f"⚡ MARKET→LIMIT {side.upper()} {symbol} @ {price}"
                     )
 
-                    # Replace order type
+                    # ✅ FIX TYPE POSITION
                     if len(args) > 1:
                         args[1] = "limit"
                     else:
                         kwargs["type"] = "limit"
 
-                    # Inject price safely
-                    if len(args) > 3:
-                        args[3] = price
+                    # ✅ FIX PRICE POSITION (CRITICAL)
+                    if len(args) > 4:
+                        args[4] = price
                     else:
                         kwargs["price"] = price
 
                 except Exception as e:
                     logger.error(f"❌ Market conversion failed: {e}")
 
-                    # 🟡 SAFE FALLBACK (VERY IMPORTANT)
                     fallback_price = 1
-
                     try:
                         fallback_price = float(
                             self.price_to_precision(symbol, fallback_price)
@@ -93,17 +90,15 @@ def patch_ccxt_pair_only():
                     except Exception:
                         pass
 
-                    logger.warning(
-                        f"⚠️ Fallback LIMIT order @ {fallback_price}"
-                    )
+                    logger.warning(f"⚠️ Fallback LIMIT @ {fallback_price}")
 
                     if len(args) > 1:
                         args[1] = "limit"
                     else:
                         kwargs["type"] = "limit"
 
-                    if len(args) > 3:
-                        args[3] = fallback_price
+                    if len(args) > 4:
+                        args[4] = fallback_price
                     else:
                         kwargs["price"] = fallback_price
 
@@ -169,4 +164,4 @@ def patch_ccxt_pair_only():
 
     exchange_class._pair_patched = True
 
-    logger.info("✅ CCXT Indodax patch applied (PAIR + MARKET FIX + PARSE FIX)")
+    logger.info("✅ CCXT Indodax patch applied (FINAL FIX)")
