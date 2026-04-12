@@ -164,4 +164,4 @@ def patch_ccxt_pair_only():
 
     exchange_class._pair_patched = True
 
-    logger.info("✅ CCXT Indodax patch applied (FINAL FIX)")
+    logger.info("🛠️ CCXT Indodax patch applied.")
