@@ -112,7 +112,7 @@ MODEL_REGISTRY = {
     # Ensemble models (standalone files)
     "VotingRegressor": "VotingRegressor.VotingRegressor",
     "StackingRegressor": "StackingRegressor.StackingRegressor", 
-    "BlendingRegressor": "BlendingRegressor.BlendingRegressor",
+    "UnifyingRegressor": "UnifyingRegressor.UnifyingRegressor",
     "YieldedEnsembleRegressor": "YieldedEnsembleRegressor.YieldedEnsembleRegressor",
     
     # Custom models
