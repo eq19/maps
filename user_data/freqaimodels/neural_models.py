@@ -205,17 +205,27 @@ class LSTMRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+        # ✅ IMPORTANT: use sklearn model as backend
         from sklearn.ensemble import RandomForestRegressor
-        self.model = RandomForestRegressor(n_estimators=100)
+        self.model = RandomForestRegressor(n_estimators=100, random_state=42)
 
     def fit(self, data_dictionary: Dict[str, Any], dk: FreqaiDataKitchen, **kwargs):
+
+        # ✅ Correct extraction
         X = data_dictionary["train_features"].values
         y = data_dictionary["train_labels"]
+
+        # ✅ FIX shape warning
+        y = np.array(y).ravel()
+
         self.model.fit(X, y)
+
         return self
 
     def predict(self, unfiltered_df: pd.DataFrame, dk: FreqaiDataKitchen, **kwargs):
 
+        # ✅ REQUIRED FreqAI pipeline
         features, _ = dk.filter_features(
             unfiltered_df,
             dk.training_features_list,
@@ -223,15 +233,17 @@ class LSTMRegressor(BaseRegressionModel):
             training_filter=False
         )
 
-        preds = self.model.predict(features.values)
+        X = features.values
 
+        preds = self.model.predict(X)
+
+        # ✅ REQUIRED OUTPUT FORMAT
         pred_df = pd.DataFrame(index=unfiltered_df.index)
         pred_df["&-s_predict"] = preds
 
         do_predict = np.ones(len(preds), dtype=np.int_)
 
         return pred_df, do_predict
-
 
 # =========================================================
 # PYTORCH MODELS
