@@ -14,7 +14,10 @@ logger = logging.getLogger(__name__)
 
 class StackingRegressor(BaseRegressionModel):
     """
-    FreqAI-compatible Stacking Regressor (safe parameter handling)
+    FreqAI-compatible Stacking Regressor
+    - Safe parameter handling
+    - Robust label handling (DataFrame / Series / ndarray)
+    - Backtest-safe
     """
 
     def __init__(self, **kwargs):
@@ -27,12 +30,11 @@ class StackingRegressor(BaseRegressionModel):
         X = data_dictionary["train_features"]
         y = data_dictionary["train_labels"]
 
-        # Ensure y is 1D for sklearn compatibility
-        if len(y.shape) > 1:
-            y = y.ravel()
+        # 🔥 CRITICAL FIX: normalize labels
+        y = np.asarray(y).reshape(-1)
 
         # -----------------------------
-        # SAFE PARAM MERGE (FIXED)
+        # SAFE PARAM MERGE
         # -----------------------------
         rf_params = {
             "n_estimators": 50,
@@ -48,7 +50,7 @@ class StackingRegressor(BaseRegressionModel):
         }
         gb_params.update(self.model_training_parameters)
 
-        # Initialize base models safely
+        # Initialize base models
         self.base_models['rf'] = RandomForestRegressor(**rf_params)
         self.base_models['gb'] = GradientBoostingRegressor(**gb_params)
 
@@ -79,7 +81,7 @@ class StackingRegressor(BaseRegressionModel):
 
     def predict(self, unfiltered_df: pd.DataFrame, dk: FreqaiDataKitchen, **kwargs):
 
-        # Standard FreqAI feature pipeline
+        # Standard FreqAI pipeline
         dk.find_features(unfiltered_df)
         X = dk.data_dictionary["prediction_features"]
 
@@ -89,8 +91,7 @@ class StackingRegressor(BaseRegressionModel):
             pred = model.predict(X)
 
             # Ensure 1D
-            if len(pred.shape) > 1:
-                pred = pred.ravel()
+            pred = np.asarray(pred).reshape(-1)
 
             base_predictions.append(pred)
 
@@ -98,11 +99,10 @@ class StackingRegressor(BaseRegressionModel):
 
         final_pred = self.meta_learner.predict(meta_features)
 
-        # Ensure 2D output for FreqAI
-        if len(final_pred.shape) == 1:
-            final_pred = final_pred.reshape(-1, 1)
+        # Ensure 2D for FreqAI
+        final_pred = np.asarray(final_pred).reshape(-1, 1)
 
-        # ✅ Use correct label names from FreqAI
+        # Use correct label names
         pred_df = pd.DataFrame(final_pred, columns=dk.label_list)
 
         do_predict = np.ones(len(pred_df), dtype=np.int_)
