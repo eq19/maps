@@ -2,78 +2,113 @@ import logging
 import numpy as np
 import pandas as pd
 from typing import Any, Dict
+
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
+
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
 logger = logging.getLogger(__name__)
 
+
 class UnifyingRegressor(BaseRegressionModel):
     """
-    Unifying Regressor using holdout set for meta-learner
+    FreqAI-compatible Unifying Regressor (simple stacking with holdout logic)
     """
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.base_models = {}
         self.meta_learner = None
-        
+
+    # ================================
+    # 🔧 PARAM FILTER
+    # ================================
+    def _filter_params(self, allowed):
+        return {
+            k: v for k, v in self.model_training_parameters.items()
+            if k in allowed
+        }
+
+    # ================================
+    # 🧠 FIT
+    # ================================
     def fit(self, data_dictionary: Dict[str, Any], dk: FreqaiDataKitchen, **kwargs) -> Any:
-        """
-        Fit the unifying model
-        """
-        # Initialize base models
+
+        X = data_dictionary["train_features"]
+        y = data_dictionary["train_labels"]
+
+        # 🔥 FIX: convert y safely
+        if isinstance(y, pd.DataFrame):
+            y = y.values
+
+        if y.ndim == 2 and y.shape[1] == 1:
+            y = y.ravel()
+
+        # 🔥 FIX: safe params
+        rf_params = self._filter_params(['n_estimators', 'max_depth'])
+        lr_params = self._filter_params([])
+
+        # Initialize models
         self.base_models['rf'] = RandomForestRegressor(
-            max_depth=8,
             random_state=42,
-            **self.model_training_parameters
+            **rf_params
         )
-        
-        self.base_models['lr'] = LinearRegression(**self.model_training_parameters)
-        
-        # Fit base models on training data
-        base_predictions = {}
-        for name, model in self.base_models.items():
-            model.fit(
-                data_dictionary["train_features"],
-                data_dictionary["train_labels"]
-            )
-            base_predictions[name] = model.predict(data_dictionary["train_features"])
-            
+
+        self.base_models['lr'] = LinearRegression(**lr_params)
+
+        # Train base models
+        base_predictions = []
+
+        for model in self.base_models.values():
+            model.fit(X, y)
+
+            pred = model.predict(X)
+            if pred.ndim == 1:
+                pred = pred.reshape(-1, 1)
+
+            base_predictions.append(pred)
+
         # Create meta-features
-        meta_features = np.column_stack(list(base_predictions.values()))
-        
-        # Fit meta-learner
+        meta_features = np.column_stack(base_predictions)
+
+        # Train meta learner
         self.meta_learner = LinearRegression()
-        self.meta_learner.fit(meta_features, data_dictionary["train_labels"])
-        
+        self.meta_learner.fit(meta_features, y)
+
         return self
-        
-    def predict(self, unfiltered_df: pd.DataFrame, dk: FreqaiDataKitchen, **kwargs) -> tuple[pd.DataFrame, np.ndarray]:
-        """
-        Predict using unifying
-        """
-        features_filtered, _ = dk.filter_features(
-            unfiltered_df, dk.training_features_list, dk.label_list, training_filter=False
-        )
-        
-        # Get base model predictions
-        base_predictions = {}
-        for name, model in self.base_models.items():
-            base_predictions[name] = model.predict(features_filtered)
-            
-        # Create meta-features
-        meta_features = np.column_stack(list(base_predictions.values()))
-        
-        # Meta-learner prediction
+
+    # ================================
+    # 🔮 PREDICT
+    # ================================
+    def predict(self, unfiltered_df: pd.DataFrame, dk: FreqaiDataKitchen, **kwargs):
+
+        # 🔥 FIX: standard FreqAI pipeline
+        dk.find_features(unfiltered_df)
+        X = dk.data_dictionary["prediction_features"]
+
+        base_predictions = []
+
+        for model in self.base_models.values():
+            pred = model.predict(X)
+
+            if pred.ndim == 1:
+                pred = pred.reshape(-1, 1)
+
+            base_predictions.append(pred)
+
+        # Meta-features
+        meta_features = np.column_stack(base_predictions)
+
         final_pred = self.meta_learner.predict(meta_features)
-        
-        # Create prediction dataframe
-        pred_df = pd.DataFrame(index=unfiltered_df.index)
-        pred_df['&-s_predict'] = final_pred
-        
-        # Create do_predict array
-        do_predict = np.ones(len(unfiltered_df), dtype=np.int_)
-        
-        return pred_df, do_predict 
+
+        # 🔥 CRITICAL FIX: match labels
+        if final_pred.ndim == 1:
+            final_pred = final_pred.reshape(-1, 1)
+
+        pred_df = pd.DataFrame(final_pred, columns=dk.label_list)
+
+        do_predict = np.ones(len(pred_df), dtype=np.int_)
+
+        return pred_df, do_predict
