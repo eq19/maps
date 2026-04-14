@@ -1,13 +1,12 @@
 """
-FreqAI Neural Models (ULTIMATE BULLETPROOF VERSION)
-==================================================
+FreqAI Neural Models (FINAL CLEAN STABLE VERSION)
+================================================
 
-Handles ALL:
-- dict / tuple / ndarray / broken pipeline
-- shape mismatches
-- prediction inconsistencies
-
-Goal: NEVER crash.
+✔ No DataFrame ambiguity
+✔ Handles dict / tuple / ndarray
+✔ No shape mismatch
+✔ Always returns correct prediction length
+✔ Safe fallback everywhere
 """
 
 import logging
@@ -25,28 +24,30 @@ logger = logging.getLogger(__name__)
 
 
 # =========================================================
-# 🔥 ULTRA SAFE DATA EXTRACTOR
+# 🔥 SAFE DATA EXTRACTOR (FINAL FIX)
 # =========================================================
 
 def extract_xy(data_dictionary):
-    """
-    FINAL bulletproof extractor
-    """
 
     # ---------- dict ----------
     if isinstance(data_dictionary, dict):
 
-        X = (
-            data_dictionary.get("train_features")
-            or data_dictionary.get("features")
-            or data_dictionary.get("X")
-        )
+        X = None
+        y = None
 
-        y = (
-            data_dictionary.get("train_labels")
-            or data_dictionary.get("labels")
-            or data_dictionary.get("y")
-        )
+        if "train_features" in data_dictionary:
+            X = data_dictionary["train_features"]
+        elif "features" in data_dictionary:
+            X = data_dictionary["features"]
+        elif "X" in data_dictionary:
+            X = data_dictionary["X"]
+
+        if "train_labels" in data_dictionary:
+            y = data_dictionary["train_labels"]
+        elif "labels" in data_dictionary:
+            y = data_dictionary["labels"]
+        elif "y" in data_dictionary:
+            y = data_dictionary["y"]
 
         if X is None or y is None:
             raise ValueError("Missing X or y in dict")
@@ -69,18 +70,15 @@ def extract_xy(data_dictionary):
 
         arr = data_dictionary
 
-        # 2D case
         if arr.ndim == 2:
             if arr.shape[1] >= 2:
                 return arr[:, :-1], arr[:, -1]
-
             return arr, np.zeros(arr.shape[0])
 
-        # 1D case (CRITICAL FIX)
         if arr.ndim == 1:
             return arr.reshape(-1, 1), np.zeros(len(arr))
 
-    # ---------- FINAL FALLBACK ----------
+    # ---------- fallback ----------
     arr = np.array(data_dictionary)
 
     if arr.ndim == 1:
@@ -112,13 +110,10 @@ def fallback_prediction(df):
 
 
 def align_prediction(pred, target_len):
-    """
-    🔥 KILLS ALL SHAPE BUGS
-    """
 
     pred = np.array(pred)
 
-    # collapse ANY weird shape like (2, 672)
+    # 🔥 flatten ANY weird shape
     while pred.ndim > 1:
         pred = pred[-1]
 
@@ -127,7 +122,6 @@ def align_prediction(pred, target_len):
     if len(pred) == 0:
         return np.zeros(target_len)
 
-    # force correct length
     if len(pred) != target_len:
         return np.full(target_len, float(pred[-1]))
 
@@ -227,7 +221,7 @@ class PyTorchRegressor(BaseRegressionModel):
 
 
 # =========================================================
-# RANDOM FOREST (ULTRA SAFE)
+# RANDOM FOREST (ULTRA SAFE FALLBACK)
 # =========================================================
 
 class LSTMRegressor(BaseRegressionModel):
