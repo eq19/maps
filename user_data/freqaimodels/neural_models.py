@@ -1,10 +1,13 @@
 """
-Neural Network Models for FreqAI (FIXED VERSION)
-===============================================
+Neural Network Models for FreqAI (FINAL STABLE VERSION)
+=====================================================
 
-FreqAI compatible:
-- Uses data_dictionary + dk
-- Outputs (&-s_predict, do_predict)
+Key Features:
+- Noise-resistant (clip + Huber loss)
+- Proper sequence handling
+- Transformer with positional encoding
+- Confidence-based do_predict filter
+- Stable fallback model
 """
 
 import logging
@@ -16,6 +19,7 @@ import torch.optim as optim
 
 from typing import Dict, Any
 from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestRegressor
 
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
@@ -24,7 +28,70 @@ logger = logging.getLogger(__name__)
 
 
 # =========================================================
-# PYTORCH LSTM MODEL
+# POSITIONAL ENCODING (FOR TRANSFORMER)
+# =========================================================
+class PositionalEncoding(nn.Module):
+    def __init__(self, d_model, max_len=500):
+        super().__init__()
+
+        pe = torch.zeros(max_len, d_model)
+        position = torch.arange(0, max_len).unsqueeze(1)
+
+        div_term = torch.exp(
+            torch.arange(0, d_model, 2) * (-np.log(10000.0) / d_model)
+        )
+
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+
+        self.pe = pe.unsqueeze(0)
+
+    def forward(self, x):
+        return x + self.pe[:, :x.size(1)].to(x.device)
+
+
+# =========================================================
+# PYTORCH MODELS
+# =========================================================
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim):
+        super().__init__()
+        self.lstm = nn.LSTM(input_dim, 64, batch_first=True)
+        self.dropout = nn.Dropout(0.2)
+        self.fc = nn.Linear(64, 1)
+
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        out = self.dropout(out[:, -1, :])
+        return self.fc(out)
+
+
+class TransformerModel(nn.Module):
+    def __init__(self, input_dim):
+        super().__init__()
+
+        self.input_proj = nn.Linear(input_dim, 64)
+        self.pos_encoding = PositionalEncoding(64)
+
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=64,
+            nhead=4,
+            dropout=0.2,
+            batch_first=True
+        )
+
+        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
+        self.fc = nn.Linear(64, 1)
+
+    def forward(self, x):
+        x = self.input_proj(x)
+        x = self.pos_encoding(x)
+        x = self.transformer(x)
+        return self.fc(x.mean(dim=1))
+
+
+# =========================================================
+# LSTM REGRESSOR (MAIN MODEL)
 # =========================================================
 class PyTorchLSTMRegressor(BaseRegressionModel):
 
@@ -33,7 +100,6 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
 
         self.sequence_length = 20
         self.scaler = StandardScaler()
-
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     def _create_sequences(self, X, y=None):
@@ -49,11 +115,14 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
         X = data_dictionary["train_features"].values
         y = data_dictionary["train_labels"]
 
+        # 🔥 handle spikes
+        X = np.clip(X, -10, 10)
+
         X = self.scaler.fit_transform(X)
         X_seq, y_seq = self._create_sequences(X, y)
 
         if len(X_seq) == 0:
-            raise ValueError("Not enough data for LSTM sequence")
+            raise ValueError("Not enough data for LSTM")
 
         X_tensor = torch.FloatTensor(X_seq).to(self.device)
         y_tensor = torch.FloatTensor(y_seq).to(self.device)
@@ -61,14 +130,17 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
         self.model = LSTMModel(input_dim=X.shape[1]).to(self.device)
 
         optimizer = optim.Adam(self.model.parameters(), lr=0.001)
-        loss_fn = nn.MSELoss()
+        loss_fn = nn.HuberLoss()
 
         self.model.train()
-        for _ in range(10):
+        for _ in range(15):
             optimizer.zero_grad()
+
             output = self.model(X_tensor).squeeze()
             loss = loss_fn(output, y_tensor)
+
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
             optimizer.step()
 
         return self
@@ -82,15 +154,17 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
             training_filter=False
         )
 
-        X = self.scaler.transform(features.values)
+        X = np.clip(features.values, -10, 10)
+        X = self.scaler.transform(X)
 
         if len(X) < self.sequence_length:
             padding = np.zeros((self.sequence_length - len(X), X.shape[1]))
             X = np.vstack([padding, X])
 
-        sequences = []
-        for i in range(len(X) - self.sequence_length + 1):
-            sequences.append(X[i:i+self.sequence_length])
+        sequences = [
+            X[i:i+self.sequence_length]
+            for i in range(len(X) - self.sequence_length + 1)
+        ]
 
         X_tensor = torch.FloatTensor(np.array(sequences)).to(self.device)
 
@@ -98,7 +172,6 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
         with torch.no_grad():
             preds = self.model(X_tensor).cpu().numpy().flatten()
 
-        # pad to match dataframe length
         if len(preds) < len(unfiltered_df):
             preds = np.concatenate([
                 np.full(len(unfiltered_df) - len(preds), preds[0]),
@@ -108,13 +181,15 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
         pred_df = pd.DataFrame(index=unfiltered_df.index)
         pred_df["&-s_predict"] = preds
 
-        do_predict = np.ones(len(preds), dtype=np.int_)
+        # 🔥 confidence filter
+        volatility = np.std(preds) + 1e-8
+        do_predict = (np.abs(preds) > 0.1 * volatility).astype(int)
 
         return pred_df, do_predict
 
 
 # =========================================================
-# TRANSFORMER MODEL
+# TRANSFORMER REGRESSOR
 # =========================================================
 class PyTorchTransformerRegressor(BaseRegressionModel):
 
@@ -138,7 +213,9 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
         X = data_dictionary["train_features"].values
         y = data_dictionary["train_labels"]
 
+        X = np.clip(X, -10, 10)
         X = self.scaler.fit_transform(X)
+
         X_seq, y_seq = self._create_sequences(X, y)
 
         X_tensor = torch.FloatTensor(X_seq).to(self.device)
@@ -147,14 +224,17 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
         self.model = TransformerModel(input_dim=X.shape[1]).to(self.device)
 
         optimizer = optim.Adam(self.model.parameters(), lr=0.0005)
-        loss_fn = nn.MSELoss()
+        loss_fn = nn.HuberLoss()
 
         self.model.train()
-        for _ in range(10):
+        for _ in range(15):
             optimizer.zero_grad()
+
             output = self.model(X_tensor).squeeze()
             loss = loss_fn(output, y_tensor)
+
             loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
             optimizer.step()
 
         return self
@@ -168,15 +248,17 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
             training_filter=False
         )
 
-        X = self.scaler.transform(features.values)
+        X = np.clip(features.values, -10, 10)
+        X = self.scaler.transform(X)
 
         if len(X) < self.sequence_length:
             padding = np.zeros((self.sequence_length - len(X), X.shape[1]))
             X = np.vstack([padding, X])
 
-        sequences = []
-        for i in range(len(X) - self.sequence_length + 1):
-            sequences.append(X[i:i+self.sequence_length])
+        sequences = [
+            X[i:i+self.sequence_length]
+            for i in range(len(X) - self.sequence_length + 1)
+        ]
 
         X_tensor = torch.FloatTensor(np.array(sequences)).to(self.device)
 
@@ -193,22 +275,24 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
         pred_df = pd.DataFrame(index=unfiltered_df.index)
         pred_df["&-s_predict"] = preds
 
-        do_predict = np.ones(len(preds), dtype=np.int_)
+        volatility = np.std(preds) + 1e-8
+        do_predict = (np.abs(preds) > 0.1 * volatility).astype(int)
 
         return pred_df, do_predict
 
 
 # =========================================================
-# SIMPLE LSTM (SAFE FALLBACK)
+# SAFE FALLBACK MODEL
 # =========================================================
 class LSTMRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        from sklearn.ensemble import RandomForestRegressor
         self.model = RandomForestRegressor(
-            n_estimators=100,
+            n_estimators=200,
+            max_depth=6,
+            min_samples_leaf=5,
             random_state=42
         )
 
@@ -218,7 +302,6 @@ class LSTMRegressor(BaseRegressionModel):
         y = np.array(data_dictionary["train_labels"]).ravel()
 
         self.model.fit(X, y)
-
         return self
 
     def predict(self, unfiltered_df: pd.DataFrame, dk: FreqaiDataKitchen, **kwargs):
@@ -230,9 +313,7 @@ class LSTMRegressor(BaseRegressionModel):
             training_filter=False
         )
 
-        X = features.values
-
-        preds = self.model.predict(X)
+        preds = self.model.predict(features.values)
 
         pred_df = pd.DataFrame(index=unfiltered_df.index)
         pred_df["&-s_predict"] = preds
@@ -240,39 +321,3 @@ class LSTMRegressor(BaseRegressionModel):
         do_predict = np.ones(len(preds), dtype=np.int_)
 
         return pred_df, do_predict
-
-# =========================================================
-# PYTORCH MODELS
-# =========================================================
-class LSTMModel(nn.Module):
-
-    def __init__(self, input_dim):
-        super().__init__()
-        self.lstm = nn.LSTM(input_dim, 64, batch_first=True)
-        self.fc = nn.Linear(64, 1)
-
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        return self.fc(out[:, -1, :])
-
-
-class TransformerModel(nn.Module):
-
-    def __init__(self, input_dim):
-        super().__init__()
-
-        self.input_proj = nn.Linear(input_dim, 64)
-
-        encoder_layer = nn.TransformerEncoderLayer(
-            d_model=64,
-            nhead=4,
-            batch_first=True
-        )
-
-        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
-        self.fc = nn.Linear(64, 1)
-
-    def forward(self, x):
-        x = self.input_proj(x)
-        x = self.transformer(x)
-        return self.fc(x.mean(dim=1))
