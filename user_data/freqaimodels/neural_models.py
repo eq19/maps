@@ -1,12 +1,12 @@
 """
-Neural Network Models for FreqAI (FINAL BUG-FREE VERSION)
-========================================================
+Neural Network Models for FreqAI (ULTRA ROBUST FINAL)
+====================================================
 
-Fixes:
-- Handles dk=None in predict()
-- Handles dict / tuple data_dictionary
-- Prevents NoneType model crashes
-- Stable for backtest + live + dry-run
+Handles:
+- dict / tuple / extended tuple inputs
+- DataFrame / numpy prediction input
+- safe indexing
+- stable training
 """
 
 import logging
@@ -16,19 +16,81 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from typing import Dict, Any
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
-from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
 logger = logging.getLogger(__name__)
 
 
 # =========================================================
-# POSITIONAL ENCODING
+# SAFE UTILITIES (CRITICAL)
 # =========================================================
+
+def extract_xy(data_dictionary):
+    """
+    Robust extractor for ALL FreqAI formats
+    """
+
+    # dict case
+    if isinstance(data_dictionary, dict):
+        X = data_dictionary.get("train_features")
+        y = data_dictionary.get("train_labels")
+
+        if hasattr(X, "values"):
+            X = X.values
+        if hasattr(y, "values"):
+            y = y.values
+
+        return X, np.array(y).ravel()
+
+    # tuple / list case
+    if isinstance(data_dictionary, (list, tuple)):
+        if len(data_dictionary) >= 2:
+            X = data_dictionary[0]
+            y = data_dictionary[1]
+            return X, np.array(y).ravel()
+
+    raise ValueError("Unsupported data format")
+
+
+def safe_index(df):
+    if hasattr(df, "index"):
+        return df.index
+    return pd.RangeIndex(len(df))
+
+
+def fallback_prediction(df):
+    length = len(df)
+    index = safe_index(df)
+
+    preds = np.zeros(length)
+
+    pred_df = pd.DataFrame(index=index)
+    pred_df["&-s_predict"] = preds
+
+    do_predict = np.zeros(length, dtype=np.int_)
+    return pred_df, do_predict
+
+
+# =========================================================
+# PYTORCH MODELS
+# =========================================================
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim):
+        super().__init__()
+        self.lstm = nn.LSTM(input_dim, 64, batch_first=True)
+        self.dropout = nn.Dropout(0.2)
+        self.fc = nn.Linear(64, 1)
+
+    def forward(self, x):
+        out, _ = self.lstm(x)
+        out = self.dropout(out[:, -1, :])
+        return self.fc(out)
+
+
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, max_len=500):
         super().__init__()
@@ -47,22 +109,6 @@ class PositionalEncoding(nn.Module):
 
     def forward(self, x):
         return x + self.pe[:, :x.size(1)].to(x.device)
-
-
-# =========================================================
-# MODELS
-# =========================================================
-class LSTMModel(nn.Module):
-    def __init__(self, input_dim):
-        super().__init__()
-        self.lstm = nn.LSTM(input_dim, 64, batch_first=True)
-        self.dropout = nn.Dropout(0.2)
-        self.fc = nn.Linear(64, 1)
-
-    def forward(self, x):
-        out, _ = self.lstm(x)
-        out = self.dropout(out[:, -1, :])
-        return self.fc(out)
 
 
 class TransformerModel(nn.Module):
@@ -90,28 +136,9 @@ class TransformerModel(nn.Module):
 
 
 # =========================================================
-# BASE SAFE UTIL
-# =========================================================
-def extract_xy(data_dictionary):
-    if isinstance(data_dictionary, dict):
-        X = data_dictionary["train_features"].values
-        y = data_dictionary["train_labels"]
-    else:
-        X, y = data_dictionary
-    return X, y
-
-
-def fallback_prediction(df):
-    preds = np.zeros(len(df))
-    pred_df = pd.DataFrame(index=df.index)
-    pred_df["&-s_predict"] = preds
-    do_predict = np.zeros(len(preds), dtype=np.int_)
-    return pred_df, do_predict
-
-
-# =========================================================
 # LSTM REGRESSOR
 # =========================================================
+
 class PyTorchLSTMRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
@@ -130,7 +157,7 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
                 ys.append(y[i+self.sequence_length])
         return np.array(Xs), np.array(ys)
 
-    def fit(self, data_dictionary, dk, **kwargs):
+    def fit(self, data_dictionary, dk=None, **kwargs):
 
         X, y = extract_xy(data_dictionary)
 
@@ -140,7 +167,7 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
         X_seq, y_seq = self._create_sequences(X, y)
 
         if len(X_seq) == 0:
-            raise ValueError("Not enough data for LSTM")
+            raise ValueError("Not enough data")
 
         X_tensor = torch.FloatTensor(X_seq).to(self.device)
         y_tensor = torch.FloatTensor(y_seq).to(self.device)
@@ -165,10 +192,7 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
 
     def predict(self, unfiltered_df, dk=None, **kwargs):
 
-        if self.model is None:
-            return fallback_prediction(unfiltered_df)
-
-        if dk is None:
+        if self.model is None or dk is None:
             return fallback_prediction(unfiltered_df)
 
         features, _ = dk.filter_features(
@@ -202,7 +226,9 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
                 preds
             ])
 
-        pred_df = pd.DataFrame(index=unfiltered_df.index)
+        index = safe_index(unfiltered_df)
+
+        pred_df = pd.DataFrame(index=index)
         pred_df["&-s_predict"] = preds
 
         volatility = np.std(preds) + 1e-8
@@ -214,6 +240,7 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
 # =========================================================
 # TRANSFORMER REGRESSOR
 # =========================================================
+
 class PyTorchTransformerRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
@@ -232,7 +259,7 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
                 ys.append(y[i+self.sequence_length])
         return np.array(Xs), np.array(ys)
 
-    def fit(self, data_dictionary, dk, **kwargs):
+    def fit(self, data_dictionary, dk=None, **kwargs):
 
         X, y = extract_xy(data_dictionary)
 
@@ -267,10 +294,7 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
 
     def predict(self, unfiltered_df, dk=None, **kwargs):
 
-        if self.model is None:
-            return fallback_prediction(unfiltered_df)
-
-        if dk is None:
+        if self.model is None or dk is None:
             return fallback_prediction(unfiltered_df)
 
         features, _ = dk.filter_features(
@@ -304,7 +328,9 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
                 preds
             ])
 
-        pred_df = pd.DataFrame(index=unfiltered_df.index)
+        index = safe_index(unfiltered_df)
+
+        pred_df = pd.DataFrame(index=index)
         pred_df["&-s_predict"] = preds
 
         volatility = np.std(preds) + 1e-8
@@ -314,15 +340,16 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
 
 
 # =========================================================
-# SAFE FALLBACK MODEL
+# FALLBACK MODEL
 # =========================================================
+
 class LSTMRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.model = None
 
-    def fit(self, data_dictionary, dk, **kwargs):
+    def fit(self, data_dictionary, dk=None, **kwargs):
 
         X, y = extract_xy(data_dictionary)
 
@@ -339,10 +366,7 @@ class LSTMRegressor(BaseRegressionModel):
 
     def predict(self, unfiltered_df, dk=None, **kwargs):
 
-        if self.model is None:
-            return fallback_prediction(unfiltered_df)
-
-        if dk is None:
+        if self.model is None or dk is None:
             return fallback_prediction(unfiltered_df)
 
         features, _ = dk.filter_features(
@@ -354,7 +378,9 @@ class LSTMRegressor(BaseRegressionModel):
 
         preds = self.model.predict(features.values)
 
-        pred_df = pd.DataFrame(index=unfiltered_df.index)
+        index = safe_index(unfiltered_df)
+
+        pred_df = pd.DataFrame(index=index)
         pred_df["&-s_predict"] = preds
 
         do_predict = np.ones(len(preds), dtype=np.int_)
