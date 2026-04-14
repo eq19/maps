@@ -1,12 +1,12 @@
 """
-Neural Network Models for FreqAI (ULTRA ROBUST FINAL)
-====================================================
+Neural Network Models for FreqAI (ULTIMATE STABLE VERSION)
+=========================================================
 
-Handles:
-- dict / tuple / extended tuple inputs
-- DataFrame / numpy prediction input
-- safe indexing
-- stable training
+This version fixes:
+- All FreqAI input inconsistencies
+- Sequence length mismatch
+- Prediction length mismatch (CRITICAL)
+- Data format variability
 """
 
 import logging
@@ -25,18 +25,32 @@ logger = logging.getLogger(__name__)
 
 
 # =========================================================
-# SAFE UTILITIES (CRITICAL)
+# SAFE UTILITIES
 # =========================================================
 
 def extract_xy(data_dictionary):
     """
-    Robust extractor for ALL FreqAI formats
+    Fully tolerant extractor for ANY FreqAI structure
     """
 
     # dict case
     if isinstance(data_dictionary, dict):
-        X = data_dictionary.get("train_features")
-        y = data_dictionary.get("train_labels")
+
+        X = None
+        y = None
+
+        for key in ["train_features", "features", "X"]:
+            if key in data_dictionary:
+                X = data_dictionary[key]
+                break
+
+        for key in ["train_labels", "labels", "y"]:
+            if key in data_dictionary:
+                y = data_dictionary[key]
+                break
+
+        if X is None or y is None:
+            raise ValueError("Missing X or y in dict")
 
         if hasattr(X, "values"):
             X = X.values
@@ -45,14 +59,17 @@ def extract_xy(data_dictionary):
 
         return X, np.array(y).ravel()
 
-    # tuple / list case
+    # tuple/list case
     if isinstance(data_dictionary, (list, tuple)):
-        if len(data_dictionary) >= 2:
-            X = data_dictionary[0]
-            y = data_dictionary[1]
+
+        arrays = [x for x in data_dictionary if hasattr(x, "__len__")]
+
+        if len(arrays) >= 2:
+            X = arrays[0]
+            y = arrays[1]
             return X, np.array(y).ravel()
 
-    raise ValueError("Unsupported data format")
+    raise ValueError(f"Unsupported data format: {type(data_dictionary)}")
 
 
 def safe_index(df):
@@ -74,8 +91,23 @@ def fallback_prediction(df):
     return pred_df, do_predict
 
 
+def align_predictions(preds, target_len):
+    preds = np.array(preds).flatten()
+
+    if len(preds) == 0:
+        return np.zeros(target_len)
+
+    if len(preds) < target_len:
+        return np.pad(preds, (target_len - len(preds), 0), mode='edge')
+
+    if len(preds) > target_len:
+        return preds[-target_len:]
+
+    return preds
+
+
 # =========================================================
-# PYTORCH MODELS
+# MODELS
 # =========================================================
 
 class LSTMModel(nn.Module):
@@ -143,7 +175,6 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
         self.sequence_length = 20
         self.scaler = StandardScaler()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -220,11 +251,7 @@ class PyTorchLSTMRegressor(BaseRegressionModel):
         with torch.no_grad():
             preds = self.model(X_tensor).cpu().numpy().flatten()
 
-        if len(preds) < len(unfiltered_df):
-            preds = np.concatenate([
-                np.full(len(unfiltered_df) - len(preds), preds[0]),
-                preds
-            ])
+        preds = align_predictions(preds, len(unfiltered_df))
 
         index = safe_index(unfiltered_df)
 
@@ -245,7 +272,6 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
         self.sequence_length = 30
         self.scaler = StandardScaler()
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -322,11 +348,7 @@ class PyTorchTransformerRegressor(BaseRegressionModel):
         with torch.no_grad():
             preds = self.model(X_tensor).cpu().numpy().flatten()
 
-        if len(preds) < len(unfiltered_df):
-            preds = np.concatenate([
-                np.full(len(unfiltered_df) - len(preds), preds[0]),
-                preds
-            ])
+        preds = align_predictions(preds, len(unfiltered_df))
 
         index = safe_index(unfiltered_df)
 
@@ -377,6 +399,7 @@ class LSTMRegressor(BaseRegressionModel):
         )
 
         preds = self.model.predict(features.values)
+        preds = align_predictions(preds, len(unfiltered_df))
 
         index = safe_index(unfiltered_df)
 
