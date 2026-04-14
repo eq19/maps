@@ -920,11 +920,11 @@ class Fibbo(IStrategy):
                 short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
                 # Enter LONG when bullish, Enter SHORT when bearish
-                #entry_long_conditions.append(freqai_bullish & long_conf)
+                entry_long_conditions.append(freqai_bullish & long_conf)
                 entry_short_conditions.append(freqai_bearish & short_conf)
 
             else:
-                #entry_long_conditions.append(freqai_bullish)
+                entry_long_conditions.append(freqai_bullish)
                 entry_short_conditions.append(freqai_bearish)
 
         # Combine entry conditions with AND logic
@@ -1042,11 +1042,11 @@ class Fibbo(IStrategy):
                 short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
                 # Exit LONG when bearish, Exit SHORT when bullish
-                #exit_long_conditions.append(freqai_bearish & short_conf)
+                exit_long_conditions.append(freqai_bearish & short_conf)
                 exit_short_conditions.append(freqai_bullish & long_conf)
 
             else:
-                #exit_long_conditions.append(freqai_bearish)
+                exit_long_conditions.append(freqai_bearish)
                 exit_short_conditions.append(freqai_bullish)
 
         # Combine exit conditions with AND logic
