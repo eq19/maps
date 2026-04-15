@@ -206,7 +206,7 @@ else
           gh variable set SCORE --body "${SCORE}"
         elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
           gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${$FREQAI_MODEL}"                 
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
         fi
         export CALCULATION="false"
       fi
