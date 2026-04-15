@@ -1035,24 +1035,30 @@ class Fibbo(IStrategy):
             momentum_positive = dataframe['momentum_hist'] > 0
             exit_short_conditions.append(squeeze_on & momentum_positive)
 
-        # === FreqAI Exit Signals ===
+        # === FreqAI (SAFE FALLBACK) ===
+        use_freqai = False
+
         if 'do_predict' in dataframe.columns:
 
-            freqai_bullish = (dataframe['do_predict'] == 1)
-            freqai_bearish = (dataframe['do_predict'] == -1)
+            valid_preds = dataframe['do_predict'].isin([1, -1])
 
-            if 'di_percentile' in dataframe.columns:
+            if valid_preds.any():
+                use_freqai = True
 
-                long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
-                short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
+                freqai_bullish = dataframe['do_predict'] == 1
+                freqai_bearish = dataframe['do_predict'] == -1
 
-                # Exit LONG when bearish, Exit SHORT when bullish
-                exit_long_conditions.append(freqai_bearish & short_conf)
-                exit_short_conditions.append(freqai_bullish & long_conf)
+                if 'di_percentile' in dataframe.columns:
+                    long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
+                    short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
-            else:
-                exit_long_conditions.append(freqai_bearish)
-                exit_short_conditions.append(freqai_bullish)
+                    # IMPORTANT: reverse logic for exit
+                    exit_long_conditions.append(freqai_bearish & short_conf)
+                    exit_short_conditions.append(freqai_bullish & long_conf)
+
+                else:
+                    exit_long_conditions.append(freqai_bearish)
+                    exit_short_conditions.append(freqai_bullish)
 
         # Combine exit conditions with AND logic
         # Exit if ALL condition are met
