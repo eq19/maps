@@ -385,7 +385,7 @@ hyperopt() {
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
       echo "$error"
-      exit 1
+      gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
     else
       freqtrade hyperopt-list --best
     fi
