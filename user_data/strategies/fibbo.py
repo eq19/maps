@@ -908,24 +908,29 @@ class Fibbo(IStrategy):
             momentum_negative = dataframe['momentum_hist'] < 0
             entry_short_conditions.append(squeeze_off & momentum_negative)
 
-        # === FreqAI Entry Signals ===
+        # === FreqAI (SAFE FALLBACK) ===
+        use_freqai = False
+
         if 'do_predict' in dataframe.columns:
 
-            freqai_bullish = (dataframe['do_predict'] == 1)
-            freqai_bearish = (dataframe['do_predict'] == -1)
+            valid_preds = dataframe['do_predict'].isin([1, -1])
 
-            if 'di_percentile' in dataframe.columns:
+            # Only activate AI if we actually have predictions
+            if valid_preds.any():
+                use_freqai = True
 
-                long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
-                short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
+                freqai_bullish = dataframe['do_predict'] == 1
+                freqai_bearish = dataframe['do_predict'] == -1
 
-                # Enter LONG when bullish, Enter SHORT when bearish
-                entry_long_conditions.append(freqai_bullish & long_conf)
-                entry_short_conditions.append(freqai_bearish & short_conf)
+                if 'di_percentile' in dataframe.columns:
+                    long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
+                    short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
 
-            else:
-                entry_long_conditions.append(freqai_bullish)
-                entry_short_conditions.append(freqai_bearish)
+                    entry_long_conditions.append(freqai_bullish & long_conf)
+                    entry_short_conditions.append(freqai_bearish & short_conf)
+                else:
+                    entry_long_conditions.append(freqai_bullish)
+                    entry_short_conditions.append(freqai_bearish)
 
         # Combine entry conditions with AND logic
         # Enter if ALL conditions are met
