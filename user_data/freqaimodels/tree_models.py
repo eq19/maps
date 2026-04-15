@@ -1,11 +1,10 @@
 """
-Tree-based Models for FreqAI (FINAL FIXED VERSION)
+Tree-based Models for FreqAI (FINAL - RECURSION SAFE)
 """
 
-import logging
 import numpy as np
 import pandas as pd
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 # Optional libs
 try:
@@ -29,8 +28,6 @@ except ImportError:
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 BaseFreqAIModel = BaseRegressionModel
 
-logger = logging.getLogger(__name__)
-
 
 # =========================
 # Helper
@@ -44,18 +41,11 @@ def _to_numpy(X):
 
 
 # =========================
-# 1. CatBoost
+# 1. CatBoost (SAFE)
 # =========================
 class EnhancedCatboostRegressor(BaseFreqAIModel):
 
     model_type = "tree_based"
-
-    default_parameters = {
-        "iterations": 100,
-        "learning_rate": 0.05,
-        "depth": 6,
-        "verbose": False,
-    }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -63,7 +53,12 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
         if not CATBOOST_AVAILABLE:
             raise ImportError("pip install catboost")
 
-        self.parameters = self.default_parameters.copy()
+        self.parameters = {
+            "iterations": 100,
+            "learning_rate": 0.05,
+            "depth": 6,
+            "verbose": False,
+        }
         self.parameters.update(kwargs.get("model_parameters", {}))
 
         self.model = None
@@ -72,8 +67,6 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
     def fit(self, data: Dict, dk: Any, **kwargs):
         X = _to_numpy(data["train_features"])
         y = _to_numpy(data["train_labels"]).ravel()
-
-        self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
         self.model = cb.CatBoostRegressor(**self.parameters)
 
@@ -98,26 +91,13 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
             raise ValueError("Model not trained")
         return self.model.predict(_to_numpy(X))
 
-    def get_feature_importance(self):
-        if self.is_trained:
-            return self.model.get_feature_importance()
-        return None
-
 
 # =========================
-# 2. LightGBM (SAFE VERSION)
+# 2. LightGBM (SAFE)
 # =========================
 class EnhancedLightGBMRegressor(BaseFreqAIModel):
 
     model_type = "tree_based"
-
-    default_parameters = {
-        "objective": "regression",
-        "learning_rate": 0.05,
-        "n_estimators": 100,
-        "num_leaves": 31,
-        "verbosity": -1,
-    }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -125,7 +105,13 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         if not LIGHTGBM_AVAILABLE:
             raise ImportError("pip install lightgbm")
 
-        self.parameters = self.default_parameters.copy()
+        self.parameters = {
+            "objective": "regression",
+            "learning_rate": 0.05,
+            "n_estimators": 100,
+            "num_leaves": 31,
+            "verbosity": -1,
+        }
         self.parameters.update(kwargs.get("model_parameters", {}))
 
         self.model = None
@@ -145,8 +131,6 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         X = self._prepare(data["train_features"])
         y = self._prepare(data["train_labels"]).ravel()
 
-        self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
-
         self.model = lgb.LGBMRegressor(**self.parameters)
 
         try:
@@ -163,7 +147,6 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
                 self.model.fit(X, y)
 
         except TypeError:
-            logger.warning("LightGBM fallback (no eval_set support)")
             self.model.fit(X, y)
 
         self.is_trained = True
@@ -174,25 +157,13 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
             raise ValueError("Model not trained")
         return self.model.predict(self._prepare(X))
 
-    def get_feature_importance(self):
-        if self.is_trained:
-            return self.model.feature_importances_
-        return None
-
 
 # =========================
-# 3. XGBoost
+# 3. XGBoost (SAFE)
 # =========================
 class EnhancedXGBoostRegressor(BaseFreqAIModel):
 
     model_type = "tree_based"
-
-    default_parameters = {
-        "n_estimators": 100,
-        "learning_rate": 0.05,
-        "max_depth": 6,
-        "eval_metric": "rmse",
-    }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -200,7 +171,12 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
         if not XGBOOST_AVAILABLE:
             raise ImportError("pip install xgboost")
 
-        self.parameters = self.default_parameters.copy()
+        self.parameters = {
+            "n_estimators": 100,
+            "learning_rate": 0.05,
+            "max_depth": 6,
+            "eval_metric": "rmse",
+        }
         self.parameters.update(kwargs.get("model_parameters", {}))
 
         self.model = None
@@ -209,8 +185,6 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
     def fit(self, data: Dict, dk: Any, **kwargs):
         X = _to_numpy(data["train_features"])
         y = _to_numpy(data["train_labels"]).ravel()
-
-        self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
         self.model = xgb.XGBRegressor(**self.parameters)
 
@@ -233,8 +207,3 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
         if not self.is_trained:
             raise ValueError("Model not trained")
         return self.model.predict(_to_numpy(X))
-
-    def get_feature_importance(self):
-        if self.is_trained:
-            return self.model.feature_importances_
-        return None
