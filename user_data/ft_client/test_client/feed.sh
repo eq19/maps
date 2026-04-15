@@ -78,10 +78,6 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
       export FREQAI_NEXT="false"
     fi
   fi
-
-  # Print results
-  echo "FREQAI_MODEL=${FREQAI_MODEL}"
-  echo "FREQAI_NEXT=${FREQAI_NEXT}"
 fi
 
 if [[ "$1" != "hyperopt" ]]; then
