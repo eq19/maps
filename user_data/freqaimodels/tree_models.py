@@ -1,7 +1,5 @@
 """
-Tree-based Models for FreqAI
-============================
-Fixed version (FreqAI compatible)
+Tree-based Models for FreqAI (FINAL FIXED VERSION)
 """
 
 import logging
@@ -15,21 +13,18 @@ try:
     CATBOOST_AVAILABLE = True
 except ImportError:
     CATBOOST_AVAILABLE = False
-    cb = None
 
 try:
     import lightgbm as lgb
     LIGHTGBM_AVAILABLE = True
 except ImportError:
     LIGHTGBM_AVAILABLE = False
-    lgb = None
 
 try:
     import xgboost as xgb
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
-    xgb = None
 
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 BaseFreqAIModel = BaseRegressionModel
@@ -49,7 +44,7 @@ def _to_numpy(X):
 
 
 # =========================
-# CatBoost
+# 1. CatBoost
 # =========================
 class EnhancedCatboostRegressor(BaseFreqAIModel):
 
@@ -68,26 +63,27 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
         if not CATBOOST_AVAILABLE:
             raise ImportError("pip install catboost")
 
-        self.catboost = cb
         self.parameters = self.default_parameters.copy()
         self.parameters.update(kwargs.get("model_parameters", {}))
 
+        self.model = None
+        self.is_trained = False
+
     def fit(self, data: Dict, dk: Any, **kwargs):
         X = _to_numpy(data["train_features"])
-        y = _to_numpy(data["train_labels"])
+        y = _to_numpy(data["train_labels"]).ravel()
 
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
-        self.model = self.catboost.CatBoostRegressor(**self.parameters)
+        self.model = cb.CatBoostRegressor(**self.parameters)
 
-        if X.shape[0] > 100:
+        if len(X) > 100:
             split = int(0.8 * len(X))
-            train_pool = self.catboost.Pool(X[:split], y[:split])
-            val_pool = self.catboost.Pool(X[split:], y[split:])
 
             self.model.fit(
-                train_pool,
-                eval_set=val_pool,
+                X[:split],
+                y[:split],
+                eval_set=(X[split:], y[split:]),
                 early_stopping_rounds=10,
                 verbose=False,
             )
@@ -109,7 +105,7 @@ class EnhancedCatboostRegressor(BaseFreqAIModel):
 
 
 # =========================
-# LightGBM
+# 2. LightGBM (SAFE VERSION)
 # =========================
 class EnhancedLightGBMRegressor(BaseFreqAIModel):
 
@@ -120,7 +116,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         "learning_rate": 0.05,
         "n_estimators": 100,
         "num_leaves": 31,
-        "verbose": -1,
+        "verbosity": -1,
     }
 
     def __init__(self, **kwargs):
@@ -129,27 +125,45 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
         if not LIGHTGBM_AVAILABLE:
             raise ImportError("pip install lightgbm")
 
-        self.lightgbm = lgb
         self.parameters = self.default_parameters.copy()
         self.parameters.update(kwargs.get("model_parameters", {}))
 
+        self.model = None
+        self.is_trained = False
+
+    def _prepare(self, X):
+        if isinstance(X, pd.DataFrame):
+            X = X.copy()
+            for col in X.columns:
+                if X[col].dtype == "object":
+                    X[col] = pd.to_numeric(X[col], errors="coerce")
+            X = X.fillna(0)
+            return X.values
+        return np.array(X)
+
     def fit(self, data: Dict, dk: Any, **kwargs):
-        X = _to_numpy(data["train_features"])
-        y = _to_numpy(data["train_labels"])
+        X = self._prepare(data["train_features"])
+        y = self._prepare(data["train_labels"]).ravel()
 
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
-        self.model = self.lightgbm.LGBMRegressor(**self.parameters)
+        self.model = lgb.LGBMRegressor(**self.parameters)
 
-        if X.shape[0] > 100:
-            split = int(0.8 * len(X))
-            self.model.fit(
-                X[:split],
-                y[:split],
-                eval_set=[(X[split:], y[split:])],
-                callbacks=[self.lightgbm.early_stopping(10, verbose=False)],
-            )
-        else:
+        try:
+            if len(X) > 100:
+                split = int(0.8 * len(X))
+
+                self.model.fit(
+                    X[:split],
+                    y[:split],
+                    eval_set=[(X[split:], y[split:])],
+                    eval_metric="rmse",
+                )
+            else:
+                self.model.fit(X, y)
+
+        except TypeError:
+            logger.warning("LightGBM fallback (no eval_set support)")
             self.model.fit(X, y)
 
         self.is_trained = True
@@ -158,7 +172,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
     def predict(self, X, dk=None):
         if not self.is_trained:
             raise ValueError("Model not trained")
-        return self.model.predict(_to_numpy(X))
+        return self.model.predict(self._prepare(X))
 
     def get_feature_importance(self):
         if self.is_trained:
@@ -167,7 +181,7 @@ class EnhancedLightGBMRegressor(BaseFreqAIModel):
 
 
 # =========================
-# XGBoost
+# 3. XGBoost
 # =========================
 class EnhancedXGBoostRegressor(BaseFreqAIModel):
 
@@ -186,20 +200,23 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
         if not XGBOOST_AVAILABLE:
             raise ImportError("pip install xgboost")
 
-        self.xgboost = xgb
         self.parameters = self.default_parameters.copy()
         self.parameters.update(kwargs.get("model_parameters", {}))
 
+        self.model = None
+        self.is_trained = False
+
     def fit(self, data: Dict, dk: Any, **kwargs):
         X = _to_numpy(data["train_features"])
-        y = _to_numpy(data["train_labels"])
+        y = _to_numpy(data["train_labels"]).ravel()
 
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
-        if X.shape[0] > 100:
+        self.model = xgb.XGBRegressor(**self.parameters)
+
+        if len(X) > 100:
             split = int(0.8 * len(X))
 
-            self.model = self.xgboost.XGBRegressor(**self.parameters)
             self.model.fit(
                 X[:split],
                 y[:split],
@@ -207,7 +224,6 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
                 verbose=False,
             )
         else:
-            self.model = self.xgboost.XGBRegressor(**self.parameters)
             self.model.fit(X, y)
 
         self.is_trained = True
@@ -222,41 +238,3 @@ class EnhancedXGBoostRegressor(BaseFreqAIModel):
         if self.is_trained:
             return self.model.feature_importances_
         return None
-
-
-# =========================
-# Ensemble
-# =========================
-class EnsembleTreeModel(BaseFreqAIModel):
-
-    model_type = "ensemble"
-
-    def __init__(self, config: dict, models=None, weights=None, **kwargs):
-        super().__init__(config=config, **kwargs)
-
-        self.models = models or []
-        self.weights = weights or [1.0] * len(self.models)
-
-        if len(self.weights) != len(self.models):
-            raise ValueError("Weights must match models")
-
-    def fit(self, data: Dict, dk: Any, **kwargs):
-        for model in self.models:
-            model.fit(data, dk, **kwargs)
-
-        self.is_trained = True
-        return self
-
-    def predict(self, X, dk=None):
-        if not self.is_trained:
-            raise ValueError("Model not trained")
-
-        X = _to_numpy(X)
-
-        preds = [m.predict(X) for m in self.models]
-
-        weighted = np.zeros_like(preds[0])
-        for p, w in zip(preds, self.weights):
-            weighted += p * w
-
-        return weighted / sum(self.weights)
