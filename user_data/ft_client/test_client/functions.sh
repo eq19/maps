@@ -381,6 +381,9 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nID: $id | FreqAImodel: $FREQAI_MODEL | Days: $days | Epochs: $epochs\n👉 Running ${HYPEROPT:-$loss} | Spaces: $spaces\n$hr"
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
+      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
+      --random-state ${id} ${enable_protections}
     if freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --random-state ${id} ${enable_protections} \
