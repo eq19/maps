@@ -1,3 +1,7 @@
+"""
+FreqAI LSTM Model - Fixed & Production Ready
+"""
+
 import logging
 import numpy as np
 import torch
@@ -11,9 +15,9 @@ logger = logging.getLogger(__name__)
 BaseFreqAIModel = BaseRegressionModel
 
 
-# =========================
-# LSTM MODEL
-# =========================
+# =====================================
+# LSTM NETWORK
+# =====================================
 class FreqAILSTMModel(nn.Module):
     def __init__(
         self,
@@ -40,12 +44,13 @@ class FreqAILSTMModel(nn.Module):
         self.relu = nn.ReLU()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # Ensure 3D input: (batch, seq_len, features)
         if x.dim() == 2:
-            x = x.unsqueeze(1)  # (batch, seq=1, features)
+            x = x.unsqueeze(1)
 
         out, _ = self.lstm(x)
 
-        # take last timestep
+        # Take last timestep
         out = out[:, -1, :]
 
         out = self.relu(self.fc1(out))
@@ -55,9 +60,9 @@ class FreqAILSTMModel(nn.Module):
         return out
 
 
-# =========================
-# REGRESSOR
-# =========================
+# =====================================
+# FREQAI REGRESSOR
+# =====================================
 class FreqAILSTMRegressor(BaseFreqAIModel):
 
     model_type = "neural_network"
@@ -79,11 +84,15 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
         self.model: Optional[nn.Module] = None
         self.is_trained = False
 
-        self.device = self._get_device()
-        logger.info(f"Using device: {self.device}")
+        # IMPORTANT: do NOT access self.parameters here
+        self.device = None
 
+    # ---------------------------------
+    # Device selection (SAFE)
+    # ---------------------------------
     def _get_device(self):
-        device_param = self.parameters.get("device", "auto")
+        params = getattr(self, "parameters", {}) or {}
+        device_param = params.get("device", "auto")
 
         if device_param == "cpu":
             return torch.device("cpu")
@@ -94,7 +103,7 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
         if device_param == "mps" and torch.backends.mps.is_available():
             return torch.device("mps")
 
-        # AUTO
+        # AUTO fallback
         if torch.cuda.is_available():
             return torch.device("cuda")
         if torch.backends.mps.is_available():
@@ -102,8 +111,16 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
 
         return torch.device("cpu")
 
+    # ---------------------------------
+    # TRAIN
+    # ---------------------------------
     def fit(self, X: np.ndarray, y: np.ndarray, **kwargs):
+
         self.validate_data(X, y)
+
+        # NOW parameters exist
+        self.device = self._get_device()
+        logger.info(f"Using device: {self.device}")
 
         X = self.preprocess_features(X)
         X_scaled = self.scaler.fit_transform(X)
@@ -112,28 +129,30 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
         y_tensor = torch.tensor(y, dtype=torch.float32)
 
         dataset = torch.utils.data.TensorDataset(X_tensor, y_tensor)
+
+        batch_size = self.parameters.get("batch_size", 64)
+
         loader = torch.utils.data.DataLoader(
             dataset,
-            batch_size=self.parameters.get("batch_size", 64),
+            batch_size=batch_size,
             shuffle=True,
         )
 
         self.model = FreqAILSTMModel(
             input_dim=X.shape[1],
             output_dim=1,
-            hidden_dim=self.parameters["hidden_dim"],
-            num_lstm_layers=self.parameters["num_lstm_layers"],
-            dropout_percent=self.parameters["dropout_percent"],
+            hidden_dim=self.parameters.get("hidden_dim", 128),
+            num_lstm_layers=self.parameters.get("num_lstm_layers", 2),
+            dropout_percent=self.parameters.get("dropout_percent", 0.2),
         ).to(self.device)
 
         optimizer = torch.optim.Adam(
             self.model.parameters(),
-            lr=self.parameters["learning_rate"],
+            lr=self.parameters.get("learning_rate", 0.001),
         )
 
         criterion = nn.MSELoss()
-
-        epochs = self.parameters["epochs"]
+        epochs = self.parameters.get("epochs", 50)
 
         self.model.train()
 
@@ -160,9 +179,17 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
         self.is_trained = True
         self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
 
+        logger.info(
+            f"Model trained on {X.shape[0]} samples with {X.shape[1]} features"
+        )
+
         return self
 
+    # ---------------------------------
+    # PREDICT
+    # ---------------------------------
     def predict(self, X: np.ndarray) -> np.ndarray:
+
         if not self.is_trained:
             raise ValueError("Model must be trained before prediction")
 
