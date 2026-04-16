@@ -113,6 +113,8 @@
       "(ZAR|ZIL)/IDR"
     ],
     "ccxt_config": {
+      "enableRateLimit": true,
+      "timeout": 30000,
       "timeframes": {
         "1m": "1",
         "15m": "15",
@@ -206,6 +208,8 @@
       }
     },
     "ccxt_async_config": {
+      "enableRateLimit": true,
+      "timeout": 30000,
       "timeframes": {
         "1m": "1",
         "15m": "15",
