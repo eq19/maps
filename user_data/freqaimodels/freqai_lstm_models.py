@@ -1,5 +1,5 @@
 """
-FreqAI LSTM Model - Fixed & Production Ready
+FreqAI LSTM Model - FULLY FIXED (FreqAI Native)
 """
 
 import logging
@@ -7,50 +7,37 @@ import numpy as np
 import torch
 import torch.nn as nn
 from sklearn.preprocessing import StandardScaler
-from typing import Optional
 
 from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 
 logger = logging.getLogger(__name__)
-BaseFreqAIModel = BaseRegressionModel
 
 
 # =====================================
-# LSTM NETWORK
+# LSTM MODEL
 # =====================================
 class FreqAILSTMModel(nn.Module):
-    def __init__(
-        self,
-        input_dim: int,
-        output_dim: int,
-        hidden_dim: int = 128,
-        num_lstm_layers: int = 2,
-        dropout_percent: float = 0.2,
-    ):
+    def __init__(self, input_dim, hidden_dim=128, num_layers=2, dropout=0.2):
         super().__init__()
 
         self.lstm = nn.LSTM(
             input_dim,
             hidden_dim,
-            num_layers=num_lstm_layers,
+            num_layers=num_layers,
             batch_first=True,
-            dropout=dropout_percent if num_lstm_layers > 1 else 0,
+            dropout=dropout if num_layers > 1 else 0,
         )
 
-        self.fc1 = nn.Linear(hidden_dim, 36)
-        self.dropout = nn.Dropout(dropout_percent)
-        self.fc2 = nn.Linear(36, output_dim)
-
+        self.fc1 = nn.Linear(hidden_dim, 32)
         self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(dropout)
+        self.fc2 = nn.Linear(32, 1)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # Ensure 3D input: (batch, seq_len, features)
+    def forward(self, x):
         if x.dim() == 2:
             x = x.unsqueeze(1)
 
         out, _ = self.lstm(x)
-
-        # Take last timestep
         out = out[:, -1, :]
 
         out = self.relu(self.fc1(out))
@@ -61,16 +48,16 @@ class FreqAILSTMModel(nn.Module):
 
 
 # =====================================
-# FREQAI REGRESSOR
+# REGRESSOR
 # =====================================
-class FreqAILSTMRegressor(BaseFreqAIModel):
+class FreqAILSTMRegressor(BaseRegressionModel):
 
     model_type = "neural_network"
 
     default_parameters = {
         "hidden_dim": 128,
-        "num_lstm_layers": 2,
-        "dropout_percent": 0.2,
+        "num_layers": 2,
+        "dropout": 0.2,
         "learning_rate": 0.001,
         "epochs": 50,
         "batch_size": 64,
@@ -81,14 +68,11 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
         super().__init__(**kwargs)
 
         self.scaler = StandardScaler()
-        self.model: Optional[nn.Module] = None
-        self.is_trained = False
-
-        # IMPORTANT: do NOT access self.parameters here
+        self.model = None
         self.device = None
 
     # ---------------------------------
-    # Device selection (SAFE)
+    # DEVICE
     # ---------------------------------
     def _get_device(self):
         params = getattr(self, "parameters", {}) or {}
@@ -103,26 +87,24 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
         if device_param == "mps" and torch.backends.mps.is_available():
             return torch.device("mps")
 
-        # AUTO fallback
         if torch.cuda.is_available():
             return torch.device("cuda")
-        if torch.backends.mps.is_available():
-            return torch.device("mps")
 
         return torch.device("cpu")
 
     # ---------------------------------
-    # TRAIN
+    # FIT (FreqAI style)
     # ---------------------------------
-    def fit(self, X: np.ndarray, y: np.ndarray, **kwargs):
+    def fit(self, dataframe, dk):
 
-        self.validate_data(X, y)
-
-        # NOW parameters exist
         self.device = self._get_device()
         logger.info(f"Using device: {self.device}")
 
-        X = self.preprocess_features(X)
+        # Extract features + labels from DataKitchen
+        X = dk.data["train_features"].values
+        y = dk.data["train_labels"].values
+
+        # Scale
         X_scaled = self.scaler.fit_transform(X)
 
         X_tensor = torch.tensor(X_scaled, dtype=torch.float32)
@@ -130,20 +112,17 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
 
         dataset = torch.utils.data.TensorDataset(X_tensor, y_tensor)
 
-        batch_size = self.parameters.get("batch_size", 64)
-
         loader = torch.utils.data.DataLoader(
             dataset,
-            batch_size=batch_size,
+            batch_size=self.parameters.get("batch_size", 64),
             shuffle=True,
         )
 
         self.model = FreqAILSTMModel(
             input_dim=X.shape[1],
-            output_dim=1,
             hidden_dim=self.parameters.get("hidden_dim", 128),
-            num_lstm_layers=self.parameters.get("num_lstm_layers", 2),
-            dropout_percent=self.parameters.get("dropout_percent", 0.2),
+            num_layers=self.parameters.get("num_layers", 2),
+            dropout=self.parameters.get("dropout", 0.2),
         ).to(self.device)
 
         optimizer = torch.optim.Adam(
@@ -176,24 +155,14 @@ class FreqAILSTMRegressor(BaseFreqAIModel):
             if epoch % 10 == 0:
                 logger.info(f"Epoch {epoch} | Loss: {total_loss:.6f}")
 
-        self.is_trained = True
-        self.feature_names = [f"feature_{i}" for i in range(X.shape[1])]
-
-        logger.info(
-            f"Model trained on {X.shape[0]} samples with {X.shape[1]} features"
-        )
-
         return self
 
     # ---------------------------------
-    # PREDICT
+    # PREDICT (FreqAI style)
     # ---------------------------------
-    def predict(self, X: np.ndarray) -> np.ndarray:
+    def predict(self, dataframe, dk):
 
-        if not self.is_trained:
-            raise ValueError("Model must be trained before prediction")
-
-        X = self.preprocess_features(X)
+        X = dk.data["prediction_features"].values
         X_scaled = self.scaler.transform(X)
 
         X_tensor = torch.tensor(X_scaled, dtype=torch.float32).to(self.device)
