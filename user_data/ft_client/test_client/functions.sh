@@ -350,6 +350,7 @@ hyperopt() {
         -d "$(jq -n \
           --argjson hyperopts "$hyperopts" \
           --arg runId "$GITHUB_RUN_ID" \
+          --arg repo_id "$id" \
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
           --arg freqai "$FREQAI_MODEL" \
@@ -361,6 +362,7 @@ hyperopt() {
                score: $score,
                run_id: $runId,
                freqai: $freqai,
+               repo_id: $repo_id,
                hyperopts: $hyperopts,
                freqai_next: $freqai_next,
                reduce_epoch: $reduce_epoch
