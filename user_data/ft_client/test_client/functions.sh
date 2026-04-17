@@ -353,6 +353,7 @@ hyperopt() {
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
           --arg freqai "$FREQAI_MODEL" \
+          --arg freqai_next "$FREQAI_NEXT" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
            matrix_json: (
@@ -361,6 +362,7 @@ hyperopt() {
                run_id: $runId,
                freqai: $freqai,
                hyperopts: $hyperopts,
+               freqai_next: $freqai_next,
                reduce_epoch: $reduce_epoch
              } | @json
            )
