@@ -200,6 +200,7 @@ else
       if [[ "$CALCULATION" != "false" ]]; then
         if [[ "$OLD_SCORE" == "100" ]]; then       
           gh variable set SCORE --body "${SCORE}"
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
         elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
           gh variable set SCORE --body "${SCORE}"
           gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
