@@ -28,7 +28,8 @@ if [ ! -f "$DATA_FLAG" ]; then
     --config "$DOWNLOAD_CFG" \
     --userdir "$DATA_DIR" \
     --timeframes "15m 1h" \
-    --days 30
+    --days 30 \
+    --log-file "$DATA_DIR/logs/freqtrade.log"
   touch "$DATA_FLAG"
 else
   echo "[INFO] Data already downloaded."
