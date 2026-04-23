@@ -106,6 +106,10 @@ if [[ "$1" != "hyperopt" ]]; then
   freqtrade test-pairlist --one-column --print-json
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
+    echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
+    freqtrade download-data --help
+    freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
+
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
 
@@ -164,10 +168,6 @@ if [[ "$1" != "hyperopt" ]]; then
       echo "✅ Updated pair whitelist in $EXCHANGE_FILE"
       gh variable set PAIRS --body "$pairs"
     fi
-
-    echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
-    freqtrade download-data --help
-    freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
 
     echo -e "\n$hr\nAI TRADES with DOWNLOAD PAIRS\n$hr"
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
