@@ -113,6 +113,47 @@ if [[ "$1" != "hyperopt" ]]; then
 
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
+  fi
+
+else
+
+  echo -e "\n$hr\nLIST DATA\n$hr"
+  echo "Download Timerange: $TD"
+  echo "Backtesting Timerange: $TB"
+  freqtrade list-data --help
+  freqtrade list-data
+
+  #echo -e "\n$hr\nSHOW EDGE\n$hr"
+  #freqtrade edge --help
+  pairs=$(gh variable get PAIRS)
+  #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
+  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
+
+  OLD_SCORE=$SCORE
+  export CALCULATION="false"
+  if [[ "$GITHUB_JOB" == "lexering" ]]; then
+    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
+    freqtrade backtesting --help
+    cat $STRATEGY > /tmp/store.json
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
+
+    calculate_score
+    if [[ "$SCORE" == "100" ]]; then
+      gh workflow run "main.yml"
+    else
+      if [[ "$CALCULATION" != "false" ]]; then
+        if [[ "$OLD_SCORE" == "100" ]]; then       
+          gh variable set SCORE --body "${SCORE}"
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
+        elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
+          gh variable set SCORE --body "${SCORE}"
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
+        fi
+        export CALCULATION="false"
+      fi
+    fi
+  fi
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
@@ -155,47 +196,6 @@ if [[ "$1" != "hyperopt" ]]; then
         break
       fi
     done  
-  fi
-
-else
-
-  echo -e "\n$hr\nLIST DATA\n$hr"
-  echo "Download Timerange: $TD"
-  echo "Backtesting Timerange: $TB"
-  freqtrade list-data --help
-  freqtrade list-data
-
-  #echo -e "\n$hr\nSHOW EDGE\n$hr"
-  #freqtrade edge --help
-  pairs=$(gh variable get PAIRS)
-  #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
-  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
-
-  OLD_SCORE=$SCORE
-  export CALCULATION="false"
-  if [[ "$GITHUB_JOB" == "lexering" ]]; then
-    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
-    freqtrade backtesting --help
-    cat $STRATEGY > /tmp/store.json
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
-
-    calculate_score
-    if [[ "$SCORE" == "100" ]]; then
-      gh workflow run "main.yml"
-    else
-      if [[ "$CALCULATION" != "false" ]]; then
-        if [[ "$OLD_SCORE" == "100" ]]; then       
-          gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
-        elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
-          gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
-        fi
-        export CALCULATION="false"
-      fi
-    fi
-  fi
 
   echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
