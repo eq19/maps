@@ -103,7 +103,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
   echo -e "\n$hr\nTEST PAIRLIST\n$hr"
   freqtrade test-pairlist --help
-  freqtrade test-pairlist --one-column --print-json | jq '.[]' > pairs.json
+  freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
   cat pairs.json
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
