@@ -103,12 +103,13 @@ if [[ "$1" != "hyperopt" ]]; then
 
   echo -e "\n$hr\nTEST PAIRLIST\n$hr"
   freqtrade test-pairlist --help
-  freqtrade test-pairlist --one-column --print-json
+  freqtrade test-pairlist --one-column --print-json | jq '.[]' > pairs.json
+  cat pairs.json
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
     freqtrade download-data --help
-    freqtrade download-data --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
+    freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
 
     echo -e "\n$hr\nTEST CCXT\n$hr"
     python user_data/ft_client/test_client/test_client.py
