@@ -153,7 +153,6 @@ else
         export CALCULATION="false"
       fi
     fi
-  fi
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
@@ -189,15 +188,15 @@ else
 
       # Stop if Freqtrade has entered RUNNING state
       #if [[ "$LOGLINE" == *"state='RUNNING'"* ]]; then
-      if [[ "$LOGLINE" == *"Training'"* ]]; then
+      if [[ "$LOGLINE" == *"training'"* ]]; then
        echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
       fi
-    done  
-
+    done
+  fi
   echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   SCORE=$(gh variable get SCORE)
