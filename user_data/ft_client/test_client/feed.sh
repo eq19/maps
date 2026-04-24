@@ -136,31 +136,8 @@ else
     # Open descriptor to log stream
     exec 3< <(tail -f freqtrade.log)
 
-    inside_pairs_block=false
-    full_pairs_line=""
-
     while read -r LOGLINE <&3; do
       echo "$LOGLINE"
-
-      # Detect the start of pair whitelist
-      if [[ "$LOGLINE" == *"Whitelist with"* && "$LOGLINE" == *"pairs:"* ]]; then
-        inside_pairs_block=true
-        full_pairs_line="$LOGLINE"
-        # Check if closing bracket already present
-        if [[ "$LOGLINE" == *"]" ]]; then
-          inside_pairs_block=false
-        fi
-        continue
-      fi
-
-      # Collect remaining lines if pair list is split
-      if $inside_pairs_block; then
-        full_pairs_line+="$LOGLINE"
-        if [[ "$LOGLINE" == *"]" ]]; then
-          inside_pairs_block=false
-        fi
-      fi
-
       # Stop if Freqtrade has entered RUNNING state
       #if [[ "$LOGLINE" == *"state='RUNNING'"* ]]; then
       if [[ "$LOGLINE" == *"Done training"* ]]; then
