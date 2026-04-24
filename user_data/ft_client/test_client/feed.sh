@@ -133,27 +133,6 @@ else
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
-    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
-    freqtrade backtesting --help
-    cat $STRATEGY > /tmp/store.json
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
-
-    calculate_score
-    if [[ "$SCORE" == "100" ]]; then
-      gh workflow run "main.yml"
-    else
-      if [[ "$CALCULATION" != "false" ]]; then
-        if [[ "$OLD_SCORE" == "100" ]]; then       
-          gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
-        elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
-          gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
-        fi
-        export CALCULATION="false"
-      fi
-    fi
-
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
@@ -196,6 +175,28 @@ else
         break
       fi
     done
+
+    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
+    freqtrade backtesting --help
+    cat $STRATEGY > /tmp/store.json
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
+
+    calculate_score
+    if [[ "$SCORE" == "100" ]]; then
+      gh workflow run "main.yml"
+    else
+      if [[ "$CALCULATION" != "false" ]]; then
+        if [[ "$OLD_SCORE" == "100" ]]; then       
+          gh variable set SCORE --body "${SCORE}"
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
+        elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
+          gh variable set SCORE --body "${SCORE}"
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
+        fi
+        export CALCULATION="false"
+      fi
+    fi
+
   fi
   echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
