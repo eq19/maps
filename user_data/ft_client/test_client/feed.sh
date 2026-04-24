@@ -82,33 +82,33 @@ fi
 
 if [[ "$1" != "hyperopt" ]]; then
 
-  #echo -e "\n$hr\nLIST EXCHANGES\n$hr"
-  #freqtrade list-exchanges --help
-  #freqtrade list-exchanges
-
-  #echo -e "\n$hr\nLIST MARKETS\n$hr"
-  #freqtrade list-markets --help
-  #freqtrade list-markets
-
-  echo -e "\n$hr\nSTRATEGIES\n$hr"
-  freqtrade list-strategies --help
-  freqtrade list-strategies
-  #freqtrade list-strategies --recursive-strategy-search
-  #freqtrade strategy-updater
-
-  #freqtrade show-trades
-  #freqtrade convert-db 
-  #freqtrade install-ui
-  #freqtrade webserver
+  echo -e "\n$hr\nTEST CCXT\n$hr"
+  python user_data/ft_client/test_client/test_client.py
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
+    #freqtrade show-trades
+    #freqtrade convert-db 
+    #freqtrade install-ui
+    #freqtrade webserver
+
+    #echo -e "\n$hr\nLIST MARKETS\n$hr"
+    #freqtrade list-markets --help
+    #freqtrade list-markets
+
+    #echo -e "\n$hr\nLIST EXCHANGES\n$hr"
+    #freqtrade list-exchanges --help
+    #freqtrade list-exchanges
+
+    echo -e "\n$hr\nSTRATEGIES\n$hr"
+    freqtrade list-strategies --help
+    freqtrade list-strategies
+    #freqtrade list-strategies --recursive-strategy-search
+    #freqtrade strategy-updater
+
     echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
-
-    echo -e "\n$hr\nTEST CCXT\n$hr"
-    python user_data/ft_client/test_client/test_client.py
   fi
 
 else
