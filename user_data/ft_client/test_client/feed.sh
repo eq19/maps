@@ -101,14 +101,10 @@ if [[ "$1" != "hyperopt" ]]; then
   #freqtrade install-ui
   #freqtrade webserver
 
-  echo -e "\n$hr\nTEST PAIRLIST\n$hr"
-  freqtrade test-pairlist --help
-  freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
-  cat pairs.json
-
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
     echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
     freqtrade download-data --help
+    freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$(date -u -d "3 months ago" +%Y%m%d)-$(date -u +%Y%m%d)" --verbose
 
     echo -e "\n$hr\nTEST CCXT\n$hr"
