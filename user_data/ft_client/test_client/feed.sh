@@ -140,7 +140,7 @@ else
       # Stop if Freqtrade has entered RUNNING state
       #if [[ "$LOGLINE" == *"state='RUNNING'"* ]]; then
       #if [[ "$LOGLINE" == *"Done training"* ]]; then
-      if [[ "$LOGLINE" == *"predict"* ]]; then
+      if [[ "$LOGLINE" == *" predict"* ]]; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
@@ -149,8 +149,7 @@ else
       fi
     done
 
-    freqtrade backtesting --help
-    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
+    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
 
     calculate_score
