@@ -148,7 +148,7 @@ else
     done
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --freqai-backtest-live-models --enable-protections
 
     calculate_score
     if [[ "$SCORE" == "100" ]]; then
