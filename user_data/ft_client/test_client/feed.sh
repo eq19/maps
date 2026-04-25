@@ -108,7 +108,7 @@ if [[ "$1" != "hyperopt" ]]; then
     echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
-    #freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+    freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
   fi
 
 else
@@ -119,13 +119,13 @@ else
   freqtrade list-data --help
   freqtrade list-data
 
+  pairs=$(gh variable get PAIRS)
+  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
+
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
-
-    pairs=$(gh variable get PAIRS)
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-    jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
