@@ -139,8 +139,9 @@ else
       echo "$LOGLINE"
       # Stop if Freqtrade has entered RUNNING state
       #if [[ "$LOGLINE" == *"state='RUNNING'"* ]]; then
-      if [[ "$LOGLINE" == *"Done training"* ]]; then
-       echo "Stopping freqtrade trade..."
+      #if [[ "$LOGLINE" == *"Done training"* ]]; then
+      if [[ "$LOGLINE" == *"predict"* ]]; then
+        echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
