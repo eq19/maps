@@ -108,7 +108,7 @@ if [[ "$1" != "hyperopt" ]]; then
     echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
-    freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+    #freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
   fi
 
 else
