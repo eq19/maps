@@ -109,7 +109,7 @@ if [[ "$1" != "hyperopt" ]]; then
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
-    gh variable set PAIRS --body pairs.json
+    gh variable set PAIRS --body "$(cat pairs.json)"
   fi
 
 else
