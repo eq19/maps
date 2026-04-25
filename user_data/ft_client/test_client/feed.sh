@@ -122,6 +122,11 @@ else
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
+
+    pairs=$(gh variable get PAIRS)
+    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+    jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
+
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
@@ -143,10 +148,7 @@ else
     done
 
     freqtrade backtesting --help
-    pairs=$(gh variable get PAIRS)
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-    jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
 
     calculate_score
