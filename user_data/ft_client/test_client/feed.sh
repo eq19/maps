@@ -127,8 +127,7 @@ else
     jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
-    echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
-    freqtrade trade --help
+    echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
@@ -136,17 +135,15 @@ else
     exec 3< <(tail -f freqtrade.log)
 
     while read -r LOGLINE <&3; do
-      echo "$LOGLINE"
-      # Stop if Freqtrade has entered RUNNING state
-      #if [[ "$LOGLINE" == *"state='RUNNING'"* ]]; then
-      #if [[ "$LOGLINE" == *"Done training"* ]]; then
-      if [[ "$LOGLINE" == *" predict"* ]]; then
+      # Stop if Freqtrade has entered TRANING state
+      if [[ "$LOGLINE" == *"Done training"* ]]; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
       fi
+      echo "$LOGLINE"
     done
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
