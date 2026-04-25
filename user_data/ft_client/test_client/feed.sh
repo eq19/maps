@@ -128,6 +128,7 @@ else
     jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr"
+    freqtrade trade --help
     nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
