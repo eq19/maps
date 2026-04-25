@@ -119,13 +119,6 @@ else
   freqtrade list-data --help
   freqtrade list-data
 
-  #echo -e "\n$hr\nSHOW EDGE\n$hr"
-  #freqtrade edge --help
-  pairs=$(gh variable get PAIRS)
-  #jq --slurpfile new_edge $EDGEFILE '.edge = $new_edge[0].edge' $CONFIG > config.json
-  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
-
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
@@ -149,9 +142,11 @@ else
       fi
     done
 
-    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
-    cat $STRATEGY > /tmp/store.json
+    pairs=$(gh variable get PAIRS)
+    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
+    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+    jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
 
     calculate_score
