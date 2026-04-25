@@ -119,12 +119,12 @@ else
   freqtrade list-data --help
   freqtrade list-data
 
+  OLD_SCORE=$SCORE
+  export CALCULATION="false"
   pairs=$(gh variable get PAIRS)
   jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
-  OLD_SCORE=$SCORE
-  export CALCULATION="false"
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
