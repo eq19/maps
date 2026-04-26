@@ -44,7 +44,6 @@ export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
 
 if [[ "$GITHUB_JOB" == "lexering" ]]; then
-  gh variable set JOB --body "${GITHUB_JOB}"
       
   # Read FreqAI models into an array
   mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
