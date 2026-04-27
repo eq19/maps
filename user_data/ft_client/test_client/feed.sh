@@ -136,7 +136,7 @@ else
 
     while read -r LOGLINE <&3; do
       # Stop if Freqtrade has entered TRANING state
-      if [[ "$LOGLINE" == *"Starting training BTC/IDR"* ]]; then
+      if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
