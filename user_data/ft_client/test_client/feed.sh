@@ -159,6 +159,7 @@ else
           gh variable set SCORE --body "${SCORE}"
           gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
         elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
+          cat $STRATEGY
           gh variable set SCORE --body "${SCORE}"
           gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
         fi
