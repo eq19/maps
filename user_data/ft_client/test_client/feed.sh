@@ -11,9 +11,9 @@ TIMEFRAMES='15m 1h'
 STRATEGY=user_data/strategies/fibbo.json
 HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
 CONFIG=user_data/config_examples/config_basic.example.json
-EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERFILE=user_data/config_examples/config_hyperopt.example.json
+FREQAI_FILE=user_data/config_examples/config_freqai.example.json
 EXCHANGE_FILE=user_data/config_examples/config_exchange.example.json
 HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
 
@@ -117,7 +117,8 @@ else
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   pairs=$(gh variable get PAIRS)
-  #jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+  #jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
+  jq --argjson pairs "$pairs" '.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
