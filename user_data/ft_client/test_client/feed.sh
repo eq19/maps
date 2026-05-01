@@ -100,6 +100,8 @@ if [[ "$1" != "hyperopt" ]]; then
     #freqtrade strategy-updater
 
     echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
+    echo "Download Timerange: $TD"
+    echo "Backtesting Timerange: $TB"
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
@@ -109,8 +111,6 @@ if [[ "$1" != "hyperopt" ]]; then
 else
 
   echo -e "\n$hr\nLIST DATA\n$hr"
-  echo "Download Timerange: $TD"
-  echo "Backtesting Timerange: $TB"
   freqtrade list-data --help
   freqtrade list-data
 
