@@ -395,7 +395,7 @@ hyperopt() {
       freqtrade hyperopt-list --best
     fi
 
-    echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
+    echo -e "\n$hr\nRERUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr"
     freqtrade backtesting --help
     #rm -rf user_data/backtest_results/*
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
