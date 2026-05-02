@@ -395,9 +395,8 @@ hyperopt() {
       freqtrade hyperopt-list --best
     fi
 
-    echo -e "\n$hr\nRERUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr"
-    freqtrade backtesting --help
-    #rm -rf user_data/backtest_results/*
+    echo -e "\n$hr\nRERUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
+    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
     calculate_score
