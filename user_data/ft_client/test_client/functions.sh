@@ -386,6 +386,7 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\nFreqAImodel: $FREQAI_MODEL (Next: $FREQAI_NEXT)\n$hr"
+    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
@@ -396,7 +397,6 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nRERUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
     calculate_score
