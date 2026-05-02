@@ -397,7 +397,8 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nRERUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
+    #freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
     calculate_score
     NEW_SCORE=$SCORE
