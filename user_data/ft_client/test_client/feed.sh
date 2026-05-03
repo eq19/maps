@@ -99,9 +99,7 @@ if [[ "$1" != "hyperopt" ]]; then
     #freqtrade list-strategies --recursive-strategy-search
     #freqtrade strategy-updater
 
-    echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
-    echo "Download Timerange: $TD"
-    echo "Backtesting Timerange: $TB"
+    echo -e "\n$hr\nDOWNLOAD PAIRS ($TD)\n$hr"
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
@@ -110,7 +108,7 @@ if [[ "$1" != "hyperopt" ]]; then
 
 else
 
-  echo -e "\n$hr\nLIST DATA\n$hr"
+  echo -e "\n$hr\nLIST DATA ($TIMEFRAMES)\n$hr"
   freqtrade list-data --help
   freqtrade list-data
 
