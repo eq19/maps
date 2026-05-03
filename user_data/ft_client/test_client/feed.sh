@@ -164,7 +164,7 @@ else
     fi
 
   fi
-  echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
+  echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL ($EARLIEST_DATE-$BACKTESTING_START)\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   SCORE=$(gh variable get SCORE)
   freqtrade hyperopt --help
