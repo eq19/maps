@@ -333,9 +333,9 @@ hyperopt() {
   
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
-    end_date=$(date +"%Y%m%d")
     days=$(echo "$pipeline" | jq -r '.days')
-    start_date=$(date -d "$days days ago" +"%Y%m%d")
+    start_date=$(date -d "3 months ago" +"%Y%m%d")
+    end_date=$(date -d "$days days ago" +"%Y%m%d")
 
     id=$(echo "$pipeline" | jq -r '.id')
     epochs=$(echo "$pipeline" | jq -r '.epochs')
@@ -387,7 +387,7 @@ hyperopt() {
 
     echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\nFreqAImodel: $FREQAI_MODEL (Next: $FREQAI_NEXT)\n$hr"
     jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-    if ! error=$(freqtrade hyperopt  --timerange="$TB" --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
+    if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
       echo "$error"
