@@ -330,6 +330,7 @@ hyperopt() {
 
   # Extract clean list of hyperoptloss classes
   hyperopts=$(printf '%s\n' "$(freqtrade list-hyperoptloss --one-column)" | jq -R . | jq -s .)
+  freqaimodels=$(printf '%s\n' "$(freqtrade list-freqaimodels --one-column)" | jq -R . | jq -s .)
   
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
