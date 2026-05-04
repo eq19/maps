@@ -416,7 +416,7 @@ hyperoptloss() {
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
          https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
-      gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" && gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" && gh variable set SCORE --body "${NEW_SCORE}"
+      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" && gh variable set SCORE --body "${NEW_SCORE}"
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"   
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
@@ -489,33 +489,10 @@ freqaimodels() {
             )
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-      gh variable list | grep -q "HYPEROPT" && HYPEROPT=$(gh variable get HYPEROPT)
       gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
     fi
 
-    # Disable protections if 'all' or 'protection' is in the spaces
-    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
-    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
-        enable_protections=""
-        prot="disable"
-    else
-        enable_protections="--enable-protections"
-        prot="enable"
-    fi
-
-    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\nFreqAImodel: $FREQAI_MODEL (Next: $FREQAI_NEXT)\n$hr"
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-    if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
-      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
-      --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
-      echo "$error"
-      [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
-    else
-      freqtrade hyperopt-list --best
-    fi
-
-    echo -e "\n$hr\nRERUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
     #freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
