@@ -353,8 +353,6 @@ hyperoptloss() {
           --arg repo_id "$id" \
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
-          --arg freqai "$FREQAI_MODEL" \
-          --arg freqai_next "$FREQAI_NEXT" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
             run_mode: "Hyperopt",
@@ -362,10 +360,8 @@ hyperoptloss() {
               {
                 score: $score,
                 run_id: $runId,
-                freqai: $freqai,
                 repo_id: $repo_id,
                 fields: $hyperopts,
-                freqai_next: $freqai_next,
                 reduce_epoch: $reduce_epoch
               } | @json
             )
@@ -471,8 +467,6 @@ freqaimodels() {
           --arg repo_id "$id" \
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
-          --arg freqai "$FREQAI_MODEL" \
-          --arg freqai_next "$FREQAI_NEXT" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
             run_mode: "FreqAI",
@@ -480,15 +474,14 @@ freqaimodels() {
               {
                 score: $score,
                 run_id: $runId,
-                freqai: $freqai,
                 repo_id: $repo_id,
                 fields: $freqaimodels,
-                freqai_next: $freqai_next,
                 reduce_epoch: $reduce_epoch                
               } | @json
             )
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
+      gh variable list | grep -q "HYPEROPT" && HYPEROPT=$(gh variable get HYPEROPT)
       gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
     fi
