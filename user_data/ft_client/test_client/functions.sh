@@ -301,9 +301,9 @@ calculate_score() {
 
   # 🔻 Apply penalties for low trade count
   SCORE=$(echo "$profit + $risk + $quality + $cagr_score" | bc -l)
-  if (( $(echo "$trades < 100" | bc -l) )); then
+  if (( $(echo "$trades < 400" | bc -l) )); then
     echo "🔁 Trades: $trades (penalties applied to $(printf "%.2f" "$SCORE"))"
-    SCORE=$(echo "$SCORE * $trades / 100" | bc -l)
+    SCORE=$(echo "$SCORE * $trades / 400" | bc -l)
   fi
 
   SCORE=$(printf "%.2f" "$SCORE")
