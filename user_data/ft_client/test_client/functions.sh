@@ -417,26 +417,26 @@ hyperoptloss() {
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
          https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
       gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" && gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" && gh variable set SCORE --body "${NEW_SCORE}"
-      if [[ "$GITHUB_JOB" == "lexering" && "$FREQAI_NEXT" != "false" ]]; then
-        gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"   
+      if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"   
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
-        gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "RUN_MODE=Hyperopt" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
-          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=Hyperopt" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
-          if [[ "$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
       fi
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$CALCULATION" != "false" ]]; then
-          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         else
-          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=Hyperopt" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         fi
       fi
     fi
