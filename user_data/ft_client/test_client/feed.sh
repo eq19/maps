@@ -182,28 +182,10 @@ elif [[ "$1" == "FreqAI" ]]; then
     echo "$LOGLINE"
   done
 
-  if [[ "$GITHUB_JOB" == "lexering" ]]; then
+  echo -e "\n$hr\nRUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
+  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
+  SCORE=$(gh variable get SCORE)
+  OLD_SCORE=$SCORE            
+  freqaimodels $ID
 
-    echo -e "\n$hr\nRUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
-    #freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --enable-dynamic-pairlist --freqai-backtest-live-models --enable-protections
-
-    calculate_score
-    if [[ "$SCORE" == "100" ]]; then
-      gh workflow run "main.yml"
-    else
-      if [[ "$CALCULATION" != "false" ]]; then
-        if [[ "$OLD_SCORE" == "100" ]]; then       
-          gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
-        elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
-          cat $STRATEGY
-          gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
-        fi
-        export CALCULATION="false"
-      fi
-    fi
-  fi
 fi
