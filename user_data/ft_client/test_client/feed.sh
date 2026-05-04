@@ -120,25 +120,6 @@ elif [[ "$1" == "Hyperopt" ]]; then
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
-    echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
-    nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
-    echo $! > freqtrade_pid.txt
-
-    # Open descriptor to log stream
-    exec 3< <(tail -f freqtrade.log)
-
-    while read -r LOGLINE <&3; do
-      # Stop if Freqtrade has entered TRANING state
-      if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
-        echo "Stopping freqtrade trade..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        break
-      fi
-      echo "$LOGLINE"
-    done
-
     echo -e "\n$hr\nRUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
