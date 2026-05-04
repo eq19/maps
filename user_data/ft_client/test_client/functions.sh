@@ -357,6 +357,7 @@ hyperopt() {
           --arg freqai_next "$FREQAI_NEXT" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
+            run_name: "Hyperopt",
             matrix_json: (
               {
                 score: $score,
