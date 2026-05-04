@@ -364,7 +364,7 @@ hyperoptloss() {
                 run_id: $runId,
                 freqai: $freqai,
                 repo_id: $repo_id,
-                hyperopts: $hyperopts,
+                fields: $hyperopts,
                 freqai_next: $freqai_next,
                 reduce_epoch: $reduce_epoch
               } | @json
@@ -482,9 +482,9 @@ freqaimodels() {
                 run_id: $runId,
                 freqai: $freqai,
                 repo_id: $repo_id,
+                fields: $freqaimodels,
                 freqai_next: $freqai_next,
-                reduce_epoch: $reduce_epoch,
-                freqaimodels: $freqaimodels
+                reduce_epoch: $reduce_epoch                
               } | @json
             )
           }}')" \
