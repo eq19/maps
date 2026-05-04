@@ -163,26 +163,26 @@ elif [[ "$1" == "FreqAI" ]]; then
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
   jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
 
+  echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
+  nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
+  echo $! > freqtrade_pid.txt
+
+  # Open descriptor to log stream
+  exec 3< <(tail -f freqtrade.log)
+
+  while read -r LOGLINE <&3; do
+    # Stop if Freqtrade has entered TRANING state
+    if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
+      echo "Stopping freqtrade trade..."
+      PID=$(cat freqtrade_pid.txt)
+      kill -SIGTERM $PID
+      echo "freqtrade trade stopped."
+      break
+    fi
+    echo "$LOGLINE"
+  done
+
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
-
-    echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
-    nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
-    echo $! > freqtrade_pid.txt
-
-    # Open descriptor to log stream
-    exec 3< <(tail -f freqtrade.log)
-
-    while read -r LOGLINE <&3; do
-      # Stop if Freqtrade has entered TRANING state
-      if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
-        echo "Stopping freqtrade trade..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        break
-      fi
-      echo "$LOGLINE"
-    done
 
     echo -e "\n$hr\nRUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
