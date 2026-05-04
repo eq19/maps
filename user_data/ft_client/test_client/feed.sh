@@ -74,7 +74,7 @@ if [[ "$GITHUB_JOB" == "lexering" ]]; then
   fi
 fi
 
-if [[ "$1" != "hyperopt" &&  "$1" != "freqaimodel" ]]; then
+if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
@@ -106,7 +106,7 @@ if [[ "$1" != "hyperopt" &&  "$1" != "freqaimodel" ]]; then
     gh variable set PAIRS --body "$(cat pairs.json)"
   fi
 
-elif [[ "$1" == "hyperopt" ]]; then
+elif [[ "$1" == "Hyperopt" ]]; then
 
   echo -e "\n$hr\nLIST DATA ($TIMEFRAMES)\n$hr"
   freqtrade list-data --help
@@ -170,7 +170,7 @@ elif [[ "$1" == "hyperopt" ]]; then
   OLD_SCORE=$SCORE            
   hyperoptloss $ID
 
-elif [[ "$1" == "freqaimodel" ]]; then
+elif [[ "$1" == "FreqAI" ]]; then
 
   echo -e "\n$hr\nLIST DATA ($TIMEFRAMES)\n$hr"
   freqtrade list-data --help
