@@ -168,7 +168,7 @@ elif [[ "$1" == "hyperopt" ]]; then
   SCORE=$(gh variable get SCORE)
   freqtrade hyperopt --help
   OLD_SCORE=$SCORE            
-  hyperopt $ID
+  hyperoptloss $ID
 
 elif [[ "$1" == "freqaimodel" ]]; then
 
