@@ -475,7 +475,7 @@ freqaimodels() {
           --arg freqai_next "$FREQAI_NEXT" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
-            run_mode: "FreqAImodels",
+            run_mode: "FreqAI",
             matrix_json: (
               {
                 score: $score,
