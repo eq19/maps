@@ -146,8 +146,8 @@ elif [[ "$1" == "FreqAI" ]]; then
     echo "$LOGLINE"
   done
 
-  echo -e "\n$hr\nRUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
   jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
+  echo -e "\n$hr\nRUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
   SCORE=$(gh variable get SCORE)
   OLD_SCORE=$SCORE            
   freqaimodels $ID
