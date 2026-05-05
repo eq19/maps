@@ -30,6 +30,7 @@ TD="$EARLIEST_DATE-$TODAY"
 TB="$BACKTESTING_START-$TODAY"
 
 # Print the timeranges
+HYPEROPT=${HYPEROPT:-$(gh variable get HYPEROPT)}
 FREQAI_MODEL=${FREQAI_MODEL:-$(gh variable get FREQAIMODEL)}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/functions.sh"
