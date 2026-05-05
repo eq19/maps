@@ -367,7 +367,6 @@ hyperoptloss() {
             )
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-      gh variable list | grep -q "HYPEROPT" && HYPEROPT=$(gh variable get HYPEROPT)
       gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
     fi
@@ -383,19 +382,18 @@ hyperoptloss() {
     fi
 
     echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-    if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
+    if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
       echo "$error"
-      [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
+      [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
     else
       freqtrade hyperopt-list --best
     fi
 
-    echo -e "\n$hr\nRERUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
-    #freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
+    echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
+    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
+    #freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
     calculate_score
     NEW_SCORE=$SCORE
@@ -416,12 +414,12 @@ hyperoptloss() {
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"   
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
-        gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "RUN_MODE=Hyperopt" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
-          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=Hyperopt" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
@@ -432,7 +430,7 @@ hyperoptloss() {
         if [[ "$CALCULATION" != "false" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         else
-          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=Hyperopt" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         fi
       fi
     fi
