@@ -383,7 +383,7 @@ hyperoptloss() {
         prot="enable"
     fi
 
-    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\nFreqAImodel: $FREQAI_MODEL (Next: $FREQAI_NEXT)\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
