@@ -372,7 +372,6 @@ hyperoptloss() {
       epochs=$((epochs * 2))
     fi
 
-    FREQAI_MODEL=$(gh variable get FREQAIMODEL)
     # Disable protections if 'all' or 'protection' is in the spaces
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
     if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
@@ -383,6 +382,7 @@ hyperoptloss() {
         prot="enable"
     fi
 
+    FREQAI_MODEL=$(gh variable get FREQAIMODEL)
     echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
