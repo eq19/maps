@@ -392,8 +392,8 @@ hyperoptloss() {
     fi
 
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
+    #freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
-    #freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
     calculate_score
     NEW_SCORE=$SCORE
