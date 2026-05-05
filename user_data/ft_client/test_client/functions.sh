@@ -481,7 +481,7 @@ freqaimodels() {
             )
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-      gh variable list | grep -q "HYPEROPT" && HYPEROPT=$(gh variable get HYPEROPT)
+      gh variable list | grep -q "FREQAIMODEL" && FREQAI_MODEL=$(gh variable get FREQAIMODEL)
       gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
     fi
