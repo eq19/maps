@@ -38,7 +38,6 @@ cat $CONFIG > user_data/config.json
 export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
 
-FREQAI_MODEL=$(gh variable get FREQAIMODEL)
 if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
@@ -84,7 +83,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
   jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
 
-  if [[ "$GITHUB_JOB" == "lexering" ]]; then
+ if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
     echo -e "\n$hr\nRUN BACKTEST ($TB) with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
