@@ -259,7 +259,7 @@ class Fibbo(IStrategy):
 
         # Make rolling window configurable
         self.di_rolling_window = getattr(self, 'di_rolling_window', 200)
-        self.freqai_enabled = getattr(self, 'freqai_enabled', True)
+        self.freqai_enabled = getattr(self, 'freqai_enabled', False)
 
     def bot_start(self, **kwargs) -> None:
 
