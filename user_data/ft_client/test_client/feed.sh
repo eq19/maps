@@ -107,7 +107,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
 
   fi
 
-  echo -e "\n$hr\nRUN HYPEROPT ($EARLIEST_DATE-$BACKTESTING_START) with $FREQAI_MODEL\n$hr"
+  echo -e "\n$hr\nRUN HYPEROPT ($EARLIEST_DATE-$BACKTESTING_START) without FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   SCORE=$(gh variable get SCORE)
   freqtrade hyperopt --help
