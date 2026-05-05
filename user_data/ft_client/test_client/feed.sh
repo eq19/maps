@@ -88,8 +88,8 @@ elif [[ "$1" == "Hyperopt" ]]; then
  if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
     echo -e "\n$hr\nRUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
+    #freqtrade backtesting --fee=$FEE --enable-dynamic-pairlist --freqai-backtest-live-models
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
-    #freqtrade backtesting --fee=$FEE --enable-dynamic-pairlist --freqai-backtest-live-models --enable-protections
 
     calculate_score
     if [[ "$SCORE" == "100" ]]; then
