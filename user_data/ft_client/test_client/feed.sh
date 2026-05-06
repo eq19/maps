@@ -74,43 +74,22 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
 
 elif [[ "$1" == "Hyperopt" ]]; then
 
-  echo -e "\n$hr\nLIST DATA\n$hr"
-  echo "Download Timerange: $TD"
-  echo "Backtesting Timerange: $TB"
+  echo -e "\n$hr\nLIST DATA ($TIMEFRAMES)\n$hr"
   freqtrade list-data --help
   freqtrade list-data
 
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   pairs=$(gh variable get PAIRS)
+  jq '.freqai.enabled = false' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
+  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
-  #jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
 
-  if [[ "$GITHUB_JOB" == "lexering" ]]; then
+ if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
-    echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
-    nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
-    echo $! > freqtrade_pid.txt
-
-    # Open descriptor to log stream
-    exec 3< <(tail -f freqtrade.log)
-
-    while read -r LOGLINE <&3; do
-      # Stop if Freqtrade has entered TRANING state
-      if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
-        echo "Stopping freqtrade trade..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        break
-      fi
-      echo "$LOGLINE"
-    done
-
-    echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
-    #freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --freqai-backtest-live-models --enable-protections
+    echo -e "\n$hr\nRUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
+    #freqtrade backtesting --fee=$FEE --enable-dynamic-pairlist --freqai-backtest-live-models
+    freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protections
 
     calculate_score
     if [[ "$SCORE" == "100" ]]; then
@@ -119,23 +98,22 @@ elif [[ "$1" == "Hyperopt" ]]; then
       if [[ "$CALCULATION" != "false" ]]; then
         if [[ "$OLD_SCORE" == "100" ]]; then       
           gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
         elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
           cat $STRATEGY
           gh variable set SCORE --body "${SCORE}"
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"                 
         fi
         export CALCULATION="false"
       fi
     fi
 
   fi
-  echo -e "\n$hr\nRUN HYPEROPT with $FREQAI_MODEL\n$hr"
+
+  echo -e "\n$hr\nRUN HYPEROPT ($EARLIEST_DATE-$BACKTESTING_START) without FREQAI_MODEL\n$hr"
   #Ref: https://www.freqtrade.io/en/stable/hyperopt
   SCORE=$(gh variable get SCORE)
   freqtrade hyperopt --help
   OLD_SCORE=$SCORE            
-  hyperopt $ID
+  hyperoptloss $ID
 
 elif [[ "$1" == "FreqAI" ]]; then
 
