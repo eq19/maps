@@ -446,7 +446,7 @@ hyperopt() {
 freqai() {
 
   # Extract clean list of hyperoptloss classes
-  hyperopts=$(printf '%s\n' "$(freqtrade list-hyperoptloss --one-column)" | jq -R . | jq -s .)
+  freqaimodels=$(printf '%s\n' "$(freqtrade list-freqaimodels --one-column)" | jq -R . | jq -s .)
   
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
@@ -465,7 +465,7 @@ freqai() {
         -H "Authorization: token $GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
         -d "$(jq -n \
-          --argjson hyperopts "$hyperopts" \
+          --argjson freqaimodels "$freqaimodels" \
           --arg runId "$GITHUB_RUN_ID" \
           --arg repo_id "$id" \
           --arg ref "$DEFAULT_BRANCH" \
@@ -480,7 +480,7 @@ freqai() {
                 run_id: $runId,
                 freqai: $freqai,
                 repo_id: $repo_id,
-                hyperopts: $hyperopts,
+                fields: $freqaimodels,
                 freqai_next: $freqai_next,
                 reduce_epoch: $reduce_epoch
               } | @json
