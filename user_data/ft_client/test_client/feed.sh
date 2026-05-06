@@ -240,4 +240,5 @@ elif [[ "$1" == "FreqAI" ]]; then
   freqtrade hyperopt --help
   OLD_SCORE=$SCORE            
   freqai $ID
+
 fi
