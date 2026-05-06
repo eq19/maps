@@ -65,7 +65,7 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
     #freqtrade list-strategies --recursive-strategy-search
     #freqtrade strategy-updater
 
-    echo -e "\n$hr\nDOWNLOAD PAIRS\n$hr"
+    echo -e "\n$hr\nDOWNLOAD PAIRS ($TD)\n$hr"
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
@@ -85,7 +85,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
   jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
-  if [[ "$GITHUB_JOB" == "lexering" ]]; then
+ if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
     echo -e "\n$hr\nRUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     #freqtrade backtesting --fee=$FEE --enable-dynamic-pairlist --freqai-backtest-live-models
