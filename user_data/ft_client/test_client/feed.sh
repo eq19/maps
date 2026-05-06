@@ -85,7 +85,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
   jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
- if [[ "$GITHUB_JOB" == "lexering" ]]; then
+  if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
     echo -e "\n$hr\nRUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     #freqtrade backtesting --fee=$FEE --enable-dynamic-pairlist --freqai-backtest-live-models
@@ -113,7 +113,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
   SCORE=$(gh variable get SCORE)
   freqtrade hyperopt --help
   OLD_SCORE=$SCORE            
-  hyperoptloss $ID
+  hyperopt $ID
 
 elif [[ "$1" == "FreqAI" ]]; then
 
