@@ -442,3 +442,120 @@ hyperopt() {
   done
 
 }
+
+freqai() {
+
+  # Extract clean list of hyperoptloss classes
+  hyperopts=$(printf '%s\n' "$(freqtrade list-hyperoptloss --one-column)" | jq -R . | jq -s .)
+  
+  # Load JSON and filter by given ID
+  jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
+    end_date=$(date +"%Y%m%d")
+    days=$(echo "$pipeline" | jq -r '.days')
+    start_date=$(date -d "$days days ago" +"%Y%m%d")
+
+    id=$(echo "$pipeline" | jq -r '.id')
+    epochs=$(echo "$pipeline" | jq -r '.epochs')
+    loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
+
+    # dispatch only for main workflow
+    [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
+    if [[ "$GITHUB_JOB" == "lexering" ]]; then
+      curl -s -X POST \
+        -H "Authorization: token $GH_TOKEN" \
+        -H "Accept: application/vnd.github.v3+json" \
+        -d "$(jq -n \
+          --argjson hyperopts "$hyperopts" \
+          --arg runId "$GITHUB_RUN_ID" \
+          --arg repo_id "$id" \
+          --arg ref "$DEFAULT_BRANCH" \
+          --arg score "$SCORE" \
+          --arg freqai "$FREQAI_MODEL" \
+          --arg freqai_next "$FREQAI_NEXT" \
+          --arg reduce_epoch "$REDUCE_EPOCH" \
+          '{ref: $ref, inputs: {
+            matrix_json: (
+              {
+                score: $score,
+                run_id: $runId,
+                freqai: $freqai,
+                repo_id: $repo_id,
+                hyperopts: $hyperopts,
+                freqai_next: $freqai_next,
+                reduce_epoch: $reduce_epoch
+              } | @json
+            )
+          }}')" \
+        "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
+      gh variable list | grep -q "HYPEROPT" && HYPEROPT=$(gh variable get HYPEROPT)
+      gh variable set JOB --body "${GITHUB_JOB}"
+      epochs=$((epochs * 2))
+    fi
+
+    # Disable protections if 'all' or 'protection' is in the spaces
+    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
+        enable_protections=""
+        prot="disable"
+    else
+        enable_protections="--enable-protections"
+        prot="enable"
+    fi
+
+    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\nFreqAImodel: $FREQAI_MODEL (Next: $FREQAI_NEXT)\n$hr"
+    if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
+      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
+      --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
+      echo "$error"
+      [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
+    else
+      freqtrade hyperopt-list --best
+    fi
+
+    echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
+    freqtrade backtesting --help
+    #rm -rf user_data/backtest_results/*
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
+  
+    calculate_score
+    NEW_SCORE=$SCORE
+
+    OLD_SCORE=$(gh variable get SCORE)
+    if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+      cat $STRATEGY
+      sed -i "s|Infinity|10|g" $STRATEGY
+      sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
+
+      curl -L -s -X PATCH \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
+         https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
+      gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" && gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" && gh variable set SCORE --body "${NEW_SCORE}"
+      if [[ "$GITHUB_JOB" == "lexering" && "$FREQAI_NEXT" != "false" ]]; then
+        gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"   
+      elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
+        gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+      fi
+    elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
+      if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        if [[ "$(gh variable get JOB)" != "lexering" ]]; then
+          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        else
+          if [[ "$FREQAI_NEXT" != "false" ]]; then gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"; fi
+        fi
+      fi
+    # Environment SCORE is unchanged in case calculation is failed
+    elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
+      if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        if [[ "$CALCULATION" != "false" ]]; then
+          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
+        else
+          gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        fi
+      fi
+    fi
+  done
+
+}
