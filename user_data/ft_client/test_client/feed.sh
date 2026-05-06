@@ -11,30 +11,27 @@ TIMEFRAMES='15m 1h'
 STRATEGY=user_data/strategies/fibbo.json
 HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
 CONFIG=user_data/config_examples/config_basic.example.json
-EDGEFILE=user_data/config_examples/config_edge.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
 HYPERFILE=user_data/config_examples/config_hyperopt.example.json
+FREQAI_FILE=user_data/config_examples/config_freqai.example.json
 EXCHANGE_FILE=user_data/config_examples/config_exchange.example.json
 HYPERPY=venv/lib/python3.11/site-packages/freqtrade/optimize/hyperopt_tools.py
-
-# Define the starting point of backtesting duration (in months)
-BACKTESTING_DURATION=2  # In weeks. Adjust as per your strategy
 
 # Today's date in the required format (YYYYMMDD)
 TODAY=$(date -u +%Y%m%d)
 YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
-# 30 days ago in the required format
-EARLIEST_DATE=$(date -u -d "3 weeks ago" +%Y%m%d)
-
-# Backtesting start date in the required format (earliest_date + sliding window)
-BACKTESTING_START=$(date -u -d "$EARLIEST_DATE + $BACKTESTING_DURATION weeks" +%Y%m%d)
+# Download vs Backtesting
+EARLIEST_DATE=$(date -u -d "3 months ago" +%Y%m%d)
+BACKTESTING_START=$(date -u -d "1 months ago" +%Y%m%d)
 
 # Time range
 TD="$EARLIEST_DATE-$TODAY"
 TB="$BACKTESTING_START-$TODAY"
 
 # Print the timeranges
+HYPEROPT=${MATRIX_INPUT:-$(gh variable get HYPEROPT)}
+FREQAI_MODEL=${MATRIX_INPUT:-$(gh variable get FREQAIMODEL)}
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/functions.sh"
 cat $CONFIG > user_data/config.json
@@ -42,42 +39,6 @@ cat $CONFIG > user_data/config.json
 # ENVIRONMENT
 export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
-
-if [[ "$GITHUB_JOB" == "lexering" ]]; then
-      
-  # Read FreqAI models into an array
-  mapfile -t MODELS < <(freqtrade list-freqaimodels --one-column | grep -v -E '^\s*$|INFO|matplotlib')
-  CURRENT="${FREQAI_MODEL}"
-
-  if [[ "$CURRENT" == "false" ]]; then
-    # Set CURRENT to first model
-    export FREQAI_MODEL="${MODELS[0]}"
-    export FREQAI_NEXT="${MODELS[1]}"
-    [[ "$REDUCE_EPOCH" == "false" ]] && export SCORE=100
-  else
-    # Find index of CURRENT in list
-    index=-1
-    for i in "${!MODELS[@]}"; do
-      if [[ "${MODELS[$i]}" == "$CURRENT" ]]; then
-        index=$i
-        break
-      fi
-    done
-
-    if [[ $index -lt 0 ]]; then
-      echo "Current model '$CURRENT' not found in list!"
-      exit 1
-    fi
-
-    # If not last element → NEXT = next model
-    if (( index < ${#MODELS[@]} - 1 )); then
-      export FREQAI_NEXT="${MODELS[$((index + 1))]}"
-    else
-      # Last model → NEXT = false
-      export FREQAI_NEXT="false"
-    fi
-  fi
-fi
 
 if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
 
