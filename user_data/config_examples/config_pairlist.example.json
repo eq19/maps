@@ -32,7 +32,10 @@
       "method": "PerformanceFilter",
       "lookback_period": 1440,
       "sort_key": "profit",
-      "min_periods": 24,
+      "min_periods": 24
+    },
+    {
+      "method": "StaticPairList",
       "number_assets": 20
     }
   ]
