@@ -122,7 +122,6 @@ else
   OLD_SCORE=$SCORE
   export CALCULATION="false"
   pairs=$(gh variable get PAIRS)
-  #jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
   jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
   #jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
 
@@ -148,8 +147,9 @@ else
     done
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
-    #freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --enable-dynamic-pairlist --freqai-backtest-live-models --enable-protections
+    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+    #freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --freqai-backtest-live-models --enable-protections
 
     calculate_score
     if [[ "$SCORE" == "100" ]]; then
