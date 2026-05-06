@@ -174,5 +174,5 @@ else
   SCORE=$(gh variable get SCORE)
   freqtrade hyperopt --help
   OLD_SCORE=$SCORE            
-  hyperopt $ID
+  freqai $ID
 fi
