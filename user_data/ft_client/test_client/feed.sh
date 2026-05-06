@@ -111,7 +111,7 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
     gh variable set PAIRS --body "$(cat pairs.json)"
   fi
 
-elif [[ "$1" != "Hyperopt" ]]; then
+elif [[ "$1" == "Hyperopt" ]]; then
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   echo "Download Timerange: $TD"
@@ -176,7 +176,7 @@ elif [[ "$1" != "Hyperopt" ]]; then
   OLD_SCORE=$SCORE            
   hyperopt $ID
 
-elif [[ "$1" != "FreqAI" ]]; then
+elif [[ "$1" == "FreqAI" ]]; then
 
   echo -e "\n$hr\nLIST DATA\n$hr"
   echo "Download Timerange: $TD"
