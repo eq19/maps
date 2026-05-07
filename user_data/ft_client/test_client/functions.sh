@@ -502,7 +502,7 @@ freqai() {
          https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
       gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" && gh variable set SCORE --body "${NEW_SCORE}"
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        gh workflow run "main.yml" --raw-field "BYPASS_LEXERING=true"   
+        gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"   
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       fi
@@ -511,14 +511,14 @@ freqai() {
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
-          gh workflow run "main.yml" --raw-field "BYPASS_LEXERING=true"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
         fi
       fi
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$CALCULATION" != "false" ]]; then
-          gh workflow run "main.yml" --raw-field "BYPASS_LEXERING=true"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
         else
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         fi
