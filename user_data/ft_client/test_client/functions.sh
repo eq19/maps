@@ -465,51 +465,24 @@ freqai() {
           --arg repo_id "$id" \
           --arg ref "$DEFAULT_BRANCH" \
           --arg score "$SCORE" \
-          --arg freqai "$FREQAI_MODEL" \
-          --arg freqai_next "$FREQAI_NEXT" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
+            run_mode: "FreqAI",
             matrix_json: (
               {
                 score: $score,
                 run_id: $runId,
-                freqai: $freqai,
                 repo_id: $repo_id,
                 fields: $freqaimodels,
-                freqai_next: $freqai_next,
-                reduce_epoch: $reduce_epoch
+                reduce_epoch: $reduce_epoch                
               } | @json
             )
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-      gh variable list | grep -q "HYPEROPT" && HYPEROPT=$(gh variable get HYPEROPT)
       gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
     fi
 
-    # Disable protections if 'all' or 'protection' is in the spaces
-    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
-    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
-        enable_protections=""
-        prot="disable"
-    else
-        enable_protections="--enable-protections"
-        prot="enable"
-    fi
-
-    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\nFreqAImodel: $FREQAI_MODEL (Next: $FREQAI_NEXT)\n$hr"
-    if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} --freqaimodel $FREQAI_MODEL \
-      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
-      --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
-      echo "$error"
-      [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_NEXT"
-    else
-      freqtrade hyperopt-list --best
-    fi
-
-    echo -e "\n$hr\nRERUN BACKTEST with $FREQAI_MODEL\n$hr"
-    freqtrade backtesting --help
-    #rm -rf user_data/backtest_results/*
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
     calculate_score
