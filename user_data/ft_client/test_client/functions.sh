@@ -480,7 +480,10 @@ freqai() {
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
       gh variable set JOB --body "${GITHUB_JOB}"
-      epochs=$((epochs * 2))
+ 
+      freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
+      freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
+
     fi
 
     echo -e "\n$hr\nLIST DATA\n$hr"
