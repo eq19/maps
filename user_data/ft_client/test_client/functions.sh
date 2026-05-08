@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Function: Calculate Score
+# Function: Backtest Score
 #
 
 calculate_score() {
