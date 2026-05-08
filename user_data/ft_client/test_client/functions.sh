@@ -483,6 +483,44 @@ freqai() {
       epochs=$((epochs * 2))
     fi
 
+  echo -e "\n$hr\nLIST DATA\n$hr"
+  echo "Download Timerange: $TD"
+  echo "Backtesting Timerange: $TB"
+  freqtrade list-data --help
+  freqtrade list-data
+
+  OLD_SCORE=$SCORE
+  export CALCULATION="false"
+  pairs=$(gh variable get PAIRS)
+
+  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
+  #jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
+  echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
+  nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
+  echo $! > freqtrade_pid.txt
+
+  # Open descriptor to log stream
+  exec 3< <(tail -f freqtrade.log)
+
+  while read -r LOGLINE <&3; do
+    # Stop if Freqtrade has entered TRANING state
+    if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
+      echo "Stopping freqtrade trade..."
+      PID=$(cat freqtrade_pid.txt)
+      kill -SIGTERM $PID
+      echo "freqtrade trade stopped."
+      break
+    fi
+    echo "$LOGLINE"
+  done
+
+  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+  echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
+  #Ref: https://www.freqtrade.io/en/stable/backtesting
+  SCORE=$(gh variable get SCORE)
+  freqtrade backtesting --help
+  OLD_SCORE=$SCORE            
+  
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-dynamic-pairlist --enable-protections
   
     calculate_score
