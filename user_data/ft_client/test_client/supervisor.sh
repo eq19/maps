@@ -25,6 +25,7 @@ echo "[INFO] Generating dynamic pairlist..."
   #exit 1
 #fi
 
+PAIRS=gh variable get PAIRS
 echo "[INFO] Pairlist:"
 echo "$PAIRS"
 
@@ -58,10 +59,10 @@ jq --argjson pairs "$PAIRS" \
 #mv "$CONFIG_BACKUP" "$EXCHANGE_CONFIG"
 
 # === STEP 6: Start trading ===
-echo "[INFO] Starting freqtrade..."
+#echo "[INFO] Starting freqtrade..."
 
-exec $FT trade -v \
-  --config "$CONFIG_FILE" \
-  --userdir "$DATA_DIR" \
-  --freqaimodel "$FREQAI_MODEL" \
-  --log-file "$DATA_DIR/logs/freqtrade.log"
+#exec $FT trade -v \
+  #--config "$CONFIG_FILE" \
+  #--userdir "$DATA_DIR" \
+  #--freqaimodel "$FREQAI_MODEL" \
+  #--log-file "$DATA_DIR/logs/freqtrade.log"
