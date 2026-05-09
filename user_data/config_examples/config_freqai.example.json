@@ -11,7 +11,18 @@
     "live_retrain_hours": 24,
 
     "rl_config": {
-      "cpu_count": 1
+      "train_cycles": 25,
+      "cpu_count": 1,
+      "model_type": "PPO",
+      "policy_type": "MlpPolicy",
+
+      "max_trade_duration_candles": 300,
+      "max_training_drawdown_pct": 0.02,
+
+      "model_reward_parameters": {
+        "rr": 1,
+        "profit_aim": 0.025
+      }
     },
     
     "feature_parameters": {
