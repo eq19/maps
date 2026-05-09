@@ -25,20 +25,20 @@ echo "[INFO] Generating dynamic pairlist..."
   #exit 1
 #fi
 
-PAIRS=$(gh variable get PAIRS)
-echo "[INFO] Pairlist:"
-echo "$PAIRS"
+#PAIRS=$(gh variable get PAIRS)
+#echo "[INFO] Pairlist:"
+#echo "$PAIRS"
 
-# === STEP 2: Backup config ===
-echo "[INFO] Backing up exchange config..."
-cp "$EXCHANGE_CONFIG" "$CONFIG_BACKUP"
+#=== STEP 2: Backup config ===
+#echo "[INFO] Backing up exchange config..."
+#cp "$EXCHANGE_CONFIG" "$CONFIG_BACKUP"
 
 # === STEP 3: Inject pair_whitelist ===
-echo "[INFO] Injecting pair_whitelist into exchange config..."
+#echo "[INFO] Injecting pair_whitelist into exchange config..."
 
-jq --argjson pairs "$PAIRS" \
-  '.exchange.pair_whitelist = $pairs' \
-  "$CONFIG_BACKUP" > "$EXCHANGE_CONFIG"
+#jq --argjson pairs "$PAIRS" \
+  #'.exchange.pair_whitelist = $pairs' \
+  #"$CONFIG_BACKUP" > "$EXCHANGE_CONFIG"
 
 # === STEP 4: Download data ===
 #if [ ! -f "$DATA_FLAG" ]; then
