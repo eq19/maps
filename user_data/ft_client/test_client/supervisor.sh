@@ -7,11 +7,11 @@ DATA_FLAG="$DATA_DIR/.data_ready"
 TMP_PAIRS="$DATA_DIR/pairs.json"
 CONFIG_BACKUP="$EXCHANGE_CONFIG.bak"
 
-echo "[INFO] Mode: $RUN_MODE"
-echo "[INFO] Data dir: $DATA_DIR"
+#echo "[INFO] Mode: $RUN_MODE"
+#echo "[INFO] Data dir: $DATA_DIR"
 
 # === STEP 1: Generate dynamic pairlist ===
-echo "[INFO] Generating dynamic pairlist..."
+#echo "[INFO] Generating dynamic pairlist..."
 
 #$FT test-pairlist \
   #--config "$CONFIG_FILE" \
