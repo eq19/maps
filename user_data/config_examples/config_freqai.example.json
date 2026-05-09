@@ -10,6 +10,10 @@
 
     "live_retrain_hours": 24,
 
+    "rl_config": {
+      "cpu_count": 1
+    }
+    
     "feature_parameters": {
       "include_timeframes": ["15m"],
 
