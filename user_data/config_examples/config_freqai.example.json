@@ -12,7 +12,7 @@
 
     "rl_config": {
       "cpu_count": 1
-    }
+    },
     
     "feature_parameters": {
       "include_timeframes": ["15m"],
