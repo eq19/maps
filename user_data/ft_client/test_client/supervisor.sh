@@ -25,7 +25,7 @@ echo "[INFO] Generating dynamic pairlist..."
   #exit 1
 #fi
 
-PAIRS=gh variable get PAIRS
+PAIRS=$(gh variable get PAIRS)
 echo "[INFO] Pairlist:"
 echo "$PAIRS"
 
