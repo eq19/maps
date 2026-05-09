@@ -66,3 +66,5 @@ jq --argjson pairs "$PAIRS" \
   #--userdir "$DATA_DIR" \
   #--freqaimodel "$FREQAI_MODEL" \
   #--log-file "$DATA_DIR/logs/freqtrade.log"
+
+freqtrade trade -v --userdir "$DATA_DIR" --freqaimodel "$FREQAI_MODEL" --log-file "$DATA_DIR/logs/freqtrade.log"
