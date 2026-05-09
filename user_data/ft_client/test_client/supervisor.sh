@@ -61,10 +61,8 @@ jq --argjson pairs "$PAIRS" \
 # === STEP 6: Start trading ===
 #echo "[INFO] Starting freqtrade..."
 
-#exec $FT trade -v \
-  #--config "$CONFIG_FILE" \
-  #--userdir "$DATA_DIR" \
-  #--freqaimodel "$FREQAI_MODEL" \
-  #--log-file "$DATA_DIR/logs/freqtrade.log"
-
-freqtrade trade -v --userdir "$DATA_DIR" --freqaimodel "$FREQAI_MODEL" --log-file "$DATA_DIR/logs/freqtrade.log"
+$FT trade -v \
+  --config "$CONFIG_FILE" \
+  --userdir "$DATA_DIR" \
+  --freqaimodel "$FREQAI_MODEL" \
+  --log-file "$DATA_DIR/logs/freqtrade.log"
