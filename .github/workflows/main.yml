@@ -1,17 +1,19 @@
 # 💎 Main Workflow: eQuantum MEC30
-name: COmpendium of RElations – Modulo 6
+name: COmpendium of RElations Modulo 6
+run-name: "COmpendium of RElations: ${{ inputs.RUN_MODE != 'false' && inputs.RUN_MODE || 'Hyperopt' }}"
 
 on:
   #push:
   workflow_run:
     types: [completed]
+    #workflows: ["pages-build"]
     workflows: ["pages-build-deployment"]
   repository_dispatch:
     types: [trigger_action, retry_workflow]
   workflow_dispatch:
     inputs:
-      FREQAI_MODEL:
-        description: 'the model of FreqAI to run'
+      RUN_MODE:
+        description: 'the mode to run'
         default: 'false'
         required: false
         type: string
@@ -25,7 +27,12 @@ on:
         default: 'false'
         required: false
         type: string
-        
+      BYPASS_LEXERING:
+        description: 'bypass lexering if is set true'
+        default: 'false'
+        required: false
+        type: string
+
 concurrency:
   cancel-in-progress: true
   group: ${{ github.workflow }}
@@ -39,6 +46,8 @@ env:
   RERUN_RUNNER: ${{ vars.RERUN_RUNNER }}
   RUNNER_TITLE: "Google-optimized-instance"
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
+  SCORE: ${{ inputs.RUN_MODE != 'false' && vars.SCORE || 100 }}
+  RUN_MODE: ${{ inputs.RUN_MODE != 'false' && inputs.RUN_MODE || 'Hyperopt' }}
 
 jobs:
   lexering:
@@ -49,26 +58,25 @@ jobs:
         config:
           - { os: ubuntu-latest, jobs_id: 1 }
           - { os: macos-latest, jobs_id: 2 }
-
     env:
-      SCORE: ${{ vars.SCORE || 100 }}
       JOBS_ID: ${{ matrix.config.jobs_id }}
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       DOC: '${{ vars.TARGET_REPOSITORY }}.wiki'
-      FREQAI_MODEL: ${{ github.event.inputs.FREQAI_MODEL }}
       REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH }}
       REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER }}
+      BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING }}
 
     runs-on: ${{ matrix.config.os }}
     continue-on-error: ${{ matrix.config.jobs_id != 1 }}
 
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
           repository: ${{ env.JOBS_ID != 1 && env.DOC || '' }}
           submodules: ${{ env.JOBS_ID != 1 && 'recursive' || false }}
+        if: ${{ !(env.JOBS_ID == 1 && env.BYPASS_LEXERING == 'true') }}
           
       - name: ⚙️ Build Maps
         uses: eq19/maps@v8
@@ -84,7 +92,7 @@ jobs:
           credentials: ${{ secrets.GCP_CREDENTIALS }}
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
+        if: ${{ !(env.JOBS_ID == 1 && env.BYPASS_LEXERING == 'true') }}
 
       - name: 🪂 Feed Mapping
         uses: eq19/feed@v6
@@ -102,6 +110,7 @@ jobs:
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
+        if: ${{ !(env.JOBS_ID == 1 && env.BYPASS_LEXERING == 'true') }}
 
       - name: 🏃‍♂️ Lexering Runner
         uses: eq19/lexer@v4
@@ -120,15 +129,16 @@ jobs:
           docker_hub_token: ${{ secrets.DOCKER_HUB_TOKEN }}
           docker_hub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           initiate_pauli_sum: ${{ toJSON(steps.build-parser.outputs) }}
+        if: ${{ !(env.JOBS_ID == 1 && env.BYPASS_LEXERING == 'true') }}
 
       - name: 📋 Generate Outputs
         shell: bash
         id: gen_outputs
-        if: ${{ env.JOBS_ID == 2 && env.RERUN_RUNNER == 'true' }}
         run: |
           output=${{ steps.feed-mapping.outputs.addition || steps.set-lexering.outputs.multiplication }}
           bash ${{ github.workspace }}/_user/ft_client/test_client/gcp.sh
           echo "output_${id}=${output}" >> "${GITHUB_OUTPUT}"
+        if: ${{ env.JOBS_ID == 2 && env.RERUN_RUNNER == 'true' }}
 
     outputs:
       # ♻️ Simulate Gell-Mann Matrices
@@ -150,20 +160,19 @@ jobs:
     env:
       JOBS_ID: ${{ matrix.config.jobs_id }}
       IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
-      FREQAI_MODEL: ${{ github.event.inputs.FREQAI_MODEL }}
       REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH }}
       REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER }}
       PASS: ${{ contains(needs.lexering.result, 'success') }}
+      BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING }}
 
     ## ✔️ Completeness status
     needs: lexering
-    #if: ${{ env.JOBS_ID == 4 }}
     runs-on: ${{ matrix.config.os }}
     continue-on-error: ${{ matrix.config.jobs_id == 3 && true || false }}
-     
+
     steps:
       - name: 📥 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         id: check-out
         with:
           submodules: recursive
@@ -172,7 +181,7 @@ jobs:
           ref: ${{ env.JOBS_ID == 3 && 'gh-source' || 'gh-pages' }}                  
 
       - name: 🚀 Setup Parser
-        if: ${{ env.PASS == 'true' }}
+        #if: ${{ env.PASS == 'true' }}
         uses: eq19/parser@v2
         id: set-parser
         with:
@@ -190,7 +199,7 @@ jobs:
             (env.JOBS_ID == 4 && contains(needs.lexering.result, 'failure')) }}
        
       - name: 🌀 Evaluate Syntax
-        if: ${{ env.PASS == 'true' }}
+        #if: ${{ env.PASS == 'true' }}
         uses: eq19/syntax@v2
         id: eval-syntax
         with:
