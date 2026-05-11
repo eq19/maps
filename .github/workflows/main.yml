@@ -46,8 +46,8 @@ env:
   RERUN_RUNNER: ${{ vars.RERUN_RUNNER }}
   RUNNER_TITLE: "Google-optimized-instance"
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
-  SCORE: ${{ !(inputs.RUN_MODE == 'true') && 100 || vars.SCORE }}
-  RUN_MODE: ${{ !(inputs.RUN_MODE == 'true') && 'Hyperopt' || inputs.RUN_MODE }}
+  SCORE: ${{ !(inputs.RUN_MODE == 'FreqAI') && 100 || vars.SCORE }}
+  RUN_MODE: ${{ !(inputs.RUN_MODE == 'FreqAI') && 'Hyperopt' || inputs.RUN_MODE }}
 
 jobs:
   lexering:
