@@ -28,8 +28,60 @@ def patch_ccxt_pair_only():
         type_  = kwargs.get("type")  or (args[1] if len(args) > 1 else None)
         side   = kwargs.get("side")  or (args[2] if len(args) > 2 else None)
 
+        # Diagnostic extraction
+        amount = kwargs.get("amount") or (args[3] if len(args) > 3 else None)
+        price_ = kwargs.get("price")  or (args[4] if len(args) > 4 else None)
+
+        logger.warning(
+            f"🧪 CREATE_ORDER RAW "
+            f"symbol={symbol} "
+            f"type={type_} "
+            f"side={side} "
+            f"amount={amount} ({type(amount).__name__}) "
+            f"price={price_}"
+        )
+
         if symbol:
             pair = _to_indodax_pair(symbol)
+
+            # =========================
+            # MARKET METADATA DEBUG
+            # =========================
+            try:
+                market = self.market(symbol)
+
+                logger.warning(
+                    f"📏 MARKET PRECISION "
+                    f"{symbol} "
+                    f"amount_precision={market.get('precision', {}).get('amount')} "
+                    f"price_precision={market.get('precision', {}).get('price')} "
+                    f"limits={market.get('limits')}"
+                )
+
+            except Exception as e:
+                logger.warning(
+                    f"⚠️ Failed reading market metadata "
+                    f"{symbol}: {e}"
+                )
+
+            # =========================
+            # AMOUNT ANALYSIS DEBUG
+            # =========================
+            if amount is not None:
+                try:
+                    is_decimal = float(amount) != int(float(amount))
+
+                    logger.warning(
+                        f"🔍 AMOUNT ANALYSIS "
+                        f"{symbol} "
+                        f"amount={amount} "
+                        f"decimal={is_decimal}"
+                    )
+
+                except Exception as e:
+                    logger.warning(
+                        f"⚠️ Amount analysis failed: {e}"
+                    )
 
             # Ensure params exists
             if len(args) >= 6:
@@ -53,6 +105,13 @@ def patch_ccxt_pair_only():
                     bid = orderbook["bids"][0][0] if orderbook["bids"] else None
                     ask = orderbook["asks"][0][0] if orderbook["asks"] else None
 
+                    logger.warning(
+                        f"📘 ORDERBOOK "
+                        f"{symbol} "
+                        f"bid={bid} "
+                        f"ask={ask}"
+                    )
+
                     if bid is None or ask is None:
                         raise Exception("Empty orderbook")
 
@@ -61,10 +120,21 @@ def patch_ccxt_pair_only():
                     else:
                         price = ask * 1.005
 
-                    price = float(self.price_to_precision(symbol, price))
+                    logger.warning(
+                        f"🧮 RAW LIMIT PRICE "
+                        f"{symbol} "
+                        f"calculated_price={price}"
+                    )
+
+                    price = float(
+                        self.price_to_precision(symbol, price)
+                    )
 
                     logger.warning(
-                        f"⚡ MARKET→LIMIT {side.upper()} {symbol} @ {price}"
+                        f"⚡ MARKET→LIMIT "
+                        f"{side.upper()} "
+                        f"{symbol} "
+                        f"@ {price}"
                     )
 
                     # ✅ FIX TYPE POSITION
@@ -73,24 +143,37 @@ def patch_ccxt_pair_only():
                     else:
                         kwargs["type"] = "limit"
 
-                    # ✅ FIX PRICE POSITION (CRITICAL)
+                    # ✅ FIX PRICE POSITION
                     if len(args) > 4:
                         args[4] = price
                     else:
                         kwargs["price"] = price
 
                 except Exception as e:
-                    logger.error(f"❌ Market conversion failed: {e}")
+                    logger.error(
+                        f"❌ Market conversion failed: {e}"
+                    )
 
                     fallback_price = 1
+
                     try:
                         fallback_price = float(
-                            self.price_to_precision(symbol, fallback_price)
+                            self.price_to_precision(
+                                symbol,
+                                fallback_price
+                            )
                         )
-                    except Exception:
-                        pass
 
-                    logger.warning(f"⚠️ Fallback LIMIT @ {fallback_price}")
+                    except Exception as e2:
+                        logger.warning(
+                            f"⚠️ Fallback precision failed: {e2}"
+                        )
+
+                    logger.warning(
+                        f"⚠️ Fallback LIMIT "
+                        f"{symbol} "
+                        f"@ {fallback_price}"
+                    )
 
                     if len(args) > 1:
                         args[1] = "limit"
@@ -102,7 +185,52 @@ def patch_ccxt_pair_only():
                     else:
                         kwargs["price"] = fallback_price
 
-        return original_create(self, *args, **kwargs)
+        # =========================
+        # FINAL REQUEST DEBUG
+        # =========================
+        final_amount = (
+            kwargs.get("amount")
+            or (args[3] if len(args) > 3 else None)
+        )
+
+        final_price = (
+            kwargs.get("price")
+            or (args[4] if len(args) > 4 else None)
+        )
+
+        final_type = (
+            kwargs.get("type")
+            or (args[1] if len(args) > 1 else None)
+        )
+
+        logger.warning(
+            f"🚀 FINAL CREATE_ORDER "
+            f"symbol={symbol} "
+            f"type={final_type} "
+            f"side={side} "
+            f"amount={final_amount} "
+            f"price={final_price}"
+        )
+
+        # =========================
+        # EXECUTION DEBUG
+        # =========================
+        try:
+            return original_create(self, *args, **kwargs)
+
+        except Exception as e:
+
+            logger.error(
+                f"💥 CREATE_ORDER FAILED "
+                f"symbol={symbol} "
+                f"type={type_} "
+                f"side={side} "
+                f"amount={amount} "
+                f"price={price_} "
+                f"error={e}"
+            )
+
+            raise
 
     # =========================
     # FETCH ORDER
@@ -114,6 +242,13 @@ def patch_ccxt_pair_only():
 
         if symbol:
             params["pair"] = _to_indodax_pair(symbol)
+
+            logger.debug(
+                f"📥 FETCH ORDER "
+                f"id={id} "
+                f"symbol={symbol} "
+                f"pair={params['pair']}"
+            )
 
         return original_fetch(self, id, symbol, params)
 
@@ -128,6 +263,13 @@ def patch_ccxt_pair_only():
         if symbol:
             params["pair"] = _to_indodax_pair(symbol)
 
+            logger.debug(
+                f"🛑 CANCEL ORDER "
+                f"id={id} "
+                f"symbol={symbol} "
+                f"pair={params['pair']}"
+            )
+
         return original_cancel(self, id, symbol, params)
 
     # =========================
@@ -141,7 +283,12 @@ def patch_ccxt_pair_only():
 
         except TypeError as e:
             if "NoneType" in str(e):
-                logger.warning(f"⛔ PARSE FIX → fallback order: {order}")
+
+                logger.warning(
+                    f"⛔ PARSE FIX "
+                    f"market={market} "
+                    f"order={order}"
+                )
 
                 return {
                     "id": order.get("order_id") or order.get("id"),
