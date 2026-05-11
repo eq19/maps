@@ -6,6 +6,7 @@
 calculate_score() {
 
   # Scoring breakdown:
+  TRADES_MIN=400
 
   # Profit Block (40%)
     # profit_total   = 20%
@@ -301,9 +302,9 @@ calculate_score() {
 
   # 🔻 Apply penalties for low trade count
   SCORE=$(echo "$profit + $risk + $quality + $cagr_score" | bc -l)
-  if (( $(echo "$trades < 200" | bc -l) )); then
+  if (( $(echo "$trades < $TRADES_MIN" | bc -l) )); then
     echo "🔁 Trades: $trades (penalties applied to $(printf "%.2f" "$SCORE"))"
-    SCORE=$(echo "$SCORE * $trades / 200" | bc -l)
+    SCORE=$(echo "$SCORE * $trades / $TRADES_MIN" | bc -l)
   fi
 
   SCORE=$(printf "%.2f" "$SCORE")
