@@ -10,7 +10,7 @@ description:
 {% include list.liquid all=true %}
 
 ```note
-To be clear, these horizons are speculations based upon numerical simulations of general relativistic field equation which are inherently non-linear and notoriously difficult to solve, so more detailed computer modeling may hold surprises for us. Also, while spacetime is well-modeled by GR, at the horizons where the curvature blows up, then so does GR and speculations about _[what happens at the singularities will have to wait for quantum gravity](https://www.eq19.com/identition/#fundamental-forces)_.
+To be clear, these horizons are speculations based upon numerical simulations of general relativistic field equation which are inherently non-linear and notoriously difficult to solve, so more detailed computer modeling may hold surprises for us. Also, while spacetime is well-modeled by GR, at the horizons where the curvature blows up, then so does GR and speculations about _[what happens at the singularities will have to wait for quantum gravity](https://eq19.github.io/identition/#fundamental-forces)_.
 ```
 
 [![Answer to How do infalling/outflying singularities form inside a black hole](https://github.com/eq19/maps/assets/8466209/9fa928dd-5701-487a-bd1d-c7a70ab5785d)](https://www.quora.com/How-do-infalling-outflying-singularities-form-inside-a-black-hole/answer/Kyle-Lochlann-Harry?ch=15&oid=13751846&share=75bd3a29&srid=hI1GZ&target_type=answer)

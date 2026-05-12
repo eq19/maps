@@ -23,7 +23,7 @@ In this Feynman diagram, an electron (e−) and a positron (e+) annihilate, prod
 
 [![default](https://user-images.githubusercontent.com/8466209/224185881-0d1c448e-ee04-4ad2-87e2-1da3c864643c.png)](https://en.wikipedia.org/wiki/Feynman_diagram)
 
-Like electromagnetism ([QED](https://www.eq19.com/maps/exponentiation/span17/)), it is a gauge theory, where the force between charged particles originates in the exchange of intermediate massless vector bosons: _one photon in the case of QED and eight gluons in the case of QCD_.
+Like electromagnetism ([QED](https://eq19.github.io/maps/exponentiation/span17/)), it is a gauge theory, where the force between charged particles originates in the exchange of intermediate massless vector bosons: _one photon in the case of QED and eight gluons in the case of QCD_.
 
 ```note
 QCD is extremely predictive:
@@ -75,13 +75,13 @@ blue  anti-red,   blue  anti-blue,   blue  anti-green,
 green anti-red,   green anti-blue,   green anti-green.
 ```
 
-This exponentiation takes important roles since by the _[multiplication zones](https://www.eq19.com/multiplication/#parsering-structure)_ the MEC30 forms a matrix of  `8 x 8 = 64 = 8²` where the power of 2 stands as exponent
+This exponentiation takes important roles since by the _[multiplication zones](https://eq19.github.io/multiplication/#parsering-structure)_ the MEC30 forms a matrix of  `8 x 8 = 64 = 8²` where the power of 2 stands as exponent
 
 ```note
 During the last few years of the 12th century, ***Fibonacci*** undertook a series of travels around the Mediterranean. At this time, the world’s most prominent mathematicians were Arabs, and he spent much time studying with them. His work, whose title translates as the Book of Calculation, was extremely influential in that ***it popularized the use of the Arabic numerals in Europe***, thereby revolutionizing arithmetic and allowing scientific experiment and discovery to progress more quickly. _([Famous Mathematicians](https://famous-mathematicians.org/leonardo-pisano-bigollo/))_
 ```
 
-[![MEC30 Square](https://user-images.githubusercontent.com/36441664/262213707-63aa0a64-cf7d-4fb7-9f1a-f3d1ba805643.png)](https://www.eq19.com/multiplication/#parsering-structure)
+[![MEC30 Square](https://user-images.githubusercontent.com/36441664/262213707-63aa0a64-cf7d-4fb7-9f1a-f3d1ba805643.png)](https://eq19.github.io/multiplication/#parsering-structure)
 
 Since the first member is 30 then the form is initiated by a matrix of `5 x 6 = 30` which has to be transformed first to `6 x 6 = 36 = 6²` prior to the above MEC30's square. 
 
@@ -89,7 +89,7 @@ Since the first member is 30 then the form is initiated by a matrix of `5 x 6 = 
 A square system of coupled nonlinear equations can be solved iteratively by Newton's method. This method uses the Jacobian matrix of the system of equations. _([Wikipedia](https://en.wikipedia.org/Jacobian_matrix_and_determinant))_
 ```
 
-[![gradien](https://user-images.githubusercontent.com/36441664/128025898-187ba576-795f-4578-af71-ff02a8b682b1.png)](https://www.eq19.com/multiplication/#transformation-to-exponentiation)
+[![gradien](https://user-images.githubusercontent.com/36441664/128025898-187ba576-795f-4578-af71-ff02a8b682b1.png)](https://eq19.github.io/multiplication/#transformation-to-exponentiation)
 
 ```note
 Fermions and bosons—fermions have quantum spin = 1/2.
@@ -272,4 +272,4 @@ $True Prime Pairs:
                     Δ                 Δ                 Δ       
 ```
 
-So basically  there is a basic transformation between ***[addition](https://www.eq19.com/addition/)*** of `3 + 4 = 7` in to their ***[multiplication](https://www.eq19.com/multiplication/)*** of `3 x 4 = 12` while the 7 vs 12 will be treated as ***exponentiation***.
+So basically  there is a basic transformation between ***[addition](https://eq19.github.io/addition/)*** of `3 + 4 = 7` in to their ***[multiplication](https://eq19.github.io/multiplication/)*** of `3 x 4 = 12` while the 7 vs 12 will be treated as ***exponentiation***.

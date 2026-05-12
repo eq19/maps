@@ -72,7 +72,7 @@ In general relativity, gravity is a force that bends and warps space-time around
 In the 1970s, theorists tried to discard the self-destructive idea of point-like gravity particles. Instead of point particles, strings were introduced. Even if strings collide, there will be no infinite energy problem. Strings can smoothly smash and rebound without implying any physically nonsense infinities.
 ```
 
-[![An-adinkra-for-the-chiral-multiplet](https://github.com/eq19/maps/assets/8466209/6dec58db-4bc6-467e-8110-b28bc307a7b3)](https://www.eq19.com/identition/#series-expansion)
+[![An-adinkra-for-the-chiral-multiplet](https://github.com/eq19/maps/assets/8466209/6dec58db-4bc6-467e-8110-b28bc307a7b3)](https://eq19.github.io/identition/#series-expansion)
 
 This standard model is missing the Gravitational interaction and it is postulated that there exists a particle called the Graviton that leads to ***supergravity theory***.
 
@@ -387,7 +387,7 @@ Using Euler's method to find p(40): A ruler with plus and minus signs (grey box)
 ***π(π(π(1000th prime))) + 1 = 40***
 
 [![image](https://github.com/eq19/maps/assets/8466209/810f734c-fe35-44de-a096-6021ebfecc76)
-](https://www.eq19.com/addition/3.html#subclasses-of-partitions)
+](https://eq19.github.io/addition/3.html#subclasses-of-partitions)
 
 ## Distribution Order
 
@@ -458,7 +458,7 @@ You can’t add multiples of 6 until that multiple is introduced into the sequen
 The Prime Number Folio Coordinate System and it’s natural numbers are all you need to find a prime number or a composite number and it’s factors. ***No need for complex numbers or the Reimann Hypothesis***. _([Medium](https://medium.com/invisible-illness/prime-number-folio-coordinate-system-78b316b65cf7))_
 ```
 
-Being brought forth you will also begin to uncover _[the irrelevant role](https://github.com/eq19/maps/files/13789887/4355025.pdf)_ that the Riemann hypothesis plays _[7 ate 9](https://www.eq19.com/multiplication/10.html#symmetry-breaking)_ in understanding this elegant distribution.
+Being brought forth you will also begin to uncover _[the irrelevant role](https://github.com/eq19/maps/files/13789887/4355025.pdf)_ that the Riemann hypothesis plays _[7 ate 9](https://eq19.github.io/multiplication/10.html#symmetry-breaking)_ in understanding this elegant distribution.
 
 [![The Prime Number Folio Coordinate System ](https://user-images.githubusercontent.com/8466209/285091346-8eb3dfda-4b06-4186-bf5d-a3050db5fe1b.png)](https://drive.google.com/file/d/1SE6UamC9ew0fIraKHstytwjQMY4LmVe8/view)
 

@@ -174,7 +174,7 @@ SU(5) fermions of standard model in 5+10 representations. The sterile neutrino s
 [![SU(5)_representation_of_fermions](https://github.com/eq19/maps/assets/8466209/2b1aa8f5-0028-4549-a091-eee291ed4890)
 ](https://en.wikipedia.org/wiki/Grand_Unified_Theory)
 
-This eleven (11) will continue to be discussed on _[identition zone](https://www.eq19.com/identition/)_.
+This eleven (11) will continue to be discussed on _[identition zone](https://eq19.github.io/identition/)_.
 
 ***2×96 = 192 = 5 + 7 + 11 + 13 + 17 + 19 +23 + 29 + 31 + 37 (10 consecutive primes)***
 
@@ -229,3 +229,62 @@ This proposition was first demonstrated by Edwin Hubble (1889-1953). The America
 [![HD-wallpaper-black-hole-black-hole-candle-cosmos-earth-edge-light-space-vortex](https://github.com/eq19/maps/assets/8466209/90bea53f-8be9-406d-b6fe-a2dda5b55bd1)](https://www.indiatvnews.com/science/hubble-bubble-hypothesis-reveals-mystry-of-universe-expansion-597015)
 
 A deeper understanding requires a unification of the aspects discussed above in terms of an underlying principle.
+
+## Angular Momentum 
+
+You may learn that sets of algebraic objects has a multilinear relationship related to a vector space called _[tensor](https://en.wikipedia.org/wiki/Tensor)_.
+
+```note
+Tensors may map between different objects such as vectors, scalars, even other tensors contained in a group of _[partitions](https://en.wikipedia.org/wiki/Partition_(number_theory))_.
+```
+
+[![300px-Components_stress_tensor svg](https://user-images.githubusercontent.com/8466209/211590875-9cae3c47-bbdc-43d8-acc5-d8c64c802967.png)](https://en.wikipedia.org/wiki/Tensor)
+
+In [mathematical physics](https://en.wikipedia.org/wiki/Mathematical_physics), [Clebsch–Gordan coefficients](https://en.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients) are the expansion coefficients of [total angular momentum](https://en.wikipedia.org/wiki/Total_angular_momentum) [eigenstates](https://en.wikipedia.org/wiki/Eigenstate) in an uncoupled [tensor product](https://en.wikipedia.org/wiki/Tensor_product) basis.
+
+```note
+Mathematically, they specify the decomposition of the tensor product of two irreducible representations into a [direct sum](https://en.wikipedia.org/wiki/Direct_sum) of irreducible representations, where the type and the multiplicities of these irreducible representations are known abstractly. The name derives from the German mathematicians [Alfred Clebsch](https://en.wikipedia.org/wiki/Alfred_Clebsch) (1833–1872) and [Paul Gordan](https://en.wikipedia.org/wiki/Paul_Gordan) (1837–1912), who encountered an equivalent problem in [invariant theory](https://en.wikipedia.org/wiki/Invariant_theory).
+
+Generalization to SU(3) of Clebsch–Gordan coefficients is useful because of their utility in characterizing [hadronic decays](https://en.wikipedia.org/wiki/Hadron), where a [flavor-SU(3) symmetry](https://en.wikipedia.org/wiki/Flavour_(particle_physics)) exists (the [eightfold way](https://en.wikipedia.org/wiki/Eightfold_way_(physics))) that connects the three light [quarks](https://en.wikipedia.org/wiki/Quarks): [up](https://en.wikipedia.org/wiki/Up_quark), [down](https://en.wikipedia.org/wiki/Down_quark), and [strange](https://en.wikipedia.org/wiki/Strange_quark). _([Wikipedia](https://en.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients_for_SU(3)))_
+```
+
+[![The Root System for SU(3)](https://github.com/eq19/maps/assets/8466209/a91ae888-3c3f-41f7-92e1-c74e0f111e29)](https://en.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients_for_SU(3))
+
+This density will bring the _[D3-Brane](https://eq19.github.io/addition/#structure-true-prime-pairs)_ where the lexer is being assigned per MEC30. Base on the its spin as shown in the above picture this lexer is assigned by [`Id: 33`](https://eq19.github.io/identition/#euler-partition).
+
+```note
+In this short review, we have briefly described the structure of exceptional field theories (ExFT’s), which provide a (T)U-duality covariant approach to supergravity. These are based on symmetries of toroidally reduced supergravity; however are defined on a general background.
+- From the point of view of ExFT the toroidal background is a maximally symmetric solution preserving all U-duality symmetries. In this sense the approach is similar to the embedding tensor technique, which is used to define gauge supergravity in a covariant and supersymmetry invariant form. Although any particular choice of gauging breaks certain amount of supersymmetry, the formalism itself is completely invariant. Similarly the U-duality covariant approach is transferred to dynamics of branes in both string and M-theory, whose construction has not been covered here.
+- In the text, we described construction of the field content of exceptional field theories from fields of dimensionally reduced 11-dimensional supergravity, and local and global symmetries of the theories. Various solutions of the section constraint giving Type IIA/B, 11D and lower-dimensional gauged supergravities have been discussed without going deep into technical details. For readers’ convenience references for the original works are present.
+- As a formalism exceptional field theory has found essential number of application, some of which have been described in this review in more details. In particular, we have covered generalized twist reductions of ExFTs, which reproduce lower-dimensional gauged supergravities, description of non-geometric brane backgrounds and an algorithm for generating deformations of supergravity backgrounds based on frame change inside DFT. However, many fascinating applications of the DFT and ExFT formalisms have been left aside. 
+
+Among these are non-abelian T-dualities in terms of Poisson-Lie transformations inside DFT [[100](https://www.mdpi.com/2073-8994/11/8/993#B100-symmetry-11-00993),[101](https://www.mdpi.com/2073-8994/11/8/993#B101-symmetry-11-00993)]; generating supersymmetric vacua and ***consistent truncations of supergravity into lower dimensions*** [[102](https://www.mdpi.com/2073-8994/11/8/993#B102-symmetry-11-00993),[103](https://www.mdpi.com/2073-8994/11/8/993#B103-symmetry-11-00993),[104](https://www.mdpi.com/2073-8994/11/8/993#B104-symmetry-11-00993)] (for review see [[105](https://www.mdpi.com/2073-8994/11/8/993#B105-symmetry-11-00993)]); compactifications on non-geometric (Calabi-Yau) backgrounds and construction of cosmological models [[54](https://www.mdpi.com/2073-8994/11/8/993#B54-symmetry-11-00993),[55](https://www.mdpi.com/2073-8994/11/8/993#B55-symmetry-11-00993),[106](https://www.mdpi.com/2073-8994/11/8/993#B106-symmetry-11-00993),[107](https://www.mdpi.com/2073-8994/11/8/993#B107-symmetry-11-00993)]. _([U-Dualities in Type II and M-Theory](https://www.mdpi.com/2073-8994/11/8/993))_
+```
+
+[![3-forms in 7D](https://github.com/eq19/maps/assets/8466209/705213d6-00e3-4130-9b06-adfb8d06c110)](https://eq19.github.io/multiplication/#standard-model)
+
+In [linear algebra](https://en.wikipedia.org/wiki/Linear_algebra), there is vector is known as _[eigenvector](https://mathworld.wolfram.com/Eigenvector.html)_, a nonzero vector that changes at most by a scalar factor when linear transformation is applied to it.
+
+```note
+The eigenvectors of the matrix (red lines) are the two special directions such that every point on them will just slide on them _([Wikipedia](https://commons.wikimedia.org/wiki/File:Eigenvectors_of_a_linear_operator.gif))_.
+```
+
+[![Eigenvectors_of_a_linear_operator](https://user-images.githubusercontent.com/8466209/228168805-ab93185d-4172-4284-8459-040e2f8797d4.gif)](https://eq19.github.io/identition/#partition-function)
+
+In later sections, we will discuss finding all the solutions to a polynomial function. We will also discuss solving multiple equations with multiple unknowns. 
+
+![Symmetry State](https://github.com/eq19/maps/assets/8466209/70cb2eb0-0955-4d18-8400-e05ac1b9d325)
+
+Observing more detail of the discussed scheme of 168 we will get it also when we take the 19's and 17's cell of `(31+37)+(35+65)=68+100=168`.
+
+```tip
+Our ***[18s gists](https://gist.github.com/eq19)*** would form the _[18s structure of 11s and 7s](https://eq19.github.io/addition/#structure-true-prime-pairs)_ where by the 11s, the 20th prime 71 would stand as _[eigenvalue](https://eq19.github.io/multiplication/#streaching-structure)_ and by the 7s, the 11th prime 31 would stand as the _[new symmetical zero axis](https://eq19.github.io/exponentiation/#parsering-structure)_ by means of _[MEC30 Structure](https://eq19.github.io/exponentiation/#self-repetition)_. So whenever the 11s is _[compactified](https://eq19.github.io/identition/#the-powers-of-10)_ down to ***[4 dimensions](https://eq19.github.io/exponentiation/#parsering-structure)*** it will always be compactifed by the 7s as their _[extended branes](https://eq19.github.io/identition/#extra-dimensions)_ which including the _[eigenvector](https://eq19.github.io/addition/#18s-structure)_ of _[dark energy](https://eq19.github.io/identition/#string-theory)_ and finally become another level of ***[11 dimensions](https://eq19.github.io/identitionl/#the-powers-of-pi)*** that lead to the concept of _[multiple universes](https://eq19.github.io/identition/#extra-dimensions)_. 
+```
+
+***Δ prime = 114th prime - 19 = (6 x 19)th prime - 19 = 619 - 19 = 600 = 3 x 200***
+
+[![Proof of Confinement](https://user-images.githubusercontent.com/36441664/270557989-54d6720f-fd55-44e9-a873-e11c6763bb8d.png)](https://eq19.github.io/multiplication/#streaching-structure)
+
+These deterministic models yield pre-dictable results which allow researchers to make informed recommendations on public policy.
+
+

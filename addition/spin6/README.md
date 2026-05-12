@@ -115,7 +115,7 @@ Integers can be considered either in themselves or as solutions to equations ([D
 [![integer partition](https://github.com/eq19/maps/assets/8466209/1a979f09-4592-4139-92fd-73472a54c60c)](https://commons.wikimedia.org/wiki/Category:Young_diagrams)
 
 ```note
-By parsering [π(1000)=168 primes](https://www.eq19.com/sitemap.xml) of the 1000 id's across **π(π(10000))-1=200** of this syntax then the (Δ1) would be _[initiated](https://eq19.github.io/init.js)_. Based on Assigning Sitemap [priority values](https://www.microsystools.com/products/sitemap-generator/help/xml-sitemaps-creator-importance/) You may see them are set 0.75 – 1.0 on the [sitemap's index](https://www.eq19.com/sitemap.xml):
+By parsering [π(1000)=168 primes](https://eq19.github.io/sitemap.xml) of the 1000 id's across **π(π(10000))-1=200** of this syntax then the (Δ1) would be _[initiated](https://eq19.github.io/init.js)_. Based on Assigning Sitemap [priority values](https://www.microsystools.com/products/sitemap-generator/help/xml-sitemaps-creator-importance/) You may see them are set 0.75 – 1.0 on the [sitemap's index](https://eq19.github.io/sitemap.xml):
 ```
 
 ```

@@ -87,4 +87,4 @@ The Prime Recycling ζ(s):
 ----------------------+-----+                                                ---
 ```
 
-[![Final Theory](https://user-images.githubusercontent.com/36441664/262341222-6c71005e-2f44-45d9-ac42-b1464c045a45.png)](https://www.eq19.com/identition/#beyond-the-139)
+[![Final Theory](https://user-images.githubusercontent.com/36441664/262341222-6c71005e-2f44-45d9-ac42-b1464c045a45.png)](https://eq19.github.io/identition/#beyond-the-139)

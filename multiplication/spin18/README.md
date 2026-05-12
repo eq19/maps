@@ -65,7 +65,7 @@ The function of DNA polymerase is not quite perfect, with the enzyme making ***a
 
 ![ezgif com-optimize](https://user-images.githubusercontent.com/8466209/235304712-f3ed4ada-9840-4cdf-911f-f9ce53191340.gif)
 
-[![Symmetry Breaking](https://github.com/eq19/maps/assets/8466209/80bb1b09-e1d4-479a-b570-815786058b04)](https://www.eq19.com/identition/span12/#the-quantum-gravity)
+[![Symmetry Breaking](https://github.com/eq19/maps/assets/8466209/80bb1b09-e1d4-479a-b570-815786058b04)](https://eq19.github.io/identition/span12/#the-quantum-gravity)
 
 ***1 instance + 7 blocks + 29 flats + 77 rooms = 114 objects***
 
@@ -172,7 +172,7 @@ layer | node | sub |    i     |   f
 ------|------|-----+----------+-----+                                                ---
 ```
 
-This distribution of fermion parameters are shown by ***[13,17], [11,19]*** in the coupling of _[MEC30](https://www.eq19.com/#identition-zones)_. So we shall find the rest of ***[7,23], [1,29]*** in the boson field.
+This distribution of fermion parameters are shown by ***[13,17], [11,19]*** in the coupling of _[MEC30](https://eq19.github.io/#identition-zones)_. So we shall find the rest of ***[7,23], [1,29]*** in the boson field.
 
 ```note
 In [physics](https://en.wikipedia.org/wiki/Physics), a ***coupling constant or gauge coupling*** parameter (or, more simply, a coupling), is a number that determines the strength of the [force](https://en.wikipedia.org/wiki/Force) exerted in an [interaction](https://en.wikipedia.org/wiki/Fundamental_interaction).
@@ -210,6 +210,6 @@ Getting the [proofreading ability](https://gist.github.com/eq19/e9832026b5b78f69
 P vs. NP deals with the gap between computers being able to quickly solve problems vs. just being able to test proposed solutions for correctness. As such, the [P vs. NP problem](https://en.wikipedia.org/wiki/P_versus_NP_problem) is the search for a way to solve problems that ***require the trying of millions, billions, or trillions of combinations without actually having to try each one*** _([P vs. NP Explained](https://danielmiessler.com/study/pvsnp/#:~:text=P%20vs.%20NP%20deals%20with%20the%20gap%20between,combinations%20without%20actually%20having%20to%20try%20each%20one.))_.
 ```
 
-[![P_versus_NP_problem](https://user-images.githubusercontent.com/36441664/84743524-4b58d400-afdc-11ea-9e64-5306a5811a33.jpg)](https://www.eq19.com/exponentiation/)
+[![P_versus_NP_problem](https://user-images.githubusercontent.com/36441664/84743524-4b58d400-afdc-11ea-9e64-5306a5811a33.jpg)](https://eq19.github.io/exponentiation/)
 
 It is stated that Np for a curve E with rank r obeys an asymptotic law and is still remain unsolved. Thus it would mean that using Euler's identity to get a definite pattern of prime distribution is still a long way to go.

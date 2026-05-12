@@ -15,10 +15,109 @@ A gauge colour rotation is _[a spacetime-dependent SU(3)](https://en.m.wikipedia
 
 ## Three (3) Layers
 
-Our scenario of [prime identity](https://www.eq19.com/#prime-identity) is layering three (3) prime pairs out of the symmetrical behaviour of 36 as the smallest number (greater than 1) which is not a prime.
+The first appearance of ***e*** in a printed publication was in Euler's [Mechanica](https://en.m.wikipedia.org/wiki/Mechanica) (1736). It is unknown why Euler chose [the letter e](https://youtu.be/R0oUeLQIbIk). 
+
+```note
+[Leonhard Euler](https://en.m.wikipedia.org/wiki/Leonhard_Euler) started to use ***the letter e*** for the constant in 1727 or 1728, in an unpublished paper on explosive forces in cannons, and in a letter to [Christian Goldbach](https://en.m.wikipedia.org/wiki/Christian_Goldbach) on 25 November 1731. _([Wikipedia](https://en.wikipedia.org/wiki/E_(mathematical_constant)))_
+```
+
+[![Letter e](https://user-images.githubusercontent.com/36441664/262249679-b5d6fc1a-6e42-4775-b09d-965ddd046171.png)](https://en.wikipedia.org/wiki/E_(mathematical_constant))
+
+This exponentiation takes important roles since by the _[multiplication zones](https://eq19.github.io/multiplication/#parsering-structure)_ the MEC30 forms a matrix of  `8 x 8 = 64 = 8²` where the power of 2 stands as exponent
+
+```note
+We present a method to increase the dynamical range of a ***Residue Number System (RNS)*** by adding virtual RNS layers on top of the original RNS, where the required modular arithmetic for a modulus on any non-bottom layer is implemented by means of an [RNS Montgomery multiplication algorithm](https://www.google.com/search?q=RNS+Montgomery+multiplication) that uses the RNS on the layer.
+- As a result, the actual arithmetic is deferred to the bottom layer. We have presented an improved Bajard-Imbert-type full RNS algorithm that can also operate on inputs represented by pseudo-residues.
+- Using this algorithm, we have developed a multi-layer RNS that is ***capable of implementing modular addition, subtraction and multiplication for very large moduli*** by only using actual arithmetic for a fixed set of moduli. If the moduli of this fixed set are sufficiently small, the method allows for a fully table-based implementation.
+- In contrast to digit-based implementations of modular operations for large moduli, our method allows for a massively parallel implementation and is completely carry- free, thus thwarting potential attacks exploiting such carries, e.g., with side-channel analysis or in a white-box cryptography context.
+- Our system may be considered as a method to provide a given, fixed RNS with a very large dynamical range. To illustrate the method, we have described a 2-layer RNS system that can be used to implement an RSA ***exponentiation by adding the desired RSA modulus on top in a third layer***.
+- The system employs 19 moduli of 8-bits each in the bottom layer and can be used to implement an RSA exponentiation for 2048-bits RSA moduli with all the required arithmetic done by table look-up, using 19 modular addition tables and 19 modular multiplication tables, each of these 38 tables having size 2⁸ × 2⁸ × 8 bits, with one modular multiplication taking approximately 160,000 table look-ups.
+
+We further observed that in order to change the RSA modulus, only some constants for computing on the top layer with moduli on the middle layer need to be updated. This update need not be computed in a secure manner and hence can be done quickly. _([Recursive Residues - pdf](https://arxiv.org/pdf/1801.07561))_
+```
+
+***π(π(30+37)) = π(π(67)) = π(19) = 8***
+
+```bash
+#!/usr/bin/env bash
+
+edit_file () {
+
+  NUM=$(($2 + 0))
+  
+  while IFS=' ' read -ra SPIN; do
+    T+=("${SPIN[0]}")
+    R+=("${SPIN[1]}")
+    A+=("${SPIN[2]}")
+    C+=("${SPIN[3]}")
+    K+=("${SPIN[4]}")
+    I+=("${SPIN[5]}")
+    N+=("${SPIN[6]}")
+    G+=("${SPIN[7]}")
+  done < /tmp/spin.txt
+
+  FRONT="---\n"
+  FRONT+="sort: ${K[$NUM]}\n"
+  FRONT+="span: ${I[$NUM]}\n"
+  FRONT+="spin: ${N[$NUM]}\n"
+  FRONT+="suit: ${G[$NUM]}\n"
+  FRONT+="---\n"
+
+  IFS=$'\n' read -d '' -r -a LINE < _Sidebar.md
+  TEXT="${LINE[$NUM]}" && TITLE=${TEXT%|*}
+  FRONT+="# $TITLE\n\n"
+
+  [[ $NUM -le 9 ]] && sed -i "1s|^|$FRONT|" $1
+  if [[ $NUM -lt 2 || $NUM == 9 ]]; then
+    mv -f $1 ${1%/*}/README.md
+    sed '1,6!d' ${1%/*}/README.md
+  fi
+}
+
+FILE=${1##*/} && SORT=${FILE%.*}
+[[ $SORT =~ ^-?[0-9]+$ ]] && edit_file $1 $SORT
+```
+
+These representations are a curious finding. They relate particles to antiparticles by using only the complex conjugate ***i → −i***, they fill these as of _[Euler's Identity](https://eq19.github.io/#identition-zones)_.
+
+```note
+Euler's identity is a special case of Euler's formula ***e^ix = cos x + i sin x*** when evaluated for ***x = π***, In addition, it is directly used in a proof that ***π is transcendental***, which implies the impossibility of squaring the circle. _([Wikipedia](https://en.wikipedia.org/wiki/Euler%27s_identity))_
+```
+
+[![Euler's identity](https://user-images.githubusercontent.com/8466209/219020102-60b526fd-273d-4c6d-8997-06254bdc5625.png)](https://en.wikipedia.org/wiki/Euler%27s_identity)
+
+Euler angles specify the rotation of the X, Y, and Z rotation axes. The Euler angle is the culprit of the singularities in _[matrix algebra](https://github.com/user-attachments/files/16897487/COmpendium.of.RElations.pdf)_.
+
+```note
+In this work we present a matrix generalization of the Euler identity about exponential representation of a complex number. The concept of matrix exponential is used in a fundamental way. We define a notion of matrix imaginary unit which generalizes the usual complex imaginary unit. The Euler-like identity so obtained is compatible with the classical one. Also, we derive some exponential representation for matrix real and imaginary unit, and for the first [Pauli matrix](https://github.com/eq19/maps/files/13818844/math0703448.pdf)
+```
+
+[![Spin](https://github.com/eq19/maps/assets/8466209/1addf803-99bf-4af3-914b-3a1116f6bf7a)
+](https://www.lancaster.ac.uk/staff/schomeru/lecturenotes/Quantum%20Mechanics/S16.html)
+
+Euler identity present a matrix generalization of the about ***exponential representation*** for matrix real and imaginary unit which compatible with the [Pauli matrix](https://github.com/eq19/maps/files/13818844/math0703448.pdf)
+
+
+```note
+Gell–Mann matrices are to SU(3) what the Pauli matrices are to SU(2). Gell–Mann -matrices are a complete set of Hermitian 3 ⊗ 3 noncommuting trace-orthogonal matrices. They are at the heart of Quantum Chromodynamics (QCD), an integral part of the Standard Model. They are also used in quantum information theory to represent qutrits. _([Wolfram](https://demonstrations.wolfram.com/EverythingAboutGellMannMatricesPart1UnaryOperations/))_
+```
+
+[![Everything About Gell Mann Matrices Unary Operations](https://github.com/eq19/maps/assets/8466209/a92606c8-0fc1-4690-be88-7e85a5bc77b5)](https://demonstrations.wolfram.com/EverythingAboutGellMannMatricesPart1UnaryOperations/)
+
+This imaginary unit is particularly important in both mathematics and physics. For example, those [matrices](https://mathworld.wolfram.com/Matrix.html) (and their generalizations) are important in [Lie Theory](https://en.wikipedia.org/wiki/Lie_theory).
+
+```note
+As usual, the images ***on the left are snapshots of the particles at different times. Those times correspond to the grey slices in the space-time diagram on the right***. You can see the specific interaction points in the space-time diagram, where the blue particle is emitted and then absorbed by the red particles. _([Slimy.com](http://www.slimy.com/~steuard/research/StringIntro/slide13.html))_
+```
+
+[![Feynman diagrams](https://github.com/eq19/maps/assets/8466209/1f5fba0d-4951-4be9-a232-23a1b00b9843)](https://eq19.github.io/multiplication/#physical-movements)
+
+So it will need a gap between each identities to proceed the thing. Let's discuss how it goes by the _[seven (7) hidden dimensions](https://eq19.github.io/identition/#hidden-dimensions)_.
+
+Our scenario of [prime identity](https://eq19.github.io/#prime-identity) is layering three (3) prime pairs out of the symmetrical behaviour of 36 as the smallest number (greater than 1) which is not a prime.
 
 ```tip
-By our project this prime layering is called _[The True Prime Pairs](https://www.eq19.com/addition/2.html)_ and to be intrepeted as: Mapping the quantum way within a huge of primes objects (5 to 19) by lexering (11) the ungrammared feed (7) and parsering (13) across syntax (17).
+By our project this prime layering is called _[The True Prime Pairs](https://eq19.github.io/addition/2.html)_ and to be intrepeted as: Mapping the quantum way within a huge of primes objects (5 to 19) by lexering (11) the ungrammared feed (7) and parsering (13) across syntax (17).
 ```
 
 ```txt
@@ -287,7 +386,7 @@ These are called hypercomplex numbers, such as, quaternions (4D), octonions (8D)
 
 [![4 types of numbers](https://github.com/eq19/maps/assets/8466209/5b6d06cf-e7b3-442c-b5d8-0818a2eb470c)](https://nitinuchil.wordpress.com/2020/09/09/hypercomplex-math/)
 
-The _[three (3) layers](https://www.eq19.com/identition/span12/#three-3-layers)_ as explained above is in the 1st-term of our discussed structure. So the next step is the 2nd-term which ***goes to the four (4)*** dimensional space-time.
+The _[three (3) layers](https://eq19.github.io/identition/span12/#three-3-layers)_ as explained above is in the 1st-term of our discussed structure. So the next step is the 2nd-term which ***goes to the four (4)*** dimensional space-time.
 
 ## The Four (4) Dimensions
 
@@ -420,7 +519,7 @@ It has been long known that the SO(10) model is free from all perturbative local
 In the spin-foam formalism, the [Barrett–Crane model](https://en.wikipedia.org/wiki/Barrett%E2%80%93Crane_model), which was for a while the most promising state-sum model of 4D Lorentzian quantum gravity
 
 ```note
-It was [based on representations](https://www.eq19.com/addition/5.html#power-of-magnitude) of the noncompact groups SO(3,1) or SL(2,C), so the spin foam faces (and hence the spin network edges) were labelled by positive real numbers as opposed to the half-integer labels of SU(2) spin networks. _([Wikipedia](https://en.wikipedia.org/wiki/Lorentz_invariance_in_loop_quantum_gravity))_
+It was [based on representations](https://eq19.github.io/addition/5.html#power-of-magnitude) of the noncompact groups SO(3,1) or SL(2,C), so the spin foam faces (and hence the spin network edges) were labelled by positive real numbers as opposed to the half-integer labels of SU(2) spin networks. _([Wikipedia](https://en.wikipedia.org/wiki/Lorentz_invariance_in_loop_quantum_gravity))_
 ```
 
 [![41114_2016_3_Equ168](https://github.com/eq19/maps/assets/8466209/561fe8cb-65f6-4050-ab54-3b45392ac897)](https://link.springer.com/article/10.12942/lrr-2013-3)
@@ -431,7 +530,7 @@ The field content of this theory is the massless N = 8 supergravity which compri
 
 ```note
 In four spacetime dimensions, N = 8 supergravity, speculated by [Stephen Hawking](https://en.wikipedia.org/wiki/Stephen_Hawking), is the most [symmetric](https://en.wikipedia.org/wiki/Symmetric) quantum field theory which ***involves gravity*** and a finite number of fields.
-- It can be found from a [dimensional reduction](https://www.eq19.com/identition/span12/#the-seven-7-groups) of 11D supergravity ***by making the size of seven (7) of the dimensions go to zero***.
+- It can be found from a [dimensional reduction](https://eq19.github.io/identition/span12/#the-seven-7-groups) of 11D supergravity ***by making the size of seven (7) of the dimensions go to zero***.
 - ***It has eight (8) supersymmetries***, which is the most any gravitational theory can have, since there are eight half-steps between spin 2 and spin −2. (The spin 2 graviton is the particle with the highest spin in this theory.)[![eight (8) supersymmetries](https://github.com/eq19/maps/assets/8466209/3796ffd2-465f-44d7-b750-95a092537939)](https://github.com/eq19/maps/files/14229967/0109010.pdf)
 
 - More supersymmetries would mean the particles would have [superpartners](https://en.wikipedia.org/wiki/Superpartner) with spins higher than 2.

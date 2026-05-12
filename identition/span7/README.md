@@ -63,7 +63,7 @@ True Prime Pairs:
 
 [![default](https://user-images.githubusercontent.com/8466209/235672220-30997c4b-0d66-4e8a-a579-44e05062ac88.png)](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#the-crank-of-a-partition)
 
-This 23 units will form Scheme-23 as **two (2) long strands** which is known as [doble helix](https://en.wikipedia.org/wiki/Nucleic_acid_double_helix) Here we call them as Scheme-23 (71) and Scheme-23 (68). These strands are originated by the **three (3) layers** of _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_.
+This 23 units will form Scheme-23 as **two (2) long strands** which is known as [doble helix](https://en.wikipedia.org/wiki/Nucleic_acid_double_helix) Here we call them as Scheme-23 (71) and Scheme-23 (68). These strands are originated by the **three (3) layers** of _[True Prime Pairs](https://eq19.github.io/addition/file02.html#true-prime-pairs)_.
 
 [![Scheme-139](https://user-images.githubusercontent.com/36441664/99129100-38a40300-263f-11eb-8715-a657fec3aaf1.jpg)](https://github.com/chetabahana/chetabahana.github.io/wiki/139)
 
