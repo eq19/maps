@@ -67,7 +67,7 @@ By deploying containers on Compute Engine, you can simplify app deployment while
 
 ![default](https://user-images.githubusercontent.com/8466209/245677838-a0fb916e-c1f2-468f-a73d-2d6acdefa529.png)
 
-This property would tend the ballancing scheme of MEC30 so it will let 30-18=12 pairing with another 12 of 24 spins prime hexagon. The 24 goes to the center of _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_ ny the prime pair 13 and 11 and let the crancks of 2,3,5,7 inside the 10 ranks.
+This property would tend the ballancing scheme of MEC30 so it will let 30-18=12 pairing with another 12 of 24 spins prime hexagon. The 24 goes to the center of _[True Prime Pairs](https://eq19.github.io/addition/file02.html#true-prime-pairs)_ ny the prime pair 13 and 11 and let the crancks of 2,3,5,7 inside the 10 ranks.
 
 ```
                                 | 
@@ -130,7 +130,7 @@ The GitHub hosted runner is assigned to run the Linux container and a Windows Se
 
 ![Set WSL](https://user-images.githubusercontent.com/8466209/226080396-235a1645-8a58-49c4-9754-8bac362a72fa.png)
 
-The 10 ranks will coordinate with the 18 to raise up the symmetrical behaviour of 12+24=36 which is prime pair 17+19=36 and let the 2 and 3 out of 2,3,5,7 to begin a new cycle while the 5,7 will pair the 11,13 and 17,19 as _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_.
+The 10 ranks will coordinate with the 18 to raise up the symmetrical behaviour of 12+24=36 which is prime pair 17+19=36 and let the 2 and 3 out of 2,3,5,7 to begin a new cycle while the 5,7 will pair the 11,13 and 17,19 as _[True Prime Pairs](https://eq19.github.io/addition/file02.html#true-prime-pairs)_.
 
 [![default](https://user-images.githubusercontent.com/8466209/244139208-378b2229-c3e8-4f1f-8829-dee6687348fb.png)](https://commons.wikimedia.org/wiki/File:RiemannZeta_Zeros.svg)
 

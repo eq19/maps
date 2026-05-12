@@ -33,7 +33,7 @@ Mobius strip only has one side, there are two more bizarre shapes with strange p
 
 ## The Klein bottle 
 
-The Klein bottleis in someways a 3D version of the Mobius strip and even though it exists in 3 dimensions, to make a true one you need to “fold through” the 4th dimension.
+The Klein bottle is in someways a 3D version of the Mobius strip and even though it exists in 3 dimensions, to make a true one you need to “fold through” the 4th dimension.
 
 ```note
 In [mathematics](https://en.wikipedia.org/wiki/Mathematics), the Klein bottle ([/ˈklaɪn/](https://en.wikipedia.org/wiki/Help:IPA/English)) is an example of a [non-orientable](https://en.wikipedia.org/wiki/Orientability) [surface](https://en.wikipedia.org/wiki/Surface_(topology)); that is, informally, a one-sided surface which, if traveled upon, could be followed back to the point of origin while flipping the traveler upside down.
@@ -73,7 +73,7 @@ Eigennvalue curves (right) showing a triple eigenvalue at zero for τ = 1 and do
 ***7 + 11 + 13 = 31***
 ***1 + (26+6) + (27+6) = 66***
 
-[![9 vs 18](https://github.com/eq19/maps/assets/8466209/19f68eca-c0e1-48fc-9c9a-60d01cf26057)](https://www.hexspin.com/0-1-and-negative-numbers/)
+[![9 vs 18](https://github.com/eq19/maps/assets/8466209/6e8b94dd-0162-47f3-9a61-577d4d9b8869)](https://www.hexspin.com/0-1-and-negative-numbers/)
 
 ```txt
  0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 
@@ -88,12 +88,12 @@ Eigennvalue curves (right) showing a triple eigenvalue at zero for τ = 1 and do
 ```
 
 ```tip
-This behaviour finaly brings us to a suggestion that the dimension in string theory are linked with ***the prime distribution level*** as indicated by the _[self repetition](https://www.eq19.com/exponentiation/#self-repetition)_ on MEC30.
+This behaviour finaly brings us to a suggestion that the dimension in string theory are linked with ***the prime distribution level*** as indicated by the _[self repetition](https://eq19.github.io/exponentiation/#self-repetition)_ on MEC30.
 ```
 
 ***7th spin - 4th spin = (168 - 102)s = 66s = 6 x 11s = 30s + 36s***
 
-![IMG_20231221_074421](https://github.com/eq19/maps/assets/8466209/1e7dc443-b7d8-44d9-8da0-5fe50dd7ee70)
+![IMG_20231221_074421](https://github.com/eq19/maps/assets/8466209/19f68eca-c0e1-48fc-9c9a-60d01cf26057)
 
 ```txt
 $True Prime Pairs:
@@ -172,5 +172,9 @@ The magnetic moment ~, angular momentum L~, and direction of propagation with v
 ```
 
 [![a-Twisted-strip-model-for-one-wavelength-of-a-photon-with-circular-polarisation-in-at](https://github.com/eq19/maps/assets/8466209/fe25c572-6c0b-4200-b249-f9341e72c47e)](https://github.com/eq19/maps/files/13790325/LdBelectoroid.pdf)
+
+Starts with the complex octonions from the octonion unit we builds creation and annihilation operators similar to those in quantum mechanics
+
+[![Standard Model from Octonionic Algebra](https://github.com/user-attachments/assets/4a049ecb-e044-46b5-913c-8b6163309206)](https://arxiv.org/abs/1611.09182)
 
 A deeper understanding requires a unication of the aspects discussed above in terms of an underlying principle.

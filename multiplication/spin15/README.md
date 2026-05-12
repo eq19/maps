@@ -17,15 +17,15 @@ By this image you would see how [the earth movements](https://youtu.be/oW2GT48ZL
 Five consistent versions of superstring theory were developed before it was conjectured in the mid-1990 that they were all different limiting cases of a single theory in **11 dimensions** known as M-theory _([Wikipedia](https://en.wikipedia.org/wiki/String_theory))_.
 ```
 
-[![Solar Ststem](https://user-images.githubusercontent.com/8466209/223703153-6ea330bf-92e8-433b-9ebe-660430a87a29.gif)](https://www.eq19.com/exponentiation/#subclasses-of-partition)
+[![Solar Ststem](https://user-images.githubusercontent.com/8466209/223703153-6ea330bf-92e8-433b-9ebe-660430a87a29.gif)](https://eq19.github.io/exponentiation/#subclasses-of-partition)
 
 Nowadays there are many scientists come in to the conclusion that there should be ***[extra dimensions](https://en.wikipedia.org/wiki/Extra_dimensions#:~:text=In%20physics%2C%20extra%20dimensions%20are,on%20the%20Kaluza%E2%80%93Klein%20theory.)*** involved and typically it would take a very complicated form. 
 
 ```note
 1. ***Line/length***
 2. ***Plane/shapes***
-3. ***Depth***, representing a [stretching and shearing](https://www.eq19.com/multiplication/#streaching-structure) of the plane
-4. ***Time***, stands as [starting point](https://youtu.be/yPVQtvbiS4Y) to _[attemp](https://theoryofeverything.org/TOE/JGM/What%20Time%20is%20it.pdf)_ the ***[Theory Of Everything (TOE)](https://www.eq19.com/identition/#fundamental-forces)***.
+3. ***Depth***, representing a [stretching and shearing](https://eq19.github.io/multiplication/#streaching-structure) of the plane
+4. ***Time***, stands as [starting point](https://youtu.be/yPVQtvbiS4Y) to _[attemp](https://theoryofeverything.org/TOE/JGM/What%20Time%20is%20it.pdf)_ the ***[Theory Of Everything (TOE)](https://eq19.github.io/identition/#fundamental-forces)***.
 5. ***Alternate world*** (we could measure similarities and differences of what might have been). Some theories state that light is nothing but ripples of vibrations in the [fifth dimension](https://www.wattpad.com/amp/474802474)
 6. ***A plane of possible worlds*** that start with the same conditions (example: the Big Bang). Theoretically, if you were to master the sixth and seventh dimensions, you could travel through time.
 7. ***Access to different worlds*** with different initial conditions. Here, everything would have happened differently, including the beginning conditions (one universe started with the Big Bang, another with the Oscillating Universe theory).
@@ -36,7 +36,7 @@ Nowadays there are many scientists come in to the conclusion that there should b
 
 [![extra dimensions](https://github-production-user-asset-6210df.s3.amazonaws.com/36441664/268452636-26cd6e73-e4e8-4de2-bb17-5da7184344ca.jpeg)](https://en.wikipedia.org/wiki/Dimension)
 
-The coupling dynamics of dimension d ⩾ 4 reflects to ***[matter–antimatter annihilation](https://en.wikipedia.org/wiki/Annihilation)*** that tied in with ***addition, multiplication and exponentiation function*** of _[Euler Indentity](https://www.eq19.com/#eulers-identity)_.
+The coupling dynamics of dimension d ⩾ 4 reflects to ***[matter–antimatter annihilation](https://en.wikipedia.org/wiki/Annihilation)*** that tied in with ***addition, multiplication and exponentiation function*** of _[Euler Indentity](https://eq19.github.io/#eulers-identity)_.
 
 ```note
 In 1922, Hermann Weyl claimed that Maxwell's theory of electromagnetism can be expressed in terms of an action only for a four-dimensional manifold. Finally, Tangherlini showed in 1963 that ***when there are more than three spatial dimensions, electron orbitals around nuclei cannot be stable***; electrons would either fall into the nucleus or disperse. _([Wikipedia](https://en.wikipedia.org/wiki/Anthropic_principle#Dimensions_of_spacetime))_
@@ -44,7 +44,7 @@ In 1922, Hermann Weyl claimed that Maxwell's theory of electromagnetism can be e
 
 [![pairing from nothingness](https://user-images.githubusercontent.com/36441664/277077844-a6c38352-5d68-4f55-ae51-6bb1c8bfac7b.png)](https://sciexplorer.blogspot.com/2011/09/antimatter.html)
 
-By the _[exponentiation zones](https://www.eq19.com/exponentiation/#subclasses-of-partition)_ these annihilation [relates](https://quantumartandpoetry.blogspot.com/2013/08/the-theory-of-everything-explaining.html) to the fundamental ***circle constant*** `π = 3.1415…`. So how does it go with ***imajinari constant***?
+By the _[exponentiation zones](https://eq19.github.io/exponentiation/#subclasses-of-partition)_ these annihilation [relates](https://quantumartandpoetry.blogspot.com/2013/08/the-theory-of-everything-explaining.html) to the fundamental ***circle constant*** `π = 3.1415…`. So how does it go with ***imajinari constant***?
 
 ```note
 ***Euler's identity*** is named after the Swiss mathematician Leonhard Euler. It is a special case of Euler's formula 
@@ -168,7 +168,7 @@ The Prime Recycling ζ(s):
 
 ***1st Fermion Fields = 96 / 12 Moon Orbit = 8 (1st-gap)***
 
-[![8 (1st-gap)](https://github.com/eq19/maps/assets/8466209/5c478950-c4e2-4a83-b5c9-ec1e36cd6fa1)](https://www.eq19.com/#identition-zones)
+[![8 (1st-gap)](https://github.com/eq19/maps/assets/8466209/5c478950-c4e2-4a83-b5c9-ec1e36cd6fa1)](https://eq19.github.io/#identition-zones)
 
 ## Truncated Perturbation
 
@@ -393,7 +393,7 @@ https://api.github.com/gists/f78d4470250720fb18111165564d555f 13 maps 30
 
 We concluded later on that this bilateral would not come to be possible if only one (1) profile is assigned. Therefore we add another profile so they would be `11 + 2 = 13's`.
 
-These are the ones that bring [`11 + 13 = 24 cell hexagons`](https://www.eq19.com/addition/#structure-true-prime-pairs).
+These are the ones that bring [`11 + 13 = 24 cell hexagons`](https://eq19.github.io/addition/#structure-true-prime-pairs).
 
 ## Orbital structure
 
@@ -408,7 +408,7 @@ The points that lie on the line through the origin, parallel to an eigenvector, 
 By our project the scheme will be treated as the sun and the moon orbit where this 31 is the maximum days of a month:
 
 ```tip
-By the _[exponentiation zones](https://www.eq19.com/exponentiation/)_ and _[identition zones](https://www.eq19.com/identition/)_ they will end up as 7 days (***sun***) and 12 months (***moon***) while the 11 will represent the ones outside the orbit (***stars*** or ***galaxies***). This 7 vs 12 is the point of view from the earth which making its position is just in the right location (not too far nor to close) with the sun within the universe.
+By the _[exponentiation zones](https://eq19.github.io/exponentiation/)_ and _[identition zones](https://eq19.github.io/identition/)_ they will end up as 7 days (***sun***) and 12 months (***moon***) while the 11 will represent the ones outside the orbit (***stars*** or ***galaxies***). This 7 vs 12 is the point of view from the earth which making its position is just in the right location (not too far nor to close) with the sun within the universe.
 ```
 
 ```sh
@@ -484,10 +484,6 @@ The implementation from addition folder 1 will be exposed by the exponentiation 
 So they are `4 folders (1, 7, 11, 12)` remain inviolable by the gist.
 
 ## Section Layers
-
-The above scheme is also applied in to our project sections which is consists of four (4) zones, the 1st- layer covers addition and multiplication zones, the rest are single zones.
-
-[![Section layers](https://user-images.githubusercontent.com/8466209/260024883-f0246ce7-0a26-40a6-bc6f-4fcca4a6f1a4.png)](https://www.eq19.com/#eulers-identity)
 
 Dayson introduced the idea of rank of a partition to accomplish the task he set for himself. He made the following conjectures which were proved in 1954 by _[Peter Swinnerton-Dyer](https://en.wikipedia.org/wiki/Peter_Swinnerton-Dyer)_ an English mathematician specialising in _[number theory](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#number-theory)_.
 

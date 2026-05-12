@@ -61,7 +61,7 @@ Besides many theories there is COMPOSITE and PRIMES as a self organized system (
 
 ![default](https://user-images.githubusercontent.com/36441664/73561001-b325dc80-448a-11ea-8042-f3be5fc7313e.gif)
 
-This scheme has a configuration of 30 nodes so the recombination is involving 2x30 or **60 nodes** out of the 72 nodes of _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_ will act as _the base platform_. The rest of 11 which is initially _[came out](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#primes-platform)_ from **the prime 13** is the irrational.
+This scheme has a configuration of 30 nodes so the recombination is involving 2x30 or **60 nodes** out of the 72 nodes of _[True Prime Pairs](https://eq19.github.io/addition/file02.html#true-prime-pairs)_ will act as _the base platform_. The rest of 11 which is initially _[came out](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#primes-platform)_ from **the prime 13** is the irrational.
 
 ```note
 The approach taken is to think of the solutions of an equation as a geometric object. For example, an equation in two variables defines a curve in the plane. More generally, an equation, or system of equations, in two or more variables defines a curve, a surface or some other such object in n-dimensional space _([Wikipedia](https://en.wikipedia.org/wiki/Number_theory#Diophantine_geometry))_.
@@ -77,7 +77,7 @@ The spacetime diagram on the left, the magenta hyperbolae connect events of equa
  
 ![default](https://user-images.githubusercontent.com/8466209/243109676-fbd0fe51-f80e-4512-a460-05a8f5227037.png)
 
-This scheme has a configuration of 30 nodes so the recombination is involving 2x30 or **60 nodes** out of the 72 nodes of _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_ will act as _the base platform_. The rest of 11 which is initially _[came out](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#primes-platform)_ from **the prime 13** is the irrational.
+This scheme has a configuration of 30 nodes so the recombination is involving 2x30 or **60 nodes** out of the 72 nodes of _[True Prime Pairs](https://eq19.github.io/addition/file02.html#true-prime-pairs)_ will act as _the base platform_. The rest of 11 which is initially _[came out](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#primes-platform)_ from **the prime 13** is the irrational.
 
 ```liquid
   Tabulate Prime by Power of 10
@@ -127,7 +127,7 @@ _[Dyson](https://en.wikipedia.org/wiki/Freeman_Dyson#Quantum_physics_and_prime_n
 
 [![Euler's identity](https://user-images.githubusercontent.com/36441664/74366957-992db780-4e03-11ea-8f26-cca32bd26003.png)](https://patentimages.storage.googleapis.com/6f/e3/f0/b8f7292f1f2749/DE102011101032A9.pdf)
 
-The finiteness position of middle zero axis = 15 by the said _MEC30_ opens up the possibility of accurately representing the self-similarity based on the distribution of _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_. So that all number would belongs together with [their own identity](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#prime-identity).
+The finiteness position of middle zero axis = 15 by the said _MEC30_ opens up the possibility of accurately representing the self-similarity based on the distribution of _[True Prime Pairs](https://eq19.github.io/addition/file02.html#true-prime-pairs)_. So that all number would belongs together with [their own identity](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#prime-identity).
 
 ![default](https://user-images.githubusercontent.com/8466209/220529937-3b4264f4-a57c-4521-862a-baa0c162995b.png)
 

@@ -280,7 +280,7 @@ Using Euler's method to find p(40): A ruler with plus and minus signs (grey box)
 ***π(π(π(1000th prime))) + 1 = 40***
 
 [![image](https://github.com/eq19/maps/assets/8466209/810f734c-fe35-44de-a096-6021ebfecc76)
-](https://www.eq19.com/addition/3.html#subclasses-of-partitions)
+](https://eq19.github.io/addition/3.html#subclasses-of-partitions)
 
 ## Distribution Order
 

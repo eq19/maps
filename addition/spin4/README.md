@@ -9,11 +9,7 @@ description:
 
 {% include list.liquid all=true %}
 
-```note
-***The number 120 = MEC30 x 4 has 32 prime positions minus 5 prime number products = 27 prime numbers***. The information of the prime number products translates our theory into a checkerboard-like pattern using the finite 8 prime positions from the MEC 30, we call it Ikon. 8 × 8 primary positions = 64 primary positions of the checkerboard icon.
-```
-
-[![Hebrew numerals](https://github.com/eq19/maps/assets/8466209/bfc54f9e-6194-4ff9-b4c2-d83fbde3c94f)](https://en.wikipedia.org/wiki/Hebrew_numerals)
+## Composite Contribution 
 
 ```note
 Note that the hexagon in the middle has 37 circles and the total figure, a star of David has 73. For this one you go around one point of the pattern in a circle until you go past a letter that you have already covered. For instance in B-R-A-Sh you will have to switch the position for the Sh because it moves more than through the alphabet. S-I-T does the same with the T.
@@ -21,7 +17,17 @@ Note that the hexagon in the middle has 37 circles and the total figure, a star 
 
 [![Torah geometri](https://user-images.githubusercontent.com/8466209/285325173-4f017a5d-3f2b-47d6-852d-6a2e8c5b8e50.png)](https://allmynoodles.com/torah-geometry/)
 
-## Composite Contribution 
+```tip
+"Not every beautiful theory has a physical application, but all fundamental physical theories found so far–without exception–have a type of beauty or symmetry." – Michio Kaku, The God Equation
+```
+
+***7 + 13 + 19 + 25 = 64 = 8 × 8 = 8²***
+
+![](https://user-images.githubusercontent.com/36441664/83051968-e2cfa480-a078-11ea-8ff2-316a809a8fad.jpg)
+
+[![Primes Platform](https://github.com/user-attachments/assets/223067e6-183d-4947-b226-1dca5ef1fa78)](https://eq19.github.io/addition/spin2/)
+
+## Dual Couplings
 
 The above seven (7) primes will act then as ***[extended branes](https://en.m.wikipedia.org/wiki/D-brane)***. This is what we mean by ***addition zones*** and it happens whenever a cycle is restarted.
 
@@ -69,10 +75,6 @@ layer | node | sub |  i  |  f.                                       MEC 30 / 2
 ------|------|-----+-----+-----  ‹----------------------------------- 30 {+1/2}
 ```
 
-This scheme goes to the unification of 11s with 7s to 18s meanwhile the 11th it self behave as residual by the 5th minor hexagon between the ***[30 to 36' cells](https://www.eq19.com/exponentiation/#fundamental-forces)***.
-
-![74550123-6dd1d680-4f83-11ea-8810-3b8f4f50a9c0](https://github.com/eq19/maps/assets/8466209/dd0a99e5-07e6-43ab-aa07-47c49f963220)
-
 ```txt
  1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18
 ---+---+---+---+---+---+---+---+---+----+----+----+----+----+----+----+----+----
@@ -81,7 +83,7 @@ This scheme goes to the unification of 11s with 7s to 18s meanwhile the 11th it 
  - | - | - | 28| 29|
 ```
 
-By _[The Δ(19 vs 18) Scenario](https://www.eq19.com/identition/#%CE%B419-vs-18-scenario)_ those three are exactly landed in the ***0's cell*** out of Δ18. See that the sum of 30 and 36 is 66 while the difference between 36 and 102 is also 66.
+By _[The Δ(19 vs 18) Scenario](https://eq19.github.io/identition/#%CE%B419-vs-18-scenario)_ those three are exactly landed in the ***0's cell*** out of Δ18. See that the sum of 30 and 36 is 66 while the difference between 36 and 102 is also 66.
 
 ```note
 You likely noticed I began with 2 rather than 1 or 0 when I first constructed the hexagon. Why? Because they do not fit inside — they stick off the hexagon like a tail. Perhaps that’s where they belong. However, if one makes a significant and interesting assumption, then 1 and 0 fall in their logical locations – in the 1 and 0 cells, respectively. _([HexSpin](https://www.hexspin.com/0-1-and-negative-numbers/))
@@ -104,7 +106,7 @@ You likely noticed I began with 2 rather than 1 or 0 when I first constructed th
 ```
 
 ```tip
-This behaviour finaly brings us to a suggestion that the dimension in string theory are linked with ***the prime distribution level*** as indicated by the _[self repetition](https://www.eq19.com/exponentiation/#self-repetition)_ on MEC30.
+This behaviour finaly brings us to a suggestion that the dimension in string theory are linked with ***the prime distribution level*** as indicated by the _[self repetition](https://eq19.github.io/exponentiation/#self-repetition)_ on MEC30.
 ```
 
 ***7th spin - 4th spin = (168 - 102)s = 66s = 6 x 11s = 30s + 36s***
@@ -143,13 +145,49 @@ p r i m e s
 
 It will be forced back to Δ19 making a cycle that bring back **the 12 to → 13** of 9 collumns and replicate _[The Scheme 13:9](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#scheme-139)_ through **(i=9,k=13)=9x3=27** with entry form of (100/50=2,60,40) as below:
 
-![default](https://user-images.githubusercontent.com/8466209/201015369-c6ba5c75-c2c7-415b-b424-debaa5c7f64a.png)
-
-The 10 ranks will coordinate with the 18 to raise up the symmetrical behaviour of 12+24=36 which is prime pair 17+19=36 and let the 2 and 3 out of 2,3,5,7 to begin a new cycle while the 5,7 will pair the 11,13 and 17,19 as _[True Prime Pairs](https://www.eq19.com/addition/file02.html#true-prime-pairs)_.
-
 ```note
-I like that 0 can occupy a center point.  Incidentally, this circular shape minus all my numbers and colors s has been called Seed of Life / Flower of Life by certain New Age groups who claim it has a sacred geometry.  Please don’t see this as an endorsement of any spiritual group or religion. _([Prime Hexagon - Circulat Form](https://www.hexspin.com/circular/))_
+***The number 120 = MEC30 x 4 has 32 prime positions minus 5 prime number products = 27 prime numbers***. The information of the prime number products translates our theory into a checkerboard-like pattern using the finite 8 prime positions from the MEC 30, we call it Ikon. 8 × 8 primary positions = 64 primary positions of the checkerboard icon.
 ```
 
-[![image](https://user-images.githubusercontent.com/8466209/249753773-abe68727-cc33-4efa-a1be-23dd66141297.png)](https://www.hexspin.com/circular/)
+![default](https://user-images.githubusercontent.com/8466209/201015369-c6ba5c75-c2c7-415b-b424-debaa5c7f64a.png)
 
+The 10 ranks will coordinate with the 18 to raise up the symmetrical behaviour of 12+24=36 which is prime pair 17+19=36 and let the 2 and 3 out of 2,3,5,7 to begin a new cycle while the 5,7 will pair the 11,13 and 17,19 as _[True Prime Pairs](https://eq19.github.io/addition/file02.html#true-prime-pairs)_.
+```
+W^\pm = \frac{1}{\sqrt{2}}(W^1 \mp iW^2)
+ | Charged weak current |
+| **Z⁰**         |  
+\[
+Z = \cos\theta_W W^3 - \sin\theta_W B
+ | Neutral weak current |
+| **γ (photon)** |  
+\[
+\gamma = \sin\theta_W W^3 + \cos\theta_W B
+ | Electromagnetism (QED) |
+
+Here, **θₜ (Weinberg angle)** determines the mixing between W³ and B.
+
+## **4. What Each Boson Does**
+
+| Boson     | Source Fields    | Interacts With            | Mass    |
+|-----------|------------------|---------------------------|---------|
+| **W⁺, W⁻** | W¹, W²           | Left-handed fermions      | Massive |
+| **Z⁰**     | W³ and B⁰        | Left-handed + some right-handed fermions | Massive |
+| **γ**      | W³ and B⁰        | All electrically charged particles | Massless |
+
+## **5. Final Picture**
+
+SU(2)_L × U(1)_Y
+        |
+  (Spontaneous symmetry breaking via Higgs field)
+        ↓
+W⁺  W⁻  Z⁰   γ
+↘   ↙         ↓
+Weak force   QED
+
+- **W⁺/W⁻/Z⁰**: Responsible for weak interactions (short-range, massive)
+- **γ (photon)**: Responsible for electromagnetism (long-range, massless)
+```
+
+![Symmetry Breaking](https://github.com/user-attachments/assets/e4d223e5-cc71-487e-beb7-c64d2fdc6eb0)
+
+<img width="1536" height="1024" alt="file_00000000b74c7208971b9cce2eca1362" src="https://github.com/user-attachments/assets/235d5988-ea1b-43c4-900a-5fe460f8c9a7" />

@@ -132,7 +132,7 @@ This is because ***[spinors](https://en.wikipedia.org/wiki/Spinor) need 32 compo
 
 ***32 = 8 x 4 = 2³ x 2² = 2⁵***
 
-[![Global Properties](https://user-images.githubusercontent.com/8466209/225830554-007fbd06-9d7d-44e8-867d-c7b0188bf488.png)](https://www.eq19.com/addition/7.html#global-properties)
+[![Global Properties](https://user-images.githubusercontent.com/8466209/225830554-007fbd06-9d7d-44e8-867d-c7b0188bf488.png)](https://eq19.github.io/addition/7.html#global-properties)
 
 ```note
 Eigenvalue curves (right) showing ***a triple eigenvalue*** at zero for τ = 1 and ***double eigenvalues*** at 1 ± √2i for τ = 4/√3. On the left the graph of 1/Q(λ) with the same eigenvalue curves plotted in the ground plane. Green stars indicate the eigenvalues of A, blue stars the roots of puv(λ) and triangles the zeroes of Q(λ) _([Global properties of eigenvalues - pdf](https://github.com/eq19/maps/files/13251083/2007.01188.pdf))_
@@ -210,7 +210,7 @@ Aside from 2 and 3, primes come in two flavors, 1 modulo 6 and 5 modulo 6, or th
 
 [![Finding a Number in the Hexagon](https://user-images.githubusercontent.com/8466209/259909858-68fe2d5f-13d8-4d26-9598-13bb540a4b12.png)](https://www.hexspin.com/finding-a-number-in-the-hexagon/)
 
-Here we are using the [inverse function](https://en.m.wikipedia.org/wiki/Inverse_function) to [exponentiation](https://en.m.wikipedia.org/wiki/Exponentiation) by `3 x 6 = 18` spins. This is what we mean by the ***multiplication zones*** that is applied to each of _[addition zones](https://www.eq19.com/addition/#structure-true-prime-pairs)_.
+Here we are using the [inverse function](https://en.m.wikipedia.org/wiki/Inverse_function) to [exponentiation](https://en.m.wikipedia.org/wiki/Exponentiation) by `3 x 6 = 18` spins. This is what we mean by the ***multiplication zones*** that is applied to each of _[addition zones](https://eq19.github.io/addition/#structure-true-prime-pairs)_.
 
 ```tip
 The three (3) minor hexagons are surrounded by the primes (19, 43, 71) which is close to ***the multiplication of six (6)*** with 3, 7, 12 to 18, 42, 72. One of a mysterious thing is that `19 × 6 = 43 + 71` where ∆1 is balancing and keep them to remain stay on the 18s scheme. Therefore we use the primes ***43 and 71*** as corresponding _[eigenvalues](https://en.wikipedia.org/wiki/Eigenvalues)_ which is the factor by which the eigenvector is [scaled](https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors#Overview).
@@ -251,7 +251,7 @@ p r i m e s
 -----
 ```
 
-These features are the solution to arrange 30 files located in in four (4) of zone folders as the lexer to cope with the _[Prime Spin](https://www.eq19.com/addition/#prime-hexagon)_ and _[MEC30 Structure](https://www.eq19.com/#eulers-identity)_.
+These features are the solution to arrange 30 files located in in four (4) of zone folders as the lexer to cope with the _[Prime Spin](https://eq19.github.io/addition/#prime-hexagon)_ and _[MEC30 Structure](https://eq19.github.io/#eulers-identity)_.
 
 ```note
 Now such interaction between the elementary particles can be described by means of a field of force, just as the interaction between the charged particles is described by the electromagnetic field. The above 
@@ -472,11 +472,7 @@ Conclusion:
 
 ![image](https://github.com/eq19/maps/assets/8466209/b44edbe8-9860-4892-bc1b-0370f7c19dd6)
 
-[![The seven (7) groups](https://github.com/eq19/maps/assets/8466209/4f03d4e4-c6de-479d-b930-b060610b49a3)](https://www.eq19.com/identition/span12/#the-27-parameters)
-
-```tip
-The number of primes less than or equal to a thousand [`π(1000) = 168`](https://www.eq19.com/addition/#prime-hexagon) equals the number of hours in a week [`24 × 7 = 168`](https://www.eq19.com/#addition-zones). The tessellating field of equilateral triangles fills with numbers, with spin orientation flipping with each prime number encountered, creating ***three (3)*** minor hexagons.
-```
+[![The seven (7) groups](https://github.com/eq19/maps/assets/8466209/4f03d4e4-c6de-479d-b930-b060610b49a3)](https://eq19.github.io/identition/span12/#the-27-parameters)
 
 ***∆28 - ∆27 = 1000 - 900 + π(27/9) = 100 + 2 = 102 (Recycled to original state)***
 
@@ -512,7 +508,7 @@ There are ***six types of leptons***, known as [flavours](https://en.wikipedia.o
 - Leptons have various [intrinsic properties](https://en.wikipedia.org/wiki/Intrinsic_properties), including [electric charge](https://en.wikipedia.org/wiki/Electric_charge), [spin](https://en.wikipedia.org/wiki/Spin_(physics)), [mass](https://en.wikipedia.org/wiki/Mass).
 - Unlike [quarks](https://en.wikipedia.org/wiki/Quark), however, leptons are not subject to the [strong interaction](https://en.wikipedia.org/wiki/Strong_interaction), but they are subject to the other three [fundamental interactions](https://en.wikipedia.org/wiki/Fundamental_interaction): [gravitation](https://en.wikipedia.org/wiki/Gravitation), the [weak interaction](https://en.wikipedia.org/wiki/Weak_interaction), and to ***[electromagnetism](https://en.wikipedia.org/wiki/Electromagnetism)***, of which the latter is proportional to charge, and is thus zero for the electrically neutral neutrinos.
 
-[![Electrodynamics](https://github.com/eq19/maps/assets/8466209/b8629985-8996-4819-9e19-a106b98eed48)](https://www.eq19.com/multiplication/#beyond-the-96)
+[![Electrodynamics](https://github.com/eq19/maps/assets/8466209/b8629985-8996-4819-9e19-a106b98eed48)](https://eq19.github.io/multiplication/#beyond-the-96)
 
 For every lepton flavor, there is a corresponding type of [antiparticle](https://en.wikipedia.org/wiki/Antiparticle), known as an antilepton, that differs from the lepton only in that some of its properties have [equal magnitude but opposite sign](https://en.wikipedia.org/wiki/Charge_conjugation). According to certain theories, neutrinos may be [their own antiparticle](https://en.wikipedia.org/wiki/Majorana_fermion). It is not currently known whether this is the case. _([Wikipedia](https://en.wikipedia.org/wiki/Lepton))_
 ```

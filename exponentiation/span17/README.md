@@ -76,7 +76,7 @@ Finally, one has to compute P(A to B) and E(C to D) corresponding to the probabi
 
 ## Subsequent Theories
 
-QED has served as the model and template for all subsequent quantum field theories. One such subsequent theory is Quantum Chromodynamics ([QCD](https://www.eq19.com/lexer/exponentiation/span15/)).
+QED has served as the model and template for all subsequent quantum field theories. One such subsequent theory is Quantum Chromodynamics ([QCD](https://eq19.github.io/lexer/exponentiation/span15/)).
 
 ```note
 Quantum Chromo Dynamics (in short QCD) is the field that studies the strong force between quarks . Like QED (Quantum Electro Dynamics) studies the electromagnetic force on the basis of quantum field theory, QCD does so as well. So we will find many similarities in applying fields, waves, interactions and how the force comes about. However, many of the processes in QCD cannot be calculated exactly. So it is not as advanced as QED.
@@ -319,4 +319,4 @@ We discuss how higher-spin operators and QED corrections alter the standard angu
 
 ![a-Summary-of-the-Feynman-rules-Solid-line-represents-the-fermionic-propagator-G-0-pp](https://github.com/eq19/maps/assets/8466209/f3430964-392b-43f9-80fa-84eed55f474d)
 
-The problem is essentially that QED appears to suffer from quantum triviality issues. This is one of the motivations for embedding QED within a [Grand Unified Theory](https://www.eq19.com/syntax/exponentiation/span13/).
+The problem is essentially that QED appears to suffer from quantum triviality issues. This is one of the motivations for embedding QED within a [Grand Unified Theory](https://eq19.github.io/syntax/exponentiation/span13/).

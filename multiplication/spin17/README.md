@@ -541,7 +541,7 @@ When the subclasses of partitions are flatten out into a matrix, you want to tak
 ***When this matrix is square, that is, when the function takes the same number of variables as input as the number of vector components of its output, its determinant is referred to as the Jacobian determinant***. Both the matrix and (if applicable) the determinant ad  often referred to simply as the Jacobian in literature. _([Wikipedia](https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant))_
 ```
 
-[![Hessian matrix for Newton Method](https://user-images.githubusercontent.com/8466209/229297019-4583e9a7-273d-4489-ab87-37c88be16adb.png)](https://www.eq19.com/exponentiation/)
+[![Hessian matrix for Newton Method](https://user-images.githubusercontent.com/8466209/229297019-4583e9a7-273d-4489-ab87-37c88be16adb.png)](https://eq19.github.io/exponentiation/)
 
 ## Double Strands
 
@@ -585,7 +585,7 @@ With theoretical foundations in [Information Engineering](https://en.wikipedia.o
 
 [![information engineering](https://user-images.githubusercontent.com/8466209/281937805-24623590-18cf-4250-ad45-95b063de5328.png)](https://userweb.eng.gla.ac.uk/umer.ijaz/#intro)
 
-Since such interactions result in a change in momentum, they can give rise to classical _[Newtonian forces](https://en.wikipedia.org/wiki/Newtonian_mechanics)_ of rotation and revolution by means of [orbital structure](https://www.eq19.com/multiplication/#orbital-structure).
+Since such interactions result in a change in momentum, they can give rise to classical _[Newtonian forces](https://en.wikipedia.org/wiki/Newtonian_mechanics)_ of rotation and revolution by means of [orbital structure](https://eq19.github.io/multiplication/#orbital-structure).
 
 ![torus](https://github.com/eq19/maps/assets/8466209/2a9a7df2-b82f-48da-a190-2292d16d4ac2)
 
@@ -593,4 +593,4 @@ As you can see on the left sidebar (dekstop mode) a total of 102 items will be r
 
 [![](https://github.com/eq19/maps/assets/8466209/129c18a9-6476-4853-b337-5ed446bc7937)](https://en.wikipedia.org/wiki/DNA)
 
-So when they transfered to `Id: 36` it will cover [`11 x 6 = 66 items`](https://www.eq19.com/exponentiation/) thus the total will be `102 + 66 = 168`
+So when they transfered to `Id: 36` it will cover [`11 x 6 = 66 items`](https://eq19.github.io/exponentiation/) thus the total will be `102 + 66 = 168`

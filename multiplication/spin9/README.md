@@ -61,7 +61,7 @@ Both Ulam and Gardner noted that the existence of such prominent lines ***is not
 ## Fibonacci Retracement
 
 ```note
-The weak mixing angle or Weinberg angle[[2]](https://en.wikipedia.org/wiki/Weinberg_angle#cite_note-3) is a parameter in the [Weinberg](https://en.wikipedia.org/wiki/Steven_Weinberg)–[Salam](https://en.wikipedia.org/wiki/Abdus_Salam) theory of the [electroweak interaction](https://en.wikipedia.org/wiki/Electroweak_interaction), part of the [Standard Model](https://en.wikipedia.org/wiki/Standard_Model) of particle physics, and is usually denoted as θW. ***It is the angle by which [spontaneous symmetry breaking](https://www.eq19.com/multiplication/10.html#spontaneous-symmetry-breaking) [rotates](https://en.wikipedia.org/wiki/Rotation_matrix) the original W0 and B0 [vector boson](https://en.wikipedia.org/wiki/Vector_boson) plane, producing as a result the Z0 boson, and the [photon](https://en.wikipedia.org/wiki/Photon).[[3]](https://en.wikipedia.org/wiki/Weinberg_angle#cite_note-Cheng-Li-2006-4)***. Its measured value is slightly below 30°, but also varies, very slightly increasing, depending on how high the relative momentum of the particles involved in the interaction is that the angle is used for _([Wikipedia](https://en.wikipedia.org/wiki/Weinberg_angle))_
+The weak mixing angle or Weinberg angle[[2]](https://en.wikipedia.org/wiki/Weinberg_angle#cite_note-3) is a parameter in the [Weinberg](https://en.wikipedia.org/wiki/Steven_Weinberg)–[Salam](https://en.wikipedia.org/wiki/Abdus_Salam) theory of the [electroweak interaction](https://en.wikipedia.org/wiki/Electroweak_interaction), part of the [Standard Model](https://en.wikipedia.org/wiki/Standard_Model) of particle physics, and is usually denoted as θW. ***It is the angle by which [spontaneous symmetry breaking](https://eq19.github.io/multiplication/10.html#spontaneous-symmetry-breaking) [rotates](https://en.wikipedia.org/wiki/Rotation_matrix) the original W0 and B0 [vector boson](https://en.wikipedia.org/wiki/Vector_boson) plane, producing as a result the Z0 boson, and the [photon](https://en.wikipedia.org/wiki/Photon).[[3]](https://en.wikipedia.org/wiki/Weinberg_angle#cite_note-Cheng-Li-2006-4)***. Its measured value is slightly below 30°, but also varies, very slightly increasing, depending on how high the relative momentum of the particles involved in the interaction is that the angle is used for _([Wikipedia](https://en.wikipedia.org/wiki/Weinberg_angle))_
 ```
 
 [![Weinberg_angle_(relation_between_coupling_constants](https://github.com/eq19/maps/assets/8466209/68891c53-4043-4089-b9f9-e660e47ef63a)](https://en.wikipedia.org/wiki/Weinberg_angle)
@@ -80,10 +80,10 @@ There are many other [prime curiousity](https://primes.utm.edu/curios/page.php?s
 
 ![(786) 618-FEED](https://github.com/eq19/maps/assets/8466209/112ca4f3-983f-4ec4-b4ec-c75e9b4addae)
 
-There are set of sequence known as _[Fibonacci retracement](https://www.investopedia.com/ask/answers/05/fibonacciretracement.asp#:~:text=The%20key%20Fibonacci%20ratio%20of,two%20spots%20to%20the%20right.)_. For unknown reasons, these Fibonacci ratios seem to play a role in the _[stock market](https://www.eq19.com/exponentiation/#hexagonal-patterns)_, just as they do in nature. 
+There are set of sequence known as _[Fibonacci retracement](https://www.investopedia.com/ask/answers/05/fibonacciretracement.asp#:~:text=The%20key%20Fibonacci%20ratio%20of,two%20spots%20to%20the%20right.)_. For unknown reasons, these Fibonacci ratios seem to play a role in the _[stock market](https://eq19.github.io/exponentiation/#hexagonal-patterns)_, just as they do in nature. 
 
 ```note
-The mathematically significant Fibonacci sequence defines a set of ratios known as _Fibonacci retracements_ which can be used to determine probable ***[entry and exit points](https://www.eq19.com/exponentiation/#parsering-structure)*** for the equities when paired with additional momentum. The Fibonacci retracement levels are 0.236, 0.382, ***0.618, and 0.786***.
+The mathematically significant Fibonacci sequence defines a set of ratios known as _Fibonacci retracements_ which can be used to determine probable ***[entry and exit points](https://eq19.github.io/exponentiation/#parsering-structure)*** for the equities when paired with additional momentum. The Fibonacci retracement levels are 0.236, 0.382, ***0.618, and 0.786***.
 - The key Fibonacci ratio of 61.8% is found by dividing one number in the series by the number that follows it. For example, 21 divided by 34 equals 0.6176, and 55 divided by 89 equals about 0.61798.
 - The 38.2% ratio is discovered by dividing a number in the series by the number located two spots to the right. For instance, 55 divided by 144 equals approximately 0.38194.
 - The 23.6% ratio is found by dividing one number in the series by the number that is three places to the right. For example, 8 divided by 34 equals about 0.23529.
@@ -94,7 +94,7 @@ The mathematically significant Fibonacci sequence defines a set of ratios known 
 
 [![Fibonacci retracement](https://user-images.githubusercontent.com/36441664/277129518-a7bfc713-40f5-47a5-9a1d-37c3e3fde1ff.png)](https://www.investopedia.com/ask/answers/05/fibonacciretracement.asp#:~:text=The%20key%20Fibonacci%20ratio%20of,two%20spots%20)
 
-They are used to determine critical points where an _[asset's momentum is likely to reverse](https://www.eq19.com/identition/#the-powers-of-10)_. This study cascade culminating in the Fibonacci digital root sequence (also period-24). 
+They are used to determine critical points where an _[asset's momentum is likely to reverse](https://eq19.github.io/identition/#the-powers-of-10)_. This study cascade culminating in the Fibonacci digital root sequence (also period-24). 
 
 ## Truncated Perturbation
 

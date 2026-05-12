@@ -15,12 +15,6 @@ description:
 
 [![default](https://user-images.githubusercontent.com/8466209/200228711-996e52bf-887c-445d-ad4b-46da2eabc30e.png)](https://gist.github.com/eq19/0ce5848f7ad62dc46dedfaa430069857#the-implementation)
 
-The subclasses of partitions systemically develops characters similar to the distribution of prime numbers. 
-
-[![Rank of a partition](https://user-images.githubusercontent.com/8466209/227838045-3ddd5238-7beb-4023-affa-c61a054afd2b.png)](https://en.wikipedia.org/wiki/Rank_of_a_partition)
-
-tps://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#partition-function) represents the number of possible partitions of a non-negative integer n.
-
 ***f(8 twins) = 60 - 23 = 37 inner partitions***
 
 ```txt
@@ -51,17 +45,15 @@ p r i m e s
 -----
 ```
 
-***7 + 13 + 19 + 25 = 64 = 8 × 8 = 8²***
-
-![](https://user-images.githubusercontent.com/36441664/83051968-e2cfa480-a078-11ea-8ff2-316a809a8fad.jpg)
-
-## Subclasses of Partitions
-
 ```note
 Let weighted points be given in the plane . For each point a radius is given which is the expected ideal distance from this point to a new facility. We want to find the location of a new facility such that the sum of the weighted errors between the existing points and this new facility is minimized. This is in fact a nonconvex optimization problem. We show that the optimal solution lies in an extended rectangular hull of the existing points. Based on this finding then an efficient big square small square (BSSS) procedure is proposed.
 ```
 
 [![A_BSSS_Algorithm_for_the_Location_Problem_with_Min.pdf](https://github.com/eq19/maps/assets/8466209/44b32796-e66b-4364-b20c-2a7305c53802)](https://github.com/eq19/maps/files/13764148/A_BSSS_Algorithm_for_the_Location_Problem_with_Min.pdf)
+
+## Subclasses of Partitions
+
+[![Octonions in Particle Physics through Structures of Generalised Proper Time](https://github.com/user-attachments/assets/72793f95-0926-470e-a2f1-7244f1b5279e)](https://arxiv.org/abs/1909.05014)
 
 Integers can be considered either in themselves or as solutions to equations ([Diophantine geometry](https://en.wikipedia.org/wiki/Diophantine_geometry)).
 
@@ -102,13 +94,13 @@ p r i m e s
 When these subclasses of partitions are flatten out into a matrix, you want to take the Jacobian of each of a stack of targets with respect to a stack of sources, where the Jacobians for each target-source pair are independent .
 
 ```note
-It's possible to build a _[Hessian matrix](https://en.wikipedia.org/wiki/Hessian_matrix)_ for a _[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization)_ step using the Jacobian method. You would first flatten out its axes into a matrix, and flatten out the gradient into a vector _([Tensorflow](https://www.tensorflow.org/guide/advanced_autodiff#batch_jacobian))_. 
+Feynman diagram for the same process as in the animation, with the individual quark constituents shown, to illustrate how the fundamental strong interaction gives rise to the nuclear force. Straight lines are quarks, while ***multi-colored loops are gluons (the carriers of the fundamental force). Other gluons, which bind together the proton, neutron, and pion "in-flight", are not shown***. The π⁰ pion contains an anti-quark, shown to travel in the opposite direction, as per the Feynman–Stueckelberg interpretation. _([Wikipedia](https://en.wikipedia.org/wiki/Pion))_
 ```
 
-[![Partitioned-matrices-of-the-numbers-60-62-and-64-as-examples](https://github.com/eq19/maps/assets/8466209/2009c4a4-49f8-4653-b0ea-b928ecad3240)](https://github.com/eq19/maps/files/13722898/Partitions_of_even_numbers.pdf)
+[![residual strong force](https://user-images.githubusercontent.com/36441664/274776116-17603ba1-0e83-433e-a8e2-b3df5716ff00.png)](https://en.wikipedia.org/wiki/Nuclear_force)
 
 ```note
-***In summary, it has been shown that partitions into an even number of distinct parts and an odd number of distinct parts exactly cancel each other, producing null terms 0x^n, except if n is a generalized [pentagonal number](https://www.eq19.com/identition/#hidden-dimensions) n=g_{k}=k(3k-1)/2}***, in which case there is exactly one Ferrers diagram left over, producing a term (−1)kxn. But this is precisely what the right side of the identity says should happen, so we are finished. _([Wikipedia](https://en.wikipedia.org/wiki/Pentagonal_number_theorem))_
+***In summary, it has been shown that partitions into an even number of distinct parts and an odd number of distinct parts exactly cancel each other, producing null terms 0x^n, except if n is a generalized [pentagonal number](https://eq19.github.io/identition/#hidden-dimensions) n=g_{k}=k(3k-1)/2}***, in which case there is exactly one Ferrers diagram left over, producing a term (−1)kxn. But this is precisely what the right side of the identity says should happen, so we are finished. _([Wikipedia](https://en.wikipedia.org/wiki/Pentagonal_number_theorem))_
 ```
 
 ```txt
@@ -141,7 +133,7 @@ p r i m e s
 
 The code is interspersed with python, shell, perl, also demonstrates how multiple languages can be integrated seamlessly. 
 
-[![extended branes](https://github.com/eq19/maps/assets/8466209/deb0e309-2178-4dc5-a1d6-30c81c4a8305)](https://www.eq19.com/identition/#partition-function)
+[![extended branes](https://github.com/eq19/maps/assets/8466209/deb0e309-2178-4dc5-a1d6-30c81c4a8305)](https://eq19.github.io/identition/#partition-function)
 
 These include generating variants of their abundance profile, assigning taxonomy and finally generating a rooted [phylogenetic tree](https://en.wikipedia.org/wiki/Phylogenetic_tree).
 
@@ -178,8 +170,6 @@ This behaviour in a fundamental causal relation to the primes when the products 
 ## Composite behaviour
 
 The subclasses of partitions systemically develops characters similar to the distribution of prime numbers. It would mean that there should be some undiscovered things hidden within the residual of the decimal values. 
-
-[![integer partition](https://github.com/eq19/maps/assets/8466209/814079f5-a06f-436f-9dc3-a41dbc0c120b)](https://blogs.iiit.ac.in/sumit-jha/)
 
 ***168 + 2 = 170 = (10+30)+60+70 = 40+60+70 = 40 + 60 + ∆(2~71)***
 
@@ -253,6 +243,10 @@ p r i m e s
 ..
 100 521 0 -1 2 ∆59 ◄--- ∆∆17 ◄--- 7th ∆∆prime ◄--- Fibonacci Index #36  👉 7s
 -----
+```
+
+```note
+It's possible to build a _[Hessian matrix](https://en.wikipedia.org/wiki/Hessian_matrix)_ for a _[Newton's method](https://en.wikipedia.org/wiki/Newton%27s_method_in_optimization)_ step using the Jacobian method. You would first flatten out its axes into a matrix, and flatten out the gradient into a vector _([Tensorflow](https://www.tensorflow.org/guide/advanced_autodiff#batch_jacobian))_. 
 ```
 
 ***(11x7) + (29+11) + (25+6) + (11+7) + 4 = 77+40+31+18+4 = 170***
