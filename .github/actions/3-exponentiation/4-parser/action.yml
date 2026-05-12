@@ -1,4 +1,4 @@
-Iname: 'Jekyll Deploy Action'
+name: 'Jekyll Deploy Action'
 
 description: >
   A Github Action to deploy the Jekyll site conveniently for GitHub Pages
@@ -118,6 +118,7 @@ runs:
 
     - name: 🏗️ Collect outputs
       uses: mathiasvr/command-output@v2.0.0
+      if: runner.os == 'Redis'
       id: command
       with:
         run: |
@@ -127,4 +128,4 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"

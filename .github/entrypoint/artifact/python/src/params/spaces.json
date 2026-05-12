@@ -1,54 +1,66 @@
-{                                       
-  "strategy_name": "fibbo",             
-  "params": {                           
-    "roi": {                            
-      "0": 0.05499999999999999,         
-      "2": 0.011,                       
-      "11": 0.005,                      
-      "20": 0                           
-    },                                  
-    "trailing": {                       
-      "trailing_stop": true,            
-      "trailing_stop_positive": 0.099,  
-      "trailing_stop_positive_offset": 0.178,                                   
-      "trailing_only_offset_is_reached": false                                  
-    },                                  
-    "max_open_trades": {                
-      "max_open_trades": 1.7976931348623157e+308                                
-    },                                  
-    "buy": {                            
-      "SmoothK": 2,                     
-      "buy_additional_indicator": "NONE",                                       
-      "buy_fast_dema": "13",            
-      "buy_fib_level": "0.618",         
-      "buy_rsi": 45,                    
-      "buy_slow_ema": "34",             
-      "buy_stoch_osc": 29,              
-      "buy_swing_period": 50,           
-      "period": 14,                     
-      "smoothD": 3                      
-    },                                  
-    "sell": {                           
-      "sell_additional_indicator": "NONE",                                      
-      "sell_fib_level": "0.382",        
-      "sell_rsi": 70,                   
-      "sell_rsi_threshold": 64,         
-      "sell_stoch_osc": 85              
-    },                                  
-    "protection": {                     
-      "cooldown_lookback": 7,           
-      "low_profit_trade_limit": 6,      
-      "max_drawdown_trade_limit": 4,    
-      "stop_duration": 156,             
-      "trade_limit": 9,                 
-      "use_low_profit": true,           
-      "use_max_drawdown_protection": false,                                     
-      "use_stop_protection": true       
-    },                                  
-    "stoploss": {                       
-      "stoploss": -0.136                
-    }                                   
-  },                                    
-  "ft_stratparam_v": 1,                 
-  "export_time": "2025-06-04 21:08:18.222844+00:00"                             
-}                                       
+{
+  "strategy_name": "Fibbo",
+  "params": {
+    "max_open_trades": {
+      "max_open_trades": 10
+    },
+    "buy": {
+      "buy_bb_period": 2,
+      "buy_fast_dema": "5",
+      "buy_fib_level": "0.618",
+      "buy_freqai": 0.18,
+      "buy_long_indicator": "BB, MACD",
+      "buy_rsi": 8,
+      "buy_rsi_period": 34,
+      "buy_short_indicator": "BB, MACD, VWAP",
+      "buy_slow_ema": "144",
+      "buy_smoothD": 181,
+      "buy_smoothK": 0,
+      "buy_stoch_osc": 9,
+      "buy_swing_period": 2
+    },
+    "sell": {
+      "sell_fast_dema": "21",
+      "sell_fib_level": "0.382",
+      "sell_freqai": 0.316,
+      "sell_long_indicator": "BB, MACD, RSI, TTM",
+      "sell_rsi": 368,
+      "sell_short_indicator": "NONE",
+      "sell_slow_ema": "144",
+      "sell_smoothD": 403,
+      "sell_smoothK": 2,
+      "sell_stoch_osc": 537,
+      "shared_stoch_period": 241,
+      "shared_ttm_window": 5,
+      "shared_vwap_window": 51
+    },
+    "protection": {
+      "cooldown_lookback": 16,
+      "lookback_period_candles": 59,
+      "low_profit_trade_limit": 12,
+      "max_drawdown_trade_limit": 323,
+      "stop_duration_candles": 230,
+      "trade_limit": 24,
+      "use_low_profit": true,
+      "use_max_drawdown_protection": false,
+      "use_stop_protection": false
+    },
+    "roi": {
+      "0": 0.181,
+      "105": 0.054,
+      "254": 0.019,
+      "555": 0
+    },
+    "stoploss": {
+      "stoploss": -0.287
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.265,
+      "trailing_stop_positive_offset": 0.341,
+      "trailing_only_offset_is_reached": true
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-03-26 02:55:54.468736+00:00"
+}

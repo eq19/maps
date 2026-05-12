@@ -96,7 +96,7 @@ jekyll_build() {
   fi
 
   if  [[ "${OWNER}" == "eq19" ]]; then
-    sed -i "1s|^|description: An attempt to discover the Final Theory\n\n|" ${RUNNER_TEMP}/_config.yml
+    sed -i "1s|^|description: An endeavor to discover the Final Theory\n\n|" ${RUNNER_TEMP}/_config.yml
   else
     DESCRIPTION=$(gh api -H "${HEADER}" /orgs/${OWNER} --jq '.description')
     sed -i "1s|^|description: ${DESCRIPTION}\n\n|" ${RUNNER_TEMP}/_config.yml

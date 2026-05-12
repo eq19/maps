@@ -102,21 +102,23 @@ runs:
         ACTOR: ${{ github.triggering_actor }}
         OWNER: ${{ github.repository_owner }}
       run: |
-        gh variable set RERUN_RUNNER --body "false"
+        if [[ "$GITHUB_JOB" == "lexering" ]]; then
+          gh variable set RERUN_RUNNER --body "false"
 
-        HEADER="Accept: application/vnd.github+json"
-        RESPONSE=$(gh api -H "${HEADER}" repos/${{ github.repository }}/actions/runners)
-        TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
-        STATUS=$(echo "$RESPONSE" | jq -r --arg NAME "${{ env.RUNNER_TITLE }}" '.runners[] | select(.name == $NAME).status')
+          HEADER="Accept: application/vnd.github+json"
+          RESPONSE=$(gh api -H "${HEADER}" repos/${{ github.repository }}/actions/runners)
+          TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
+          STATUS=$(echo "$RESPONSE" | jq -r --arg NAME "${{ env.RUNNER_TITLE }}" '.runners[] | select(.name == $NAME).status')
 
-        if [[ "$TOTAL_COUNT" -eq 0 ]]; then
-          export "RUNNER_COUNT=$TOTAL_COUNT"
-          gh variable set RERUN_RUNNER --body "true"
-        elif [[ "$STATUS" == "offline" || "$REMOVE_RUNNER" == "true" ]]; then
-          export "RUNNER_STATUS=$STATUS"
-          gh variable set RERUN_RUNNER --body "true"
-          RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
-          gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}
+          if [[ "$TOTAL_COUNT" -eq 0 ]]; then
+            export "RUNNER_COUNT=$TOTAL_COUNT"
+            gh variable set RERUN_RUNNER --body "true"
+          elif [[ "$STATUS" == "offline" || "$REMOVE_RUNNER" == "true" ]]; then
+            export "RUNNER_STATUS=$STATUS"
+            gh variable set RERUN_RUNNER --body "true"
+            RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
+            gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}
+          fi
         fi
 
         bash /home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh ${{ inputs.action_path }}
@@ -154,12 +156,12 @@ runs:
 
         echo "📌 Workspace successfully expanded." && df -h
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: 3.11
         allow-prereleases: true
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v5
       if: runner.os == 'Redis'
       with:
         path: ~/.cache/pip
@@ -167,7 +169,7 @@ runs:
 
     - name: 💎 Set ID Token
       if:  ${{ env.RERUN_RUNNER == 'false' }}
-      uses: 'google-github-actions/auth@v2'
+      uses: 'google-github-actions/auth@v3'
       id: 'auth'
       with:
         token_format: 'id_token'
@@ -176,7 +178,7 @@ runs:
         id_token_audience: 'https://us-central1-marketleader.cloudfunctions.net/function'
 
     - name: Install dependencies
-      if:  ${{ env.RERUN_RUNNER == 'false' }}
+      if: ${{ env.RERUN_RUNNER == 'false' }}
       shell: bash
       env:
         BEARER: ${{ steps.auth.outputs.id_token }}
@@ -184,24 +186,25 @@ runs:
         ARTIFACT: "user_data/ft_client/test_client/results/orgs.json"
       run: |
         python -m pip -q install --upgrade pip
-        python -m pip -qqq install "tensorflow-cpu==2.20.0"
-        #python -m pip -qqq install -r ${{ inputs.action_path }}/dataFile/requirements.txt
 
-        ##Ref: https://iree.dev/guides/ml-frameworks/tensorflow/
-        python -m pip -q install --pre iree-base-compiler iree-base-runtime iree-tools-tf -f https://iree.dev/pip-release-links.html
+        # Retry install TensorFlow
+        for i in {1..20}; do
+          python -m pip -qqq install "tensorflow-cpu==2.20.0" && break
+          echo "TensorFlow install failed. retry $i..."
+          sleep 5
+        done
+
+        # Retry install IREE packages
+        for i in {1..20}; do
+          python -m pip -q install --pre iree-base-compiler iree-base-runtime iree-tools-tf -f https://iree.dev/pip-release-links.html && break
+          ##python ${{ inputs.action_path }}/pythonCode/testIREE.py   
+          echo "IREE install failed. retry $i..."
+          sleep 5
+        done
+
+        # Run your pipeline
         python user_data/ft_client/test_client/app.py user_data ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
         bash user_data/ft_client/test_client/maps.sh
-  
-        ##python -m pip -q install -e ./.github/entrypoint/artifact/python
-        ##iree-compile --iree-llvmcpu-list-targets && iree-run-module --list_drivers
-
-        ##Ref: https://github.com/iree-org/iree-experimental
-        ##python ${{ inputs.action_path }}/pythonCode/testIREE.py
-        
-        #sudo apt-get update > /dev/null
-        #sudo apt-get install llvm-17 llvm-17-dev clang-17 mlir-17-tools > /dev/null
-        #export IREE_LLVM_ENABLE_BACKTRACE=1
-        #export LLVM_SYMBOLIZER_PATH=$(which llvm-symbolizer)
 
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
@@ -253,4 +256,4 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "FREQAI_MODEL=$FREQAI_MODEL" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
