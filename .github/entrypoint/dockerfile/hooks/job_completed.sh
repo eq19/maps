@@ -26,10 +26,7 @@ set_monitor() {
       $DOCKER exec mydb service cron start || true
 
       echo -e "\n$hr\nSupervisor Status\n$hr"
-      $DOCKER exec mydb supervisorctl status
-
-      #echo -e "\n$hr\nMemory Usage\n$hr"
-      #$DOCKER exec mydb free -h
+      $DOCKER exec mydb supervisorctl status || true
 
       echo -e "\n$hr\njob completed ✅"
       exit 0
@@ -53,6 +50,7 @@ restart_mydb() {
   $DOCKER exec mydb supervisorctl reread
   $DOCKER exec mydb supervisorctl update
 
+  $DOCKER exec mydb supervisorctl start postgres || true
   $DOCKER exec mydb supervisorctl start freqtrade_dry || true
   $DOCKER exec mydb supervisorctl start freqtrade_live || true
   set_monitor
@@ -89,8 +87,9 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
     $DOCKER exec mydb supervisorctl reread
     $DOCKER exec mydb supervisorctl update
 
-    $DOCKER exec mydb supervisorctl start freqtrade_live || true
+    $DOCKER exec mydb supervisorctl start postgres || true
     $DOCKER exec mydb supervisorctl start freqtrade_dry || true
+    $DOCKER exec mydb supervisorctl start freqtrade_live || true
 
     set_monitor
 

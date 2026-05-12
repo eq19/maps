@@ -181,6 +181,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
     "strategies/utils/__init__.py"
     "strategies/utils/ccxt_patch.py"
     "strategies/utils/indodax_patch.py"
+    "freqaimodels/custom_models.py"
     "freqaimodels/traditional_models.py"
     "ft_client/test_client/supervisor.sh"
     "ft_client/test_client/results/results.txt"
@@ -216,6 +217,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
   CONFIG="/home/runner/user_data/config.json"
   CONFIG_DRY="/home/runner/data_dry/config.json"
   CONFIG_LIVE="/home/runner/data_live/config.json"
+  LIVE_LOG="/home/runner/data_live/log/freqtrade.log"
   SUPERVISORD_CONF="$BASE_URL/ft_client/supervisord.conf"
   CONFIG_BASIC="$BASE_URL/config_examples/config_basic.example.json"
   CONFIG_PAIRLIST="$BASE_URL/config_examples/config_pairlist.example.json"
@@ -235,7 +237,8 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
   $DOCKER exec mydb curl -sf -o "$BASE_PARAMS" "$PARAMS_URL"  
   $DOCKER exec mydb sed -i "s|your_telegram_chat_id|$TELEGRAM_CHAT_ID|g" $CONFIG
 
-  if [[ "$RERUN_RUNNER" == "true" || $BYPASS_LEXERING == "true" ]]; then
+  if ! $DOCKER exec mydb ls "$LIVE_LOG" &>/dev/null; then
+
     DIRS=(
       "data_dry"
       "data_live"
