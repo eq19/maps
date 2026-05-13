@@ -797,9 +797,18 @@ class Fibbo(IStrategy):
         logger.debug("Informative pairs data: %s", self.informative_pairs)
         informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
 
-        if informative is None or 'close' not in informative.columns:
-            logger.error("Missing 'close' column in informative DataFrame for pair: %s", metadata['pair'])
-            return dataframe  # Return original dataframe to prevent crashing
+        if (
+            informative is None
+            or informative.empty
+            or len(informative) < 50
+            or 'close' not in informative.columns
+        ):
+            logger.warning(
+                f"Missing/insufficient informative data for "
+                f"{metadata['pair']} "
+                f"({self.informative_timeframe})"
+            )
+            return dataframe
     
         # Now it's safe to use 'close'
         informative['atr'] = ta.ATR(informative, timeperiod=14)
