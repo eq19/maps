@@ -15,6 +15,32 @@ In essence, it describes how [light](https://en.wikipedia.org/wiki/Light) and [m
 
 ## Basic Transformation
 
+```note
+It should be remembered that the expression hides a lot of complexity. We have summed over all possible timeorderings and summed over all polarization states of the virtual photon. If we are then presented with a new Feynman diagram we don’t want to go through the full calculation again. Fortunately this isn’t necessary – can just write down matrix element using a set of simple rules Basic Feynman Rules: e+ g m+ Propagator factor for each internal line (i. e. each internal virtual particle) Dirac Spinor for each external line e–
+```
+
+![images (5)](https://github.com/eq19/maps/assets/8466209/6c3e81a2-049f-40a8-a4da-674bf086d2fa)
+
+```
+Opposite Direction on the Center
+
+ Osp(8|4) |  1 |  2 |  3 |   4 | th
+==========+====+====+====+=====+====
+ π(10)    |  2 |  3 |  5 |   7 | 4th
+----------+----+----+----+-----+----
+ π(19)    | 11 | 13 | 17 |  19 | 8th
+----------+----+----+----+-----+----
+ π(29)    | 23 | 29 |  - |   - | 10th 
+==========+====+=👇=+====+=====+=====
+ π(41)    | 31 | 37 | 41 |  .. | 13th 👈 Center ✔️
+==========+====+====+====+=====+=====
+ π(59)    | 43 | 47 | 53 |  59 | 17th
+----------+----+----+----+-----+----
+ π(71)    | 61 | 67 | 71 |  .. | 20th
+----------+----+----+----+-----+----
+ π(113)   | 73 | .. | .. | 113 | 30th 💢
+```
+
 The first formulation of a [quantum theory](https://en.wikipedia.org/wiki/Quantum_mechanics) describing radiation and matter interaction is attributed to British scientist [Paul Dirac](https://en.wikipedia.org/wiki/Paul_Dirac).
 
 ```note
