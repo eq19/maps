@@ -26,7 +26,7 @@
     },
     {
       "method": "SpreadFilter",
-      "max_spread_ratio": 0.03
+      "max_spread_ratio": 0.07
     }
   ]
 }
