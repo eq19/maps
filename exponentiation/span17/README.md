@@ -229,6 +229,58 @@ Finally, one has to compute P(A to B) and E(C to D) corresponding to the probabi
         └── max_open_trades
 ```
 
+[![IREE](https://github.com/user-attachments/assets/fdcf5ccd-3f08-454e-8f6c-cad1a8aae35d)](https://github.com/iree-org/iree/tree/main/compiler/src/iree/compiler)
+
+```
+└── compiler/src/iree/compiler/
+    ├── API/         (C and Python APIs)
+    ├── Bindings/    (used to generate different ABI bindings)
+    ├── Codegen/     (device code generation for assorted APIs)
+    ├── ConstEval/   (JIT eval using the compiler+runtime to optimize constants)
+    ├── Dialect/
+    │   ├── Flow/    (tensor program modeling and compute workload partitioning)
+    │   ├── HAL/     (Hardware Abstraction Layer for buffer and execution management)
+    │   │   └── Target/
+    │   │       ├── LLVM/
+    │   │       ├── VMVX/
+    │   │       ├── VulkanSPIRV/
+    │   │       └── etc.
+    │   ├── Stream/  (device placement and asynchronous scheduling)
+    │   ├── Util/    (common types across other IREE dialects)
+    │   └── VM/      (abstract Virtual Machine)
+    ├── InputConversion/  (conversions from frontend/input dialects)
+    └── Translation/      (translation pipeline definitions)
+
+
+Model compiled to complex_module.vmfb
+************************************
+  Prime Hexagon Near Pi
+  by eQuantum Project
+************************************
+
+---- RAW OUTPUT ----
+EXEC @serving_default
+result[0]: hal.buffer_view
+13xcf64=0000803F0000803F 0000004000000040 0000404000004040 0000804000008040 0000A0400000A040 0000C0400000C040 0000E0400000E040 0000004100000041 0000104100001041 0000204100002041 0000304100003041 0000404100004041 0000504100005041
+--------------------
+Decoded complex numbers:
+[01] (r1.0 + i1.0j)
+[02] (r2.0 + i2.0j)
+[03] (r3.0 + i3.0j)
+[04] (r4.0 + i4.0j)
+[05] (r5.0 + i5.0j)
+[06] (r6.0 + i6.0j)
+[07] (r7.0 + i7.0j)
+[08] (r8.0 + i8.0j)
+[09] (r9.0 + i9.0j)
+[10] (r10.0 + i10.0j)
+[11] (r11.0 + i11.0j)
+[12] (r12.0 + i12.0j)
+[13] (r13.0 + i13.0j)
+```
+
+[![16 squares](https://github.com/eq19/maps/assets/8466209/efe55c6d-926c-47bb-80db-7d892eb3f103)](https://eq19.github.io/#exponentiation-zones)
+
 ## Subsequent Theories
 
 QED has served as the model and template for all subsequent quantum field theories. One such subsequent theory is Quantum Chromodynamics ([QCD](https://eq19.github.io/lexer/exponentiation/span15/)).
