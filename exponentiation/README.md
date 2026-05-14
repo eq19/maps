@@ -572,8 +572,8 @@ By mapping the **13 available optimization spaces** to this seven-layered struct
 │   └── Order Routing
 │
 ├── DIVISION 4: MARKET DATA
-│   ├── Data Pipeline
-│   ├── Storage Layer
+│   ├── Storage Layer 
+│   ├── Data Pipeline  ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 👈 Center
 │   └── Price Discovery
 │
 ├── DIVISION 5: INTELLIGENCE & ANALYTICS
@@ -656,13 +656,6 @@ The second model is useful because it lets us generate naturally all 168 symmetr
 │       └── cancel_open_orders_on_exit
 │
 ├── DIVISION 4: MARKET DATA
-│   ├── Data Pipeline
-│   │   ├── datadir
-│   │   ├── pairlists
-│   │   ├── download_trades
-│   │   ├── new_pairs_days
-│   │   └── startup_candle
-│   │
 │   ├── Storage Layer
 │   │   ├── user_data_dir
 │   │   ├── dataformat_ohlcv
@@ -670,6 +663,13 @@ The second model is useful because it lets us generate naturally all 168 symmetr
 │   │   ├── db_url
 │   │   ├── export
 │   │   └── disableparamexport
+│   │
+│   ├── Data Pipeline
+│   │   ├── datadir
+│   │   ├── startup_candle
+│   │   ├── pairlists ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 👈 Center
+│   │   ├── new_pairs_days
+│   │   └── download_trades
 │   │
 │   └── Price Discovery
 │       ├── entry_pricing
