@@ -719,9 +719,9 @@ class Fibbo(IStrategy):
             except KeyError:
                 # Pair introduced dynamically without FreqAI history/model
                 logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
-            except Exception as e:
+            #except Exception as e:
                 # Extra safety: never let AI crash the strategy
-                logger.warning(f"FreqAI error for {pair}: {e}")
+                #logger.warning(f"FreqAI error for {pair}: {e}")
         else:
             if self.freqai is None:
                 logger.debug("FreqAI not initialized for this strategy")
