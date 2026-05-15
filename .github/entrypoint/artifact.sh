@@ -87,15 +87,16 @@ jekyll_build() {
   
   [[ $1 == *"github.io"* ]] && OWNER=$2
 
+  # the id's is square of 13 orgs dust 169 repos
   if [[ $1 == "Chetabahana.github.io" ]]; then
     SITEID=1
-  elif [[ $1 == "eq19.github.io" ]]; then
-    SITEID=30
   else
     SITEID=$(( $3 + 2 ))
   fi
 
+  # the id's of 7 user repos are one higher level of MEC30 dust start from id = 30'
   if  [[ "${OWNER}" == "eq19" ]]; then
+    SITEID=$(( $SITEID - 140 ))
     sed -i "1s|^|description: An endeavor to discover the Final Theory\n\n|" ${RUNNER_TEMP}/_config.yml
   else
     DESCRIPTION=$(gh api -H "${HEADER}" /orgs/${OWNER} --jq '.description')
@@ -114,7 +115,6 @@ jekyll_build() {
   
   TARGET_REPOSITORY="${OWNER}/$1"
   echo 'repo='${TARGET_REPOSITORY} >> ${GITHUB_OUTPUT}
-  [[ "$TARGET_REPOSITORY" == "eq19/maps" ]] && SITEID=31
   gh variable set TARGET_REPOSITORY --body "$TARGET_REPOSITORY"
   echo 'TARGET_REPOSITORY='${TARGET_REPOSITORY} >> ${GITHUB_ENV}
 

@@ -47,8 +47,6 @@ export MAP_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
   https://api.github.com/repos/eq19/maps | jq -r .default_branch)
 export DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
   https://api.github.com/repos/$GITHUB_REPOSITORY | jq -r .default_branch)
-export PAIRS=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PAIRS" | jq -r '.value')
 export FREQAIMODEL_DRY=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/FREQAIMODEL" | jq -r '.value')
 export FREQAIMODEL_LIVE=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
@@ -217,7 +215,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
   CONFIG="/home/runner/user_data/config.json"
   CONFIG_DRY="/home/runner/data_dry/config.json"
   CONFIG_LIVE="/home/runner/data_live/config.json"
-  LIVE_LOG="/home/runner/data_live/log/freqtrade.log"
+  LIVE_LOG="/home/runner/data_live/logs/freqtrade.log"
   SUPERVISORD_CONF="$BASE_URL/ft_client/supervisord.conf"
   CONFIG_BASIC="$BASE_URL/config_examples/config_basic.example.json"
   CONFIG_PAIRLIST="$BASE_URL/config_examples/config_pairlist.example.json"
@@ -229,6 +227,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
   BEARER=$($GCLOUD auth print-identity-token --audiences=https://us-central1-marketleader.cloudfunctions.net/function)
   BALANCE=$(curl -s -X POST -H "Key: $API_KEY" -H "Sign: $SIGNATURE" -d "method=$METHOD" -d "nonce=$NONCE" "https://indodax.com/tapi/")
   ASSET_COUNT=$(echo "$BALANCE" | jq -r '.return.balance | to_entries | map(select(.value != 0 and .value != "0")) | length')
+  PAIRS=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PAIRS" | jq -r '.value')
 
   # Strict handling
   set -euo pipefail
@@ -307,7 +306,6 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
       $DOCKER exec mydb sed -i 's|"dry_run": true|"dry_run": false|g' $CONFIG_LIVE
       $DOCKER exec mydb sed -i "s|$TRADING_BOT_TOKEN|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
       $DOCKER exec mydb sed -i "s|$MONITOR_BOT_TOKEN|$TRADING_BOT_TOKEN|g" $CONFIG_LIVE
-      $DOCKER exec mydb bash -c "jq --argjson pairs '$PAIRS' '.exchange.pair_whitelist = \$pairs' '$EXCHANGE_LIVE' > config.tmp && mv config.tmp '$EXCHANGE_LIVE'"
 
       curl -L -s -X PATCH \
         -H "Accept: application/vnd.github+json" \
@@ -340,6 +338,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
       $DOCKER exec mydb bash -c "jq '.telegram.enabled = true | .api_server.listen_port = 8081' $CONFIG > $CONFIG_DRY"
       $DOCKER exec mydb sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
       $DOCKER exec mydb sed -i "s|tradesv3|tradesv3_dry|g" $CONFIG_DRY
+      $DOCKER exec mydb sed -i "s|RUN_MODE=\"dry\",FREQAI_MODEL=\"[^\"]*\"|RUN_MODE=\"dry\",FREQAI_MODEL=\"$FREQAIMODEL_DRY\"|g" $CONF
       $DOCKER exec mydb mkdir -p "$(dirname "$EXCHANGE_DRY")"
       $DOCKER exec mydb curl -sf -o "$EXCHANGE_DRY" "$CONFIG_EXCHANGE"
       $DOCKER exec mydb bash -c "jq --argjson pairs '$PAIRS' '.exchange.pair_whitelist = \$pairs' '$EXCHANGE_DRY' > config.tmp && mv config.tmp '$EXCHANGE_DRY'"
