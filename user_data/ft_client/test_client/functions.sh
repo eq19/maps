@@ -569,6 +569,9 @@ freqai() {
           fi
         fi
       fi
+    else
+      echo "❌ Backtest failed or contained errors/warnings"
+      grep -iE "(error|traceback)" backtest.log
     fi
   done
 
