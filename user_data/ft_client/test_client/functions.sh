@@ -421,18 +421,20 @@ hyperopt() {
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
-          gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          gh workflow run "main.yml"
         else
+          gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
       fi
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        if [[ "$CALCULATION" != "false" ]]; then
-          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
+        if [[ "$CALCULATION" == "false" ]]; then
+          gh workflow run "main.yml"
         else
-          gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
       fi
     fi
