@@ -553,16 +553,20 @@ freqai() {
           if [[ "$(gh variable get JOB)" != "lexering" ]]; then
             gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
           else
+            FREQAI_MODEL=$(gh variable get FREQAIMODEL)
+            gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
             gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
           fi
         fi
       # Environment SCORE is unchanged in case calculation is failed
       elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
         if [[ "$GITHUB_JOB" == "lexering" ]]; then
-          if [[ "$CALCULATION" != "false" ]]; then
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
-          else
+          if [[ "$CALCULATION" == "false" ]]; then
             gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          else
+            FREQAI_MODEL=$(gh variable get FREQAIMODEL)
+            gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
           fi
         fi
       fi
