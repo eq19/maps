@@ -539,13 +539,10 @@ freqai() {
         sed -i "s|Infinity|10|g" $STRATEGY
         sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
 
-        curl -L -s -X PATCH \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer $GH_TOKEN" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-           https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
-        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" && gh variable set SCORE --body "${NEW_SCORE}"
+        gh variable set SCORE --body "${NEW_SCORE}"
+        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"
+        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+
         if [[ "$GITHUB_JOB" != "lexering" ]]; then
           gh variable set JOB --body "${GITHUB_JOB}"
         elif [[ "$GITHUB_JOB" == "lexering" ]]; then
