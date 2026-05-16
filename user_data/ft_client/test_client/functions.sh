@@ -423,6 +423,8 @@ hyperopt() {
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
           gh workflow run "main.yml"
         else
+          PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
           gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
@@ -433,6 +435,8 @@ hyperopt() {
         if [[ "$CALCULATION" == "false" ]]; then
           gh workflow run "main.yml"
         else
+          PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
           gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
