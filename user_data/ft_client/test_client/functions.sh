@@ -399,8 +399,8 @@ hyperopt() {
   
     calculate_score
     NEW_SCORE=$SCORE
-
     OLD_SCORE=$(gh variable get SCORE)
+ 
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
       cat $STRATEGY
       sed -i "s|Infinity|10|g" $STRATEGY
@@ -422,6 +422,7 @@ hyperopt() {
  
       gh variable set SCORE --body "${NEW_SCORE}"
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}"
+      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"   
