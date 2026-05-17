@@ -523,15 +523,15 @@ freqai() {
     exec 3< <(tail -f freqtrade.log)
 
     while read -r LOGLINE <&3; do
+      echo "$LOGLINE"
       # Stop if Freqtrade has entered TRANING state
-      if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
+      if [[ "$LOGLINE" == *"Bot heartbit."* ]]; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
       fi
-      echo "$LOGLINE"
     done
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
