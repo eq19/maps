@@ -525,7 +525,7 @@ freqai() {
     while read -r LOGLINE <&3; do
       echo "$LOGLINE"
       # Stop if Freqtrade has entered TRANING state
-      if [[ "$LOGLINE" == *"Bot heartbit."* ]]; then
+      if [[ "$LOGLINE" == *"Bot heartbeat."* ]]; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
