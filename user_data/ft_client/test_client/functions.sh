@@ -542,7 +542,7 @@ freqai() {
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
   
     # Execute calculate_score ONLY if no errors and exit code 0
-    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback)" backtest.log; then
+    if [ $? -eq 0 ] && ! grep -qiE "(Error|Traceback|No further splits with positive gain)" backtest.log; then
 
       export CALCULATION="false"
       OLD_SCORE=$SCORE            
