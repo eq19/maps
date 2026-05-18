@@ -335,12 +335,13 @@ hyperopt() {
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
+    days=30
     epochs=5000
+
     start_date=$EARLIEST_DATE
     end_date=$BACKTESTING_START
 
     id=$(echo "$pipeline" | jq -r '.id')
-    days=$(echo "$pipeline" | jq -r '.days')
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
     # dispatch only for main workflow
