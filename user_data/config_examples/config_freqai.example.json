@@ -26,10 +26,20 @@
     },
     
     "feature_parameters": {
+      "label_period_candles": 96,
       "include_timeframes": ["15m"],
 
-      "include_corr_pairlist": [],
-      "label_period_candles": 96,
+      "include_corr_pairlist": [
+        "ADA/IDR",
+        "BTC/IDR",
+        "BNB/IDR",
+        "DOT/IDR",
+        "ETH/IDR",
+        "POL/IDR",
+        "SOL/IDR",
+        "TRX/IDR",
+        "USDT/IDR"       
+      ],
 
       "include_shifted_candles": 3,
       "indicator_periods_candles": [12, 24],
