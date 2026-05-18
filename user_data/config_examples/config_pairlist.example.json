@@ -3,7 +3,7 @@
     {
       "method": "VolumePairList",
       "sort_key": "quoteVolume",
-      "refresh_period": 3600,
+      "refresh_period": 14400,
       "number_assets": 20
     },
     {
