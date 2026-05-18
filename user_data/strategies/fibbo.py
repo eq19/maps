@@ -668,49 +668,89 @@ class Fibbo(IStrategy):
     def informative_pairs(self):
         """
         Define informative pairs safely
-        Supports both FreqAI enabled/disabled modes
+        Compatible with:
+        - Dynamic pairlists
+        - FreqAI enabled/disabled
+        - Missing candle history
         """
-
-        whitelist_pairs = self.dp.current_whitelist()
 
         informative_pairs = []
 
-        # Safely handle disabled freqai
-        freqai_config = self.config.get("freqai", {})
-        feature_params = freqai_config.get("feature_parameters", {})
+        # Skip completely if FreqAI disabled
+        if not self.config.get("freqai", {}).get("enabled", False):
+            return informative_pairs
 
-        corr_pairs = feature_params.get("include_corr_pairlist", [])
+        whitelist_pairs = self.dp.current_whitelist()
+
+        feature_params = self.config["freqai"].get(
+            "feature_parameters", {}
+        )
+
         include_timeframes = feature_params.get(
             "include_timeframes",
             [self.informative_timeframe]
         )
 
-        # Add whitelist informative pairs
+        corr_pairs = feature_params.get(
+            "include_corr_pairlist",
+            []
+        )
+
+        # Process whitelist pairs
         for tf in include_timeframes:
+
             for pair in whitelist_pairs:
 
                 try:
-                    if self.dp.market(pair):
-                        informative_pairs.append((pair, tf))
+                    if not self.dp.market(pair):
+                        continue
+
+                    dataframe = self.dp.get_pair_dataframe(
+                        pair=pair,
+                        timeframe=tf
+                    )
+
+                    if dataframe is None or dataframe.empty:
+                        logger.debug(
+                            f"Skipping informative pair "
+                            f"{pair} {tf} - no candles"
+                        )
+                        continue
+
+                    informative_pairs.append((pair, tf))
+
+                except Exception as e:
+                    logger.debug(
+                        f"Informative pair failed "
+                        f"{pair} {tf}: {e}"
+                    )
+                    continue
+
+        # Correlation pairs
+        for tf in include_timeframes:
+
+            for pair in corr_pairs:
+
+                if pair in whitelist_pairs:
+                    continue
+
+                try:
+                    if not self.dp.market(pair):
+                        continue
+
+                    dataframe = self.dp.get_pair_dataframe(
+                        pair=pair,
+                        timeframe=tf
+                    )
+
+                    if dataframe is None or dataframe.empty:
+                        continue
+
+                    informative_pairs.append((pair, tf))
+
                 except Exception:
                     continue
 
-        # Add correlation pairs only when freqai enabled
-        if self.freqai is not None and self.freqai_enabled:
-
-            for tf in include_timeframes:
-                for pair in corr_pairs:
-
-                    if pair in whitelist_pairs:
-                        continue
-
-                    try:
-                        if self.dp.market(pair):
-                            informative_pairs.append((pair, tf))
-                    except Exception:
-                        continue
-
-        # Remove duplicates
         informative_pairs = list(set(informative_pairs))
 
         logger.debug(f"Informative pairs data: {informative_pairs}")
