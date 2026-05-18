@@ -667,20 +667,54 @@ class Fibbo(IStrategy):
 
     def informative_pairs(self):
         """
-        Define additional informative pairs
+        Define informative pairs safely
+        Supports both FreqAI enabled/disabled modes
         """
+
         whitelist_pairs = self.dp.current_whitelist()
-        corr_pairs = self.config["freqai"]["feature_parameters"]["include_corr_pairlist"]
+
         informative_pairs = []
-        
-        for tf in self.config["freqai"]["feature_parameters"]["include_timeframes"]:
+
+        # Safely handle disabled freqai
+        freqai_config = self.config.get("freqai", {})
+        feature_params = freqai_config.get("feature_parameters", {})
+
+        corr_pairs = feature_params.get("include_corr_pairlist", [])
+        include_timeframes = feature_params.get(
+            "include_timeframes",
+            [self.informative_timeframe]
+        )
+
+        # Add whitelist informative pairs
+        for tf in include_timeframes:
             for pair in whitelist_pairs:
-                informative_pairs.append((pair, self.informative_timeframe))
-            for pair in corr_pairs:
-                if pair in whitelist_pairs:
+
+                try:
+                    if self.dp.market(pair):
+                        informative_pairs.append((pair, tf))
+                except Exception:
                     continue
-                informative_pairs.append((pair, tf))
-        
+
+        # Add correlation pairs only when freqai enabled
+        if self.freqai is not None and self.freqai_enabled:
+
+            for tf in include_timeframes:
+                for pair in corr_pairs:
+
+                    if pair in whitelist_pairs:
+                        continue
+
+                    try:
+                        if self.dp.market(pair):
+                            informative_pairs.append((pair, tf))
+                    except Exception:
+                        continue
+
+        # Remove duplicates
+        informative_pairs = list(set(informative_pairs))
+
+        logger.debug(f"Informative pairs data: {informative_pairs}")
+
         return informative_pairs
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
