@@ -335,12 +335,13 @@ hyperopt() {
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
-    epochs=2000
+    days=30
+    epochs=5000
+
     start_date=$EARLIEST_DATE
     end_date=$BACKTESTING_START
 
     id=$(echo "$pipeline" | jq -r '.id')
-    days=$(echo "$pipeline" | jq -r '.days')
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
     # dispatch only for main workflow
@@ -373,9 +374,11 @@ hyperopt() {
       epochs=$((epochs * 2))
     fi
 
-    # Disable protections if 'all' or 'protection' is in the spaces
-    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
-    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
+    spaces="buy sell roi trailing stoploss"
+    #spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+ 
+   # Disable protections if 'all' or 'protection' is in the spaces
+   if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
         enable_protections=""
         prot="disable"
     else
@@ -399,8 +402,8 @@ hyperopt() {
   
     calculate_score
     NEW_SCORE=$SCORE
-
     OLD_SCORE=$(gh variable get SCORE)
+ 
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
       cat $STRATEGY
       sed -i "s|Infinity|10|g" $STRATEGY
@@ -411,8 +414,19 @@ hyperopt() {
         -H "Authorization: Bearer $GH_TOKEN" \
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-         https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
-      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" && gh variable set SCORE --body "${NEW_SCORE}"
+         https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
+ 
+      curl -L -s -X PATCH \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
+         https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON
+ 
+      gh variable set SCORE --body "${NEW_SCORE}"
+      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}"
+      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
+
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"   
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
@@ -421,18 +435,24 @@ hyperopt() {
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
-          gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          gh workflow run "main.yml"
         else
+          PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
+          gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
       fi
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        if [[ "$CALCULATION" != "false" ]]; then
-          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
+        if [[ "$CALCULATION" == "false" ]]; then
+          gh workflow run "main.yml"
         else
-          gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
+          gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
         fi
       fi
     fi
@@ -500,22 +520,22 @@ freqai() {
     #jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
-    nohup freqtrade trade --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
+    nohup freqtrade trade -v --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
     # Open descriptor to log stream
     exec 3< <(tail -f freqtrade.log)
 
     while read -r LOGLINE <&3; do
+      echo "$LOGLINE"
       # Stop if Freqtrade has entered TRANING state
-      if [[ "$LOGLINE" == *"Starting training ETH/IDR"* ]]; then
+      if [[ "$LOGLINE" == *"Throttling"* ]]; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
       fi
-      echo "$LOGLINE"
     done
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
@@ -526,7 +546,7 @@ freqai() {
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
   
     # Execute calculate_score ONLY if no errors and exit code 0
-    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback)" backtest.log; then
+    if [ $? -eq 0 ] && ! grep -qiE "(Error|Traceback|No further splits with positive gain)" backtest.log; then
 
       export CALCULATION="false"
       OLD_SCORE=$SCORE            
@@ -539,13 +559,10 @@ freqai() {
         sed -i "s|Infinity|10|g" $STRATEGY
         sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
 
-        curl -L -s -X PATCH \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer $GH_TOKEN" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-           https://api.github.com/repos/$( [[ "$GITHUB_JOB" == "lexering" ]] && echo "$TARGET_REPOSITORY" || echo "$GITHUB_REPOSITORY" )/actions/variables/PARAMS_JSON
-        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" && gh variable set SCORE --body "${NEW_SCORE}"
+        gh variable set SCORE --body "${NEW_SCORE}"
+        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"
+        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+
         if [[ "$GITHUB_JOB" != "lexering" ]]; then
           gh variable set JOB --body "${GITHUB_JOB}"
         elif [[ "$GITHUB_JOB" == "lexering" ]]; then
@@ -556,16 +573,20 @@ freqai() {
           if [[ "$(gh variable get JOB)" != "lexering" ]]; then
             gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
           else
+            FREQAI_MODEL=$(gh variable get FREQAIMODEL)
+            gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
             gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
           fi
         fi
       # Environment SCORE is unchanged in case calculation is failed
       elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
         if [[ "$GITHUB_JOB" == "lexering" ]]; then
-          if [[ "$CALCULATION" != "false" ]]; then
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
-          else
+          if [[ "$CALCULATION" == "false" ]]; then
             gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          else
+            FREQAI_MODEL=$(gh variable get FREQAIMODEL)
+            gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
           fi
         fi
       fi
