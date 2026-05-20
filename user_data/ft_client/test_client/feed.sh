@@ -70,12 +70,8 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
       freqtrade list-hyperoptloss
     elif [[ "$RUN_MODE" == "FreqAI" ]]; then
       freqtrade list-freqaimodels --help
-      freqtrade list-freqaimodels \
-        --freqaimodel-path user_data/freqaimodels/resources \
-        --freqaimodel-path user_data/freqaimodels/tradeflow \
-        --freqaimodel-path user_data/freqaimodels/torch_models \
-        --freqaimodel-path user_data/freqaimodels/tensorflow_models
-       fi
+      freqtrade list-freqaimodels --freqaimodel-path user_data/freqaimodels/resources
+    fi
 
     echo -e "\n$hr\nDOWNLOAD PAIRS ($TD)\n$hr"
     freqtrade download-data --help
