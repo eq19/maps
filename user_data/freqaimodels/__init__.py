@@ -126,7 +126,7 @@ MODEL_REGISTRY = {
     
     # NEW: Enhanced External Models for Better Crypto Performance
     "NetanelEnhancedLSTMRegressor": "NetanelEnhancedLSTMRegressor",
-    "NateemmaNeuralClassifier": "NateemmaNeuralClassifier"
+    "NateemmaNeuralClassifier": "nateemma_neural_classifiers.NateemmaNeuralClassifier"
 }
 
 def get_model_class(model_name: str):
