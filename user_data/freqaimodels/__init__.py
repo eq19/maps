@@ -93,6 +93,12 @@ __author__ = "FreqAI Team"
 
 # Model registry for easy access
 MODEL_REGISTRY = {
+    # Ensemble models (standalone files)
+    "VotingRegressor": "VotingRegressor.VotingRegressor",
+    "StackingRegressor": "StackingRegressor.StackingRegressor", 
+    "UnifyingRegressor": "UnifyingRegressor.UnifyingRegressor",
+    "YieldedEnsembleRegressor": "YieldedEnsembleRegressor.YieldedEnsembleRegressor",
+
     # Enhanced Tree-based models (avoiding conflicts with built-in)
     "EnhancedCatboostRegressor": "tree_models.EnhancedCatboostRegressor",
     "EnhancedLightGBMRegressor": "tree_models.EnhancedLightGBMRegressor", 
@@ -108,12 +114,6 @@ MODEL_REGISTRY = {
     "KNeighborsRegressor": "traditional_models.KNeighborsRegressor",
     "RidgeRegressor": "traditional_models.RidgeRegressor",
     "ExtraTreesRegressor": "traditional_models.ExtraTreesRegressor",
-    
-    # Ensemble models (standalone files)
-    "VotingRegressor": "VotingRegressor.VotingRegressor",
-    "StackingRegressor": "StackingRegressor.StackingRegressor", 
-    "UnifyingRegressor": "UnifyingRegressor.UnifyingRegressor",
-    "YieldedEnsembleRegressor": "YieldedEnsembleRegressor.YieldedEnsembleRegressor",
     
     # Custom models
     "SmartMoneyRegressor": "custom_models.SmartMoneyRegressor",
