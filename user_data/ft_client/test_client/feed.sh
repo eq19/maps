@@ -65,6 +65,14 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
     #freqtrade list-strategies --recursive-strategy-search
     #freqtrade strategy-updater
 
+    if [[ "$RUN_MODE" == "Hyperopt" ]]; then
+      freqtrade list-hyperoptloss --help
+      freqtrade list-hyperoptloss
+    elif [[ "$RUN_MODE" == "FreqAI" ]]; then
+      freqtrade list-freqaimodels --help
+      freqtrade list-freqaimodels
+    if
+
     echo -e "\n$hr\nDOWNLOAD PAIRS ($TD)\n$hr"
     freqtrade download-data --help
     freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
