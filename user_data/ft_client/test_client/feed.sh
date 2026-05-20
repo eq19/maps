@@ -71,7 +71,7 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
     elif [[ "$RUN_MODE" == "FreqAI" ]]; then
       freqtrade list-freqaimodels --help
       freqtrade list-freqaimodels
-    if
+    fi
 
     echo -e "\n$hr\nDOWNLOAD PAIRS ($TD)\n$hr"
     freqtrade download-data --help
