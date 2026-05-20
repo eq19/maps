@@ -72,7 +72,7 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
     elif [[ "$RUN_MODE" == "FreqAI" ]]; then
       # See what's currently installed
       echo -e "\n$hr\nLIST OF FREQAIMODELS\n$hr"
-      pip list | grep -E "tensorboard|protobuf|grpcio && pip check
+      pip list | grep -E "tensorboard|protobuf|grpcio" && pip check
       freqtrade list-freqaimodels --help
       freqtrade list-freqaimodels --freqaimodel-path user_data/freqaimodels/resources
     fi
