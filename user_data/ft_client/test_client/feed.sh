@@ -9,6 +9,7 @@ FEE=0.003322
 TIMEFRAMES='15m 1h'
 
 STRATEGY=user_data/strategies/fibbo.json
+FREQAIMODELS_PATH=user_data/freqaimodels/standalone
 HYPEROPT_PARAM=user_data/strategies/hyperopt_params.json
 CONFIG=user_data/config_examples/config_basic.example.json
 PAIRFILE=user_data/config_examples/config_pairlist.example.json
@@ -74,7 +75,7 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
       echo -e "\n$hr\nLIST OF FREQAIMODELS\n$hr"
       pip list | grep -E "tensorboard|protobuf|grpcio" && pip check
       freqtrade list-freqaimodels --help
-      freqtrade list-freqaimodels --freqaimodel-path user_data/freqaimodels/resources
+      freqtrade list-freqaimodels --freqaimodel-path "$FREQAIMODELS_PATH"
     fi
 
     echo -e "\n$hr\nDOWNLOAD PAIRS ($TD)\n$hr"
