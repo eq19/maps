@@ -150,7 +150,7 @@ MODEL_REGISTRY = {
     
     # NEW: Enhanced External Models for Better Crypto Performance
     "NetanelEnhancedLSTMRegressor": "netanel_enhanced_lstm.NetanelEnhancedLSTMRegressor",
-    "NateemmaNeuralClassifier": "nateemma_neural_classifiers.NateemmaNeuralClassifier"
+    "NateemmaNeuralClassifier": "nateemma_neural_classifiers.NateemmaNeuralClassifier",
 
     # Resources models
     "CatboostRegressionMultiModel": "resources.CatboostRegressionMultiModel",
