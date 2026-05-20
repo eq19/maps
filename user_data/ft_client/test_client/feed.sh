@@ -66,9 +66,13 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
     #freqtrade strategy-updater
 
     if [[ "$RUN_MODE" == "Hyperopt" ]]; then
+      echo -e "\n$hr\nLIST OF HYPEROPT\n$hr"
       freqtrade list-hyperoptloss --help
       freqtrade list-hyperoptloss
     elif [[ "$RUN_MODE" == "FreqAI" ]]; then
+      # See what's currently installed
+      echo -e "\n$hr\nLIST OF FREQAIMODELS\n$hr"
+      pip list | grep -E "tensorboard|protobuf|grpcio && pip check
       freqtrade list-freqaimodels --help
       freqtrade list-freqaimodels --freqaimodel-path user_data/freqaimodels/resources
     fi
