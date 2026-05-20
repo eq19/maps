@@ -306,7 +306,9 @@ class FreqAILSTMModel(nn.Module):
         x = self.alpha_dropout(x)
         x = self.fc2(x)
         
-        return x ￼Enter"""
+        return x
+
+"""
 FreqAI LSTM Models for FreqAI
 ==============================
 
