@@ -130,7 +130,7 @@ MODEL_REGISTRY = {
     
     # Neural network models
     "PyTorchLSTMRegressor": "neural_models.PyTorchLSTMRegressor",
-    "EnhancedPyTorchTransformerRegressor": "neural_models.EnhancedPyTorchTransformerRegressor",
+    "PyTorchEnhancedRegressor": "neural_models.PyTorchEnhancedRegressor",
     "LSTMRegressor": "neural_models.LSTMRegressor",
     
     # Traditional ML models
