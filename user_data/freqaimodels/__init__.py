@@ -72,6 +72,17 @@ modules_to_import = [
     'nateemma_neural_classifiers'
 ]
 
+# Add import for subdirectory models
+additional_modules = [
+    'resources',
+    'tensorflow_models', 
+    'torch_models',
+    'tradeflow'
+]
+
+__version__ = "1.0.1"
+__author__ = "FreqAI Team"
+
 for module_name in modules_to_import:
     try:
         module = __import__(module_name)
@@ -88,8 +99,21 @@ for module_name in modules_to_import:
     except Exception as e:
         print(f"Warning: Error importing {module_name}: {e}")
 
-__version__ = "1.0.0"
-__author__ = "FreqAI Team"
+for module_name in additional_modules:
+    try:
+        module = __import__(module_name)
+        # Import all non-private attributes
+        for attr_name in dir(module):
+            if not attr_name.startswith('_'):
+                try:
+                    globals()[attr_name] = getattr(module, attr_name)
+                except Exception as e:
+                    print(f"Warning: Could not import {attr_name} from {module_name}: {e}")
+    except ImportError as e:
+        print(f"Warning: Could not import module {module_name}: {e}")
+    except Exception as e:
+        print(f"Warning: Error processing {module_name}: {e}")
+
 
 # Model registry for easy access
 MODEL_REGISTRY = {
@@ -127,45 +151,91 @@ MODEL_REGISTRY = {
     # NEW: Enhanced External Models for Better Crypto Performance
     "NetanelEnhancedLSTMRegressor": "netanel_enhanced_lstm.NetanelEnhancedLSTMRegressor",
     "NateemmaNeuralClassifier": "nateemma_neural_classifiers.NateemmaNeuralClassifier"
+
+    # Resources models
+    "CatboostRegressionMultiModel": "resources.CatboostRegressionMultiModel",
+    "ChronosInferenceModel": "resources.ChronosInferenceModel",
+    "ChronosRLMLflow": "resources.ChronosRLMLflow",
+    "CleanRlLearner": "resources.CleanRlLearner",
+    "FreqAILSTMRegressor_Resource": "resources.FreqAILSTMRegressor",  # Note: different name to avoid conflict
+    "LitmusMLDPClassifier": "resources.LitmusMLDPClassifier",
+    "LitmusMultiMLDP": "resources.LitmusMultiMLDP",
+    "LitmusMultiTargetClassifier": "resources.LitmusMultiTargetClassifier",
+    "QuickAdapterRegressorV3": "resources.QuickAdapterRegressorV3",
+    "ReforceXY": "resources.ReforceXY",
+    "ReinforcementLearner4Action_multiproc": "resources.ReinforcementLearner4Action_multiproc",
+    "RitaLearner": "resources.RitaLearner",
+    "RL20251117_Model": "resources.RL20251117_Model",
+    "RL4ActionLeverage_multiproc": "resources.RL4ActionLeverage_multiproc",
+    "RLDayTrader": "resources.RLDayTrader",
+    "TradeFlowRSIWithSRAgent_Resource": "resources.TradeFlowRSIWithSRAgent",
+    "TradeFlowSimpleAgent_Resource": "resources.TradeFlowSimpleAgent",
+    "XGBoostBinaryClassifier": "resources.XGBoostBinaryClassifier",
+    
+    # TensorFlow models
+    "TensorFlowLSTMRegressor_Custom": "tensorflow_models.TensorFlowLSTMRegressor",
+    "TensorFlowRegression": "tensorflow_models.TensorFlowRegression",
+    
+    # PyTorch models
+    "PyTorchMLPModel": "torch_models.PyTorchMLPModel",
+    "PyTorchTransformerModel": "torch_models.PyTorchTransformerModel",
+    "PyTorchDataConvertor": "torch_models.PyTorchDataConvertor",
+    "PyTorchModelTrainer": "torch_models.PyTorchModelTrainer",
+    "PyTorchTrainerInterface": "torch_models.PyTorchTrainerInterface",
+    
+    # TradeFlow models
+    "TradeFlowRSIWithSRAgent": "tradeflow.TradeFlowRSIWithSRAgent",
+    "TradeFlowSimpleAgent": "tradeflow.TradeFlowSimpleAgent",
+    "TradeFlowSRAgent": "tradeflow.TradeFlowSRAgent",
+
 }
 
 def get_model_class(model_name: str):
-    """Get model class by name"""
+    """Get model class by name - enhanced to handle subdirectory models"""
     if model_name in MODEL_REGISTRY:
         module_path = MODEL_REGISTRY[model_name]
         
-        # Handle standalone classes (enhanced models)
-        if '.' not in module_path:
-            # Direct class reference - check if it's already imported
-            if model_name in globals():
-                return globals()[model_name]
-            else:
-                # Try to import the enhanced models
-                try:
-                    if model_name == "NetanelEnhancedLSTMRegressor":
-                        from netanel_enhanced_lstm import NetanelEnhancedLSTMRegressor
-                        return NetanelEnhancedLSTMRegressor
-                    elif model_name == "NateemmaNeuralClassifier":
-                        from nateemma_neural_classifiers import NateemmaNeuralClassifier
-                        return NateemmaNeuralClassifier
-                    else:
-                        raise ValueError(f"Unknown standalone model: {model_name}")
-                except ImportError as e:
-                    raise ValueError(f"Could not import {model_name}: {e}")
-        else:
-            # Handle module.class format
-            module_name, class_name = module_path.split('.')
+        # Check if it's already imported and in globals
+        if model_name in globals():
+            return globals()[model_name]
+        
+        # Handle module.class format
+        if '.' in module_path:
+            module_name_str, class_name = module_path.split('.', 1)
             try:
-                module = __import__(module_name, fromlist=[class_name])
-                return getattr(module, class_name)
-            except ImportError:
+                # Try importing from subdirectory
+                exec(f"from {module_name_str} import {class_name}")
+                return locals()[class_name]
+            except (ImportError, ModuleNotFoundError):
                 try:
-                    exec(f"from {module_name} import {class_name}")
-                    return locals()[class_name]
-                except ImportError:
+                    # Try absolute import
+                    module = __import__(module_name_str, fromlist=[class_name])
+                    return getattr(module, class_name)
+                except (ImportError, AttributeError):
                     raise ValueError(f"Could not import {model_name} from {module_path}")
+        else:
+            # Direct import
+            try:
+                exec(f"from {module_path} import {model_name}")
+                return locals()[model_name]
+            except ImportError:
+                raise ValueError(f"Could not import {model_name} from {module_path}")
     else:
-        raise ValueError(f"Model {model_name} not found in registry")
+        # Try to find the model dynamically
+        for dir_name in ['', 'resources', 'tensorflow_models', 'torch_models', 'tradeflow']:
+            try:
+                if dir_name:
+                    exec(f"from {dir_name} import {model_name}")
+                else:
+                    exec(f"import {model_name}")
+                if model_name in locals():
+                    # Add to registry for future use
+                    MODEL_REGISTRY[model_name] = f"{dir_name}.{model_name}" if dir_name else model_name
+                    return locals()[model_name]
+            except:
+                continue
+        
+        raise ValueError(f"Model {model_name} not found in registry or any subdirectory")
 
 def list_available_models():
     """List all available models"""
