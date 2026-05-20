@@ -358,10 +358,9 @@ hyperopt() {
           --arg score "$SCORE" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
-            run_mode: "Hyperopt",
-            matrix_json: (
+            RUN_MODE: "Hyperopt",
+            MATRIX_JSON: (
               {
-                score: $score,
                 run_id: $runId,
                 repo_id: $repo_id,
                 fields: $hyperopts,
@@ -489,10 +488,9 @@ freqai() {
           --arg score "$SCORE" \
           --arg reduce_epoch "$REDUCE_EPOCH" \
           '{ref: $ref, inputs: {
-            run_mode: "FreqAI",
-            matrix_json: (
+            RUN_MODE: "FreqAI",
+            MATRIX_JSON: (
               {
-                score: $score,
                 run_id: $runId,
                 repo_id: $repo_id,
                 fields: $freqaimodels,
