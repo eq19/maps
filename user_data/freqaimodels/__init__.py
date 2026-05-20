@@ -97,33 +97,27 @@ MODEL_REGISTRY = {
     "EnhancedCatboostRegressor": "tree_models.EnhancedCatboostRegressor",
     "EnhancedLightGBMRegressor": "tree_models.EnhancedLightGBMRegressor", 
     "EnhancedXGBoostRegressor": "tree_models.EnhancedXGBoostRegressor",
-    
+
     # Neural network models
     "PyTorchLSTMRegressor": "neural_models.PyTorchLSTMRegressor",
-    "EnhancedPyTorchTransformerRegressor": "neural_models.EnhancedPyTorchTransformerRegressor",
+    "PyTorchEnhanchedRegressor": "neural_models.PyTorchEnhanchedRegressor",
     "LSTMRegressor": "neural_models.LSTMRegressor",
-    
+
     # Traditional ML models
     "RandomForestRegressor": "traditional_models.RandomForestRegressor",
     "KNeighborsRegressor": "traditional_models.KNeighborsRegressor",
     "RidgeRegressor": "traditional_models.RidgeRegressor",
     "ExtraTreesRegressor": "traditional_models.ExtraTreesRegressor",
-    
-    # Ensemble models (standalone files)
-    "VotingRegressor": "VotingRegressor.VotingRegressor",
-    "StackingRegressor": "StackingRegressor.StackingRegressor", 
-    "UnifyingRegressor": "UnifyingRegressor.UnifyingRegressor",
-    "YieldedEnsembleRegressor": "YieldedEnsembleRegressor.YieldedEnsembleRegressor",
-    
+
     # Custom models
     "SmartMoneyRegressor": "custom_models.SmartMoneyRegressor",
     "VolatilityRegressor": "custom_models.VolatilityRegressor",
     "MultiTimeframeRegressor": "custom_models.MultiTimeframeRegressor",
-    
+
     # FreqAI LSTM Models (Optimized implementations)
     "FreqAILSTMRegressor": "freqai_lstm_models.FreqAILSTMRegressor",
     "FreqAILSTMCudaRegressor": "freqai_lstm_models.FreqAILSTMCudaRegressor",
-    
+
     # NEW: Enhanced External Models for Better Crypto Performance
     "NetanelEnhancedLSTMRegressor": "NetanelEnhancedLSTMRegressor",
     "NateemmaNeuralClassifier": "NateemmaNeuralClassifier"
