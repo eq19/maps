@@ -214,7 +214,7 @@ class TransformerModel(nn.Module):
         return self.fc(x).squeeze(-1)
 
 
-class PyTorchTransformerRegressor(BaseRegressionModel):
+class PyTorchNMTransformerRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
