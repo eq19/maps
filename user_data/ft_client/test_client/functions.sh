@@ -518,7 +518,7 @@ freqai() {
     #jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
-    nohup freqtrade trade -v --dry-run --freqaimodel $FREQAI_MODEL --fee=$FEE > freqtrade.log 2>&1 &
+    nohup freqtrade trade -v --dry-run --freqaimodel $FREQAI_MODEL --freqaimodel-path user_data/freqaimodels/resources --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
 
     # Open descriptor to log stream
@@ -541,7 +541,7 @@ freqai() {
     SCORE=$(gh variable get SCORE)
     freqtrade backtesting --help
     jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
+    freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path user_data/freqaimodels/resources --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
   
     # Execute calculate_score ONLY if no errors and exit code 0
     if [ $? -eq 0 ] && ! grep -qiE "(Error|Traceback|No further splits with positive gain)" backtest.log; then
