@@ -125,7 +125,7 @@ MODEL_REGISTRY = {
     "FreqAILSTMCudaRegressor": "freqai_lstm_models.FreqAILSTMCudaRegressor",
     
     # NEW: Enhanced External Models for Better Crypto Performance
-    "NetanelEnhancedLSTMRegressor": "NetanelEnhancedLSTMRegressor",
+    "NetanelEnhancedLSTMRegressor": "netanel_enhanced_lstm.NetanelEnhancedLSTMRegressor",
     "NateemmaNeuralClassifier": "nateemma_neural_classifiers.NateemmaNeuralClassifier"
 }
 
