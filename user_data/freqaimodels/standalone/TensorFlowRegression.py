@@ -6,15 +6,15 @@ import pandas
 from freqtrade.exceptions import OperationalException
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
-import TensorFlowBase
 import generate_dataset
 import keras_model
 from load_data import column_feature, column_label
 from tensorflow_wrapper import tensorflow
+from freqtrade.freqai.base_models.BaseTensorFlowModel import BaseTensorFlowModel
 
 log = logging.getLogger(__name__)
 
-class TensorFlowRegression(TensorFlowBase.TensorFlowBase):
+class TensorFlowRegression(BaseTensorFlowModel):
     def __init__(self, config: dict) -> None:
         super().__init__(config=config)
         self.CONV_WIDTH = 400
