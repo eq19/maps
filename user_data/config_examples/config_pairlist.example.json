@@ -3,12 +3,12 @@
     {
       "method": "VolumePairList",
       "sort_key": "quoteVolume",
-      "refresh_period": 3600,
-      "number_assets": 20
+      "refresh_period": 14400,
+      "number_assets": 30
     },
     {
       "method": "AgeFilter",
-      "min_days_listed": 10
+      "min_days_listed": 100
     },
     {
       "method": "PriceFilter",
@@ -18,7 +18,7 @@
       "method": "VolatilityFilter",
       "min_volatility": 0.003,
       "max_volatility": 1.0,
-      "refresh_period": 3600,
+      "refresh_period": 14400,
       "allow_nan": false
     },
     {
