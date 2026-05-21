@@ -14,7 +14,7 @@ from freqtrade.freqai.RL.Base4ActionRLEnv import Actions, Base4ActionRLEnv, Posi
 logger = logging.getLogger(__name__)
 
 
-class ReinforcementLearner4Action(ReinforcementLearner_multiproc):
+class RL4Action_multiproc(ReinforcementLearner_multiproc):
     
     def __init__(self, **kwargs) -> None:
         """
