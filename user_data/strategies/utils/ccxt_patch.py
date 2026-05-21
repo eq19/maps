@@ -230,6 +230,52 @@ def patch_ccxt_pair_only():
                 f"error={e}"
             )
 
+            # =========================
+            # 🔥 INTEGER AMOUNT FALLBACK
+            # =========================
+            error_msg = str(e).lower()
+
+            if (
+                amount is not None
+                and "amount can't be in decimal" in error_msg
+            ):
+
+                try:
+                    fallback_amount = float(int(float(amount)))
+
+                    logger.warning(
+                        f"🔁 INTEGER FALLBACK "
+                        f"{symbol} "
+                        f"{amount} → {fallback_amount}"
+                    )
+
+                    # update args/kwargs
+                    if len(args) > 3:
+                        args[3] = fallback_amount
+                    else:
+                        kwargs["amount"] = fallback_amount
+
+                    logger.warning(
+                        f"🚀 RETRY CREATE_ORDER "
+                        f"symbol={symbol} "
+                        f"type={type_} "
+                        f"side={side} "
+                        f"amount={fallback_amount}"
+                    )
+
+                    return original_create(self, *args, **kwargs)
+
+                except Exception as retry_error:
+
+                    logger.error(
+                        f"💥 RETRY FAILED "
+                        f"symbol={symbol} "
+                        f"fallback_amount={fallback_amount} "
+                        f"error={retry_error}"
+                    )
+
+                    raise retry_error
+
             raise
 
     # =========================
