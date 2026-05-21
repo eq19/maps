@@ -5,7 +5,7 @@ import time
 from typing import Any, Dict
 from catboost import CatBoostRegressor, EShapCalcType, EFeaturesSelectionAlgorithm
 from sklearn.multioutput import MultiOutputRegressor
-from freqtrade.freqai.prediction_models.BaseRegressionModel import BaseRegressionModel
+from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 
 logger = logging.getLogger(__name__)
 
