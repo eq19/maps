@@ -4,13 +4,13 @@ import numpy as np
 import torch as th
 
 from freqtrade.freqai.RL.Base4ActionRLEnv import Actions, Base4ActionRLEnv, Positions
-from ReinforcementLearner4Action_multiproc import ReinforcementLearner4Action_multiproc
+from RL4Action_multiproc import RL4Action_multiproc
 
 
 logger = logging.getLogger(__name__)
 
 
-class RL4ActionLeverage_multiproc(ReinforcementLearner4Action_multiproc):
+class RL4ActionLeverage_multiproc(RL4Action_multiproc):
     """
     Multi-process Reinforcement Learning Model with 10x Fixed Leverage Support
     
