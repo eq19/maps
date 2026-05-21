@@ -75,7 +75,6 @@ if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
       echo -e "\n$hr\nLIST OF FREQAIMODELS\n$hr"
       pip list | grep -E "tensorboard|protobuf|grpcio" && pip check
       freqtrade list-freqaimodels --help
-      pip install optuna optunahub mlflow gym gymnasium feature_engine
       freqtrade list-freqaimodels --freqaimodel-path "$FREQAIMODELS_PATH"
     fi
 
