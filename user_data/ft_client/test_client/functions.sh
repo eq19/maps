@@ -552,6 +552,7 @@ freqai() {
       NEW_SCORE=$SCORE
 
       OLD_SCORE=$(gh variable get SCORE)
+      [[ "$TARGET_REPOSITORY" == "eq19/eq19.github.io" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="BYPASS_LEXERING"REMOVE_RUNNER"
       if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
         cat $STRATEGY
         sed -i "s|Infinity|10|g" $STRATEGY
@@ -564,7 +565,7 @@ freqai() {
         if [[ "$GITHUB_JOB" != "lexering" ]]; then
           gh variable set JOB --body "${GITHUB_JOB}"
         elif [[ "$GITHUB_JOB" == "lexering" ]]; then
-          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"   
+          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"   
         fi
       elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
         if [[ "$GITHUB_JOB" == "lexering" ]]; then
@@ -573,7 +574,7 @@ freqai() {
           else
             FREQAI_MODEL=$(gh variable get FREQAIMODEL)
             gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
           fi
         fi
       # Environment SCORE is unchanged in case calculation is failed
@@ -584,7 +585,7 @@ freqai() {
           else
             FREQAI_MODEL=$(gh variable get FREQAIMODEL)
             gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "BYPASS_LEXERING=true"
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
           fi
         fi
       fi
