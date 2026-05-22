@@ -25,4 +25,4 @@ for ((i=1; i<=max_retries; i++)); do
 done
 
 echo "Condition not fulfilled after $max_retries checks ❌"
-gh workflow run "main.yml" --repo "$REPO_NAME"
+gh workflow run "main.yml" --repo "$REPO_NAME" --raw-field "RUN_MODE=$RUN_MODE"
