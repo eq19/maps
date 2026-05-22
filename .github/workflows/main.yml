@@ -62,9 +62,9 @@ jobs:
       JOBS_ID: ${{ matrix.config.jobs_id }}
       PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
       DOC: '${{ vars.TARGET_REPOSITORY }}.wiki'
-      REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH }}
-      REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER }}
-      BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING }}
+      REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH || 'false' }}
+      REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER || 'false' }}
+      BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING || 'false' }}
 
     runs-on: ${{ matrix.config.os }}
     continue-on-error: ${{ matrix.config.jobs_id != 1 }}
