@@ -15,7 +15,7 @@ from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 logger = logging.getLogger(__name__)
 
 
-class ZHU_RF_Classifier_estimators_200_leaf_1_split_3(BaseClassifierModel):
+class ZHU_RF_ClassifierV1(BaseClassifierModel):
     def fit(self, data_dictionary: Dict, dk: FreqaiDataKitchen, **kwargs) -> Any:
         X = data_dictionary["train_features"].to_numpy()
         y = data_dictionary["train_labels"].to_numpy()[:, 0]
