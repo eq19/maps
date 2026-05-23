@@ -33,7 +33,7 @@ import pickle
 
 logger = logging.getLogger(__name__)
 
-class CatBoostClassifierAdapterCustom(BaseClassifierModel):
+class CatBoostClassifierAdapter(BaseClassifierModel):
     """
     User created prediction model. The class needs to override three necessary
     functions, predict(), train(), fit(). The class inherits ModelHandler which
