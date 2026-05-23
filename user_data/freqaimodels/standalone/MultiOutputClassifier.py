@@ -21,7 +21,7 @@ def _fit_estimator(estimator, X, y, sample_weight=None, selected_features=[], **
 
     return estimator
 
-class MultiOutputClassifierWithFeatureSelect(MultiOutputClassifier):
+class MultiOutputClassifier(MultiOutputClassifier):
     n_jobs = 2
 
     def fit(self, X, y, sample_weight=None, selected_features_all_labels=None, fit_params=None):
