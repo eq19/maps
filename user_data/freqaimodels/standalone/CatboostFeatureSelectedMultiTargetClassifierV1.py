@@ -26,7 +26,7 @@ import wandb
 logger = logging.getLogger(__name__)
 
 
-class CatboostFeatureSelectedMultiTargetClassifierV1(BaseClassifierModel):
+class CatboostSelectedMultiTargetClassifier(BaseClassifierModel):
     """
     User created prediction model. The class needs to override three necessary
     functions, predict(), train(), fit(). The class inherits ModelHandler which
