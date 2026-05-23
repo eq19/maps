@@ -14,7 +14,7 @@ from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
 logger = logging.getLogger(__name__)
 
-class ZHU_sklearn_RandomForestClassifier(BaseClassifierModel):
+class ZHU_RandomForestClassifier(BaseClassifierModel):
     def fit(self, data_dictionary: Dict, dk: FreqaiDataKitchen, **kwargs) -> Any:
         X = data_dictionary["train_features"].to_numpy()
         y = data_dictionary["train_labels"].to_numpy()[:, 0]
