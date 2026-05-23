@@ -18,7 +18,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 logger = logging.getLogger(__name__)
 
 
-class XGBoostRegressorQuickAdapterV35(BaseRegressionModel):
+class XGBoostRegressorAdapterV35(BaseRegressionModel):
     """
     The following freqaimodel is released to sponsors of the non-profit FreqAI open-source project.
     If you find the FreqAI project useful, please consider supporting it by becoming a sponsor.
