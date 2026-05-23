@@ -12,7 +12,7 @@ import scipy as spy
 logger = logging.getLogger(__name__)
 
 
-class XGBoostRegressorQuickAdapterV3(BaseRegressionModel):
+class XGBoostRegressorAdapterV3(BaseRegressionModel):
     """
     The following freqaimodel is released to sponsors of the non-profit FreqAI open-source project.
     If you find the FreqAI project useful, please consider supporting it by becoming a sponsor.
