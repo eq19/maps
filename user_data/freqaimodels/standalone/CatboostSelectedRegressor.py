@@ -31,7 +31,7 @@ from freqtrade.freqai.base_models.FreqaiMultiOutputRegressor import FreqaiMultiO
 logger = logging.getLogger(__name__)
 
 
-class CatboostFeatureSelectedRegressorV1(BaseRegressionModel):
+class CatboostSelectedRegressor(BaseRegressionModel):
     """
     User created prediction model. The class needs to override three necessary
     functions, predict(), train(), fit(). The class inherits ModelHandler which
