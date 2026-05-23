@@ -26,7 +26,7 @@ from freqaimodels.MultiOutputClassifierWithFeatureSelect import MultiOutputClass
 logger = logging.getLogger(__name__)
 
 
-class CatboostFeatureSelectMultiTargetBinaryClassifierV1(BaseClassifierModel):
+class CatboostMultiTargetClassifierV1(BaseClassifierModel):
     """
     User created prediction model. The class needs to override three necessary
     functions, predict(), train(), fit(). The class inherits ModelHandler which
