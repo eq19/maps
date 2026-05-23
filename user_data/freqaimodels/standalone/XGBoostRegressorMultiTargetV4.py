@@ -49,7 +49,7 @@ https://github.com/sponsors/robcaulk
 """
 
 
-class XGBoostRegressorMultiTargetQuickAdapterV4(BaseRegressionModel):
+class XGBoostRegressorMultiTargetV4(BaseRegressionModel):
     """
     User created prediction model. The class needs to override three necessary
     functions, predict(), train(), fit(). The class inherits ModelHandler which
