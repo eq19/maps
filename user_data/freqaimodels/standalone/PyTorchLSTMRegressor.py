@@ -5,7 +5,7 @@ import torch
 from freqtrade.freqai.base_models.BasePyTorchRegressor import BasePyTorchRegressor
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 from freqtrade.freqai.torch.PyTorchDataConvertor import PyTorchDataConvertor, DefaultPyTorchDataConvertor
-from freqtrade.freqai.torch.PyTorchLSTMModel import PyTorchLSTMModel
+from freqtrade.freqai.torch.PyTorchTransformerModel import PyTorchTransformerModel
 from freqtrade.freqai.torch.PyTorchModelTrainer import PyTorchLSTMTrainer
 
 
