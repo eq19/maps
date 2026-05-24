@@ -9,14 +9,14 @@ from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.vec_env import SubprocVecEnv
 
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
-from freqtrade.freqai.RL.SpotReinforcementLearningModel import (SpotReinforcementLearningModel,
+from freqtrade.freqai.RL.BaseReinforcementLearningModel import (BaseReinforcementLearningModel,
                                                                 make_env)
 
 
 logger = logging.getLogger(__name__)
 
 
-class RLSpot_multiproc(SpotReinforcementLearningModel):
+class RLSpot_multiproc(BaseReinforcementLearningModel):
     """
     User created Reinforcement Learning Model prediction model.
     """
