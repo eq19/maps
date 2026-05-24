@@ -6,7 +6,7 @@ from freqtrade.freqai.base_models.BasePyTorchRegressor import BasePyTorchRegress
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 from freqtrade.freqai.torch.PyTorchDataConvertor import PyTorchDataConvertor, DefaultPyTorchDataConvertor
 from freqtrade.freqai.torch.PyTorchTransformerModel import PyTorchTransformerModel
-from freqtrade.freqai.torch.PyTorchModelTrainer import PyTorchLSTMTrainer
+from freqtrade.freqai.torch.PyTorchModelTrainer import PyTorchTransformerTrainer
 
 
 class PyTorchLSTMRegressor(BasePyTorchRegressor):
@@ -74,7 +74,7 @@ class PyTorchLSTMRegressor(BasePyTorchRegressor):
 
             trainer = self.get_init_model(dk.pair)
             if trainer is None:
-                trainer = PyTorchLSTMTrainer(
+                trainer = PyTorchTransformerTrainer(
                     model=model,
                     optimizer=optimizer,
                     criterion=criterion,
