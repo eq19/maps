@@ -90,14 +90,6 @@ The graph below depicts the total time spent to traverse each of the paths above
 
 ![008869256_1-75ca18aad2faf65f52f4c7706d7d8bd3-768x994](https://github.com/eq19/maps/assets/8466209/7c7f069f-dcfb-439e-961e-68c63c76dc9d)
 
-Feynman avoids exposing the reader to the mathematics of complex numbers by using a simple but accurate representation of them as arrows on a piece of paper or screen.
-
-```note
-Mathematically, QED is an [abelian](https://en.wikipedia.org/wiki/Abelian_group) [gauge theory](https://en.wikipedia.org/wiki/Gauge_theory) with the symmetry group [U(1)](https://en.wikipedia.org/wiki/U(1)), defined on [Minkowski space](https://en.wikipedia.org/wiki/Minkowski_space) (flat spacetime). The [gauge field](https://en.wikipedia.org/wiki/Gauge_field), which mediates the interaction between the charged [spin-1/2](https://en.wikipedia.org/wiki/Spin_(physics)) [fields](https://en.wikipedia.org/wiki/Field_(physics)), is the [electromagnetic field](https://en.wikipedia.org/wiki/Electromagnetic_field). The QED [Lagrangian](https://en.wikipedia.org/wiki/Lagrangian_(field_theory)) for a spin-1/2 field interacting with the electromagnetic field in natural units gives rise to the QED Action
-```
-
-[![image-18](https://github.com/eq19/maps/assets/8466209/f233cea8-77c7-4456-bc5c-65b0e98b3f73)](https://slidetodoc.com/particle-physics-michaelmas-term-2011-prof-mark-thomson-6/)
-
 Finally, one has to compute P(A to B) and E(C to D) corresponding to the probability amplitudes for the photon and the electron respectively.
 
 ```txt
@@ -229,29 +221,15 @@ Finally, one has to compute P(A to B) and E(C to D) corresponding to the probabi
         └── max_open_trades
 ```
 
-[![IREE](https://github.com/user-attachments/assets/fdcf5ccd-3f08-454e-8f6c-cad1a8aae35d)](https://github.com/iree-org/iree/tree/main/compiler/src/iree/compiler)
+Feynman avoids exposing the reader to the mathematics of complex numbers by using a simple but accurate representation of them as arrows on a piece of paper or screen.
+
+```note
+Mathematically, QED is an [abelian](https://en.wikipedia.org/wiki/Abelian_group) [gauge theory](https://en.wikipedia.org/wiki/Gauge_theory) with the symmetry group [U(1)](https://en.wikipedia.org/wiki/U(1)), defined on [Minkowski space](https://en.wikipedia.org/wiki/Minkowski_space) (flat spacetime). The [gauge field](https://en.wikipedia.org/wiki/Gauge_field), which mediates the interaction between the charged [spin-1/2](https://en.wikipedia.org/wiki/Spin_(physics)) [fields](https://en.wikipedia.org/wiki/Field_(physics)), is the [electromagnetic field](https://en.wikipedia.org/wiki/Electromagnetic_field). The QED [Lagrangian](https://en.wikipedia.org/wiki/Lagrangian_(field_theory)) for a spin-1/2 field interacting with the electromagnetic field in natural units gives rise to the QED Action
+```
+
+[![image-18](https://github.com/eq19/maps/assets/8466209/f233cea8-77c7-4456-bc5c-65b0e98b3f73)](https://slidetodoc.com/particle-physics-michaelmas-term-2011-prof-mark-thomson-6/)
 
 ```
-└── compiler/src/iree/compiler/
-    ├── API/         (C and Python APIs)
-    ├── Bindings/    (used to generate different ABI bindings)
-    ├── Codegen/     (device code generation for assorted APIs)
-    ├── ConstEval/   (JIT eval using the compiler+runtime to optimize constants)
-    ├── Dialect/
-    │   ├── Flow/    (tensor program modeling and compute workload partitioning)
-    │   ├── HAL/     (Hardware Abstraction Layer for buffer and execution management)
-    │   │   └── Target/
-    │   │       ├── LLVM/
-    │   │       ├── VMVX/
-    │   │       ├── VulkanSPIRV/
-    │   │       └── etc.
-    │   ├── Stream/  (device placement and asynchronous scheduling)
-    │   ├── Util/    (common types across other IREE dialects)
-    │   └── VM/      (abstract Virtual Machine)
-    ├── InputConversion/  (conversions from frontend/input dialects)
-    └── Translation/      (translation pipeline definitions)
-
-
 Model compiled to complex_module.vmfb
 ************************************
   Prime Hexagon Near Pi
@@ -280,6 +258,48 @@ Decoded complex numbers:
 ```
 
 [![16 squares](https://github.com/eq19/maps/assets/8466209/efe55c6d-926c-47bb-80db-7d892eb3f103)](https://eq19.github.io/#exponentiation-zones)
+
+## New Generation
+
+The Golden Ratio "symbolically links each new generation to its ancestors, preserving the continuity of relationship as the means for retracing its lineage."
+
+```note
+There is a fascinating connection between prime numbers and the Golden ratio.
+- The Golden ratio is an irrational number, which means that it cannot be expressed as a ratio of two integers. However, it can be approximated by dividing consecutive Fibonacci numbers.
+- Additionally, it has been observed that the frequency of prime numbers in certain sequences related to the Golden ratio (such as the continued fraction expansion of the Golden ratio) appears to be higher than in other sequences.
+- Interestingly, the Fibonacci sequence is closely related to prime numbers, as any two consecutive Fibonacci numbers are always coprime.
+
+However, the exact nature of the relationship between primes and the Golden ratio is still an active area of research.
+```
+
+***π(Φ x (329 + 289)) = π(Φ x 618) = π(1000) = 168 = 169 - 1***
+
+[![default](https://user-images.githubusercontent.com/8466209/195963923-0796217c-7a87-4b2d-ba93-f47465304c03.png)](https://www.nausetschools.org/cms/lib/MA02212418/Centricity/Domain/204/Linkage%20Map%20Worksheet%20Genetics%202017.pdf)
+
+The mathematically significant Fibonacci sequence defines a set of ratios which can be used to determine probable entry and exit points.
+
+```
+└── compiler/src/iree/compiler/
+    ├── API/         (C and Python APIs)
+    ├── Bindings/    (used to generate different ABI bindings)
+    ├── Codegen/     (device code generation for assorted APIs)
+    ├── ConstEval/   (JIT eval using the compiler+runtime to optimize constants)
+    ├── Dialect/
+    │   ├── Flow/    (tensor program modeling and compute workload partitioning)
+    │   ├── HAL/     (Hardware Abstraction Layer for buffer and execution management)
+    │   │   └── Target/
+    │   │       ├── LLVM/
+    │   │       ├── VMVX/
+    │   │       ├── VulkanSPIRV/
+    │   │       └── etc.
+    │   ├── Stream/  (device placement and asynchronous scheduling)
+    │   ├── Util/    (common types across other IREE dialects)
+    │   └── VM/      (abstract Virtual Machine)
+    ├── InputConversion/  (conversions from frontend/input dialects)
+    └── Translation/      (translation pipeline definitions)
+```
+
+[![IREE](https://github.com/user-attachments/assets/fdcf5ccd-3f08-454e-8f6c-cad1a8aae35d)](https://github.com/iree-org/iree/tree/main/compiler/src/iree/compiler)
 
 ## Subsequent Theories
 
