@@ -66,7 +66,7 @@ class PyTorchLSTMRegressor(BasePyTorchRegressor):
         """
         try:
             n_features = data_dictionary["train_features"].shape[-1]
-            model = PyTorchLSTMModel(input_dim=n_features, output_dim=1, **self.model_kwargs)
+            model = PyTorchTransformerModel(input_dim=n_features, output_dim=1, **self.model_kwargs)
             model.to(self.device)
 
             optimizer = torch.optim.AdamW(model.parameters(), lr=self.learning_rate)
