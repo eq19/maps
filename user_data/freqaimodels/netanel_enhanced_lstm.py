@@ -10,6 +10,7 @@ import numpy as np
 from typing import Dict, Any, Optional, List
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error, r2_score
+from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 import pandas as pd
 
 try:
