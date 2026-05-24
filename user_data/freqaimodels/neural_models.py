@@ -26,7 +26,6 @@ from freqtrade.freqai.base_models.BaseRegressionModel import BaseRegressionModel
 
 logger = logging.getLogger(__name__)
 
-
 # =========================================================
 # 🔥 SAFE EXTRACTOR
 # =========================================================
@@ -74,32 +73,57 @@ def extract_xy(data_dictionary):
 
     raise ValueError(f"Unsupported format: {type(data_dictionary)}")
 
+def extract_xy(data_dictionary):
 
-# =========================================================
-# HELPERS
-# =========================================================
+    X = data_dictionary["train_features"].values
+
+    y = (
+        data_dictionary["train_labels"]
+        .values
+        .squeeze()
+    )
+
+    return X, y
+
+
+# ============================================================
+# Utilities
+# ============================================================
+
 def safe_index(df):
-    return df.index if hasattr(df, "index") else pd.RangeIndex(len(df))
+
+    if hasattr(df, "index"):
+        return df.index
+
+    return pd.RangeIndex(len(df))
 
 
 def fallback_prediction(df):
-    length = len(df)
+
     pred_df = pd.DataFrame(index=safe_index(df))
-    pred_df["&-s_predict"] = np.zeros(length)
-    return pred_df, np.zeros(length, dtype=np.int_)
+
+    pred_df["&-s_predict"] = 0.0
+
+    return pred_df, np.zeros(len(df), dtype=np.int_)
 
 
 def align_prediction(pred, target_len):
 
-    pred = np.asarray(pred).reshape(-1)
+    pred = np.asarray(pred).flatten()
 
     if len(pred) == 0:
-        return np.zeros(target_len)
+        pred = np.zeros(target_len)
 
-    if len(pred) != target_len:
-        return np.full(target_len, float(pred[-1]))
+    elif len(pred) < target_len:
 
-    return pred.astype(float)
+        pad = np.full(
+            target_len - len(pred),
+            pred[0]
+        )
+
+        pred = np.concatenate([pad, pred])
+
+    return pred[:target_len]
 
 
 # =========================================================
@@ -192,89 +216,300 @@ class PyTorchRegressor(BaseRegressionModel):
 # =========================================================
 # 🔥 MODEL 2: TRANSFORMER
 # =========================================================
+
 class TransformerModel(nn.Module):
 
-    def __init__(self, input_dim):
+    def __init__(
+        self,
+        input_dim,
+        d_model=64,
+        nhead=4,
+        num_layers=2,
+        dropout=0.1
+    ):
+
         super().__init__()
 
-        self.input_proj = nn.Linear(input_dim, 64)
+        self.input_projection = nn.Linear(
+            input_dim,
+            d_model
+        )
 
         encoder_layer = nn.TransformerEncoderLayer(
-            d_model=64,
-            nhead=4,
+            d_model=d_model,
+            nhead=nhead,
+            dropout=dropout,
             batch_first=True
         )
 
-        self.transformer = nn.TransformerEncoder(encoder_layer, num_layers=2)
-        self.fc = nn.Linear(64, 1)
+        self.transformer = nn.TransformerEncoder(
+            encoder_layer,
+            num_layers=num_layers
+        )
+
+        # SINGLE OUTPUT
+        self.fc_out = nn.Linear(
+            d_model,
+            1
+        )
 
     def forward(self, x):
-        x = self.input_proj(x)
-        x = self.transformer(x)
-        return self.fc(x).squeeze(-1)
 
+        # x:
+        # [batch, sequence, features]
+
+        x = self.input_projection(x)
+
+        x = self.transformer(x)
+
+        # IMPORTANT:
+        # use last timestep only
+
+        x = x[:, -1, :]
+
+        # [batch, 1]
+
+        x = self.fc_out(x)
+
+        # [batch]
+
+        x = x.squeeze(-1)
+
+        return x
+
+
+# ============================================================
+# Main Regressor
+# ============================================================
 
 class PyTorchEnhancedRegressor(BaseRegressionModel):
 
     def __init__(self, **kwargs):
+
         super().__init__(**kwargs)
+
         self.scaler = StandardScaler()
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        self.device = torch.device(
+            "cuda"
+            if torch.cuda.is_available()
+            else "cpu"
+        )
+
         self.model = None
+
         self.sequence_length = 10
+
+    # ========================================================
+    # Sequence Generator
+    # ========================================================
 
     def create_sequences(self, X, y=None):
 
-        Xs, ys = [], []
+        Xs = []
+        ys = []
 
-        for i in range(len(X) - self.sequence_length):
-            Xs.append(X[i:i+self.sequence_length])
+        for i in range(
+            len(X) - self.sequence_length
+        ):
+
+            Xs.append(
+                X[i:i + self.sequence_length]
+            )
+
             if y is not None:
-                ys.append(y[i+self.sequence_length])
 
-        Xs = np.array(Xs)
+                ys.append(
+                    y[i + self.sequence_length]
+                )
+
+        Xs = np.array(
+            Xs,
+            dtype=np.float32
+        )
 
         if y is not None:
-            return Xs, np.array(ys)
+
+            ys = np.array(
+                ys,
+                dtype=np.float32
+            )
+
+            return Xs, ys
 
         return Xs
 
-    def fit(self, data_dictionary, dk=None, **kwargs):
+    # ========================================================
+    # Training
+    # ========================================================
+
+    def fit(
+        self,
+        data_dictionary,
+        dk=None,
+        **kwargs
+    ):
 
         X, y = extract_xy(data_dictionary)
 
+        # ----------------------------------------------------
+        # Sanitize
+        # ----------------------------------------------------
+
+        X = np.nan_to_num(
+            X,
+            nan=0.0,
+            posinf=10.0,
+            neginf=-10.0
+        )
+
+        y = np.nan_to_num(
+            y,
+            nan=0.0,
+            posinf=10.0,
+            neginf=-10.0
+        )
+
         X = np.clip(X, -10, 10)
+
+        # ----------------------------------------------------
+        # Normalize
+        # ----------------------------------------------------
+
         X = self.scaler.fit_transform(X)
 
+        # ----------------------------------------------------
+        # Validate
+        # ----------------------------------------------------
+
         if len(X) <= self.sequence_length:
-            raise ValueError("Not enough data")
 
-        X_seq, y_seq = self.create_sequences(X, y)
+            raise ValueError(
+                f"Not enough data "
+                f"({len(X)}) "
+                f"for sequence length "
+                f"{self.sequence_length}"
+            )
 
-        X_tensor = torch.FloatTensor(X_seq).to(self.device)
-        y_tensor = torch.FloatTensor(y_seq).to(self.device)
+        # ----------------------------------------------------
+        # Create sequences
+        # ----------------------------------------------------
 
-        self.model = TransformerModel(X.shape[1]).to(self.device)
+        X_seq, y_seq = self.create_sequences(
+            X,
+            y
+        )
 
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
+        logger.info(
+            f"X_seq shape: {X_seq.shape}"
+        )
+
+        logger.info(
+            f"y_seq shape: {y_seq.shape}"
+        )
+
+        # ----------------------------------------------------
+        # Torch tensors
+        # ----------------------------------------------------
+
+        X_tensor = torch.tensor(
+            X_seq,
+            dtype=torch.float32,
+            device=self.device
+        )
+
+        y_tensor = torch.tensor(
+            y_seq,
+            dtype=torch.float32,
+            device=self.device
+        )
+
+        # ----------------------------------------------------
+        # Model
+        # ----------------------------------------------------
+
+        self.model = TransformerModel(
+            input_dim=X.shape[1]
+        ).to(self.device)
+
+        optimizer = torch.optim.Adam(
+            self.model.parameters(),
+            lr=0.001
+        )
+
         loss_fn = nn.HuberLoss()
 
+        # ----------------------------------------------------
+        # Training loop
+        # ----------------------------------------------------
+
         self.model.train()
-        for _ in range(5):
+
+        epochs = 5
+
+        for epoch in range(epochs):
+
             optimizer.zero_grad()
+
             preds = self.model(X_tensor)
-            loss = loss_fn(preds, y_tensor)
+
+            logger.info(
+                f"preds shape: {preds.shape}"
+            )
+
+            logger.info(
+                f"target shape: {y_tensor.shape}"
+            )
+
+            # CRITICAL FIX:
+            # BOTH become:
+            # [batch]
+
+            preds = preds.float()
+
+            y_tensor_fixed = y_tensor.float()
+
+            loss = loss_fn(
+                preds,
+                y_tensor_fixed
+            )
+
             loss.backward()
+
+            torch.nn.utils.clip_grad_norm_(
+                self.model.parameters(),
+                1.0
+            )
+
             optimizer.step()
+
+            logger.info(
+                f"Epoch "
+                f"{epoch + 1}/{epochs} "
+                f"Loss={loss.item():.6f}"
+            )
 
         return self
 
-    def predict(self, unfiltered_df, dk=None, **kwargs):
+    # ========================================================
+    # Prediction
+    # ========================================================
+
+    def predict(
+        self,
+        unfiltered_df,
+        dk=None,
+        **kwargs
+    ):
 
         if self.model is None or dk is None:
-            return fallback_prediction(unfiltered_df)
+
+            return fallback_prediction(
+                unfiltered_df
+            )
 
         try:
+
             features, _ = dk.filter_features(
                 unfiltered_df,
                 dk.training_features_list,
@@ -283,35 +518,97 @@ class PyTorchEnhancedRegressor(BaseRegressionModel):
             )
 
             X = np.asarray(features)
+
+            X = np.nan_to_num(
+                X,
+                nan=0.0,
+                posinf=10.0,
+                neginf=-10.0
+            )
+
             X = np.clip(X, -10, 10)
+
             X = self.scaler.transform(X)
 
+            # ------------------------------------------------
+            # Pad short sequences
+            # ------------------------------------------------
+
             if len(X) < self.sequence_length:
-                pad = np.zeros((self.sequence_length - len(X), X.shape[1]))
+
+                pad = np.zeros(
+                    (
+                        self.sequence_length - len(X),
+                        X.shape[1]
+                    ),
+                    dtype=np.float32
+                )
+
                 X = np.vstack([pad, X])
+
+            # ------------------------------------------------
+            # Create sequences
+            # ------------------------------------------------
 
             X_seq = self.create_sequences(X)
 
             if len(X_seq) == 0:
-                return fallback_prediction(unfiltered_df)
 
-            X_tensor = torch.FloatTensor(X_seq).to(self.device)
+                return fallback_prediction(
+                    unfiltered_df
+                )
+
+            # ------------------------------------------------
+            # Torch tensor
+            # ------------------------------------------------
+
+            X_tensor = torch.tensor(
+                X_seq,
+                dtype=torch.float32,
+                device=self.device
+            )
+
+            # ------------------------------------------------
+            # Predict
+            # ------------------------------------------------
 
             self.model.eval()
+
             with torch.no_grad():
-                pred = self.model(X_tensor).cpu().numpy()
+
+                pred = self.model(X_tensor)
+
+                pred = pred.cpu().numpy()
 
         except Exception as e:
-            logger.warning(f"Transformer fallback: {e}")
-            return fallback_prediction(unfiltered_df)
 
-        pred = align_prediction(pred, len(unfiltered_df))
+            logger.warning(
+                f"Transformer fallback: {e}"
+            )
 
-        pred_df = pd.DataFrame(index=safe_index(unfiltered_df))
+            return fallback_prediction(
+                unfiltered_df
+            )
+
+        # ----------------------------------------------------
+        # Align output
+        # ----------------------------------------------------
+
+        pred = align_prediction(
+            pred,
+            len(unfiltered_df)
+        )
+
+        pred_df = pd.DataFrame(
+            index=safe_index(unfiltered_df)
+        )
+
         pred_df["&-s_predict"] = pred
 
-        return pred_df, np.ones(len(pred), dtype=np.int_)
-
+        return pred_df, np.ones(
+            len(pred),
+            dtype=np.int_
+        )
 
 # =========================================================
 # 🛡 MODEL 3: RANDOM FOREST
