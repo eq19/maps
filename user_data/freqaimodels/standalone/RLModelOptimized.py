@@ -12,7 +12,7 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from gymnasium import spaces
 
-from freqtrade.freqai.base_models.BaseReinforcementLearningModel import BaseReinforcementLearningModel
+from freqtrade.freqai.RL.BaseReinforcementLearningModel import BaseReinforcementLearningModel
 from freqtrade.freqai.RL.Base3ActionRLEnv import Base3ActionRLEnv, Actions, Positions
 
 logger = logging.getLogger(__name__)
