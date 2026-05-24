@@ -6,13 +6,13 @@ import numpy as np
 import torch as th
 
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
-from freqtrade.freqai.RL.SpotReinforcementLearningModel import SpotReinforcementLearningModel
+from freqtrade.freqai.RL.BaseReinforcementLearningModel import BaseReinforcementLearningModel
 
 
 logger = logging.getLogger(__name__)
 
 
-class RLSpot(SpotReinforcementLearningModel):
+class RLSpot(BaseReinforcementLearningModel):
     """
     User created Reinforcement Learning Model prediction model.
     """
