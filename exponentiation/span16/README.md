@@ -128,6 +128,48 @@ The 10 ranks will coordinate with the 18 to raise up the symmetrical behaviour o
 
 ![](https://user-images.githubusercontent.com/8466209/225830554-007fbd06-9d7d-44e8-867d-c7b0188bf488.png)
 
+```
+E = mc²
+m = E/c²
+
+c = 1 light-second
+  = 1000 years x L / t
+  = 12,000 months x 2152612.336257 km / 86164.0906 sec
+  = 299,792.4998 km / sec
+
+Note:
+1 year = 12 months
+1000 years = 12,000 months 👈
+Te = earth revolution = 365,25636 days
+R = radius of moon rotation to earth = 384,264 km
+V = moon rotation speed = 2πR/Tm = 3682,07 km/hours
+Ve = excact speed = V cos (360° x Tm/Te) = V cos 26,92848°
+Tm = moon revolution (sidereal) = 27,321661 days = 655,719816 hours ✔️
+t = earth rotation (sinodik) = 24 hours = 24 x 3600 sec = 86164.0906 sec
+L = Ve x Tm = 3682,07 km/hours x cos 26,92848° x 655,71986 = 2152612.336257 km
+
+Conclusion:
+π(π(π(π(π(32(109²-89²)))))) Universe vs Parallel vs Multiverse (via blackhole)
+   👇
+π(π(π(π(32(109²-89²))))) Galaxies vs Universe vs Parallel (gap via expansion)
+   👇
+π(π(π(32(109²-89²)))) Sun vs Galaxies vs Universe (2nd gap via dark energy)
+   👇
+π(π(32(109²-89²))) Moon vs Sun vs Galaxies (1st-gap via dark matter)
+   👇
+|--👇---------------------------- 2x96 ---------------------|
+|--👇----------- 7¤ ---------------|---------- 5¤ ----------|
+|- π(32(109²-89²))=109² -|-- {36} -|-------- {103} ---------|
++----+----+----+----+----+----+----+----+----+----+----+----+
+|  5 |  7 | 11 |{13}| 17 | 19 | 17 |{12}| 11 | 19 | 18 |{43}|           
++----+----+----+----+----+----+----+----+----+----+----+----+       Particle's
+|--------- {53} ---------|{19}|--------- {77} ---------|109²-89² 👉 Multiverses
+|---------- 5¤ ----------|------------ {96} -----------|-1¤-|      (Untouchable)
+|-------- Bosons --------|---------- Fermions ---------|-- Graviton
+|-- Sun Orbit (7 days) --|--- Moon Orbit (12 months) --| (11 Galaxies)
+|------------ Part of 1 Galaxy (Milky Way) ------------| Non Milky Way 👉 Sum=12
+```
+
 [![Screenshotgoogle](https://github.com/eq19/maps/assets/8466209/e1e09c8a-de60-4724-ac01-bac09fe31426)](https://arxiv.org/pdf/1812.07680.pdf)
 
 ```txt
