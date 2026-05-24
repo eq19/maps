@@ -3,13 +3,13 @@ import logging
 import numpy as np
 
 from freqtrade.freqai.RL.Base4ActionRLEnv import Actions, Base4ActionRLEnv, Positions
-from ReinforcementLearner4Action import ReinforcementLearner4Action
+from RL4Action import RL4Action
 
 
 logger = logging.getLogger(__name__)
 
 
-class RL4ActionLeverage(ReinforcementLearner4Action):
+class RL4ActionLeverage(RL4Action):
     """
     Reinforcement Learning Model with 10x Fixed Leverage Support
     
