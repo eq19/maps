@@ -5,8 +5,8 @@ import torch
 from freqtrade.freqai.base_models.BasePyTorchRegressor import BasePyTorchRegressor
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 from freqtrade.freqai.torch.PyTorchDataConvertor import PyTorchDataConvertor, DefaultPyTorchDataConvertor
-from freqtrade.freqai.torch.PyTorchLSTMModel import PyTorchLSTMModel
-from freqtrade.freqai.torch.PyTorchModelTrainer import PyTorchLSTMTrainer
+from freqtrade.freqai.torch.PyTorchTransformerModel import PyTorchTransformerModel
+from freqtrade.freqai.torch.PyTorchModelTrainer import PyTorchTransformerTrainer
 
 
 class PyTorchLSTMRegressorCuda(BasePyTorchRegressor):
@@ -66,7 +66,7 @@ class PyTorchLSTMRegressorCuda(BasePyTorchRegressor):
         """
         try:
             n_features = data_dictionary["train_features"].shape[-1]
-            model = PyTorchLSTMModel(input_dim=n_features, output_dim=1, **self.model_kwargs)
+            model = PyTorchTransformerModel(input_dim=n_features, output_dim=1, **self.model_kwargs)
             #added
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             model.to(self.device)
@@ -76,7 +76,7 @@ class PyTorchLSTMRegressorCuda(BasePyTorchRegressor):
 
             trainer = self.get_init_model(dk.pair)
             if trainer is None:
-                trainer = PyTorchLSTMTrainer(
+                trainer = PyTorchTransformerTrainer(
                     model=model,
                     optimizer=optimizer,
                     criterion=criterion,
