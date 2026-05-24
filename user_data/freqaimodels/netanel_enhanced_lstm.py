@@ -129,7 +129,7 @@ class NetanelEnhancedLSTMModel(nn.Module):
         return x
 
 
-class NetanelEnhancedLSTMRegressor(BaseFreqAIModel):
+class NetanelEnhancedLSTMRegressor(BaseFreqAIModel, BaseRegressionModel):
     """
     Enhanced LSTM Regressor with proven crypto trading performance
     Features:
