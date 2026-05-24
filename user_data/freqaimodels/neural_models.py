@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 # =========================================================
 # 🔥 SAFE EXTRACTOR
 # =========================================================
+
 def extract_xy(data_dictionary):
 
     if isinstance(data_dictionary, dict):
@@ -72,19 +73,6 @@ def extract_xy(data_dictionary):
         return arr.reshape(-1, 1), np.zeros(len(arr))
 
     raise ValueError(f"Unsupported format: {type(data_dictionary)}")
-
-def extract_xy(data_dictionary):
-
-    X = data_dictionary["train_features"].values
-
-    y = (
-        data_dictionary["train_labels"]
-        .values
-        .squeeze()
-    )
-
-    return X, y
-
 
 # ============================================================
 # Utilities
