@@ -11,6 +11,7 @@ import torch.nn as nn
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report
+from freqtrade.freqai.base_models.BaseClassifierModel import BaseClassifierModel
 from typing import Dict, Any, Optional, List, Tuple
 import warnings
 
@@ -138,7 +139,7 @@ class NNTCTransformerModel(nn.Module):
         return self.classifier(x)
 
 
-class NateemmaNeuralClassifier(BaseFreqAIModel):
+class NateemmaNeuralClassifier(BaseFreqAIModel, BaseClassifierModel):
     """
     Neural Network Trinary Classifier based on nateemma's proven strategies
     Features:
