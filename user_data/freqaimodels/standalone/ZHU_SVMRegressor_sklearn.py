@@ -35,7 +35,7 @@ class ZHU_SVMRegressor_sklearn(BaseRegressionModel):
 
     def predict(
         self, unfiltered_df: DataFrame, dk: FreqaiDataKitchen, **kwargs
-    ) -> Tuple[DataFrame, npt.NDArray[np.float_]]:
+    ) -> Tuple[DataFrame, npt.NDArray[np.float64]]:
         pred_df, dk.do_predict = super().predict(unfiltered_df, dk, **kwargs)
 
         # No need for LabelEncoder in regression tasks
