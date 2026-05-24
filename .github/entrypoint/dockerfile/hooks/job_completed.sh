@@ -22,7 +22,7 @@ set_monitor() {
 
     if $DOCKER exec mydb test -f "$FILE_PATH"; then
 
-      $DOCKER exec mydb supervisorctl start monitor_freqtrade || true
+      $DOCKER exec mydb supervisorctl start freqtrade_monitor || true
       $DOCKER exec mydb service cron start || true
 
       echo -e "\n$hr\nSupervisor Status\n$hr"

@@ -27,6 +27,8 @@ set_config() {
     gh variable set PARAMS_LIVE --repo ${TARGET_REPOSITORY} --body "${PARAMS_LIVE}"
     gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
     gh variable set REMOVE_REPOSITORY --repo ${TARGET_REPOSITORY} --body "${GITHUB_REPOSITORY}"
+    gh variable set HYPEROPT --repo ${TARGET_REPOSITORY} --body "$(gh variable get HYPEROPT)"
+    gh variable set FREQAIMODEL --repo ${TARGET_REPOSITORY} --body "$(gh variable get FREQAIMODEL)"
   else
     echo "Invalid JSON"
   fi
@@ -88,14 +90,14 @@ if [[ "${JOBS_ID}" == "1" ]]; then
 
     #git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
     #git add . && git commit --allow-empty -m "rerun due to job update" && git push
-    gh workflow run "main.yml" --raw-field "RUN_MODE=$RUN_MODE"
+    gh workflow run "main.yml" --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER"
 
   else
 
     if [[ ! -f $RUNNER_TEMP/_config.yml ]]; then set_config $1; fi
     if [[ "$(yq '.repository' $RUNNER_TEMP/_config.yml)" != "$TARGET_REPOSITORY" ]]; then
       echo "$(yq '.repository' $RUNNER_TEMP/_config.yml) != $TARGET_REPOSITORY"
-      gh workflow run "main.yml" --raw-field "RUN_MODE=$RUN_MODE"
+      gh workflow run "main.yml" --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER"
     else
       HEADER="Accept: application/vnd.github+json"
       RESPONSE=$(gh api -H "${HEADER}" repos/$TARGET_REPOSITORY/actions/runners)

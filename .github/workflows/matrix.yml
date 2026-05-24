@@ -1,15 +1,15 @@
 name: Freqtrade Matrix Jobs
-run-name: "Freqtrade Matrix: ${{ inputs.run_mode }} (${{ vars.SCORE}})"
+run-name: "Freqtrade Matrix: ${{ inputs.RUN_MODE }} (${{ vars.SCORE }})"
 
 on:
   workflow_dispatch:
     inputs:
-      run_mode:
+      RUN_MODE:
         description: 'Custom run name'
         default: 'Hyperopt'
         required: false
         type: string
-      matrix_json:
+      MATRIX_JSON:
         description: "Matrix JSON (as string)"
         required: true
 
@@ -26,10 +26,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        fields: ${{ fromJson(inputs.matrix_json).fields }}
+        FIELDS: ${{ fromJson(inputs.MATRIX_JSON).fields }}
 
     env:
-      RUN_MODE: ${{ inputs.run_mode }}
+      SCORE: ${{ vars.SCORE }}
+      RUN_MODE: ${{ inputs.RUN_MODE }}
       GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       RUNNER_TITLE: "Google-optimized-instance"
       TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
@@ -80,7 +81,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const matrix = JSON.parse(context.payload.inputs.matrix_json);
+            const matrix = JSON.parse(context.payload.inputs.MATRIX_JSON);
             const artifactName = 'freqtrade-data';
             const runId = matrix.run_id;
 
@@ -124,11 +125,9 @@ jobs:
       - name: 🧠 Run Script
         timeout-minutes: 360
         env:
-          MATRIX_INPUT: ${{ matrix.fields }}
-          ID: ${{ fromJson(inputs.matrix_json).repo_id }}
-          SPACE: ${{ fromJson(inputs.matrix_json).space }}
-          SCORE: ${{ fromJson(inputs.matrix_json).score }}
-          REDUCE_EPOCH: ${{ fromJson(inputs.matrix_json).reduce_epoch }}
+          MATRIX_INPUT: ${{ matrix.FIELDS }}
+          ID: ${{ fromJson(inputs.MATRIX_JSON).repo_id }}
+          REDUCE_EPOCH: ${{ fromJson(inputs.MATRIX_JSON).reduce_epoch }}
         run: |
           echo "Score: $SCORE"
           echo "Running $RUN_MODE..."

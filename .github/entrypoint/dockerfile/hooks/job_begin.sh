@@ -168,7 +168,7 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
           echo "Dry-run is better than Live mode"
           $DOCKER exec mydb supervisorctl stop freqtrade_dry || true
           $DOCKER exec mydb supervisorctl stop freqtrade_live || true
-          $DOCKER exec mydb supervisorctl stop monitor_freqtrade || true
+          $DOCKER exec mydb supervisorctl stop freqtrade_monitor || true
           $DOCKER exec mydb mv /home/runner/data_dry /home/runner/data_dry_
           $DOCKER exec mydb mv /home/runner/data_live /home/runner/data_live_
           $DOCKER exec mydb mv /home/runner/data_dry_ /home/runner/data_live

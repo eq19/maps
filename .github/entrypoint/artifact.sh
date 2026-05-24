@@ -3,34 +3,89 @@
 # Structure: Cell Types – Modulo 6
 # https://www.hexspin.com/proof-of-confinement/
 
-set_target() {
+pinned_repos() {
+  QUERY='{"query":"{\n organization(login: \"'$1'\") {\n pinnedItems(first: 6, types: REPOSITORY) {\n nodes {\n ... on Repository {\n name\n }\n }\n }\n }\n}"}'
   
+  # Capture response and check if valid
+  response=$(curl -s -X POST "${GITHUB_GRAPHQL_URL}" \
+    -H "Authorization: bearer ${GH_TOKEN}" \
+    -H "Content-Type: application/json" \
+    --data-raw "${QUERY}")
+  
+  # Validate JSON before processing
+  if echo "$response" | jq empty 2>/dev/null; then
+    echo "$response" | jq --raw-output '.data.organization.pinnedItems.nodes[].name' 2>/dev/null | \
+      yq eval -P 2>/dev/null | sed "s/ /, /g" > ${RUNNER_TEMP}/pinned_repos
+  else
+    echo "ERROR: Failed to get pinned repos for $1" >&2
+    echo "" > ${RUNNER_TEMP}/pinned_repos  # Create empty file as fallback
+    return 1
+  fi
+}
+
+set_target() {
   # Get Structure
   if [[ $2 == *"github.io"* ]]; then
     [[ -n "$CELL" ]] && SPIN=$(( $CELL * 13 ))
     if [[ "${OWNER}" == "eq19" ]]; then
       echo "maps, feed, lexer, parser, syntax, grammar" > ${RUNNER_TEMP}/pinned_repos
     else
-      QUERY='{"query":"{\n organization(login: \"'${OWNER}'\") {\n pinnedItems(first: 6, types: REPOSITORY) {\n nodes {\n ... on Repository {\n name\n }\n }\n }\n }\n}"'
-      curl -s -X POST "${GITHUB_GRAPHQL_URL}" -H "Authorization: bearer ${GH_TOKEN}" --data-raw "${QUERY}" | jq --raw-output '.data.organization.pinnedItems.nodes[].name' | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/pinned_repos
-      sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${RUNNER_TEMP}/pinned_repos
+      pinned_repos ${OWNER}
+      # Check if file has content before modifying
+      if [[ -s ${RUNNER_TEMP}/pinned_repos ]]; then
+        sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${RUNNER_TEMP}/pinned_repos
+      else
+        echo "maps, feed, lexer, parser, syntax, grammar" > ${RUNNER_TEMP}/pinned_repos
+      fi
     fi
-    IFS=', '; array=($(cat ${RUNNER_TEMP}/pinned_repos))
+    
+    # Read array safely
+    if [[ -f ${RUNNER_TEMP}/pinned_repos ]]; then
+      IFS=', ' read -ra array < ${RUNNER_TEMP}/pinned_repos
+    else
+      echo "ERROR: pinned_repos file not found" >&2
+      return 1
+    fi
   else
-    gh api -H "${HEADER}" /user/orgs  --jq '.[].login' | sort -uf | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/user_orgs
-    IFS=', '; array=($(cat ${RUNNER_TEMP}/user_orgs))
+    gh api -H "${HEADER}" /user/orgs --jq '.[].login' 2>/dev/null | \
+      sort -uf | yq eval -P 2>/dev/null | sed "s/ /, /g" > ${RUNNER_TEMP}/user_orgs
+    
+    if [[ ! -s ${RUNNER_TEMP}/user_orgs ]]; then
+      echo "ERROR: No organizations found" >&2
+      return 1
+    fi
+    
+    IFS=', ' read -ra array < ${RUNNER_TEMP}/user_orgs
     echo "[" > ${RUNNER_TEMP}/orgs.json
+    
     for ((i=0; i < ${#array[@]}; i++)); do
-      QUERY='{"query":"{\n organization(login: \"'${array[$i]}'\") {\n pinnedItems(first: 6, types: REPOSITORY) {\n nodes {\n ... on Repository {\n name\n }\n }\n }\n }\n}"'
-      IFS=', '; pr=($(curl -s -X POST "${GITHUB_GRAPHQL_URL}" -H "Authorization: bearer ${GH_TOKEN}" --data-raw "${QUERY}" | jq --raw-output '.data.organization.pinnedItems.nodes[].name' | yq eval -P | sed "s/ /, /g"))
-      gh api -H "${HEADER}" /orgs/${array[$i]} | jq '. +
-        {"key1": ["maps","feed","lexer","parser","syntax","grammar"]} +
-        {"key2": ["'${pr[0]}'","'${pr[1]}'","'${pr[2]}'","'${pr[3]}'","'${pr[4]}'","'${pr[5]}'"]}' >> ${RUNNER_TEMP}/orgs.json
-      if [[ "$i" -lt "${#array[@]}-1" ]]; then echo "," >> ${RUNNER_TEMP}/orgs.json; fi
+      # Call pinned_repos and check result
+      if pinned_repos ${array[$i]}; then
+        # Read the pinned repos safely
+        if [[ -f ${RUNNER_TEMP}/pinned_repos && -s ${RUNNER_TEMP}/pinned_repos ]]; then
+          IFS=', ' read -ra pr < ${RUNNER_TEMP}/pinned_repos
+        else
+          pr=()  # Empty array if file is empty
+        fi
+        
+        # Build the JSON entry with proper null handling
+        gh api -H "${HEADER}" /orgs/${array[$i]} 2>/dev/null | \
+          jq --argjson key1 '["maps","feed","lexer","parser","syntax","grammar"]' \
+             --argjson key2 "$(printf '%s\n' "${pr[@]:0:6}" | jq -R . | jq -s .)" \
+             '. + {key1: $key1} + {key2: $key2}' >> ${RUNNER_TEMP}/orgs.json
+      else
+        # Fallback for failed pinned_repos
+        gh api -H "${HEADER}" /orgs/${array[$i]} 2>/dev/null | \
+          jq '. + {key1: ["maps","feed","lexer","parser","syntax","grammar"], key2: []}' >> ${RUNNER_TEMP}/orgs.json
+      fi
+      
+      if [[ "$i" -lt "${#array[@]}-1" ]]; then 
+        echo "," >> ${RUNNER_TEMP}/orgs.json
+      fi
     done
     echo "]" >> ${RUNNER_TEMP}/orgs.json
   fi
-  
+ 
   # Iterate the Structure
   printf -v array_str -- ',,%q' "${array[@]}"
   if [[ ! "${array_str},," =~ ",,$1,," ]]; then
@@ -41,8 +96,7 @@ set_target() {
       if [[ "${ENTRY}" == "eq19" ]]; then
         echo "maps, feed, lexer, parser, syntax, grammar" > ${RUNNER_TEMP}/pinned_repos
       else
-        QUERY='{"query":"{\n organization(login: \"'${ENTRY}'\") {\n pinnedItems(first: 6, types: REPOSITORY) {\n nodes {\n ... on Repository {\n name\n }\n }\n }\n }\n}"'
-        curl -s -X POST "${GITHUB_GRAPHQL_URL}" -H "Authorization: bearer ${GH_TOKEN}" --data-raw "${QUERY}" | jq --raw-output '.data.organization.pinnedItems.nodes[].name' | yq eval -P | sed "s/ /, /g" > ${RUNNER_TEMP}/pinned_repos
+        pinned_repos ${ENTRY}
         sed -i "1s|^|maps, feed, lexer, parser, syntax, grammar, |" ${RUNNER_TEMP}/pinned_repos
       fi
     fi
