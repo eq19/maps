@@ -30,8 +30,9 @@ class AIAgentEnsembleRegressor(BaseRegressionModel):
     5. 风险评估集成
     """
 
-    def __init__(self, dk: FreqaiDataKitchen, **kwargs):
-        super().__init__(dk=dk, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
         # 基础模型
         self.models = {
             'rf': RandomForestRegressor(
