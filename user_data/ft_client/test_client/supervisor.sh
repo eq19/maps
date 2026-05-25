@@ -64,5 +64,5 @@ CONFIG_BACKUP="$EXCHANGE_CONFIG.bak"
 $FT trade -v \
   --config "$CONFIG_FILE" \
   --userdir "$DATA_DIR" \
-  --freqaimodel "$FREQAI_MODEL" \
-  --log-file "$DATA_DIR/logs/freqtrade.log"
+  --log-file "$DATA_DIR/logs/freqtrade.log" \
+  ${FREQAI_MODEL:+--freqaimodel "$FREQAI_MODEL"}
