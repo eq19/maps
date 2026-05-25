@@ -47,7 +47,7 @@ env:
   RUNNER_TITLE: "Google-optimized-instance"
   TARGET_REPOSITORY: ${{ vars.TARGET_REPOSITORY }}
   SCORE: ${{ !(inputs.RUN_MODE == 'FreqAI') && 100 || vars.SCORE }}
-  RUN_MODE: ${{ !(inputs.RUN_MODE == 'FreqAI') && 'Hyperopt' || inputs.RUN_MODE }}
+  RUN_MODE: ${{ inputs.RUN_MODE != 'false' && inputs.RUN_MODE || 'Hyperopt' }}
 
 jobs:
   lexering:
