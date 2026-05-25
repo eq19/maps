@@ -3,14 +3,15 @@ from typing import Any, Dict, Tuple
 
 import numpy
 import pandas
-from freqtrade.exceptions import OperationalException
-from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
+import keras_model
+from tensorflow_wrapper import tensorflow
 
 import generate_dataset
-import keras_model
 from load_data import column_feature, column_label
-from tensorflow_wrapper import tensorflow
+from freqtrade.exceptions import OperationalException
+from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 from freqtrade.freqai.base_models.BaseTensorFlowModel import BaseTensorFlowModel
+
 
 log = logging.getLogger(__name__)
 
