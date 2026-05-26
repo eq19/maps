@@ -17,11 +17,7 @@ from sklearn.metrics import roc_auc_score, f1_score, accuracy_score
 
 from catboost import CatBoostClassifier, Pool
 
-sys.path.append('/com.docker.devenvironments.code/user_data')
-sys.path.append('/home/freqtrade/user_data')
-sys.path.append('/Users/nikitatolstakov/Desktop/Python/freqtrade/user_data')
-
-from lib import helpers
+from utils.lib import helpers
 
 from freqtrade.freqai.base_models.BaseClassifierModel import BaseClassifierModel
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
