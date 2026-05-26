@@ -1,7 +1,7 @@
 import numpy as np
 from joblib import Parallel
 from sklearn.base import is_classifier
-from sklearn.multioutput import MultiOutputClassifier, _fit_estimator
+from sklearn.multioutput import _fit_estimator
 from sklearn.utils.multiclass import check_classification_targets
 from sklearn.utils.validation import has_fit_parameter
 from sklearn.base import clone
@@ -9,7 +9,7 @@ from sklearn.utils.parallel import delayed, Parallel
 
 from freqtrade.exceptions import OperationalException
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
-
+from freqtrade.freqai.base_models.FreqaiMultiOutputClassifier import FreqaiMultiOutputClassifier
 
 
 def _fit_estimator(estimator, X, y, sample_weight=None, selected_features=[], **fit_params):
@@ -20,7 +20,7 @@ def _fit_estimator(estimator, X, y, sample_weight=None, selected_features=[], **
 
     return estimator
 
-class MultiOutputClassifier(MultiOutputClassifier):
+class MultiOutputClassifier(FreqaiMultiOutputClassifier):
     n_jobs = 2
 
     def fit(self, X, y, sample_weight=None, selected_features_all_labels=None, fit_params=None):
