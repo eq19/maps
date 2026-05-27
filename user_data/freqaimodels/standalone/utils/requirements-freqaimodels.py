@@ -3,7 +3,7 @@
 # numba
 # mlflow
 optuna
-# optunahub
+optunahub
 # pangres
 # probatus
 # scikit-image
