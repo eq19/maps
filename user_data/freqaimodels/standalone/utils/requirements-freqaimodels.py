@@ -1,7 +1,7 @@
 feature_engine
 neptune
 numba
-# mlflow
+mlflow
 optuna
 optunahub
 # pangres
