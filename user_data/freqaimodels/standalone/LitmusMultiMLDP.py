@@ -5,10 +5,9 @@ from typing import Any, Dict
 
 from catboost import CatBoostClassifier, Pool
 
-from freqtrade.freqai.base_models.BaseClassifierModel import BaseClassifierModel
-from freqtrade.litmus.base_models.LitmusFreqaiMultiOutputClassifier import \
-    LitmusFreqaiMultiOutputClassifier
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
+from freqtrade.freqai.base_models.BaseClassifierModel import BaseClassifierModel
+from utils.litmus.base_models.LitmusFreqaiMultiOutputClassifier import LitmusFreqaiMultiOutputClassifier
 
 
 logger = logging.getLogger(__name__)
