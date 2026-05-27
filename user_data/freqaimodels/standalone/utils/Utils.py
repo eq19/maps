@@ -25,7 +25,7 @@ import optuna
 import pandas as pd
 import scipy as sp
 import talib.abstract as ta
-from LabelTransformer import (
+from utils.LabelTransformer import (
     COMBINED_AGGREGATIONS,
     COMBINED_METRICS,
     DEFAULTS_LABEL_PIPELINE,
