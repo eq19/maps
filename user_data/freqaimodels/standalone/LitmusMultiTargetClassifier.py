@@ -8,11 +8,11 @@ from catboost import CatBoostClassifier, Pool, EFstrType, EFeaturesSelectionAlgo
 from feature_engine.selection import DropCorrelatedFeatures
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 from freqtrade.freqai.freqai_interface import IFreqaiModel
-from freqtrade.litmus.model_helpers import (MergedModel,
+from utils.litmus.model_helpers import (MergedModel,
                                             get_rfecv_feature_importance,
                                             threshold_from_optimum_f1,
                                             threshold_from_desired_precision)
-from freqtrade.litmus.db_helpers import save_df_to_db
+from utils.litmus.db_helpers import save_df_to_db
 from pandas import DataFrame
 from pathlib import Path
 from sklearn.feature_selection import RFECV
