@@ -5,7 +5,7 @@ mlflow
 optuna
 optunahub
 pangres
-# probatus
+probatus
 # scikit-image
 # scikit-learn-extra
 # shap
