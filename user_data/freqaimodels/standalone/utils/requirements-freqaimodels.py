@@ -1,0 +1,13 @@
+feature_engine
+neptune
+numba
+mlflow
+optuna
+optunahub
+pangres
+probatus
+scikit-image
+shap
+sklearn_extra
+tscv
+wandb
