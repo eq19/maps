@@ -30,7 +30,7 @@ from sklearn.preprocessing import (
 )
 from sklearn_extra.cluster import KMedoids
 
-from LabelTransformer import (
+from utils.LabelTransformer import (
     CUSTOM_THRESHOLD_METHODS,
     EXTREMA_SELECTION_METHODS,
     PREDICTION_METHODS,
@@ -44,7 +44,7 @@ from LabelTransformer import (
     get_label_column_config,
 )
 
-from Utils import (
+from utils.Utils import (
     DEFAULT_FIT_LIVE_PREDICTIONS_CANDLES,
     DEFAULTS_LABEL_PREDICTION,
     LABEL_COLUMNS,
