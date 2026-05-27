@@ -63,6 +63,20 @@ The lattice is also the method to study QCD in extreme conditions (high temperat
 
 ![images6-ezgif com-resize](https://github.com/eq19/maps/assets/8466209/9831d77d-9c18-4691-b0be-5bb244509368)
 
+Both 1/89 and 1/109 have the Fibonacci sequence _[encoded in their decimal expansions](https://eq19.github.io/addition/#minor-hexagons)_ illustrates a period-24 palindromic that bring ***[the powers of pi](https://eq19.github.io/multiplication/#lineage-retracement)***. 
+
+```note
+When the digital root of perfect squares is sequenced within a ***modulo 30 x 3 = modulo 90 horizon***, beautiful symmetries in the form of period-24 palindromes are revealed, which the author has documented on the On-Line Encyclopedia of Integer Sequences as [Digital root of squares of numbers not divisible by 2, 3 or 5 (A24092)](https://oeis.org/A240924):
+
+1, 4, 4, 7, 1, 1, 7, 4, 7, 1, 7, 4, 4, 7, 1, 7, 4, 7, 1, 1, 7, 4, 4, 1
+
+In the matrix pictured below, we list ***the first 24 elements*** of our domain, take their squares, calculate the modulo 90 congruence and digital roots of each square, and display the digital root factorization dyad for each square (and map their collective bilateral 9 sum symmetry).  _([PrimesDemystified](https://primesdemystified.com/#Distribution_of_Perfect_Squares))_
+```
+
+[![root profiles](https://user-images.githubusercontent.com/36441664/277179073-e0411710-779e-4cea-8a37-ff7c635f46f7.png)](https://eq19.github.io/exponentiation/folder14/#root-profiles)
+
+Geometrically, a transformation matrix rotates, stretches, or shears the vectors it acts upon. The corresponding [eigenvalue](https://www.lancaster.ac.uk/staff/schomeru/lecturenotes/Quantum%20Mechanics/S15.html#E266) is often represented as the ***multiplying factor***.
+
 ## Matrix Scheme
 
 Quarks have three colors. Color is to the strong interaction as electric charge is to the electromagnetic interaction.
@@ -130,6 +144,65 @@ bispinor-4 |    2    |    3    |     3     |    18     |     24     |   19+i5
 ```
 
 ## Interactions
+
+```
+#!/usr/bin/env python
+
+import numpy as np
+from scipy import linalg
+
+class SU3(np.matrix):
+	GELLMANN_MATRICES = np.array([
+		np.matrix([ #lambda_1
+			[0, 1, 0],
+			[1, 0, 0],
+			[0, 0, 0],
+		], dtype=np.complex),
+		np.matrix([ #lambda_2
+			[0,-1j,0],
+			[1j,0, 0],
+			[0, 0, 0],
+		], dtype=np.complex),
+		np.matrix([ #lambda_3
+			[1, 0, 0],
+			[0,-1, 0],
+			[0, 0, 0],
+		], dtype=np.complex),
+		np.matrix([ #lambda_4
+			[0, 0, 1],
+			[0, 0, 0],
+			[1, 0, 0],
+		], dtype=np.complex),
+		np.matrix([ #lambda_5
+			[0, 0,-1j],
+			[0, 0, 0 ],
+			[1j,0, 0 ],
+		], dtype=np.complex),
+		np.matrix([ #lambda_6
+			[0, 0, 0],
+			[0, 0, 1],
+			[0, 1, 0],
+		], dtype=np.complex),
+		np.matrix([ #lambda_7
+			[0, 0,  0 ],
+			[0, 0, -1j],
+			[0, 1j, 0 ],
+		], dtype=np.complex),
+		np.matrix([ #lambda_8
+			[1, 0, 0],
+			[0, 1, 0],
+			[0, 0,-2],
+		], dtype=np.complex) / np.sqrt(3),
+	])
+
+
+	def computeLocalAction(self):
+		pass
+
+	@classmethod
+	def getMeasure(self):
+		pass
+```
 
 The subclasses of partitions systemically develops characters similar to the distribution of prime numbers. 
 

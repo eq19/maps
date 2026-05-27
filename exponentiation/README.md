@@ -759,6 +759,7 @@ Being a high level of non-patterned noise in the form of outlier data points, th
 
 ```txt
  Osp(1) |  1 |  2 |  3 |  4 
+
 --------+----+----+----+----
  π(10)  |  2 |  3 |  5 |  7 
  
@@ -2382,6 +2383,10 @@ Mapping the quantum way within a huge of primes objects (5 to 19) by lexering (1
 ```
 
 [![default](https://github.com/user-attachments/assets/fdcf5ccd-3f08-454e-8f6c-cad1a8aae35d)](https://github.com/iree-org/iree?tab=readme-ov-file)
+
+This scheme goes to the unification of 11s with 7s to 18s meanwhile the 11th it self behave as residual by the 5th minor hexagon between the [30 to 36' cells](https://eq19.github.io/#exponentiation-zones).
+
+[![30 to 36' cells](https://user-images.githubusercontent.com/8466209/200475393-f3e42f0b-d291-4f17-93c4-9bec6e6943de.png)](https://eq19.github.io/#exponentiation-zones)
 
 This also introduces a _[lower bound](https://www.primesdemystified.com/Factorization.html)_ of Mod 90 originated from the 4th coupling of MEC30 which is holded by ***five (5) cells between 13 and 17***.
 
