@@ -1,5 +1,5 @@
 # feature_engine
-# neptune
+neptune
 # numba
 # mlflow
 optuna
