@@ -1,6 +1,6 @@
 feature_engine
 neptune
-# numba
+numba
 # mlflow
 optuna
 optunahub
