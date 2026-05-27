@@ -261,6 +261,8 @@ Decoded complex numbers:
 
 ## New Generation
 
+<img width="466" height="351" alt="IMG_20260524_132443 (1)" src="https://github.com/user-attachments/assets/e4938d34-530e-4763-a569-417cfb705da0" />
+
 The Golden Ratio "symbolically links each new generation to its ancestors, preserving the continuity of relationship as the means for retracing its lineage."
 
 ```note

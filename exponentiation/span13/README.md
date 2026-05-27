@@ -162,6 +162,29 @@ $True Prime Pairs:
                     Δ                 Δ                 Δ       
 ```
 
+This scheme goes to the unification of 11s with 7s to 18s meanwhile the 11th it self behave as residual by the 5th minor hexagon between the [30 to 36' cells](https://eq19.github.io/#exponentiation-zones).
+
+[![30 to 36' cells](https://user-images.githubusercontent.com/8466209/200475393-f3e42f0b-d291-4f17-93c4-9bec6e6943de.png)](https://eq19.github.io/#exponentiation-zones)
+
+This also introduces a _[lower bound](https://www.primesdemystified.com/Factorization.html)_ of Mod 90 originated from the 4th coupling of MEC30 which is holded by ***five (5) cells between 13 and 17***.
+
+```note
+The Minimal Supersymmetric Standard Model (MSSM) contains two Higgs doublets, leading to _five (5) physical [Higgs bosons](https://www.sciencedirect.com/topics/physics-and-astronomy/higgs-bosons)_:
+- one (1) neutral CP-odd (A) 👈 ***degenerated with (h or H)*** 
+- two (2) charged states ***(H+ and H−)***,
+- Two (2) neutral CP-even states ***(h and H)***.
+
+_At tree-level, the masses are [governed](https://github.com/eq19/maps/files/14066329/76104_ANGELESCU_2017_diffusion.pdf)
+ by two parameters, often taken to be mA and tan β [3]. When tan β >> 1, A is nearly [degenerated](https://github.com/eq19/maps/files/14066343/epjconf_qfthep2019_04006.pdf)
+ with one of the CP-even states (denoted ϕ)_. _([ScienceDirect](https://www.sciencedirect.com/topics/mathematics/higgs-mechanism))_
+```
+
+[![the 5 cells](https://github.com/eq19/maps/assets/8466209/d3c8e7cb-2239-4b93-a4be-97e3ddbc8c94)](https://eq19.github.io/multiplication/18.html#higgs-mechanism)
+
+These waves have phase offsets, meaning they peak at different times. This all relates to _[Zitterbewegung](https://github.com/eq19/maps/files/13791680/Zitterbewegung_in_Quantum_Mechanics_a_re.pdf)_, a term describing [the jittery motion](https://www.quora.com/What-is-jittery-motion/answer/Emad-Noujeim) of particles in quantum mechanics.
+
+[![96 perfect squares](https://github.com/eq19/maps/assets/8466209/d9b8410b-796f-4720-8393-1bd9398589be)](https://primesdemystified.com/#Distribution_of_Perfect_Squares)
+
 ## Black Hole
 
 ![main-qimg-6874830a97ce37b0b02cc3ae3d2268f1](https://github.com/eq19/maps/assets/8466209/d2e19618-dbba-4c29-b03c-8a4a3bdc0bcd)
@@ -291,8 +314,6 @@ This would even close to the similar ability of human brain without undertanding
 ![EU4RYL7UcAAzZN2](https://github.com/eq19/maps/assets/8466209/8430c02a-fb45-41cb-807d-b606f0619973)
 
 ![final-theory](https://github.com/eq19/maps/assets/8466209/b08ba16b-921d-4602-8d57-b5b2974ccec8)
-
-![](https://user-images.githubusercontent.com/8466209/200475393-f3e42f0b-d291-4f17-93c4-9bec6e6943de.png)
 
 ![HEXAHEDRONTORUS1](https://github.com/eq19/maps/assets/8466209/ce33a44d-7431-44b9-9073-902cbbcfc68b)
 

@@ -116,6 +116,24 @@ There are two groups of scientists (called collaborations) looking for evidence 
 [![fully-expanded-incl-matrices](https://github.com/eq19/maps/assets/8466209/48f7eccd-64e3-41a9-bc16-588c17cdd887)
 ](https://diracfortherestofus.wordpress.com/2018/06/02/10-on-not-spin/)
 
+We are focusing to MEC30 so we end up this exponentiation by the famous quote from _WD Gann_ himself stating an important changes by certain ***repetition of 30***.
+
+```tip
+W.D. Gann: “Stocks make important changes in trend every ***30, 60, 120, 150, 210, 240, 300, 330, 360*** days or degrees from any important top or bottom.”
+```
+
+[![WD Gann - Hexagonal Chart](https://github.com/eq19/maps/assets/8466209/defe3aa5-ab70-4fd6-9412-b19c21a4ffaf)](https://eq19.github.io/identition/)
+
+***In line with 168 there is 330 located of 10th layer***. Since the base unit of 30 repeats it self on the center then this `11 x 30 = 330` is pushed to the `10 + 1 = 11th layer`. 
+
+```tip
+***There are 7 hidden dimensions in 11-d Supergravity, which is the low energy approximation to M theory, which also has 7 hidden dimensions***. _([Prime Curios!](https://t5k.org/curios/page.php?curio_id=20686))_
+```
+
+***(11x7) + (29+11) + (25+6) + (11+7) + (4+1) = 77+40+31+18+5 = 171***
+
+[![extended branes](https://github.com/eq19/maps/assets/8466209/deb0e309-2178-4dc5-a1d6-30c81c4a8305)](https://eq19.github.io/addition/)
+
 ## Constructing the tableaux
 
 [![Young_tableaux_1](https://github.com/eq19/maps/assets/8466209/b67b90d8-6b5e-435e-8f5c-ade27ec0d9e8)](https://en.m.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients_for_SU(3)#Constructing_the_tableaux)

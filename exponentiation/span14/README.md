@@ -266,13 +266,25 @@ $True Prime Pairs:
                     Δ                 Δ                 Δ       
 ```
 
-![electron orbit](https://user-images.githubusercontent.com/36441664/133192153-61cad1c0-1dde-4fed-8718-840d324a7198.jpg)
+***1 instance + 7 blocks + 29 flats + 77 rooms = 114 objects***
+
+![](https://user-images.githubusercontent.com/36441664/99129100-38a40300-263f-11eb-8715-a657fec3aaf1.jpg)
 
 ```txt
-True Prime Pairs:
-(5,7), (11,13), (17,19)
+Prime Loops:
+π(10) = 4 (node)
+π(100) = 25 (partition)
+π(1000) - 29 = 139 (section)
+π(10000) - 29th - 29 = 1091 (segment)
+π(100000) - 109th - 109 = 8884 (texture)
+Sum: 4 + 25 + 139 + 1091 + 8884 = 10143 (object)
 
-     |    168    |    618    | ✔️
+Sequence Layers:
+- By the next layer the 89² will become 89 and 5 become 5² or 25.
+- This 89 and 25 are in the same layer with total of 114 or prime 619
+- So sequence from the first prime is 1,4,7,10,29,68,89,114,139,168,329,618.
+
+     |    168    |    618    |
 -----+-----+-----+-----+-----+     -----------------------------------------------
 {786}| 1,2 |  2  | 2,3 | 3,4 | {19}                                          |
 -----+-----+-----+-----+-----+                                               |
@@ -290,8 +302,9 @@ True Prime Pairs:
 -----+-----+-----+-----+-----+-----+-----+-----+-----+-------+         -----------
      |  1     2     3  |   4     5     6 |   7     8      9  |
      |------ 29' ------|--------------- 139' ----------------|
-     |------ 618¨ -----|--------------- 168¨ ----------------|
+     |------ 102¨ -----|---------------  66¨ ----------------|
 ```
+
 
 ![IMG_20240118_121014](https://github.com/eq19/maps/assets/8466209/942b517a-954c-4f1e-b075-14a52e08d9be)
 
