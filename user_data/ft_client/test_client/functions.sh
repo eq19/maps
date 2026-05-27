@@ -460,11 +460,9 @@ hyperopt() {
 }
 
 freqai() {
-
-  # Extract clean list of hyperoptloss classes
-  freqaimodels=$(printf '%s\n' "$(freqtrade list-freqaimodels --freqaimodel-path $FREQAIMODELS_PATH --one-column)" | jq -R . | jq -s .)
   
   # Load JSON and filter by given ID
+  pip install -qq --no-cache-dir optuna neptune
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     end_date=$(date +"%Y%m%d")
     days=$(echo "$pipeline" | jq -r '.days')
@@ -477,6 +475,9 @@ freqai() {
     # dispatch only for main workflow
     [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
     if [[ "$GITHUB_JOB" == "lexering" ]]; then
+
+      # Extract clean list of hyperoptloss classes
+      freqaimodels=$(printf '%s\n' "$(freqtrade list-freqaimodels --freqaimodel-path $FREQAIMODELS_PATH --one-column)" | jq -R . | jq -s .)
       curl -s -X POST \
         -H "Authorization: token $GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
