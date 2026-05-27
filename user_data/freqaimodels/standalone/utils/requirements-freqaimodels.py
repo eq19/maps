@@ -8,6 +8,6 @@ pangres
 # probatus
 # scikit-image
 # scikit-learn-extra
-# shap
+shap
 # tscv
 # wandb
