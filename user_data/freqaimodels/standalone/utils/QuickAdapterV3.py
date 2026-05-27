@@ -21,7 +21,7 @@ from freqtrade.exchange import timeframe_to_minutes, timeframe_to_prev_date
 from freqtrade.persistence import Trade
 from freqtrade.strategy import AnnotationType, stoploss_from_absolute
 from freqtrade.strategy.interface import IStrategy
-from LabelTransformer import (
+from utils.LabelTransformer import (
     COMBINED_AGGREGATIONS,
     FILL_METHODS,
     SMOOTHING_METHODS,
@@ -32,7 +32,7 @@ from pandas import DataFrame, Series, isna
 from scipy.stats import pearsonr, t
 from technical.pivots_points import pivots_points
 
-from Utils import (
+from utils.Utils import (
     DEFAULT_FIT_LIVE_PREDICTIONS_CANDLES,
     EXTREMA_COLUMN,
     EXTREMA_DIRECTION_COLUMN,
