@@ -462,7 +462,6 @@ hyperopt() {
 freqai() {
   
   # Load JSON and filter by given ID
-  pip install -qq --no-cache-dir optuna neptune
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
     end_date=$(date +"%Y%m%d")
     days=$(echo "$pipeline" | jq -r '.days')
