@@ -4,7 +4,7 @@ numba
 mlflow
 optuna
 optunahub
-# pangres
+pangres
 # probatus
 # scikit-image
 # scikit-learn-extra
