@@ -7,7 +7,7 @@ optunahub
 pangres
 probatus
 scikit-image
-scikit-learn-extra
+# scikit-learn-extra
 shap
 tscv
 wandb
