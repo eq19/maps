@@ -40,7 +40,8 @@ cat $CONFIG > user_data/config.json
 # ENVIRONMENT
 export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
-[[ $# -eq 0 || ( "$1" == "FreqAI" && "$GITHUB_JOB" != "lexering" ) ]] && pip install -qq --no-cache-dir optuna neptune
+[[ ( $# -eq 0  && "$GITHUB_JOB" == "lexering" ) || ( "$1" == "FreqAI" && "$GITHUB_JOB" != "lexering" ) ]] && \
+  pip install -qq --no-cache-dir optuna neptune
 
 if [[ $# -eq 0 ]]; then
 
