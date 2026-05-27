@@ -8,6 +8,5 @@ pangres
 probatus
 scikit-image
 shap
-sklearn_extra
 tscv
 wandb
