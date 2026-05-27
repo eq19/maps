@@ -1,6 +1,6 @@
 feature_engine
 neptune
-# numba
+numba
 mlflow
 optuna
 optunahub
@@ -8,6 +8,6 @@ pangres
 probatus
 scikit-image
 scikit-learn-extra
-shap
+# shap
 tscv
 wandb
