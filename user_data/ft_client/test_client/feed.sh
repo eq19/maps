@@ -40,8 +40,9 @@ cat $CONFIG > user_data/config.json
 # ENVIRONMENT
 export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
+[[ $# -eq 0 || "$1" == "FreqAI" && "$GITHUB_JOB" != "lexering" ]] && pip install optuna
 
-if [[ "$1" != "Hyperopt" &&  "$1" != "FreqAI" ]]; then
+if [[ $# -eq 0 ]]; then
 
   echo -e "\n$hr\nTEST CCXT\n$hr"
   python user_data/ft_client/test_client/test_client.py
