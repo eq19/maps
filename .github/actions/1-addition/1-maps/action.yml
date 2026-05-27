@@ -104,20 +104,21 @@ runs:
       run: |
         if [[ "$GITHUB_JOB" == "lexering" ]]; then
           gh variable set RERUN_RUNNER --body "false"
+          if [[ "$RUN_MODE" == "MEC30" ]]; then
+            HEADER="Accept: application/vnd.github+json"
+            RESPONSE=$(gh api -H "${HEADER}" repos/${{ github.repository }}/actions/runners)
+            TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
+            STATUS=$(echo "$RESPONSE" | jq -r --arg NAME "${{ env.RUNNER_TITLE }}" '.runners[] | select(.name == $NAME).status')
 
-          HEADER="Accept: application/vnd.github+json"
-          RESPONSE=$(gh api -H "${HEADER}" repos/${{ github.repository }}/actions/runners)
-          TOTAL_COUNT=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.total_count')
-          STATUS=$(echo "$RESPONSE" | jq -r --arg NAME "${{ env.RUNNER_TITLE }}" '.runners[] | select(.name == $NAME).status')
-
-          if [[ "$TOTAL_COUNT" -eq 0 ]]; then
-            export "RUNNER_COUNT=$TOTAL_COUNT"
-            gh variable set RERUN_RUNNER --body "true"
-          elif [[ "$STATUS" == "offline" || "$REMOVE_RUNNER" == "true" ]]; then
-            export "RUNNER_STATUS=$STATUS"
-            gh variable set RERUN_RUNNER --body "true"
-            RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
-            gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}
+            if [[ "$TOTAL_COUNT" -eq 0 ]]; then
+              export "RUNNER_COUNT=$TOTAL_COUNT"
+              gh variable set RERUN_RUNNER --body "true"
+            elif [[ "$STATUS" == "offline" || "$REMOVE_RUNNER" == "true" ]]; then
+              export "RUNNER_STATUS=$STATUS"
+              gh variable set RERUN_RUNNER --body "true"
+              RUNNER_ID=$(gh api -H "${HEADER}" /repos/${{ github.repository }}/actions/runners --jq '.runners.[].id')
+              gh api --method DELETE -H "${HEADER}" /repos/${{ github.repository }}/actions/runners/${RUNNER_ID}
+            fi
           fi
         fi
 
