@@ -12,11 +12,11 @@ from feature_engine.selection import DropCorrelatedFeatures
 # from fracdiff.sklearn import FracdiffStat
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 from freqtrade.freqai.freqai_interface import IFreqaiModel
-from freqtrade.litmus.db_helpers import save_df_to_db
-from freqtrade.litmus import feature_selection_helper as fs
-from freqtrade.litmus import hyperopt
-from freqtrade.litmus import model_diagnostics as md
-from freqtrade.litmus.model_helpers import MergedModel
+from utils.litmus.db_helpers import save_df_to_db
+from utils.litmus import feature_selection_helper as fs
+from utils.litmus import hyperopt
+from utils.litmus import model_diagnostics as md
+from utils.litmus.model_helpers import MergedModel
 from functools import partial
 from optuna.trial import TrialState
 from pandas import DataFrame
