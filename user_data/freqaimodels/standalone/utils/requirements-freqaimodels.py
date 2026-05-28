@@ -6,8 +6,8 @@ optuna
 optunahub
 pangres
 # probatus
-# scikit-image
+scikit-image
 # scikit-learn-extra
 shap
 # tscv
-# wandb
+wandb
