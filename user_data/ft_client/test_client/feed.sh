@@ -42,7 +42,7 @@ export PATH="venv/bin:$PATH"
 export PYTHONPATH="user_data/strategies:user_data/freqaimodels:$PYTHONPATH"
 
 if [[ ( $# -eq 0 && "$RUN_MODE" == "FreqAI" && "$GITHUB_JOB" == "lexering" ) || ( "$1" == "FreqAI" && "$GITHUB_JOB" != "lexering" ) ]]; then
-  pip install -qq --no-cache-dir -r "$FREQAIMODELS_PATH/utils/requirements-freqaimodels.py"
+  pip install -qq --no-cache-dir -r "$FREQAIMODELS_PATH/libs/requirements-freqaimodels.py"
 fi
 
 if [[ $# -eq 0 ]]; then
