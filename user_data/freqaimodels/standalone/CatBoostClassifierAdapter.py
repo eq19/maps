@@ -17,7 +17,7 @@ from sklearn.metrics import roc_auc_score, f1_score, accuracy_score
 
 from catboost import CatBoostClassifier, Pool
 
-from utils.lib import helpers
+from .utils.lib import helpers
 
 from freqtrade.freqai.base_models.BaseClassifierModel import BaseClassifierModel
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
