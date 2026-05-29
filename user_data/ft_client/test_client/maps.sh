@@ -4,12 +4,8 @@ MAX_RETRIES=5
 DELAY=10  # seconds
 COUNT=0
 
-$DOCKER exec mydb bash -c "python /home/runner/user_data/ft_client/test_client/app.py \"$DIR_PATH\" \"${ID:-1}\" \"${PARAM_NAME:-nil}\" \"${EPOCHS:-100}\""
-
-python $APP_PATH $DIR_PATH \
-  ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
-
 # Run IREE and capture ALL output
+python $1 $2 ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-100}
 RAW_OUTPUT=$(iree-run-module \
   --module=complex_module.vmfb \
   --function=serving_default \
