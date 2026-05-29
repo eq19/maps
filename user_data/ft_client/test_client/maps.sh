@@ -4,7 +4,7 @@ MAX_RETRIES=5
 DELAY=10  # seconds
 COUNT=0
 
-python $APP_PATH user_data \
+python $APP_PATH $DIR_PATH \
   ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
 
 # Run IREE and capture ALL output
