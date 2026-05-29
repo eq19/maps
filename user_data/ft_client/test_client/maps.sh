@@ -19,7 +19,8 @@ cat iree_output.txt
 echo "--------------------"
 
 # Pass to decoder
-./float_decoder "$RAW_OUTPUT"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+$SCRIPT_DIR/float_decoder "$RAW_OUTPUT"
 
 ARTIFACT=$3
 #cat $ARTIFACT
