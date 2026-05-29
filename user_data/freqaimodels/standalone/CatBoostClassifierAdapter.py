@@ -1,4 +1,3 @@
-import logging
 import sys
 import time
 from pathlib import Path
@@ -14,17 +13,21 @@ np.random.seed(42)
 random.seed(42)
 
 from sklearn.metrics import roc_auc_score, f1_score, accuracy_score
-
 from catboost import CatBoostClassifier, Pool
-
-from .utils.lib import helpers
 
 from freqtrade.freqai.base_models.BaseClassifierModel import BaseClassifierModel
 from freqtrade.freqai.data_kitchen import FreqaiDataKitchen
 
 from datetime import datetime
-
 import pickle
+import logging
+
+CURRENT_DIR = Path(__file__).resolve().parent
+
+if str(CURRENT_DIR) not in sys.path:
+    sys.path.insert(0, str(CURRENT_DIR))
+
+from utils.lib import helpers
 
 
 logger = logging.getLogger(__name__)
