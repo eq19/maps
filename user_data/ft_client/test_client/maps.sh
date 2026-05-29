@@ -21,7 +21,10 @@ echo "--------------------"
 # Pass to decoder
 ./float_decoder "$RAW_OUTPUT"
 
+ARTIFACT=$3
 #cat $ARTIFACT
+HYPEROPT_PARAM=$4
+
 while true; do
   #echo "Attempt $((COUNT+1))..."
 
