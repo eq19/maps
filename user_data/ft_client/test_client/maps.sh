@@ -32,7 +32,7 @@ while true; do
     --data @"${ARTIFACT}" | jq '.' > "${HYPEROPT_PARAM}"; then
 
     #echo "Request succeeded."
-    cat "${HYPEROPT_PARAM}"
+    [[ "$JOBS_ID" == "1" ]] && cat "${HYPEROPT_PARAM}"
     break
   fi
 
