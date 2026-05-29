@@ -20,13 +20,7 @@ from datasieve.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler, StandardScaler
 import datasieve.transforms as ds
 import wandb
-
-CURRENT_DIR = Path(__file__).resolve().parent
-
-if str(CURRENT_DIR) not in sys.path:
-    sys.path.insert(0, str(CURRENT_DIR))
-
-from utils.MultiOutputClassifierWithFeatureSelect import MultiOutputClassifierWithFeatureSelect
+from MultiOutputClassifierWithFeatureSelect import MultiOutputClassifierWithFeatureSelect
 
 
 logger = logging.getLogger(__name__)
