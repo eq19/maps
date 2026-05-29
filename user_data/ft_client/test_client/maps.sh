@@ -4,6 +4,8 @@ MAX_RETRIES=5
 DELAY=10  # seconds
 COUNT=0
 
+python user_data/ft_client/test_client/app.py user_data ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
+
 # Run IREE and capture ALL output
 RAW_OUTPUT=$(iree-run-module \
   --module=complex_module.vmfb \
