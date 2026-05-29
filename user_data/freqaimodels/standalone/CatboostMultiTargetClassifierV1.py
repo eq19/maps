@@ -20,7 +20,7 @@ from datasieve.pipeline import Pipeline
 from sklearn.preprocessing import RobustScaler, StandardScaler
 import datasieve.transforms as ds
 import wandb
-from utils.MultiOutputClassifierWithFeatureSelect import MultiOutputClassifierWithFeatureSelect
+from .utils.MultiOutputClassifierWithFeatureSelect import MultiOutputClassifierWithFeatureSelect
 
 
 logger = logging.getLogger(__name__)
