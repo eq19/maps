@@ -22,12 +22,7 @@ from datetime import datetime
 import pickle
 import logging
 
-CURRENT_DIR = Path(__file__).resolve().parent
-
-if str(CURRENT_DIR) not in sys.path:
-    sys.path.insert(0, str(CURRENT_DIR))
-
-from utils.lib import helpers
+from libs import helpers
 
 
 logger = logging.getLogger(__name__)
