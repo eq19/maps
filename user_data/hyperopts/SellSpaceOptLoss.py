@@ -5,7 +5,7 @@ from freqtrade.data.metrics import calculate_sharpe, calculate_sortino, calculat
 from freqtrade.optimize.hyperopt import IHyperOptLoss
 
 
-class SellSpaceCombinedHyperOptLoss(IHyperOptLoss):
+class SellSpaceOptLoss(IHyperOptLoss):
     """
     Defines the combined loss function for hyperopt.
 
