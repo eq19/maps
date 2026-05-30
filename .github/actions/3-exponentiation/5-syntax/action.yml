@@ -83,10 +83,17 @@ runs:
   steps:
     #Fill in metadata with ${{ steps.artifact.outputs.orgs_json }}
     - name: Run identity
-      if: runner.os == 'Redis'
       shell: bash
+      env:
+        BASE: "https://github.com/eq19/eq19.github.io.wiki.git"
+        WIKI: "https://github.com/${{ env.TARGET_REPOSITORY }}.wiki.git"      
       run: |
         # Bring GitHub Env Variables in to the config file on another container usong docker from the attached deeplearning image
+        export PATH=/home/runner/_work/_actions/eq19/eq19/v2/.github/entrypoint:$PATH && gist.sh ${BASE} $(pwd)
+        if [[ "${WIKI}" != "${BASE}" ]]; then
+          find . -type d -name "$(yq '.span' _config.yml)" -prune -exec sh -c 'gist.sh ${WIKI} "$1"' sh {} \;
+        fi
+        echo -e "\n$hr\nWORKSPACE\n$hr" && ls -alR .
 
     - name: 💎 Connect to Redis
       # Runs a script that creates a Redis client, populates
@@ -119,4 +126,6 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"

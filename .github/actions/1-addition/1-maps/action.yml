@@ -182,7 +182,10 @@ runs:
       if: ${{ env.RERUN_RUNNER == 'false' }}
       shell: bash
       env:
+        DIR_PATH: "user_data"
+        PARAM_NAME: "PARAM_JSON"
         BEARER: ${{ steps.auth.outputs.id_token }}
+        APP_PATH: "user_data/ft_client/test_client/app.py"
         HYPEROPT_PARAM: "user_data/strategies/hyperopt_params.json"
         ARTIFACT: "user_data/ft_client/test_client/results/orgs.json"
       run: |
@@ -204,12 +207,10 @@ runs:
         done
 
         # Run your pipeline
-        python user_data/ft_client/test_client/app.py user_data ${{ env.ID }} ${{ env.PARAM || 'nil' }} ${{ env.EPOCHS || 100 }}
-        bash user_data/ft_client/test_client/maps.sh
-
         ##Ref: https://github.com/eq19/maps/tree/v3/pythonCode
         ##python ${{ github.workspace }}/.github/entrypoint/artifact/python/gellmann.py
         ##cd ${{ inputs.action_path }}/pythonCode && python npreader.py -h && python map.py -h
+        bash user_data/ft_client/test_client/maps.sh $ID $JOBS_ID $APP_PATH $DIR_PATH $PARAM_NAME $ARTIFACT $HYPEROPT_PARAM 
 
     - name: Login to DockerHub
       uses: docker/login-action@v3
@@ -257,4 +258,6 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"

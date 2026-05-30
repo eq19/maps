@@ -156,7 +156,7 @@ runs:
             ExecStop=/usr/bin/docker stop runner1
             ExecStopPost=/usr/bin/docker rm runner1
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ env.TARGET_REPOSITORY }} -e GH_TOKEN=${{ inputs.token }} -e CONTAINER_NAME=runner1 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name runner1 --pull=always eq19/maps:target-${{ github.run_number }}
+            ExecStart=/usr/bin/docker run -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ env.TARGET_REPOSITORY }} -e GH_TOKEN=${{ inputs.token }} -e CONTAINER_NAME=runner1 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name runner1 --pull=always eq19/maps:target-${{ github.run_number }}
 
         - path: /etc/systemd/system/mydb.service
           permissions: "0644"
@@ -172,7 +172,7 @@ runs:
             Environment="HOME=/home/runner"
             ExecStop=/usr/bin/docker exec mydb -s quit
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --memory=512M --memory-swap=10G --name=mydb -p 5432:5432 -p 8080:8080 -p 8081:8081 -p 8082:8082 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run -e REPOSITORY=${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --memory=512M --memory-swap=10G --name=mydb -p 5432:5432 -p 8080:8080 -p 8081:8081 -p 8082:8082 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
 
         - path: /etc/systemd/system/runner2.service
           permissions: "0644"
@@ -190,7 +190,7 @@ runs:
             ExecStop=/usr/bin/docker stop runner2
             ExecStopPost=/usr/bin/docker rm runner2
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e CONTAINER_NAME=runner2 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name runner2 --pull=always eq19/maps:target-${{ github.run_number }}
+            ExecStart=/usr/bin/docker run -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e CONTAINER_NAME=runner2 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name runner2 --pull=always eq19/maps:target-${{ github.run_number }}
 
         - path: /etc/systemd/system/myredis.service
           permissions: "0644"
@@ -208,7 +208,7 @@ runs:
             ExecStop=/usr/bin/docker stop myredis
             ExecStopPost=/usr/bin/docker rm myredis
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run --rm -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }}  -e CONTAINER_NAME=runner2 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name myredis --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run -e REPOSITORY=${{ inputs.repository }} -e RUNNER_REPLACE_EXISTING=true -e RUNNER_NAME=${{ env.RUNNER_TITLE }} -e RUNNER_REPOSITORY_URL=https://github.com/${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }}  -e CONTAINER_NAME=runner2 -v /home/runner/.docker:/home/runner/.docker -v /mnt:/mnt -v /var/log:/host/var/log -v /etc/systemd:/host/etc/systemd -v /var/run/docker.sock:/var/run/docker.sock --memory=256M --memory-swap=2G --name myredis --pull=always eq19/lexer:id-${{ env.IMAGE_TAG }}
 
         bootcmd:
         - fsck.ext4 -tvy /dev/sdb1
@@ -250,4 +250,6 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo $REPO_NAME --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"

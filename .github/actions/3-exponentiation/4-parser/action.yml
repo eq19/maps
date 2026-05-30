@@ -101,8 +101,6 @@ runs:
         MONITOR_BOT_TOKEN: ${{ inputs.bot_token }}
         TRADING_BOT_TOKEN: ${{ inputs.live_token }}     
         WARNING_BOT_TOKEN: ${{ inputs.logs_token }}     
-        BASE: "https://github.com/eq19/eq19.github.io.wiki.git"
-        WIKI: "https://github.com/${{ env.TARGET_REPOSITORY }}.wiki.git"
       run: |
         if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
           export PAULI_SUM=$(echo -n "${{ inputs.pauli_sum }}" | base64 --decode);
@@ -128,4 +126,6 @@ runs:
       if: ${{ failure() }}
       shell: bash
       run: |
-        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"
