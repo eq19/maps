@@ -30,7 +30,7 @@ echo "--------------------"
 
 # Pass to decoder
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-[[ "$JOBS_ID" == "1" ]] && ./float_decoder "$RAW_OUTPUT"
+$SCRIPT_DIR/float_decoder "$RAW_OUTPUT"
 
 while true; do
   #echo "Attempt $((COUNT+1))..."
