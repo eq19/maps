@@ -4,7 +4,7 @@ from freqtrade.data.metrics import calculate_underwater
 from freqtrade.optimize.hyperopt import IHyperOptLoss
 
 
-class MaxDrawDownRelativeHyperOptLossWithTradePenalty(IHyperOptLoss):
+class MaxDrawDownWithTradePenalty(IHyperOptLoss):
     """
     Defines the loss function for hyperopt.
 
