@@ -35,6 +35,14 @@ The fact that this parameter is so small is the so-called strong CP problem.
 
 ![quark-quark_scattering](https://github.com/eq19/maps/assets/8466209/06a2f256-191f-438b-aa24-0c8d75bb254e)
 
+This exponentiation takes important roles since by the _[multiplication zones](https://eq19.github.io/multiplication/#parsering-structure)_ the MEC30 forms a matrix of  `8 x 8 = 64 = 8²` where the power of 2 stands as exponent
+
+```note
+During the last few years of the 12th century, ***Fibonacci*** undertook a series of travels around the Mediterranean. At this time, the world’s most prominent mathematicians were Arabs, and he spent much time studying with them. His work, whose title translates as the Book of Calculation, was extremely influential in that ***it popularized the use of the Arabic numerals in Europe***, thereby revolutionizing arithmetic and allowing scientific experiment and discovery to progress more quickly. _([Famous Mathematicians](https://famous-mathematicians.org/leonardo-pisano-bigollo/))_
+```
+
+[![MEC30 Square](https://user-images.githubusercontent.com/36441664/262213707-63aa0a64-cf7d-4fb7-9f1a-f3d1ba805643.png)](https://eq19.github.io/multiplication/#parsering-structure)
+
 The gauge symmetry of QCD is based on the special unitary group, SU(3), and the associated charge is called color. Quarks carry three basic charges or colors: red, blue and green.
 
 ```note
@@ -46,6 +54,14 @@ The neutral composites that we observe in nature are the hadrons: mesons compose
 ```
 
 ![SmallBookPile](https://github.com/eq19/maps/assets/8466209/0971f647-c8f7-4fc7-8ec6-0a11e1767773)
+
+Since the first member is 30 then the form is initiated by a matrix of `5 x 6 = 30` which has to be transformed first to `6 x 6 = 36 = 6²` prior to the above MEC30's square. 
+
+```note
+A square system of coupled nonlinear equations can be solved iteratively by Newton's method. This method uses the Jacobian matrix of the system of equations. _([Wikipedia](https://en.wikipedia.org/Jacobian_matrix_and_determinant))_
+```
+
+[![gradien](https://user-images.githubusercontent.com/36441664/128025898-187ba576-795f-4578-af71-ff02a8b682b1.png)](https://eq19.github.io/multiplication/#transformation-to-exponentiation)
 
 A gauge colour rotation is _[a spacetime-dependent SU(3)](https://en.m.wikipedia.org/wiki/Special_unitary_group#The_group_SU(3))_ group element. They span the [Lie algebra](https://github.com/lkpetrich/Semisimple-Lie-Algebras) of the SU(3) group in the defining representation.
 
@@ -88,22 +104,6 @@ red   anti-red,   red   anti-blue,   red   anti-green,
 blue  anti-red,   blue  anti-blue,   blue  anti-green,
 green anti-red,   green anti-blue,   green anti-green.
 ```
-
-This exponentiation takes important roles since by the _[multiplication zones](https://eq19.github.io/multiplication/#parsering-structure)_ the MEC30 forms a matrix of  `8 x 8 = 64 = 8²` where the power of 2 stands as exponent
-
-```note
-During the last few years of the 12th century, ***Fibonacci*** undertook a series of travels around the Mediterranean. At this time, the world’s most prominent mathematicians were Arabs, and he spent much time studying with them. His work, whose title translates as the Book of Calculation, was extremely influential in that ***it popularized the use of the Arabic numerals in Europe***, thereby revolutionizing arithmetic and allowing scientific experiment and discovery to progress more quickly. _([Famous Mathematicians](https://famous-mathematicians.org/leonardo-pisano-bigollo/))_
-```
-
-[![MEC30 Square](https://user-images.githubusercontent.com/36441664/262213707-63aa0a64-cf7d-4fb7-9f1a-f3d1ba805643.png)](https://eq19.github.io/multiplication/#parsering-structure)
-
-Since the first member is 30 then the form is initiated by a matrix of `5 x 6 = 30` which has to be transformed first to `6 x 6 = 36 = 6²` prior to the above MEC30's square. 
-
-```note
-A square system of coupled nonlinear equations can be solved iteratively by Newton's method. This method uses the Jacobian matrix of the system of equations. _([Wikipedia](https://en.wikipedia.org/Jacobian_matrix_and_determinant))_
-```
-
-[![gradien](https://user-images.githubusercontent.com/36441664/128025898-187ba576-795f-4578-af71-ff02a8b682b1.png)](https://eq19.github.io/multiplication/#transformation-to-exponentiation)
 
 ```note
 Fermions and bosons—fermions have quantum spin = 1/2.
@@ -346,3 +346,19 @@ $True Prime Pairs:
 ```
 
 So basically  there is a basic transformation between ***[addition](https://eq19.github.io/addition/)*** of `3 + 4 = 7` in to their ***[multiplication](https://eq19.github.io/multiplication/)*** of `3 x 4 = 12` while the 7 vs 12 will be treated as ***exponentiation***.
+
+```note
+Because the value 30 is the first (common) product of the first 3 primes. And this 30th order repeats itself to infinity. Even in the first 30s system, therefore, the positions are fixed in which the number information positions itself to infinity. We call it the first member of the MEC 30.
+- The numbers not divisible by 2, 3 or 5 are highlighted. We call them prime positions, hence 1, 7, 11, 13, 17, 19, 23, 29. Important for our work is that in the following the term prime refers only to prime numbers that are in the prime positions. So primes 2, 3 and 5 are always excluded.
+- These positions: 1 7 11 13 17 19 23 29. We refer to this basic system as MEC 30 - "Mathematical Elementary Cell 30". By repeating the positions we show the function of the basic system in the next step. If we extend the 30th order of the MEC, for example, to the number 120, the result is ***4 times a 30th order*** and thus 4 × 8 = 32 prime positions.
+- Hypothetical assumption: If the product of the primes (except 2, 3, 5,) would not fall into the prime positions, thus be divided by 2, 3 or 5, the information would have 120 = 32 primes in 32 prime positions: 1, 7, 11, 13, 17, 19, 23, 29, / 31, 37, 41, 43, 47, 49, 53, 59, / 61, 67, 71, 73, 77, 79, 83, 89, / 91, 97, 101, 103, 107, 109, 113, 119
+- These forms gives prime positions:  1, 7, 11, 13, 17, 19, 23, 29, / 1, 7, 11, 13, 17, 19, 23, 29, / 1, 7, 11, 13, 17 , 19, 23, 29, / 1, 7, 11, 13, 17, 19, 23, 29. The 30th order is repeated in the number space ***120 = 4 times, 4 × 8 = 32 prime positions, thus 4 terms***.
+
+From our consideration we can conclude that the distribution of prime numbers must have a static base structure, which is also confirmed logically in the further course. This static structure is altered by the products of the primes themselves, since these products must fall into the prime positions since they are not divisible by 2, 3 and 5. _([Google Patent DE102011101032A9](https://patents.google.com/patent/DE102011101032A9/en#similarDocuments))_
+```
+
+***p(33) = p(40-7) = loop (100000) = 4 + 25 + 139 + 1091 + 8884 = 10143***
+
+[![identities zones](https://user-images.githubusercontent.com/8466209/241491860-72da956a-1740-4ed7-83ef-3844ae1ff8d2.png)](https://eq19.github.io/#identition-zones)
+
+So by simple words this 11 dimensions brings us back to the _[root functions](https://eq19.github.io/exponentiation/#root-functions)_. The only difference is _the base unit_. It is now carrying the above `p(33) = 10143`.
