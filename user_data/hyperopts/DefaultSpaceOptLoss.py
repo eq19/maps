@@ -7,7 +7,7 @@ from freqtrade.optimize.hyperopt import IHyperOptLoss
 # Define a drawdown multiplier to penalize drawdown
 DRAWDOWN_MULT = 0.12
 
-class DefaultSpaceCombinedHyperOptLoss(IHyperOptLoss):
+class DefaultSpaceOptLoss(IHyperOptLoss):
     """
     Combined loss function considering Profit, Drawdown, Sharpe ratio, and Sortino ratio.
     """
