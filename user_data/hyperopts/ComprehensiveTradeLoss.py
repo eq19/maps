@@ -24,7 +24,7 @@ MAX_ACCEPTED_TRADE_DURATION = 900  # 15 minutes
 # EXPECTED_MAX_PROFIT = 1.5
 # MAX_ACCEPTED_TRADE_DURATION = 3600  # 1 hour
 
-class ComprehensiveTradeOptimizationLoss(IHyperOptLoss):
+class ComprehensiveTradeLoss(IHyperOptLoss):
     """
     Combined loss function for optimizing:
     - Total Profit
