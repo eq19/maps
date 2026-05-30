@@ -1,6 +1,4 @@
 """
-ProfitDrawDownHyperOptLossWithTradePenalty
-
 This module defines the alternative HyperOptLoss class based on Profit &
 Drawdown objective which can be used for Hyperoptimization, with a trade distribution penalty.
 
@@ -16,7 +14,7 @@ from freqtrade.optimize.hyperopt import IHyperOptLoss
 # smaller numbers penalize drawdowns more severely
 DRAWDOWN_MULT = 0.075
 
-class ProfitDrawDownWithTradePenalty(IHyperOptLoss):
+class ProfitDrawDown(IHyperOptLoss):
     @staticmethod
     def hyperopt_loss_function(results: DataFrame, config: Config, *args, **kwargs) -> float:
         total_profit = results["profit_abs"].sum()
