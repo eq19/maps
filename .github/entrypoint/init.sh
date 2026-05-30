@@ -403,8 +403,7 @@ fi
       https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/${PARAM_NAME} \
       | jq -r '.value' > ${DIR_PATH}/strategies/fibbo.json"
     $DOCKER exec -e BEARER="$BEARER" mydb bash -c \
-      "chmod +x ${SCRIPT_PATH} && bash ${SCRIPT_PATH} \
-      ${ID:-30} $JOBS_ID $APP_PATH $DIR_PATH $PARAM_NAME $ARTIFACT $HYPEROPT_PARAM"
+      "bash ${SCRIPT_PATH} ${ID:-30} $JOBS_ID $APP_PATH $DIR_PATH $PARAM_NAME $ARTIFACT $HYPEROPT_PARAM"
 
   done
 
