@@ -1,11 +1,22 @@
 #!/usr/bin/env bash
 
+ID=$1
+JOBS_ID=$2
+APP_PATH=$3
+DIR_PATH=$4
+PARAM_NAME=$5
+ARTIFACT=$6
+HYPEROPT_PARAM=$7
+BEARER=$8
+
 MAX_RETRIES=5
 DELAY=10  # seconds
 COUNT=0
 
+# Run application
+python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-100}
+
 # Run IREE and capture ALL output
-python $1 $2 ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-100}
 RAW_OUTPUT=$(iree-run-module \
   --module=complex_module.vmfb \
   --function=serving_default \
@@ -20,11 +31,7 @@ echo "--------------------"
 
 # Pass to decoder
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-$SCRIPT_DIR/float_decoder "$RAW_OUTPUT"
-
-ARTIFACT=$3
-#cat $ARTIFACT
-HYPEROPT_PARAM=$4
+[[ "$JOBS_ID" == "1" ]] && $SCRIPT_DIR/float_decoder "$RAW_OUTPUT"
 
 while true; do
   #echo "Attempt $((COUNT+1))..."
