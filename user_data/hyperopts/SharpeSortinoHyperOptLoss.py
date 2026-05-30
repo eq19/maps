@@ -4,7 +4,7 @@ from freqtrade.constants import Config
 from freqtrade.data.metrics import calculate_sharpe, calculate_sortino
 from freqtrade.optimize.hyperopt import IHyperOptLoss
 
-class SharpeSortinoCombinedHyperOptLoss(IHyperOptLoss):
+class SharpeSortinoHyperOptLoss(IHyperOptLoss):
     """
     Defines a combined loss function for hyperopt.
 
