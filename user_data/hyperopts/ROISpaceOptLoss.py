@@ -6,7 +6,7 @@ from freqtrade.optimize.hyperopt import IHyperOptLoss
 from freqtrade.persistence import Trade
 
 
-class ROISpaceCombinedHyperOptLoss(IHyperOptLoss):
+class ROISpaceOptLoss(IHyperOptLoss):
     """
     Defines the combined loss function for hyperopt.
 
