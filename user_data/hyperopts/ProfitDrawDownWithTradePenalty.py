@@ -16,7 +16,7 @@ from freqtrade.optimize.hyperopt import IHyperOptLoss
 # smaller numbers penalize drawdowns more severely
 DRAWDOWN_MULT = 0.075
 
-class ProfitDrawDownHyperOptLossWithTradePenalty(IHyperOptLoss):
+class ProfitDrawDownWithTradePenalty(IHyperOptLoss):
     @staticmethod
     def hyperopt_loss_function(results: DataFrame, config: Config, *args, **kwargs) -> float:
         total_profit = results["profit_abs"].sum()
