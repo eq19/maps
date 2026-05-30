@@ -13,7 +13,7 @@ from freqtrade.optimize.hyperopt import IHyperOptLoss
 # Smaller numbers penalize drawdowns more severely
 DRAWDOWN_MULT = 0.075
 
-class CombinedDrawDownProfitHyperOptLoss(IHyperOptLoss):
+class CombinedHyperOptLoss(IHyperOptLoss):
     """
     Defines the combined loss function for hyperopt.
 
