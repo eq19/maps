@@ -9,11 +9,12 @@ ARTIFACT=$6
 HYPEROPT_PARAM=$7
 
 MAX_RETRIES=5
+EPOCHS=100
 DELAY=10  # seconds
 COUNT=0
 
 # Run application
-python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-100}
+python $APP_PATH $DIR_PATH ${ID} ${PARAM_NAME} ${EPOCHS}
 
 # Run IREE and capture ALL output
 RAW_OUTPUT=$(iree-run-module \
