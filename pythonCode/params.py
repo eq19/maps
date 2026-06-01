@@ -1,223 +1,209 @@
 from copy import deepcopy
 
+
 class ParamBuilder:
-def init(self, param, fibbo, epochs):
-self.param = param
-self.fibbo = fibbo
-self.epochs = int(epochs)
-self.params = {}
 
-def int_param(self, default, low, high):
-    if low > high:
-        low, high = high, low
+    def __init__(self, param, fibbo, epochs):
+        self.param = param
+        self.fibbo = fibbo
+        self.epochs = int(epochs)
+        self.params = {}
 
-    return {
-        "type": "IntParameter",
-        "low": int(low),
-        "high": int(high),
-        "default": int(default),
-        "optimize": self.optimize
-    }
+    def int_param(self, default, low, high):
+        if low > high:
+            low, high = high, low
 
-def dec_param(self, default, low, high, decimals=3):
-    if low > high:
-        low, high = high, low
+        return {
+            "type": "IntParameter",
+            "low": int(low),
+            "high": int(high),
+            "default": int(default),
+            "optimize": self.optimize
+        }
 
-    return {
-        "type": "DecimalParameter",
-        "low": round(low, decimals),
-        "high": round(high, decimals),
-        "default": round(default, decimals),
-        "decimals": decimals,
-        "optimize": self.optimize
-    }
+    def dec_param(self, default, low, high, decimals=3):
+        if low > high:
+            low, high = high, low
 
-def bool_param(self, default):
-    return {
-        "type": "BooleanParameter",
-        "default": default,
-        "optimize": self.optimize
-    }
+        return {
+            "type": "DecimalParameter",
+            "low": round(low, decimals),
+            "high": round(high, decimals),
+            "default": round(default, decimals),
+            "decimals": decimals,
+            "optimize": self.optimize
+        }
 
-def cat_param(self, default, choices):
-    return {
-        "type": "CategoricalParameter",
-        "choices": choices,
-        "default": default,
-        "optimize": self.optimize
-    }
+    def bool_param(self, default):
+        return {
+            "type": "BooleanParameter",
+            "default": default,
+            "optimize": self.optimize
+        }
 
-def build(self):
-    fibbo_params = self.fibbo.get("params", {})
+    def cat_param(self, default, choices):
+        return {
+            "type": "CategoricalParameter",
+            "choices": choices,
+            "default": default,
+            "optimize": self.optimize
+        }
 
-    for section, section_params in fibbo_params.items():
+    def build(self):
+        fibbo_params = self.fibbo.get("params", {})
 
-        if not isinstance(section_params, dict):
-            continue
+        for section, section_params in fibbo_params.items():
 
-        self.params[section] = {}
+            if not isinstance(section_params, dict):
+                continue
 
-        for key, value in section_params.items():
+            self.params[section] = {}
 
-            self.optimize = (
-                self.param == "nil"
-                or key == self.param
-            )
+            for key, value in section_params.items():
 
-            if isinstance(value, bool):
-
-                self.params[section][key] = (
-                    self.bool_param(value)
+                self.optimize = (
+                    self.param == "nil"
+                    or key == self.param
                 )
 
-            elif isinstance(value, int):
+                if isinstance(value, bool):
 
-                if value == 0:
-                    low, high = 0, 100
-                else:
-                    low = max(
-                        0,
-                        value - self.epochs * 0.5
-                    )
-                    high = min(
-                        value * 2,
-                        value + self.epochs * 0.5
+                    self.params[section][key] = (
+                        self.bool_param(value)
                     )
 
-                self.params[section][key] = (
-                    self.int_param(
-                        value,
-                        low,
-                        high
+                elif isinstance(value, int):
+
+                    if value == 0:
+                        low, high = 0, 100
+                    else:
+                        low = max(
+                            0,
+                            value - self.epochs * 0.5
+                        )
+                        high = min(
+                            value * 2,
+                            value + self.epochs * 0.5
+                        )
+
+                    self.params[section][key] = (
+                        self.int_param(
+                            value,
+                            low,
+                            high
+                        )
                     )
-                )
 
-            elif isinstance(value, float):
+                elif isinstance(value, float):
 
-                percent = max(
-                    0.02,
-                    min(
-                        0.1,
-                        self.epochs * 0.002
+                    percent = max(
+                        0.02,
+                        min(
+                            0.1,
+                            self.epochs * 0.002
+                        )
                     )
-                )
 
-                decimals = (
-                    4 if value < 0.05
-                    else 3 if value < 1
-                    else 2
-                )
+                    decimals = (
+                        4 if value < 0.05
+                        else 3 if value < 1
+                        else 2
+                    )
 
-                low = round(
-                    value * (1 - percent),
-                    decimals
-                )
-
-                high = round(
-                    value * (1 + percent),
-                    decimals
-                )
-
-                self.params[section][key] = (
-                    self.dec_param(
-                        value,
-                        low,
-                        high,
+                    low = round(
+                        value * (1 - percent),
                         decimals
                     )
-                )
 
-            elif isinstance(value, str):
-
-                if key == "buy_fib_level":
-                    choices = [
-                        "0.618",
-                        "0.786"
-                    ]
-
-                elif key == "sell_fib_level":
-                    choices = [
-                        "0.236",
-                        "0.382"
-                    ]
-
-                elif key in (
-                    "buy_fast_dema",
-                    "sell_fast_dema"
-                ):
-                    choices = [
-                        "5",
-                        "8",
-                        "13",
-                        "21"
-                    ]
-
-                elif key in (
-                    "buy_slow_ema",
-                    "sell_slow_ema"
-                ):
-                    choices = [
-                        "34",
-                        "55",
-                        "89",
-                        "144"
-                    ]
-
-                elif "indicator" in key:
-                    choices = ["NONE"]
-
-                else:
-                    choices = [value]
-
-                self.params[section][key] = (
-                    self.cat_param(
-                        value,
-                        choices
+                    high = round(
+                        value * (1 + percent),
+                        decimals
                     )
-                )
 
-    # --------------------------------------------------
-    # ROI remapping
-    # --------------------------------------------------
+                    self.params[section][key] = (
+                        self.dec_param(
+                            value,
+                            low,
+                            high,
+                            decimals
+                        )
+                    )
 
-    if "roi" in self.params:
+                elif isinstance(value, str):
 
-        roi_dict = fibbo_params.get(
-            "roi",
-            {}
-        )
+                    if key == "buy_fib_level":
+                        choices = ["0.618", "0.786"]
 
-        new_roi = {}
+                    elif key == "sell_fib_level":
+                        choices = ["0.236", "0.382"]
 
-        sorted_times = sorted(
-            [int(k) for k in roi_dict.keys()],
-            reverse=True
-        )
+                    elif key in (
+                        "buy_fast_dema",
+                        "sell_fast_dema"
+                    ):
+                        choices = ["5", "8", "13", "21"]
 
-        roi_t_names = [
-            "roi_t1",
-            "roi_t2",
-            "roi_t3"
-        ]
+                    elif key in (
+                        "buy_slow_ema",
+                        "sell_slow_ema"
+                    ):
+                        choices = ["34", "55", "89", "144"]
 
-        roi_p_names = [
-            "roi_p1",
-            "roi_p2",
-            "roi_p3"
-        ]
+                    elif "indicator" in key:
+                        choices = ["NONE"]
 
-        for i in range(
-            min(
-                3,
-                len(sorted_times)
+                    else:
+                        choices = [value]
+
+                    self.params[section][key] = (
+                        self.cat_param(
+                            value,
+                            choices
+                        )
+                    )
+
+        # --------------------------------------------------
+        # ROI remapping
+        # --------------------------------------------------
+
+        if "roi" in self.params:
+
+            roi_dict = fibbo_params.get(
+                "roi",
+                {}
             )
-        ):
 
-            t_key = roi_t_names[i]
-            p_key = roi_p_names[i]
+            new_roi = {}
 
-            t_val = sorted_times[i]
-            p_val = roi_dict[str(t_val)]
+            sorted_times = sorted(
+                [int(k) for k in roi_dict.keys()],
+                reverse=True
+            )
+
+            roi_t_names = [
+                "roi_t1",
+                "roi_t2",
+                "roi_t3"
+            ]
+
+            roi_p_names = [
+                "roi_p1",
+                "roi_p2",
+                "roi_p3"
+            ]
+
+            for i in range(
+                min(
+                    3,
+                    len(sorted_times)
+                )
+            ):
+
+                t_key = roi_t_names[i]
+                p_key = roi_p_names[i]
+
+                t_val = sorted_times[i]
+                p_val = roi_dict[str(t_val)]
 
             new_roi[t_key] = {
                 "type": "IntParameter",
