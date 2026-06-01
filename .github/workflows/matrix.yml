@@ -58,6 +58,8 @@ jobs:
 
       - name: 🪂 Install freqtrade
         shell: bash
+        env:
+          VERSION: "2025.12"
         run: |
           cd user_data/build_helpers
           ./install_ta-lib.sh > /dev/null 2>&1 && rm -rf *.txt
@@ -65,7 +67,7 @@ jobs:
           # Download requirement files from Freqtrade 2025.10 (corrected)
           for f in requirements.txt requirements-dev.txt requirements-hyperopt.txt requirements-plot.txt requirements-freqai.txt requirements-freqai-rl.txt; do
             curl -fsSLO --retry 5 --retry-delay 2 \
-            https://raw.githubusercontent.com/freqtrade/freqtrade/2025.10/$f || true
+            https://raw.githubusercontent.com/freqtrade/freqtrade/$VERSION/$f || true
           done          
 
           pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-plot.txt
@@ -73,7 +75,7 @@ jobs:
           [[ "$RUN_MODE" == "FreqAI" ]] && pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-freqai-rl.txt
 
           #pip install -qq --no-cache-dir --no-build-isolation --upgrade freqtrade
-          pip install -qq --no-cache-dir ta "numpy<3.0" "aiodns<3.0" "freqtrade==2025.10"
+          pip install -qq --no-cache-dir ta "numpy<3.0" "aiodns<3.0" "freqtrade==$VERSION"
 
       - name: ⚙️ Get artifact ID
         id: get-artifact-id
