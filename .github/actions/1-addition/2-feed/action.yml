@@ -113,24 +113,26 @@ runs:
         postgres-version: "17"
         ssl: true
 
-    - name: 🪂 Download data
+    - name: 🪂 Install Freqtrafe
       if: env.RERUN_RUNNER == 'false'
       shell: bash
+      env:
+        VERSION: "2026.5"
       run: |
         cd user_data/build_helpers
         ./install_ta-lib.sh > /dev/null 2>&1 && rm -rf *.txt
 
-        # Download requirement files from Freqtrade 2025.10 (corrected)
+        # Download requirement files from Freqtrade
         for f in requirements.txt requirements-dev.txt requirements-hyperopt.txt requirements-plot.txt requirements-freqai.txt requirements-freqai-rl.txt; do
           curl -fsSLO --retry 5 --retry-delay 2 \
-          https://raw.githubusercontent.com/freqtrade/freqtrade/2025.10/$f || true
+          https://raw.githubusercontent.com/freqtrade/freqtrade/$VERSION/$f || true
         done
 
         pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-plot.txt
         [[ "$RUN_MODE" != "FreqAI" ]] && pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-hyperopt.txt
         [[ "$RUN_MODE" == "FreqAI" ]] && pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-freqai-rl.txt
 
-        pip install -qq --no-cache-dir ta "numpy<3.0" "aiodns<3.0" "freqtrade==2025.10"
+        pip install -qq --no-cache-dir ta "numpy<3.0" "aiodns<3.0" "freqtrade==$VERSION"
         cd ${{ github.workspace }} && bash user_data/ft_client/test_client/feed.sh
 
     - name: Upload downloaded data as artifact
