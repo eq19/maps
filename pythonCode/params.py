@@ -205,13 +205,94 @@ class ParamBuilder:
                 t_val = sorted_times[i]
                 p_val = roi_dict[str(t_val)]
 
-            new_roi[t_key] = {
-                "type": "IntParameter",
-                "low": 0,
-                "high": 600,
-                "default": t_val,
-                "optimize": False
-            }
+                new_roi[t_key] = {
+                    "type": "IntParameter",
+                    "low": 0,
+                    "high": 600,
+                    "default": t_val,
+                    "optimize": False
+                }
+
+                percent = max(
+                    0.02,
+                    min(
+                        0.1,
+                        self.epochs * 0.002
+                    )
+                )
+
+                decimals = (
+                    4 if p_val < 0.05
+                    else 3 if p_val < 1
+                    else 2
+                )
+
+                low = round(
+                    p_val * (1 - percent),
+                    decimals
+                )
+
+                high = round(
+                    p_val * (1 + percent),
+                    decimals
+                )
+
+                if p_val >= 1 and round(p_val) == p_val:
+
+                    new_roi[p_key] = {
+                        "type": "IntParameter",
+                        "low": max(
+                            1,
+                            int(low)
+                        ),
+                        "high": max(
+                            int(low),
+                            int(high)
+                        ),
+                        "default": int(p_val),
+                        "optimize": True
+                    }
+
+                else:
+
+                    new_roi[p_key] = (
+                        self.dec_param(
+                            p_val,
+                            low,
+                            high,
+                            decimals
+                        )
+                    )
+
+            self.params["roi"] = new_roi
+
+        # --------------------------------------------------
+        # ATR Risk Parameter
+        # Freqtrade 2025.12 compatible
+        # --------------------------------------------------
+
+        stoploss_cfg = fibbo_params.get(
+            "stoploss",
+            {}
+        )
+
+        atr_value = None
+
+        if isinstance(stoploss_cfg, dict):
+            atr_value = stoploss_cfg.get(
+                "atr_stoploss_multiplier"
+            )
+
+        if atr_value is not None:
+
+            if "protection" not in self.params:
+                self.params["protection"] = {}
+
+            self.optimize = (
+                self.param == "nil"
+                or self.param
+                == "atr_stoploss_multiplier"
+            )
 
             percent = max(
                 0.02,
@@ -221,132 +302,51 @@ class ParamBuilder:
                 )
             )
 
-            decimals = (
-                4 if p_val < 0.05
-                else 3 if p_val < 1
-                else 2
-            )
+            decimals = 2
 
-            low = round(
-                p_val * (1 - percent),
-                decimals
+            low = max(
+                0.5,
+                round(
+                    atr_value * (
+                        1 - percent
+                    ),
+                    decimals
+                )
             )
 
             high = round(
-                p_val * (1 + percent),
-                decimals
-            )
-
-            if p_val >= 1 and round(p_val) == p_val:
-
-                new_roi[p_key] = {
-                    "type": "IntParameter",
-                    "low": max(
-                        1,
-                        int(low)
-                    ),
-                    "high": max(
-                        int(low),
-                        int(high)
-                    ),
-                    "default": int(p_val),
-                    "optimize": True
-                }
-
-            else:
-
-                new_roi[p_key] = (
-                    self.dec_param(
-                        p_val,
-                        low,
-                        high,
-                        decimals
-                    )
-                )
-
-        self.params["roi"] = new_roi
-
-    # --------------------------------------------------
-    # ATR Risk Parameter
-    # Freqtrade 2025.12 compatible
-    # --------------------------------------------------
-
-    stoploss_cfg = fibbo_params.get(
-        "stoploss",
-        {}
-    )
-
-    atr_value = None
-
-    if isinstance(stoploss_cfg, dict):
-        atr_value = stoploss_cfg.get(
-            "atr_stoploss_multiplier"
-        )
-
-    if atr_value is not None:
-
-        if "protection" not in self.params:
-            self.params["protection"] = {}
-
-        self.optimize = (
-            self.param == "nil"
-            or self.param
-            == "atr_stoploss_multiplier"
-        )
-
-        percent = max(
-            0.02,
-            min(
-                0.1,
-                self.epochs * 0.002
-            )
-        )
-
-        decimals = 2
-
-        low = max(
-            0.5,
-            round(
                 atr_value * (
-                    1 - percent
+                    1 + percent
                 ),
                 decimals
             )
-        )
 
-        high = round(
-            atr_value * (
-                1 + percent
-            ),
-            decimals
-        )
+            param = self.dec_param(
+                atr_value,
+                low,
+                high,
+                decimals
+            )
 
-        param = self.dec_param(
-            atr_value,
-            low,
-            high,
-            decimals
-        )
+            param["optimize"] = (
+                self.optimize
+            )
 
-        param["optimize"] = (
-            self.optimize
-        )
+            self.params[
+                "protection"
+            ][
+                "atr_stoploss_multiplier"
+            ] = param
 
-        self.params[
-            "protection"
-        ][
-            "atr_stoploss_multiplier"
-        ] = param
+        # remove obsolete stoploss bucket
 
-    # remove obsolete stoploss bucket
+        if (
+            "stoploss" in self.params
+            and isinstance(
+                self.params["stoploss"],
+                dict
+            )
+        ):
+            self.params["stoploss"] = {}
 
-    if (
-        "stoploss" in self.params
-        and isinstance(
-            self.params["stoploss"],
-            dict
-        )
-    ):
-        self.params["stoploss"] = {}
-
-    return self.params
+        return self.params
