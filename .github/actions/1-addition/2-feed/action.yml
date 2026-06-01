@@ -117,7 +117,7 @@ runs:
       if: env.RERUN_RUNNER == 'false'
       shell: bash
       env:
-        VERSION: "2026.5"
+        VERSION: "2026.4"
       run: |
         cd user_data/build_helpers
         ./install_ta-lib.sh > /dev/null 2>&1 && rm -rf *.txt
