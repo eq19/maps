@@ -394,8 +394,10 @@ cat $STRATEGY
     else
       freqtrade hyperopt-list --best
     fi
-cat $STRATEGY    
+    
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
+    jq '.params.roi |= with_entries(select(.key | startswith("roi_t") | not))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
+cat $STRATEGY
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protection
 
     calculate_score
