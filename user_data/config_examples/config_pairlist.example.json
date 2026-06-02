@@ -22,6 +22,9 @@
       "allow_nan": false
     },
     {
+      "method": "PrecisionFilter"
+    },
+    {
       "method": "SpreadFilter",
       "max_spread_ratio": 0.07
     }
