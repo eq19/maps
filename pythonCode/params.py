@@ -89,23 +89,23 @@ class ParamBuilder:
             roi_dict = fibbo_params.get("roi", {})
             new_roi = {}
             sorted_times = sorted([int(k) for k in roi_dict.keys()], reverse=True)
-            roi_t_names = ["roi_t1", "roi_t2", "roi_t3"]
+            #roi_t_names = ["roi_t1", "roi_t2", "roi_t3"]
             roi_p_names = ["roi_p1", "roi_p2", "roi_p3"]
 
             for i in range(min(3, len(sorted_times))):
-                t_key = roi_t_names[i]
+                #t_key = roi_t_names[i]
                 p_key = roi_p_names[i]
                 t_val = sorted_times[i]
                 p_val = roi_dict[str(t_val)]
 
                 # Use fixed time values (non-optimized)
-                new_roi[t_key] = {
-                    "type": "IntParameter",
-                    "low": 0,
-                    "high": 600,
-                    "default": t_val,
-                    "optimize": False
-                }
+                #new_roi[t_key] = {
+                    #"type": "IntParameter",
+                    #"low": 0,
+                    #"high": 600,
+                    #"default": t_val,
+                    #"optimize": False
+                #}
 
                 # Calculate % range for decimal precision tuning
                 percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2–10% window
