@@ -397,12 +397,6 @@ hyperopt() {
     
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
 cat $STRATEGY
-    jq '.params.roi = {roi: .params.roi} |
-      .params.stoploss = {stoploss: .params.stoploss} |
-      .params.max_open_trades = {max_open_trades: .params.max_open_trades} |
-      .params.trailing = (.params | with_entries(select(.key | startswith("trailing_")))) |
-      reduce (.params | keys[] | select(startswith("trailing_"))) as $k (. ; del(.params[$k]))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
-cat $STRATEGY
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protection
 
     calculate_score
