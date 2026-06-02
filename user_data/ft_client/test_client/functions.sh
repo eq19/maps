@@ -384,7 +384,7 @@ hyperopt() {
         enable_protections="--enable-protections"
         prot="enable"
     fi
-
+cat $STRATEGY
     echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
     if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
@@ -394,9 +394,8 @@ hyperopt() {
     else
       freqtrade hyperopt-list --best
     fi
-    
+cat $STRATEGY    
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
-cat $STRATEGY
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protection
 
     calculate_score
