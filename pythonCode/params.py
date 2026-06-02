@@ -204,10 +204,52 @@ class ParamBuilder:
         # }
         # --------------------------------------------------
 
-        if "roi" in fibbo_params:
-            self.params["roi"] = deepcopy(
-                fibbo_params["roi"]
-            )
+        if "roi" in self.params:
+            roi_dict = fibbo_params.get("roi", {})
+            new_roi = {}
+            sorted_times = sorted([int(k) for k in roi_dict.keys()], reverse=True)
+            roi_t_names = ["roi_t1", "roi_t2", "roi_t3"]
+            roi_p_names = ["roi_p1", "roi_p2", "roi_p3"]
+
+            for i in range(min(3, len(sorted_times))):
+                t_key = roi_t_names[i]
+                p_key = roi_p_names[i]
+                t_val = sorted_times[i]
+                p_val = roi_dict[str(t_val)]
+
+                # Use fixed time values (non-optimized)
+                new_roi[t_key] = {
+                    "type": "IntParameter",
+                    "low": 0,
+                    "high": 600,
+                    "default": t_val,
+                    "optimize": False
+                }
+
+                # Calculate % range for decimal precision tuning
+                percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2–10% window
+                decimals = 4 if p_val < 0.05 else 3 if p_val < 1 else 2
+                low = max(0.001, round(p_val * (1 - percent), decimals))
+                high = round(p_val * (1 + percent), decimals)
+
+                # Adjust param type if value behaves like integer
+                if p_val >= 1 and round(p_val) == p_val:
+                    new_roi[p_key] = {
+                        "type": "IntParameter",
+                        "low": max(1, int(low)),
+                        "high": int(high),
+                        "default": int(p_val),
+                        "optimize": True
+                    }
+                else:
+                    new_roi[p_key] = self.dec_param(
+                        p_val,
+                        low,
+                        high,
+                        decimals
+                    )
+
+            self.params["roi"] = new_roi
 
         # --------------------------------------------------
         # ATR stoploss multiplier
