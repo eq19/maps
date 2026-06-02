@@ -8,6 +8,7 @@ class ParamBuilder:
         self.fibbo = fibbo
         self.epochs = int(epochs)
         self.params = {}
+        self.optimize = False
 
     def int_param(self, default, low, high):
         if low > high:
@@ -50,9 +51,23 @@ class ParamBuilder:
         }
 
     def build(self):
+
         fibbo_params = self.fibbo.get("params", {})
 
+        # Handle Freqtrade 2025.12 scalar parameters
+        if "stoploss" in fibbo_params:
+            self.params["stoploss"] = fibbo_params["stoploss"]
+
+        if "max_open_trades" in fibbo_params:
+            self.params["max_open_trades"] = fibbo_params["max_open_trades"]
+
         for section, section_params in fibbo_params.items():
+
+            if section in (
+                "stoploss",
+                "max_open_trades"
+            ):
+                continue
 
             if not isinstance(section_params, dict):
                 continue
@@ -105,8 +120,8 @@ class ParamBuilder:
                     )
 
                     decimals = (
-                        4 if value < 0.05
-                        else 3 if value < 1
+                        4 if abs(value) < 0.05
+                        else 3 if abs(value) < 1
                         else 2
                     )
 
@@ -132,22 +147,38 @@ class ParamBuilder:
                 elif isinstance(value, str):
 
                     if key == "buy_fib_level":
-                        choices = ["0.618", "0.786"]
+                        choices = [
+                            "0.618",
+                            "0.786"
+                        ]
 
                     elif key == "sell_fib_level":
-                        choices = ["0.236", "0.382"]
+                        choices = [
+                            "0.236",
+                            "0.382"
+                        ]
 
                     elif key in (
                         "buy_fast_dema",
                         "sell_fast_dema"
                     ):
-                        choices = ["5", "8", "13", "21"]
+                        choices = [
+                            "5",
+                            "8",
+                            "13",
+                            "21"
+                        ]
 
                     elif key in (
                         "buy_slow_ema",
                         "sell_slow_ema"
                     ):
-                        choices = ["34", "55", "89", "144"]
+                        choices = [
+                            "34",
+                            "55",
+                            "89",
+                            "144"
+                        ]
 
                     elif "indicator" in key:
                         choices = ["NONE"]
@@ -163,130 +194,38 @@ class ParamBuilder:
                     )
 
         # --------------------------------------------------
-        # ROI remapping
+        # ROI
+        # Keep Freqtrade format:
+        # {
+        #   "0": 0.362,
+        #   "38": 0.065,
+        #   "200": 0.019,
+        #   "542": 0
+        # }
         # --------------------------------------------------
 
-        if "roi" in self.params:
-
-            roi_dict = fibbo_params.get(
-                "roi",
-                {}
+        if "roi" in fibbo_params:
+            self.params["roi"] = deepcopy(
+                fibbo_params["roi"]
             )
 
-            new_roi = {}
-
-            sorted_times = sorted(
-                [int(k) for k in roi_dict.keys()],
-                reverse=True
-            )
-
-            roi_t_names = [
-                "roi_t1",
-                "roi_t2",
-                "roi_t3"
-            ]
-
-            roi_p_names = [
-                "roi_p1",
-                "roi_p2",
-                "roi_p3"
-            ]
-
-            for i in range(
-                min(
-                    3,
-                    len(sorted_times)
-                )
-            ):
-
-                t_key = roi_t_names[i]
-                p_key = roi_p_names[i]
-
-                t_val = sorted_times[i]
-                p_val = roi_dict[str(t_val)]
-
-                new_roi[t_key] = {
-                    "type": "IntParameter",
-                    "low": 0,
-                    "high": 600,
-                    "default": t_val,
-                    "optimize": False
-                }
-
-                percent = max(
-                    0.02,
-                    min(
-                        0.1,
-                        self.epochs * 0.002
-                    )
-                )
-
-                decimals = (
-                    4 if p_val < 0.05
-                    else 3 if p_val < 1
-                    else 2
-                )
-
-                low = round(
-                    p_val * (1 - percent),
-                    decimals
-                )
-
-                high = round(
-                    p_val * (1 + percent),
-                    decimals
-                )
-
-                if p_val >= 1 and round(p_val) == p_val:
-
-                    new_roi[p_key] = {
-                        "type": "IntParameter",
-                        "low": max(
-                            1,
-                            int(low)
-                        ),
-                        "high": max(
-                            int(low),
-                            int(high)
-                        ),
-                        "default": int(p_val),
-                        "optimize": True
-                    }
-
-                else:
-
-                    new_roi[p_key] = (
-                        self.dec_param(
-                            p_val,
-                            low,
-                            high,
-                            decimals
-                        )
-                    )
-
-            self.params["roi"] = new_roi
-
         # --------------------------------------------------
-        # ATR Risk Parameter
-        # Freqtrade 2025.12 compatible
+        # ATR stoploss multiplier
         # --------------------------------------------------
 
-        stoploss_cfg = fibbo_params.get(
-            "stoploss",
+        protection = fibbo_params.get(
+            "protection",
             {}
         )
 
-        atr_value = None
+        atr_value = protection.get(
+            "atr_stoploss_multiplier"
+        )
 
-        if isinstance(stoploss_cfg, dict):
-            atr_value = stoploss_cfg.get(
-                "atr_stoploss_multiplier"
-            )
-
-        if atr_value is not None:
-
-            if "protection" not in self.params:
-                self.params["protection"] = {}
+        if (
+            atr_value is not None
+            and atr_value > 0
+        ):
 
             self.optimize = (
                 self.param == "nil"
@@ -302,51 +241,26 @@ class ParamBuilder:
                 )
             )
 
-            decimals = 2
-
             low = max(
                 0.5,
                 round(
-                    atr_value * (
-                        1 - percent
-                    ),
-                    decimals
+                    atr_value * (1 - percent),
+                    2
                 )
             )
 
             high = round(
-                atr_value * (
-                    1 + percent
-                ),
-                decimals
+                atr_value * (1 + percent),
+                2
             )
 
-            param = self.dec_param(
+            self.params["protection"][
+                "atr_stoploss_multiplier"
+            ] = self.dec_param(
                 atr_value,
                 low,
                 high,
-                decimals
+                2
             )
-
-            param["optimize"] = (
-                self.optimize
-            )
-
-            self.params[
-                "protection"
-            ][
-                "atr_stoploss_multiplier"
-            ] = param
-
-        # remove obsolete stoploss bucket
-
-        if (
-            "stoploss" in self.params
-            and isinstance(
-                self.params["stoploss"],
-                dict
-            )
-        ):
-            self.params["stoploss"] = {}
 
         return self.params
