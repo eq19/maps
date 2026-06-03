@@ -249,9 +249,8 @@ class Fibbo(IStrategy):
             self.use_custom_stoploss = False
             self.minimal_roi = {"0": 100}
 
-        # Optional: update dynamic ROI logic
-        if hasattr(self, 'update_roi'):
-            self.update_roi()
+        # Update ROI from hyperopt parameters (if ROI space is being optimized)
+        self.update_roi()
 
         # Optional: apply hyperopt value of max_open_trades to config
         if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
@@ -282,13 +281,32 @@ class Fibbo(IStrategy):
             logger.info(f"ℹ️ CCXT patches skipped (dry_run mode).")
 
     def update_roi(self):
-        """Update ROI based on current parameter values"""
-        self.minimal_roi = {
-            "0": float(self.roi_p1.value),
-            str(int(self.roi_t1.value)): float(self.roi_p2.value),
-            str(int(self.roi_t2.value)): float(self.roi_p3.value),
-            str(int(self.roi_t3.value)): 0
-        }
+        """
+        Update ROI based on hyperopt parameters.
+        This method converts roi_t* and roi_p* parameters into the final minimal_roi dict,
+        keeping the results clean and free of intermediate parameters.
+        
+        How it works:
+        - If 'roi' space is included in hyperopt, freqtrade creates roi_p1, roi_p2, roi_p3 (profit levels)
+          and roi_t1, roi_t2, roi_t3 (timeframe thresholds)
+        - This method converts them back into the proper minimal_roi format
+        - If 'roi' space is NOT in hyperopt, this method gracefully skips and uses the default ROI
+        """
+        # Check if we have ROI hyperopt parameters (they will be present if 'roi' space is enabled)
+        if hasattr(self, 'roi_p1') and hasattr(self, 'roi_t1'):
+            try:
+                # Build ROI table from hyperopt parameters
+                self.minimal_roi = {
+                    "0": float(self.roi_p1.value),
+                    str(int(self.roi_t1.value)): float(self.roi_p2.value),
+                    str(int(self.roi_t2.value)): float(self.roi_p3.value),
+                    str(int(self.roi_t3.value)): 0
+                }
+                logger.info(f"ROI updated from hyperopt parameters: {self.minimal_roi}")
+            except (AttributeError, ValueError, TypeError) as e:
+                logger.warning(f"Failed to update ROI from hyperopt params: {e}. Using default ROI.")
+        else:
+            logger.debug("ROI hyperopt parameters not available. Using default ROI.")
 
     @property
     def protections(self):
