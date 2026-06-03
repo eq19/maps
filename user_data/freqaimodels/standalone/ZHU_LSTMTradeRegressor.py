@@ -12,7 +12,7 @@ from freqtrade.freqai.torch.PyTorchModelTrainer import PyTorchModelTrainer
 from LSTMRegressor import LSTMRegressor
 
 
-class   ZHU_LSTMTradeRegressor(BasePyTorchRegressor):
+class ZHU_LSTMTradeRegressor(BasePyTorchRegressor):
     @property
     def data_convertor(self) -> PyTorchDataConvertor:
         return DefaultPyTorchDataConvertor(
