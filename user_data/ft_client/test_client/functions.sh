@@ -91,7 +91,7 @@ calculate_score() {
   local profit_mean_score=$(echo "
     scale=6
 
-    t = sqrt($trades / 200)
+    t = sqrt($trades / $TRADES_MIN)
     e = $expectancy_ratio / 0.1
 
     pm = $profit_mean / 0.02
