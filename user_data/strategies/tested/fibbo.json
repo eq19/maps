@@ -1,0 +1,66 @@
+{
+  "strategy_name": "Fibbo",
+  "params": {
+    "stoploss": {
+      "stoploss": -0.1
+    },
+    "max_open_trades": {
+      "max_open_trades": 10
+    },
+    "protection": {
+      "cooldown_lookback": 0,
+      "lookback_period_candles": 7,
+      "low_profit_trade_limit": 16,
+      "max_drawdown_trade_limit": 333,
+      "stop_duration_candles": 280,
+      "trade_limit": 66,
+      "use_low_profit": false,
+      "use_max_drawdown_protection": false,
+      "use_stop_protection": false
+    },
+    "roi": {
+      "0": 0.064,
+      "99": 0.043,
+      "272": 0.019,
+      "375": 0
+    },
+    "buy": {
+      "buy_bb_period": 8,
+      "buy_fast_dema": "21",
+      "buy_fib_level": "0.786",
+      "buy_freqai": 0.28,
+      "buy_long_indicator": "BB, MACD",
+      "buy_rsi": 283,
+      "buy_rsi_period": 257,
+      "buy_short_indicator": "STOCHRSI, TTM",
+      "buy_slow_ema": "144",
+      "buy_smoothD": 14,
+      "buy_smoothK": 60,
+      "buy_stoch_osc": 647,
+      "buy_swing_period": 1
+    },
+    "sell": {
+      "sell_fast_dema": "21",
+      "sell_fib_level": "0.236",
+      "sell_freqai": 0.4,
+      "sell_long_indicator": "BB",
+      "sell_rsi": 184,
+      "sell_short_indicator": "MACD, VWAP",
+      "sell_slow_ema": "55",
+      "sell_smoothD": 371,
+      "sell_smoothK": 114,
+      "sell_stoch_osc": 574,
+      "shared_stoch_period": 159,
+      "shared_ttm_window": 32,
+      "shared_vwap_window": 410
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.334,
+      "trailing_stop_positive_offset": 0.419,
+      "trailing_only_offset_is_reached": false
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-06-05 00:26:07.210964+00:00"
+}
