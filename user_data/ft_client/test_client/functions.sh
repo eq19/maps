@@ -119,9 +119,9 @@ calculate_score() {
 
   echo "💰 1.2 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
 
-  local profit_total_score=$(echo "$profit_total_pct * 1" | bc -l)
+  local profit_total_score=$(echo "$profit_total_pct * 0.2" | bc -l)
   [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_score=0
-  [[ $(echo "$profit_total_pct > 10" | bc -l) -eq 1 ]] && profit_total_score=10
+  [[ $(echo "$profit_total_pct > 50" | bc -l) -eq 1 ]] && profit_total_score=10
   echo "💰 1.3 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score") of 10)"
 
   local profit=$(echo "$winrate_score + $profit_mean_score + $profit_total_score" | bc -l)
