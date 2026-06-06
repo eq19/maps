@@ -154,7 +154,7 @@ calculate_score() {
   fi
 
   DRAWDOWN=$(printf "%.2f" "$DRAWDOWN")
-  echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $dd_score of 15)"
+  echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $(printf "%.2f" "$dd_score") of 15)"
 
   local sharpe_score=$(echo "
     scale=6
