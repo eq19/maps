@@ -23,8 +23,8 @@ TODAY=$(date -u +%Y%m%d)
 YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
 # Download vs Backtesting
-EARLIEST_DATE=$(date -u -d "3 months ago" +%Y%m%d)
-BACKTESTING_START=$(date -u -d "1 months ago" +%Y%m%d)
+EARLIEST_DATE=$(date -u -d "3 years ago" +%Y%m%d)
+BACKTESTING_START=$(date -u -d "1 years ago" +%Y%m%d)
 
 # Time range
 TD="$EARLIEST_DATE-$TODAY"
