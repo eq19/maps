@@ -267,10 +267,10 @@ calculate_score() {
     }
   " | bc -l)
 
-  echo "📦 3.1 Expectancy: $expectancy_ratio (score: $expectancy_score of 10)"
-  echo "📦 3.2 Profit Factor: $profit_factor (score: $profit_factor_score of 10)"
-  echo "📌 3.3 Sortino: $sortino (score: $sortino_score of 5)"
-  echo "📌 3.4 SQN: $sqn (score: $sqn_score of 5)"
+  echo "📦 3.1 Expectancy: $(printf "%.2f" "$expectancy_ratio") (score: $(printf "%.2f" "$expectancy_score") of 10)"
+  echo "📦 3.2 Profit Factor: $(printf "%.2f" "$profit_factor") (score: $(printf "%.2f" "$profit_factor_score") of 10)"
+  echo "📌 3.3 Sortino: $(printf "%.2f" "$sortino") (score: $(printf "%.2f" "$sortino_score") of 5)"
+  echo "📌 3.4 SQN: $(printf "%.2f" "$sqn") (score: $(printf "%.2f" "$sqn_score") of 5)"
 
   local quality=$(echo "$expectancy_score + $profit_factor_score + $sortino_score + $sqn_score" | bc -l)
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
@@ -298,7 +298,7 @@ calculate_score() {
   if (( $(echo "$cagr > 200" | bc -l) )); then
     cagr_score=$(echo "$cagr_score * 0.7" | bc -l)
   fi
-  echo "📈 CAGR: $cagr (score: $cagr_score)"
+  echo "📈 CAGR: $(printf "%.2f" "$cagr") (score: $(printf "%.2f" "$cagr_score"))"
 
   # 🔻 Apply penalties for low trade count
   SCORE=$(echo "$profit + $risk + $quality + $cagr_score" | bc -l)
