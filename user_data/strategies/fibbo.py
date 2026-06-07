@@ -160,6 +160,12 @@ class Fibbo(IStrategy):
     Includes special handling for:
     - Order creation delays (30s wait)
     - Cancel order side requirements
+    
+    FIXED:
+    - RSI calculation bug (was using buy_bb_period instead of buy_rsi_period)
+    - VWAP look-ahead bias (now uses standard VWAP without rolling window)
+    - Hyperopt ROI override (removed unrealistic 100% target)
+    - Fibonacci retracement swing calculations (now use previous bars only)
     """
 
     # Strategy interface version - allow new iterations of the strategy interface.
@@ -176,10 +182,10 @@ class Fibbo(IStrategy):
     # Hyperoptable parameters
     stoploss = -0.1
     minimal_roi = {
-        "0": 0.298,
-        "115": 0.144,
-        "280": 0.055,
-        "507": 0
+        "0": 0.10,      # 10% profit target immediately
+        "60": 0.05,     # 5% profit target after 60 candles (~15 hours at 15m)
+        "180": 0.02,    # 2% profit target after 180 candles (~45 hours)
+        "360": 0        # Exit at any profit after 360 candles (~6 days)
     }
 
     macd_profiles = {
@@ -247,7 +253,13 @@ class Fibbo(IStrategy):
             self.trailing_stop = True
             self.use_exit_signal = False
             self.use_custom_stoploss = False
-            self.minimal_roi = {"0": 100}
+            # ✅ FIX: Use realistic ROI targets instead of unrealistic 100%
+            self.minimal_roi = {
+                "0": 0.08,      # 8% profit target
+                "30": 0.04,     # 4% profit target after 30 candles
+                "60": 0         # Exit at any profit after 60 candles
+            }
+            logger.info("⚠️ Hyperopt mode: Using conservative ROI to avoid over-optimization")
 
         # Update ROI from hyperopt parameters (if ROI space is being optimized)
         self.update_roi()
@@ -746,13 +758,15 @@ class Fibbo(IStrategy):
 
         # --- Classical indicators (always run) ---
 
-        # RSI 
-        dataframe['rsi'] = ta.RSI(dataframe['close'], timeperiod=max(2, int(self.buy_bb_period.value if self.buy_rsi_period.value else 14)))
+        # ✅ FIX #1: RSI calculation - use buy_rsi_period, not buy_bb_period
+        rsi_period = int(self.buy_rsi_period.value) if self.buy_rsi_period.value else 14
+        dataframe['rsi'] = ta.RSI(dataframe['close'], timeperiod=max(2, rsi_period))
+        logger.debug(f"RSI calculated with period: {max(2, rsi_period)}")
 
-        # VWAP (Lookahead bias Issue)
-        #dataframe['vwap'] = qtpylib.vwap(dataframe)
-        dataframe['vwap'] = qtpylib.rolling_vwap(dataframe, window=self.shared_vwap_window.value)
-        #dataframe['vwap'] = (((dataframe['high'] + dataframe['low'] + dataframe['close']) / 3) * dataframe['volume']).cumsum() / dataframe['volume'].cumsum()
+        # ✅ FIX #2: VWAP - use standard VWAP without rolling window to avoid look-ahead bias
+        # Standard VWAP doesn't introduce lookahead if calculated on historical closes only
+        dataframe['vwap'] = qtpylib.vwap(dataframe)
+        logger.debug("VWAP calculated using standard method (no lookahead)")
 
         # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
@@ -783,7 +797,8 @@ class Fibbo(IStrategy):
         dataframe['macdsignal'] = macd['macdsignal']
 
         # Bollinger Bands
-        bollinger = ta.BBANDS(dataframe, timeperiod=max(2, int(self.buy_bb_period.value if self.buy_bb_period.value else 20)), nbdevup=2.0, nbdevdn=2.0, matype=0)
+        bb_period = int(self.buy_bb_period.value) if self.buy_bb_period.value else 20
+        bollinger = ta.BBANDS(dataframe, timeperiod=max(2, bb_period), nbdevup=2.0, nbdevdn=2.0, matype=0)
         dataframe['bb_upperband'] = bollinger['upperband']
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
@@ -794,9 +809,11 @@ class Fibbo(IStrategy):
         for period in span["buy"]["buy_fast_dema"]["choices"]:
             dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=int(period))
 
-        # SWING high/low for Fibonacci levels
-        dataframe['swing_high'] = dataframe['high'].rolling(self.buy_swing_period.value).max()
-        dataframe['swing_low'] = dataframe['low'].rolling(self.buy_swing_period.value).min()
+        # ✅ FIX #3: Fibonacci retracement - use shift(1) to avoid lookahead bias
+        # Calculate swing high/low using only PREVIOUS candles, not current
+        swing_lookback = self.buy_swing_period.value
+        dataframe['swing_high'] = dataframe['high'].shift(1).rolling(swing_lookback).max()
+        dataframe['swing_low'] = dataframe['low'].shift(1).rolling(swing_lookback).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
 
         # LONG (retracement in uptrend)
@@ -810,6 +827,8 @@ class Fibbo(IStrategy):
         dataframe['fib_short_0382'] = dataframe['swing_low'] + swing_range * 0.382
         dataframe['fib_short_0618'] = dataframe['swing_low'] + swing_range * 0.618
         dataframe['fib_short_0786'] = dataframe['swing_low'] + swing_range * 0.786
+
+        logger.debug("Fibonacci levels calculated with shift(1) to avoid lookahead")
 
         # ---- Fetch and merge informative timeframe ----
         logger.debug("Informative pairs data: %s", self.informative_pairs)
@@ -830,7 +849,7 @@ class Fibbo(IStrategy):
     
         # Now it's safe to use 'close'
         informative['atr'] = ta.ATR(informative, timeperiod=14)
-        informative['rsi'] = ta.RSI(informative['close'], timeperiod=max(2, int(self.buy_bb_period.value if self.buy_rsi_period.value else 14)))
+        informative['rsi'] = ta.RSI(informative['close'], timeperiod=max(2, rsi_period))
 
         macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         informative['macd'] = macd_inf['macd']
