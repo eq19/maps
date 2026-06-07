@@ -161,11 +161,9 @@ class Fibbo(IStrategy):
     - Order creation delays (30s wait)
     - Cancel order side requirements
     
-    FIXED:
-    - RSI calculation bug (was using buy_bb_period instead of buy_rsi_period)
-    - VWAP look-ahead bias (now uses rolling_vwap for backtesting safety)
-    - Hyperopt ROI override (removed unrealistic 100% target)
-    - Fibonacci retracement swing calculations (now use previous bars only)
+    IMPROVED:
+    - Flexible entry conditions (AND vs OR logic vs N-out-of-M)
+    - Can now trade more frequently with softer entry requirements
     """
 
     # Strategy interface version - allow new iterations of the strategy interface.
@@ -221,6 +219,18 @@ class Fibbo(IStrategy):
     #max_entry_position_adjustment = 2
     model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifier')
     
+    # ✅ NEW: Control entry strictness (hyperoptable)
+    # 'any' = ANY condition (loose, many trades)
+    # 'half' = 50% of indicators must agree (balanced)
+    # 'majority' = 66% of indicators must agree (conservative)
+    # 'all' = ALL conditions (strict)
+    entry_logic_mode = CategoricalParameter(
+        categories=['any', 'half', 'majority', 'all'],
+        default='half',
+        space='buy',
+        optimize=True,
+        load=True
+    )
 
     # Plot config
     plot_config = {
@@ -873,12 +883,56 @@ class Fibbo(IStrategy):
 
         return dataframe
 
+    def combine_conditions(self, conditions: list, mode: str) -> pd.Series:
+        """
+        ✅ IMPROVED: Flexible entry logic
+        Combines multiple conditions based on the specified mode.
+        
+        Args:
+            conditions: List of boolean Series
+            mode: 'all', 'any', 'half', or 'majority'
+        
+        Returns:
+            Combined boolean Series
+        """
+        if not conditions:
+            return pd.Series([False] * len(conditions[0]))
+        
+        if mode == 'all':
+            # ALL conditions must be true (strict)
+            logger.debug(f"Entry logic: ALL ({len(conditions)} conditions)")
+            return reduce(lambda x, y: x & y, conditions)
+        
+        elif mode == 'any':
+            # ANY condition can be true (loose)
+            logger.debug(f"Entry logic: ANY ({len(conditions)} conditions)")
+            return reduce(lambda x, y: x | y, conditions)
+        
+        elif mode == 'half':
+            # At least 50% of conditions must be true (balanced)
+            num_true = sum(conditions)
+            threshold = len(conditions) * 0.5
+            logger.debug(f"Entry logic: 50% threshold ({int(threshold)}/{len(conditions)} conditions)")
+            return num_true >= threshold
+        
+        elif mode == 'majority':
+            # More than 50% of conditions must be true (conservative)
+            num_true = sum(conditions)
+            threshold = len(conditions) * 0.66
+            logger.debug(f"Entry logic: 66% threshold ({int(threshold)}/{len(conditions)} conditions)")
+            return num_true >= threshold
+        
+        else:
+            # Default to all
+            return reduce(lambda x, y: x & y, conditions)
+
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Combine your Fibbo strategy with FreqAI predictions.
         FreqAI columns are now available in the dataframe.
         """
         logger.debug(f"Generating entry signals for {metadata['pair']}")
+        logger.debug(f"Entry logic mode: {self.entry_logic_mode.value}")
         
         entry_long_conditions = []
         entry_short_conditions = []
@@ -986,24 +1040,21 @@ class Fibbo(IStrategy):
                     entry_long_conditions.append(freqai_bullish)
                     entry_short_conditions.append(freqai_bearish)
 
-        # Combine entry conditions with AND logic
-        # Enter if ALL conditions are met
+        # ✅ IMPROVED: Use flexible entry logic instead of AND for all
         if entry_long_conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, entry_long_conditions),
-                'enter_long'
-            ] = 1
+            signal = self.combine_conditions(entry_long_conditions, self.entry_logic_mode.value)
+            dataframe.loc[signal, 'enter_long'] = 1
+            
         if entry_short_conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, entry_short_conditions),
-                'enter_short'
-            ] = 1
+            signal = self.combine_conditions(entry_short_conditions, self.entry_logic_mode.value)
+            dataframe.loc[signal, 'enter_short'] = 1
 
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
         Exit logic combining Fibbo strategy with FreqAI sell signals.
+        Keep exit as strict AND logic to avoid premature exits.
         """
         logger.debug(f"Generating exit signals for {metadata['pair']}")
         
@@ -1114,8 +1165,7 @@ class Fibbo(IStrategy):
                     exit_long_conditions.append(freqai_bearish)
                     exit_short_conditions.append(freqai_bullish)
 
-        # Combine exit conditions with AND logic
-        # Exit if ALL condition are met
+        # Keep exit strict (AND logic) to avoid false exits
         if exit_long_conditions:
             dataframe.loc[
                 reduce(lambda x, y: x & y, exit_long_conditions),
