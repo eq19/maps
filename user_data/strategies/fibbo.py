@@ -163,7 +163,7 @@ class Fibbo(IStrategy):
     
     FIXED:
     - RSI calculation bug (was using buy_bb_period instead of buy_rsi_period)
-    - VWAP look-ahead bias (now uses standard VWAP without rolling window)
+    - VWAP look-ahead bias (now uses rolling_vwap for backtesting safety)
     - Hyperopt ROI override (removed unrealistic 100% target)
     - Fibonacci retracement swing calculations (now use previous bars only)
     """
@@ -763,10 +763,11 @@ class Fibbo(IStrategy):
         dataframe['rsi'] = ta.RSI(dataframe['close'], timeperiod=max(2, rsi_period))
         logger.debug(f"RSI calculated with period: {max(2, rsi_period)}")
 
-        # ✅ FIX #2: VWAP - use standard VWAP without rolling window to avoid look-ahead bias
-        # Standard VWAP doesn't introduce lookahead if calculated on historical closes only
-        dataframe['vwap'] = qtpylib.vwap(dataframe)
-        logger.debug("VWAP calculated using standard method (no lookahead)")
+        # ✅ FIX #2: VWAP - use rolling_vwap to avoid look-ahead bias in backtesting
+        # rolling_vwap calculates VWAP in a rolling manner, preventing lookahead
+        vwap_window = int(self.shared_vwap_window.value) if hasattr(self, 'shared_vwap_window') else 20
+        dataframe['vwap'] = qtpylib.rolling_vwap(dataframe, window=vwap_window)
+        logger.debug(f"VWAP calculated using rolling_vwap (window={vwap_window}, no lookahead)")
 
         # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
