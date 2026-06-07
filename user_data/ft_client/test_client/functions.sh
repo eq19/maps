@@ -190,8 +190,8 @@ calculate_score() {
     }
   " | bc -l)
 
-  echo "📌 2.2 Sharpe: $sharpe (score: $sharpe_score of 10)"
-  echo "📌 2.3 Calmar: $calmar (score: $calmar_score of 5)"
+  echo "📌 2.2 Sharpe: $(printf "%.2f" "$sharpe") (score: $(printf "%.2f" "$sharpe_score") of 10)"
+  echo "📌 2.3 Calmar: $(printf "%.2f" "$calmar") (score: $(printf "%.2f" "$calmar_score") of 5)"
 
   local risk=$(echo "$dd_score + $sharpe_score + $calmar_score" | bc -l)
   echo "📊 Risk Block: $(printf "%.2f" "$risk") of 30"
