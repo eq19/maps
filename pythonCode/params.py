@@ -70,7 +70,9 @@ class ParamBuilder:
                     self.params[section][key] = self.dec_param(value, low, high, decimals)
 
                 elif isinstance(value, str):
-                    if key == "buy_fib_level":
+                    if "indicator" in key:
+                        choices = ["NONE"]
+                    elif key == "buy_fib_level":
                         choices = ["0.618", "0.786"]
                     elif key == "sell_fib_level":
                         choices = ["0.236", "0.382"]
@@ -80,8 +82,6 @@ class ParamBuilder:
                         choices = ["34", "55", "89", "144"]
                     elif key == "entry_logic_mode" or key == "exit_logic_mode":
                         choices = ["any", "half", "majority", "all"]
-                    elif "indicator" in key:
-                        choices = ["NONE"]
                     else:
                         choices = [value]
                     self.params[section][key] = self.cat_param(value, choices)
