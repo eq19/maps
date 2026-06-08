@@ -335,7 +335,7 @@ hyperopt() {
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
-    days=30
+    days=60
     epochs=6400
 
     start_date=$EARLIEST_DATE
@@ -373,7 +373,7 @@ hyperopt() {
       epochs=$((epochs * 2))
     fi
 
-    spaces="buy sell roi trailing"
+    spaces="buy sell entry roi trailing"
     #spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
  
    # Disable protections if 'all' or 'protection' is in the spaces
