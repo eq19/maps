@@ -219,19 +219,6 @@ class Fibbo(IStrategy):
     #max_entry_position_adjustment = 2
     model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifier')
     
-    # ✅ NEW: Control entry strictness (hyperoptable)
-    # 'any' = ANY condition (loose, many trades)
-    # 'half' = 50% of indicators must agree (balanced)
-    # 'majority' = 66% of indicators must agree (conservative)
-    # 'all' = ALL conditions (strict)
-    entry_logic_mode = CategoricalParameter(
-        categories=['any', 'half', 'majority', 'all'],
-        default='half',
-        space='buy',
-        optimize=True,
-        load=True
-    )
-
     # Plot config
     plot_config = {
         "main_plot": {
