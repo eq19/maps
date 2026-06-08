@@ -1152,17 +1152,14 @@ class Fibbo(IStrategy):
                     exit_long_conditions.append(freqai_bearish)
                     exit_short_conditions.append(freqai_bullish)
 
-        # Keep exit strict (AND logic) to avoid false exits
+        # ✅ IMPROVED: Use flexible exit logic instead of AND for all
         if exit_long_conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, exit_long_conditions),
-                'exit_long'
-            ] = 1
+            signal = self.combine_conditions(exit_long_conditions, self.exit_logic_mode.value)
+            dataframe.loc[signal, 'exit_long'] = 1
+            
         if exit_short_conditions:
-            dataframe.loc[
-                reduce(lambda x, y: x & y, exit_short_conditions),
-                'exit_short'
-            ] = 1
+            signal = self.combine_conditions(exit_short_conditions, self.exit_logic_mode.value)
+            dataframe.loc[signal, 'exit_short'] = 1
 
         return dataframe
 
