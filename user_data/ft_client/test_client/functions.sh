@@ -386,14 +386,11 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    if ! error=$(freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} \
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
-      --random-state ${id} ${enable_protections} > /dev/null 2>&1); then
-      echo "$error"
-      [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
-    else
-      freqtrade hyperopt-list --best
-    fi
+      --random-state ${id} ${enable_protections}
+      #> /dev/null 2>&1
+    freqtrade hyperopt-list --best
     
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     jq '.params.roi |= with_entries(select(.key | startswith("roi_t") | not))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
