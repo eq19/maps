@@ -403,7 +403,7 @@ hyperopt() {
     NEW_SCORE=$SCORE
     OLD_SCORE=$(gh variable get SCORE)
  
-    if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) && $(echo "$NEW_SCORE > 0" | bc -l) )); then
+    if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
       cat $STRATEGY
       sed -i "s|Infinity|10|g" $STRATEGY
       sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
