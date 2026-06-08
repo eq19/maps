@@ -78,6 +78,8 @@ class ParamBuilder:
                         choices = ["5", "8", "13", "21"]
                     elif key == "buy_slow_ema" or key == "sell_slow_ema":
                         choices = ["34", "55", "89", "144"]
+                    elif key == "entry_logic_mode" or key == "exit_logic_mode":
+                        choices = ["any", "half", "majority", "all"]
                     elif "indicator" in key:
                         choices = ["NONE"]
                     else:
