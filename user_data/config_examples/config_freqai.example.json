@@ -5,7 +5,7 @@
 
     "purge_old_models": 1,
 
-    "train_period_days": 14,
+    "train_period_days": 30,
     "backtest_period_days": 7,
 
     "live_retrain_hours": 24,
@@ -31,8 +31,8 @@
       "include_corr_pairlist": [],
       "label_period_candles": 96,
 
-      "include_shifted_candles": 3,
-      "indicator_periods_candles": [12, 24],
+      "include_shifted_candles": 5,
+      "indicator_periods_candles": [12,24,48],
 
       "DI_threshold": 0.75,
       "weight_factor": 0.9,
@@ -49,9 +49,18 @@
     },
 
     "model_training_parameters": {
-      "n_estimators": 600,
-      "learning_rate": 0.05,
-      "max_depth": 5
+      "learning_rate": 0.0003,
+
+      "trainer_kwargs": {
+        "n_steps": 10000,
+        "batch_size": 128
+      },
+
+      "model_kwargs": {
+        "hidden_dim": 256,
+        "dropout_percent": 0.2,
+        "n_layer": 2
+      }
     }
   }
 }
