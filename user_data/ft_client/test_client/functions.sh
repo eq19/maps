@@ -560,7 +560,7 @@ freqai() {
 
         if [[ "$GITHUB_JOB" != "lexering" ]]; then
           gh variable set JOB --body "${GITHUB_JOB}"
-        elif [[ "$GITHUB_JOB" == "lexering" ]]; then
+        else
           gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"   
         fi
       elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
