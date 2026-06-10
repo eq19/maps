@@ -8,6 +8,16 @@ calculate_score() {
   # Scoring breakdown:
   TRADES_MIN=400
 
+  # Metric               Weight
+    # Profit Factor    = 25%
+    # Expectancy Ratio = 20%
+    # Max Drawdown     = 20%
+    # Profit Total     = 15%
+    # SQN              = 10%
+    # Win Rate         = 5%
+    # Trade Count      = 3%
+    # Profit Mean      = 2%
+ 
   # Profit Block (40%)
     # profit_total   = 20%
     # profit_mean    = 10%
