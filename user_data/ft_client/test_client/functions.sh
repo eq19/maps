@@ -230,6 +230,13 @@ calculate_score() {
     scale=6
     p = $profit_factor
 
+    # p Quality
+      # <1.0 Losing
+      # 1.0–1.1 Weak
+      # 1.1–1.25 Acceptable
+      # 1.25–1.5 Good
+      # >1.5 Strong
+
     if (p < 1) {
       0
     } else if (p < 1.2) {
