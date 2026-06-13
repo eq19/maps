@@ -36,6 +36,7 @@ import pandas_ta as pd_ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from itertools import permutations
 from utils import (
+    patch_dataprovider,
     patch_ccxt_pair_only,
     patch_indodax_fetch_order, 
     patch_indodax_cancel_order,
@@ -280,6 +281,7 @@ class Fibbo(IStrategy):
 
         if not self.config.get("dry_run", False):
 
+            patch_dataprovider()            # 🔥 REQUIRED
             patch_ccxt_pair_only()          # 🔥 REQUIRED
             patch_indodax_fetch_order()     # 🔥 REQUIRED
             patch_indodax_cancel_order()    # 🔥 REQUIRED
