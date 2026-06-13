@@ -86,7 +86,7 @@ def patched_get_pair_dataframe(
         raise
 
 
-def apply_patch():
+def patch_dataprovider():
     """
     Install monkey patch
     """
