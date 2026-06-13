@@ -1,139 +1,102 @@
 import logging
 import traceback
+from pandas import DataFrame
+
+from freqtrade.data.dataprovider import DataProvider
 
 logger = logging.getLogger(__name__)
 
+# Keep original method
+_original_get_pair_dataframe = DataProvider.get_pair_dataframe
 
-def patch_dataprovider():
+
+def patched_get_pair_dataframe(
+    self,
+    pair: str,
+    timeframe: str | None = None,
+    candle_type: str = ""
+):
+    """
+    Debug patch for:
+        WARNING - No data found for (PAIR, TIMEFRAME,)
+
+    Captures:
+      - caller stack
+      - runmode
+      - returned dataframe size
+    """
 
     try:
-        from freqtrade.data.dataprovider import DataProvider
-    except Exception as e:
-        logger.error(
-            f"❌ Failed importing DataProvider: {e}"
+        result = _original_get_pair_dataframe(
+            self,
+            pair,
+            timeframe,
+            candle_type
         )
-        return
 
-    if getattr(DataProvider, "_nodata_patch_applied", False):
-        logger.info(
-            "🛠️ DataProvider patch already applied."
-        )
-        return
+        rows = 0
 
-    original_get_analyzed_dataframe = (
-        DataProvider.get_analyzed_dataframe
-    )
-
-    def get_analyzed_dataframe_patched(
-        self,
-        pair,
-        timeframe,
-    ):
-
-        try:
-
-            cache = getattr(
-                self,
-                "_DataProvider__cached_pairs",
-                {},
-            )
-
-            pair_key = (
-                pair,
-                timeframe,
-                self._config.get(
-                    "candle_type_def",
-                    None,
-                ),
-            )
-
-            cache_hit = pair_key in cache
-
-            if not cache_hit:
-
-                logger.error(
-                    "\n"
-                    "=====================================================\n"
-                    f"❌ CACHE MISS\n"
-                    f"pair      = {pair}\n"
-                    f"timeframe = {timeframe}\n"
-                    f"cache_size= {len(cache)}\n"
-                    "====================================================="
-                )
-
-                logger.error(
-                    "📦 FIRST 50 CACHE KEYS:"
-                )
-
-                for i, key in enumerate(cache.keys()):
-
-                    if i >= 50:
-                        logger.error(
-                            "... truncated ..."
-                        )
-                        break
-
-                    logger.error(f"    {key}")
-
-                logger.error(
-                    "\n📍 CALL STACK:\n%s",
-                    "".join(
-                        traceback.format_stack(limit=25)
-                    )
-                )
-
-        except Exception as e:
-
-            logger.exception(
-                f"💥 CACHE INSPECTION FAILED: {e}"
-            )
-
-        try:
-
-            result = original_get_analyzed_dataframe(
-                self,
-                pair,
-                timeframe,
-            )
-
+        if result is not None:
             try:
-
-                df = result[0]
-
-                if len(df) == 0:
-
-                    logger.error(
-                        "\n"
-                        "=====================================================\n"
-                        f"🚨 EMPTY DATAFRAME\n"
-                        f"pair      = {pair}\n"
-                        f"timeframe = {timeframe}\n"
-                        "====================================================="
-                    )
-
+                rows = len(result)
             except Exception:
-
                 pass
 
-            return result
+        if rows == 0:
 
-        except Exception as e:
+            logger.error("")
+            logger.error("=" * 80)
+            logger.error("🚨 NO DATA FOUND DETECTED")
+            logger.error("=" * 80)
+            logger.error("pair=%s", pair)
+            logger.error("timeframe=%s", timeframe)
+            logger.error("candle_type=%s", candle_type)
 
-            logger.exception(
-                f"💥 GET_ANALYZED_DATAFRAME FAILED "
-                f"pair={pair} "
-                f"timeframe={timeframe} "
-                f"error={e}"
+            try:
+                logger.error("runmode=%s", self.runmode)
+            except Exception:
+                pass
+
+            try:
+                logger.error(
+                    "whitelist_size=%s",
+                    len(self._config.get("exchange", {}).get("pair_whitelist", []))
+                )
+            except Exception:
+                pass
+
+            logger.error("")
+            logger.error("STACKTRACE:")
+            logger.error(
+                "%s",
+                "".join(traceback.format_stack(limit=30))
             )
 
-            raise
+            logger.error("=" * 80)
 
-    DataProvider.get_analyzed_dataframe = (
-        get_analyzed_dataframe_patched
-    )
+        return result
 
-    DataProvider._nodata_patch_applied = True
+    except Exception:
+        logger.exception(
+            "🚨 Exception inside patched_get_pair_dataframe "
+            "pair=%s timeframe=%s",
+            pair,
+            timeframe
+        )
+        raise
+
+
+def apply_patch():
+    """
+    Install monkey patch
+    """
+
+    if getattr(DataProvider, "_pair_dataframe_debug_patch", False):
+        return
+
+    DataProvider.get_pair_dataframe = patched_get_pair_dataframe
+    DataProvider._pair_dataframe_debug_patch = True
 
     logger.warning(
-        "🛠️ DataProvider STACKTRACE patch applied."
+        "🛠️ DataProvider get_pair_dataframe STACKTRACE patch applied."
     )
