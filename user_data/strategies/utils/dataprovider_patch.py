@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -29,22 +30,12 @@ def patch_dataprovider():
         timeframe,
     ):
 
-        logger.warning(
-            f"🔍 GET_ANALYZED_DATAFRAME "
-            f"pair={pair} "
-            f"timeframe={timeframe}"
-        )
-
         try:
 
             cache = getattr(
                 self,
                 "_DataProvider__cached_pairs",
                 {},
-            )
-
-            logger.warning(
-                f"📦 CACHE SIZE = {len(cache)}"
             )
 
             pair_key = (
@@ -56,38 +47,40 @@ def patch_dataprovider():
                 ),
             )
 
-            if pair_key in cache:
+            cache_hit = pair_key in cache
 
-                df, ts = cache[pair_key]
-
-                logger.warning(
-                    f"✅ CACHE HIT "
-                    f"pair={pair} "
-                    f"timeframe={timeframe} "
-                    f"rows={len(df)} "
-                    f"last={ts}"
-                )
-
-            else:
+            if not cache_hit:
 
                 logger.error(
-                    f"❌ CACHE MISS "
-                    f"pair={pair} "
-                    f"timeframe={timeframe}"
+                    "\n"
+                    "=====================================================\n"
+                    f"❌ CACHE MISS\n"
+                    f"pair      = {pair}\n"
+                    f"timeframe = {timeframe}\n"
+                    f"cache_size= {len(cache)}\n"
+                    "====================================================="
                 )
 
                 logger.error(
-                    f"📦 AVAILABLE CACHE KEYS:"
+                    "📦 FIRST 50 CACHE KEYS:"
                 )
 
-                for key in cache.keys():
+                for i, key in enumerate(cache.keys()):
 
-                    try:
+                    if i >= 50:
                         logger.error(
-                            f"    {key}"
+                            "... truncated ..."
                         )
-                    except Exception:
-                        pass
+                        break
+
+                    logger.error(f"    {key}")
+
+                logger.error(
+                    "\n📍 CALL STACK:\n%s",
+                    "".join(
+                        traceback.format_stack(limit=25)
+                    )
+                )
 
         except Exception as e:
 
@@ -107,26 +100,20 @@ def patch_dataprovider():
 
                 df = result[0]
 
-                logger.warning(
-                    f"📊 RESULT "
-                    f"pair={pair} "
-                    f"timeframe={timeframe} "
-                    f"rows={len(df)}"
-                )
-
                 if len(df) == 0:
 
                     logger.error(
-                        f"🚨 EMPTY DATAFRAME "
-                        f"pair={pair} "
-                        f"timeframe={timeframe}"
+                        "\n"
+                        "=====================================================\n"
+                        f"🚨 EMPTY DATAFRAME\n"
+                        f"pair      = {pair}\n"
+                        f"timeframe = {timeframe}\n"
+                        "====================================================="
                     )
 
-            except Exception as e:
+            except Exception:
 
-                logger.exception(
-                    f"💥 RESULT ANALYSIS FAILED: {e}"
-                )
+                pass
 
             return result
 
@@ -148,5 +135,5 @@ def patch_dataprovider():
     DataProvider._nodata_patch_applied = True
 
     logger.warning(
-        "🛠️ DataProvider patch applied."
-  )
+        "🛠️ DataProvider STACKTRACE patch applied."
+    )
