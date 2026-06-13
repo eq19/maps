@@ -148,5 +148,5 @@ def patch_dataprovider():
     DataProvider._nodata_patch_applied = True
 
     logger.warning(
-        "🛠️ DataProvider No-Data patch applied."
+        "🛠️ DataProvider patch applied."
   )
