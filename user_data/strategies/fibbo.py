@@ -281,11 +281,11 @@ class Fibbo(IStrategy):
 
         if not self.config.get("dry_run", False):
 
-            patch_dataprovider()            # 🔥 REQUIRED
             patch_ccxt_pair_only()          # 🔥 REQUIRED
             patch_indodax_fetch_order()     # 🔥 REQUIRED
             patch_indodax_cancel_order()    # 🔥 REQUIRED
             patch_indodax_create_order()    # ⚠️ optional but recommended
+            patch_dataprovider()            # 🔥 optional but recommended
 
             logger.info("✅ Indodax fully patched (stable mode)")
         else:
