@@ -194,5 +194,5 @@ def patch_dataprovider():
     DataProvider._pair_dataframe_debug_patch = True
 
     logger.warning(
-        "🛠️ DataProvider get_pair_dataframe DEBUG patch applied."
+        "🛠️ DataProvider patch applied."
     )
