@@ -193,6 +193,6 @@ def patch_dataprovider():
     DataProvider.get_pair_dataframe = patched_get_pair_dataframe
     DataProvider._pair_dataframe_debug_patch = True
 
-    logger.warning(
+    logger.info(
         "🛠️ DataProvider patch applied."
     )
