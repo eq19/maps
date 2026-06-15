@@ -299,7 +299,7 @@ calculate_score() {
   CALCULATION="true"
 
   echo ""
-  echo "# Any of these → discard or penalize heavily:"
+  echo "🚧 Any of these → discard or penalize heavily:"
   echo ""
   echo "  # PF < 1.0"
   echo "  # Sharpe < 0"
