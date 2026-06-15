@@ -1032,12 +1032,12 @@ class Fibbo(IStrategy):
         # ✅ IMPROVED: Use flexible entry logic instead of AND for all
         if entry_long_conditions:
             signal = self.combine_conditions(entry_long_conditions, self.entry_logic_mode.value)
-            # Move signal 1 candle behind to ensure a genuine execution in the next open candle
-            dataframe.loc[signal.shift(1).fillna(False).astype(bool), 'enter_long'] = 1
-            
+            # Move the signal one (1) candle behind to ensure a genuine execution in the next open candle
+            dataframe.loc[signal.shift(1).fillna(False).infer_objects(copy=False).astype(bool), 'enter_long'] = 1
+           
         if entry_short_conditions:
             signal = self.combine_conditions(entry_short_conditions, self.entry_logic_mode.value)
-            dataframe.loc[signal.shift(1).fillna(False).astype(bool), 'enter_short'] = 1
+            dataframe.loc[signal.shift(1).fillna(False).infer_objects(copy=False).astype(bool), 'enter_short'] = 1
 
         return dataframe
 
