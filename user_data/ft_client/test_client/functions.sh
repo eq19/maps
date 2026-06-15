@@ -390,8 +390,8 @@ hyperopt() {
       epochs=$((epochs * 2))
     fi
 
-    spaces="buy sell entry exit roi trailing"
-    #spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+    #spaces="buy sell entry exit roi trailing"
+    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
  
    # Disable protections if 'all' or 'protection' is in the spaces
    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
