@@ -114,7 +114,7 @@
     ],
     "ccxt_config": {
       "enableRateLimit": true,
-      "rateLimit": 200,
+      "rateLimit": 100,
       "timeout": 30000,
       "timeframes": {
         "1m": "1",
@@ -210,7 +210,7 @@
     },
     "ccxt_async_config": {
       "enableRateLimit": true,
-      "rateLimit": 200,
+      "rateLimit": 00,
       "timeout": 30000,
       "timeframes": {
         "1m": "1",
