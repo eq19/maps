@@ -373,6 +373,7 @@ hyperopt() {
  
    # Disable protections if 'all' or 'protection' is in the spaces
    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
+        hyperopt_loss="DefaultHyperOptLoss"
         enable_protections=""
         prot="disable"
     else
@@ -380,9 +381,9 @@ hyperopt() {
         prot="enable"
     fi
 
-    echo -e "\n$hr\nID: $id 👉 Running ${HYPEROPT:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${HYPEROPT:-$loss} \
-      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 --logfile /dev/null \
+    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
+      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1
     freqtrade hyperopt-list --best
     
