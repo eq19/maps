@@ -8,36 +8,6 @@ calculate_score() {
   # Scoring breakdown:
   TRADES_MIN=400
 
-  # Metric               Weight
-    # Profit Factor    = 25%
-    # Expectancy Ratio = 20%
-    # Max Drawdown     = 20%
-    # Profit Total     = 15%
-    # SQN              = 10%
-    # Win Rate         = 5%
-    # Trade Count      = 3%
-    # Profit Mean      = 2%
- 
-  # Profit Block (40%)
-    # profit_total   = 20%
-    # profit_mean    = 10%
-    # winrate        = 10%
-
-  # Risk Block (30%)
-    # max_drawdown_account = 15%
-    # calmar               = 10%
-    # sharpe               = 5%
-
-  # Quality Block (30%)
-    # expectancy_ratio = 10%
-    # profit_factor    = 10%
-    # sortino          = 5%
-    # sqn              = 5%
-
-  # Optional
-    # cagr as bonus (0 - 5)%
-    # trades as penalties if lower than 200
-
   sleep 5
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
