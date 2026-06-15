@@ -299,8 +299,8 @@ calculate_score() {
   CALCULATION="true"
 
   echo ""
-
   # Any of these → discard or penalize heavily:
+
     # PF < 1.0
     # Sharpe < 0
     # Expectancy Ratio < 0
