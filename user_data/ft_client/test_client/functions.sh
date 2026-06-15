@@ -166,7 +166,7 @@ calculate_score() {
     } else if (c < 5) {
       4 + (c - 3) * 0.5
     } else {
-      5 / (l(c) / l(10))
+      5 / (l(c) / l(5))
     }
   " | bc -l)
 
@@ -233,7 +233,7 @@ calculate_score() {
     } else if (s < 6) {
       3 + (s - 3) * (2/3)
     } else {
-      5 / (l(s) / l(10))
+      5 / (l(s) / l(6))
     }
   " | bc -l)
 
