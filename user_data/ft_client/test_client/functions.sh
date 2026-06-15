@@ -365,20 +365,22 @@ hyperopt() {
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
       gh variable set JOB --body "${GITHUB_JOB}"
+      hyperopt_loss="DefaultHyperOptLoss"
       epochs=$((epochs * 2))
+    else
+      hyperopt_loss="$HYPEROPT"
     fi
 
     #spaces="buy sell entry exit roi trailing"
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
  
-   # Disable protections if 'all' or 'protection' is in the spaces
-   if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
-        hyperopt_loss="DefaultHyperOptLoss"
-        enable_protections=""
-        prot="disable"
+    # Disable protections if 'all' or 'protection' is in the spaces
+    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
+      enable_protections=""
+      prot="disable"
     else
-        enable_protections="--enable-protections"
-        prot="enable"
+      enable_protections="--enable-protections"
+      prot="enable"
     fi
 
     echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
