@@ -1158,11 +1158,11 @@ class Fibbo(IStrategy):
         # ✅ IMPROVED: Use flexible exit logic instead of AND for all
         if exit_long_conditions:
             signal = self.combine_conditions(exit_long_conditions, self.exit_logic_mode.value)
-            dataframe.loc[signal, 'exit_long'] = 1
+            dataframe.loc[signal.shift(1).fillna(False).infer_objects(copy=False).astype(bool), 'exit_long'] = 1
             
         if exit_short_conditions:
             signal = self.combine_conditions(exit_short_conditions, self.exit_logic_mode.value)
-            dataframe.loc[signal, 'exit_short'] = 1
+            dataframe.loc[signal.shift(1).fillna(False).infer_objects(copy=False).astype(bool), 'exit_short'] = 1
 
         return dataframe
 
