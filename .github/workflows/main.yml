@@ -1,6 +1,8 @@
 # 💎 Main Workflow: eQuantum MEC30
 name: COmpendium of RElations Modulo 6
-run-name: "COmpendium of RElations: ${{ inputs.RUN_MODE != 'false' && inputs.RUN_MODE || 'Hyperopt' }}"
+run-name: >
+  COmpendium of RElations: ${{ inputs.RUN_MODE != 'false' &&
+  inputs.RUN_MODE || 'Hyperopt' }}
 
 on:
   #push:
