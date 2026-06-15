@@ -299,14 +299,14 @@ calculate_score() {
   CALCULATION="true"
 
   echo ""
-  # Any of these → discard or penalize heavily:
-
-    # PF < 1.0
-    # Sharpe < 0
-    # Expectancy Ratio < 0
-    # Max DD > 50% (or >40% depending on risk tolerance) 
-    # Trade count < 30 (or 50 depending on timerange and number of pairlist)
-
+  echo "# Any of these → discard or penalize heavily:"
+  echo ""
+  echo "  # PF < 1.0"
+  echo "  # Sharpe < 0"
+  echo "  # Expectancy Ratio < 0"
+  echo "  # Max DD > 50% (or >40% depending on risk tolerance)"
+  echo "  # Trade count < 30 (or 50 depending on timerange and number of pairlist)"
+  echo ""
   echo "🔍 Behavior Profile:"
   if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
     echo "✅ High-profit and active trading strategy"
