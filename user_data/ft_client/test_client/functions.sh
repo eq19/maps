@@ -299,13 +299,13 @@ calculate_score() {
   CALCULATION="true"
 
   echo ""
-  # Any of these → discard or penalize heavily:
 
-·   # PF < 1.0
-·   # Sharpe < 0
-·.  # Expectancy Ratio < 0
-·.  # Max DD > 50% (or >40% depending on risk tolerance)
-·   # Trade count < 30 (or 50)
+  # Any of these → discard or penalize heavily:
+    # PF < 1.0
+    # Sharpe < 0
+    # Expectancy Ratio < 0
+    # Max DD > 50% (or >40% depending on risk tolerance) 
+    # Trade count < 30 (or 50)
 
   echo "🔍 Behavior Profile:"
   if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
