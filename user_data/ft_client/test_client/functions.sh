@@ -181,16 +181,28 @@ calculate_score() {
     scale=6
     e = $expectancy_ratio
 
+    # e Quality
+    # e Quality
+      # < 0  Losing
+      # 0 – 0.10 Very Weak
+      # 0.10 – 0.25 Weak
+      # 0.25 – 0.50 Acceptable
+      # 0.50 – 1.00 Good
+      # 1.00 – 2.00 Strong
+      # > 2.00 Exceptional
+
     if (e < 0.02) {
       e * 100
-    } else if (e < 0.05) {
-      2 + (e - 0.02) * (2 / 0.03)
     } else if (e < 0.1) {
-      4 + (e - 0.05) * (2 / 0.05)
-    } else if (e < 0.2) {
-      6 + (e - 0.1) * (2 / 0.1)
-    } else if (e < 0.3) {
-      8 + (e - 0.2) * (2 / 0.1)
+      2 + (e - 0.1) * (2 / 0.03)
+    } else if (e < 0.25) {
+      3 + (e - 0.25) * (2 / 0.05)
+    } else if (e < 0.5) {
+      5 + (e - 0.5) * (2 / 0.05)
+    } else if (e < 1) {
+      6 + (e - 1) * (2 / 0.1)
+    } else if (e < 2) {
+      8 + (e - 2) * (2 / 0.1)
     } else {
       10
     }
