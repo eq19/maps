@@ -1033,11 +1033,11 @@ class Fibbo(IStrategy):
         if entry_long_conditions:
             signal = self.combine_conditions(entry_long_conditions, self.entry_logic_mode.value)
             # Move the signal one (1) candle behind to ensure a genuine execution in the next open candle
-            dataframe.loc[signal.shift(1, fill_value=False), 'enter_long'] = 1
+            dataframe.loc[signal, 'enter_long'] = 1
            
         if entry_short_conditions:
             signal = self.combine_conditions(entry_short_conditions, self.entry_logic_mode.value)
-            dataframe.loc[signal.shift(1, fill_value=False), 'enter_short'] = 1
+            dataframe.loc[signal, 'enter_short'] = 1
 
         return dataframe
 
@@ -1158,11 +1158,11 @@ class Fibbo(IStrategy):
         # ✅ IMPROVED: Use flexible exit logic instead of AND for all
         if exit_long_conditions:
             signal = self.combine_conditions(exit_long_conditions, self.exit_logic_mode.value)
-            dataframe.loc[signal.shift(1, fill_value=False), 'exit_long'] = 1
+            dataframe.loc[signal, 'exit_long'] = 1
             
         if exit_short_conditions:
             signal = self.combine_conditions(exit_short_conditions, self.exit_logic_mode.value)
-            dataframe.loc[signal.shift(1, fill_value=False), 'exit_short'] = 1
+            dataframe.loc[signal, 'exit_short'] = 1
 
         return dataframe
 
