@@ -147,7 +147,7 @@ calculate_score() {
     } else if (s < 5) {
       8 + (s - 3)
     } else {
-      10 / (l(s) / l(10))
+      10 / (l(s) / l(5))
     }
   " | bc -l) 
 
