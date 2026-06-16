@@ -182,7 +182,6 @@ calculate_score() {
     e = $expectancy_ratio
 
     # e Quality
-    # e Quality
       # < 0  Losing
       # 0 – 0.10 Very Weak
       # 0.10 – 0.25 Weak
@@ -194,15 +193,15 @@ calculate_score() {
     if (e < 0.02) {
       e * 100
     } else if (e < 0.1) {
-      2 + (e - 0.1) * (2 / 0.03)
+      2 + (e - 0.02) / 0.08
     } else if (e < 0.25) {
-      3 + (e - 0.25) * (2 / 0.05)
+      3 + (e - 0.10) / (0.15 / 2)
     } else if (e < 0.5) {
-      5 + (e - 0.5) * (2 / 0.05)
+      5 + (e - 0.25) / (0.25 / 2)
     } else if (e < 1) {
-      6 + (e - 1) * (2 / 0.1)
+      7 + (e - 0.5) / (0.5 / 2)
     } else if (e < 2) {
-      8 + (e - 2) * (2 / 0.1)
+      9 + (e - 1)
     } else {
       10
     }
