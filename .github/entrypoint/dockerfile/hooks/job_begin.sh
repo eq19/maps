@@ -149,10 +149,10 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
 
       # Setup freqtrade userdir for dry mode
       if ! $DOCKER exec mydb test -d "/home/runner/data_dry"; then
-        $DOCKER exec mydb bash -c 'freqtrade create-userdir --userdir /home/runner/data_dry'
-        $DOCKER exec mydb bash -c 'rm -rf /home/runner/data_dry/freqaimodels'
+        $DOCKER exec mydb bash -c 'freqtrade create-userdir --userdir /home/runner/data_dry 2>/dev/null'
+        $DOCKER exec mydb bash -c 'rm -rf /home/runner/data_dry/freqaimodels /home/runner/data_dry/ft_client'
         $DOCKER exec mydb bash -c 'cp -a /home/runner/user_data/freqaimodels /home/runner/data_dry/'
-        #$DOCKER exec mydb bash -c 'ln -s /home/runner/user_data/freqaimodels /home/runner/data_dry/freqaimodels'
+        $DOCKER exec mydb bash -c 'cp -a /home/runner/user_data/ft_client /home/runner/data_dry/'
       elif $DOCKER exec mydb supervisorctl status freqtrade_dry | grep -q "RUNNING"; then
         echo -e "\n$hr\nTotal Profit Dry-run vs Live Mode\n$hr"
         freqtrade_total_profit 8081 Dry
@@ -161,10 +161,10 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
 
       # Setup freqtrade userdir for live mode
       if ! $DOCKER exec mydb test -d "/home/runner/data_live"; then
-        $DOCKER exec mydb bash -c 'freqtrade create-userdir --userdir /home/runner/data_live'
-        $DOCKER exec mydb bash -c 'rm -rf /home/runner/data_live/freqaimodels'
+        $DOCKER exec mydb bash -c 'freqtrade create-userdir --userdir /home/runner/data_live 2>/dev/null'
+        $DOCKER exec mydb bash -c 'rm -rf /home/runner/data_live/freqaimodels /home/runner/data_live/ft_client'
         $DOCKER exec mydb bash -c 'cp -a /home/runner/user_data/freqaimodels /home/runner/data_live/'
-        #$DOCKER exec mydb bash -c 'ln -s /home/runner/user_data/freqaimodels /home/runner/data_live/freqaimodels'
+        $DOCKER exec mydb bash -c 'cp -a /home/runner/user_data/ft_client /home/runner/data_live/'
       elif $DOCKER exec mydb supervisorctl status freqtrade_live | grep -q "RUNNING"; then
         echo -e "\n$hr\n"
         freqtrade_total_profit 8082 Live
@@ -181,6 +181,10 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
           $DOCKER exec mydb mv /home/runner/data_live /home/runner/data_live_
           $DOCKER exec mydb mv /home/runner/data_dry_ /home/runner/data_live
           $DOCKER exec mydb mv /home/runner/data_live_ /home/runner/data_dry
+
+          $DOCKER exec mydb bash -c "find /home/runner/data_dry/models -type f -exec sed -i 's/data_live/data_dry/g' {} +"
+          $DOCKER exec mydb bash -c "find /home/runner/data_live/models -type f -exec sed -i 's/data_dry/data_live/g' {} +"
+
           $DOCKER exec mydb bash -c 'for folder in /home/runner/tradesv3_dry.*; do mv "$folder" "${folder/tradesv3_dry/tradesv3_dry_}"; done'
           $DOCKER exec mydb bash -c 'for folder in /home/runner/tradesv3_live.*; do mv "$folder" "${folder/tradesv3_live/tradesv3_live_}"; done'
           $DOCKER exec mydb bash -c 'for folder in /home/runner/tradesv3_dry_.*; do mv "$folder" "${folder/tradesv3_dry_/tradesv3_live}"; done'
@@ -189,10 +193,10 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
           echo "Dry-run is not better than Live mode"
           $DOCKER exec mydb supervisorctl stop freqtrade_dry || true
           $DOCKER exec mydb bash -c 'rm -rf /home/runner/data_dry /home/runner/tradesv3_dry.*'
-          $DOCKER exec mydb bash -c 'freqtrade create-userdir --userdir /home/runner/data_dry'
-          $DOCKER exec mydb bash -c 'rm -rf /home/runner/data_dry/freqaimodels'
+          $DOCKER exec mydb bash -c 'freqtrade create-userdir --userdir /home/runner/data_dry 2>/dev/null'
+          $DOCKER exec mydb bash -c 'rm -rf /home/runner/data_dry/freqaimodels /home/runner/data_dry/ft_client'
           $DOCKER exec mydb bash -c 'cp -a /home/runner/user_data/freqaimodels /home/runner/data_dry/'
-          #$DOCKER exec mydb bash -c 'ln -s /home/runner/user_data/freqaimodels /home/runner/data_dry/freqaimodels'
+          $DOCKER exec mydb bash -c 'cp -a /home/runner/user_data/ft_client /home/runner/data_dry/'
         fi
 
       fi

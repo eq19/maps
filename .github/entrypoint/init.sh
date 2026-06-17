@@ -181,6 +181,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
     "strategies/utils/__init__.py"
     "strategies/utils/ccxt_patch.py"
     "strategies/utils/indodax_patch.py"
+    "strategies/utils/dataprovider_patch.py"
     "freqaimodels/custom_models.py"
     "freqaimodels/traditional_models.py"
     "ft_client/test_client/app.py"
@@ -376,6 +377,7 @@ fi
         if $DOCKER exec mydb curl -sf -o "$DEST_PATH" "$DOWNLOAD_URL"; then
           if $DOCKER exec mydb test -s "$DEST_PATH"; then
             [[ "$DEST_PATH" == *.sh ]] && $DOCKER exec mydb chmod +x "$DEST_PATH"
+            [[ "$DEST_PATH" == *config_pairlist* ]] && "$DOCKER" exec mydb bash -c "jq '.pairlists = [{\"method\": \"StaticPairList\"}]' \"$DEST_PATH\" > tmp.json && mv tmp.json \"$DEST_PATH\""
             echo "✅ [SUCCESS] Downloaded: $DEST_PATH"
             break
           else
