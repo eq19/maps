@@ -921,7 +921,6 @@ class Fibbo(IStrategy):
         FreqAI columns are now available in the dataframe.
         """
         logger.debug(f"Generating entry signals for {metadata['pair']}")
-        logger.debug(f"Entry logic mode: {self.entry_logic_mode.value}")
         
         entry_long_conditions = []
         entry_short_conditions = []
