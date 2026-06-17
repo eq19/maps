@@ -44,8 +44,8 @@ from utils import (
 )
 
 # Define indicator sets (could also come from the JSON if needed)
-buy_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
-sell_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
+enter_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
+exit_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
 
 logger = logging.getLogger(__name__)
 
