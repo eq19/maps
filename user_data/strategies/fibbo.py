@@ -134,17 +134,17 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
     return profile_permutations
 
 # Insert computed categories into the JSON-loaded span
-span["buy"]["buy_long_indicator"]["choices"] = sorted(
-    indicator_permutations(buy_indicators, max_indicators=4, include_none=True)
+span["enter"]["enter_long_indicator"]["choices"] = sorted(
+    indicator_permutations(enter_indicators, max_indicators=4, include_none=True)
 )
-span["buy"]["buy_short_indicator"]["choices"] = sorted(
-    indicator_permutations(buy_indicators, max_indicators=4, include_none=True)
+span["enter"]["enter_short_indicator"]["choices"] = sorted(
+    indicator_permutations(enter_indicators, max_indicators=4, include_none=True)
 )
-span["sell"]["sell_long_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=4, include_none=True)
+span["exit"]["exit_long_indicator"]["choices"] = sorted(
+    indicator_permutations(exit_indicators, max_indicators=4, include_none=True)
 )
-span["sell"]["sell_short_indicator"]["choices"] = sorted(
-    indicator_permutations(sell_indicators, max_indicators=4, include_none=True)
+span["exit"]["exit_short_indicator"]["choices"] = sorted(
+    indicator_permutations(exit_indicators, max_indicators=4, include_none=True)
 )
 
 # Preload strategy attributes
@@ -970,37 +970,37 @@ class Fibbo(IStrategy):
         entry_long_conditions.append(FIBBO_LONG_ENTRY)
         entry_short_conditions.append(FIBBO_SHORT_ENTRY)
         
-        if "BB" in self.buy_long_indicator.value:
+        if "BB" in self.enter_long_indicator.value:
             entry_long_conditions.append(BB_LONG_ENTRY)
-        if "BB" in self.buy_short_indicator.value:
+        if "BB" in self.enter_short_indicator.value:
             entry_short_conditions.append(BB_SHORT_ENTRY)
-        if "RSI" in self.buy_long_indicator.value:
+        if "RSI" in self.enter_long_indicator.value:
             entry_long_conditions.append(RSI_LONG_ENTRY)
-        if "RSI" in self.buy_short_indicator.value:
+        if "RSI" in self.enter_short_indicator.value:
             entry_short_conditions.append(RSI_SHORT_ENTRY)
-        if "VWAP" in self.buy_long_indicator.value:
+        if "VWAP" in self.enter_long_indicator.value:
             entry_long_conditions.append(VWAP_LONG_ENTRY)
-        if "VWAP" in self.buy_short_indicator.value:
+        if "VWAP" in self.enter_short_indicator.value:
             entry_short_conditions.append(VWAP_SHORT_ENTRY)
-        if "MACD" in self.buy_long_indicator.value:
+        if "MACD" in self.enter_long_indicator.value:
             entry_long_conditions.append(MACD_LONG_ENTRY)
-        if "MACD" in self.buy_short_indicator.value:
+        if "MACD" in self.enter_short_indicator.value:
             entry_short_conditions.append(MACD_SHORT_ENTRY)
-        if "DEMA" in self.buy_long_indicator.value:
+        if "DEMA" in self.enter_long_indicator.value:
             entry_long_conditions.append(DEMA_LONG_ENTRY)
-        if "DEMA" in self.buy_short_indicator.value:
+        if "DEMA" in self.enter_short_indicator.value:
             entry_short_conditions.append(DEMA_SHORT_ENTRY)
-        if "STOCHRSI" in self.buy_long_indicator.value:
+        if "STOCHRSI" in self.enter_long_indicator.value:
             entry_long_conditions.append(STOCHRSI_LONG_ENTRY)
-        if "STOCHRSI" in self.buy_short_indicator.value:
+        if "STOCHRSI" in self.enter_short_indicator.value:
             entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
 
         # === TTM Squeeze ENTRY (breakout model) ===
-        if "TTM" in self.buy_long_indicator.value:
+        if "TTM" in self.enter_long_indicator.value:
             squeeze_off = dataframe['squeeze_off']
             momentum_positive = dataframe['momentum_hist'] > 0
             entry_long_conditions.append(squeeze_off & momentum_positive)
-        if "TTM" in self.buy_short_indicator.value:
+        if "TTM" in self.enter_short_indicator.value:
             squeeze_off = dataframe['squeeze_off']
             momentum_negative = dataframe['momentum_hist'] < 0
             entry_short_conditions.append(squeeze_off & momentum_negative)
@@ -1031,12 +1031,12 @@ class Fibbo(IStrategy):
 
         # ✅ IMPROVED: Use flexible entry logic instead of AND for all
         if entry_long_conditions:
-            signal = self.combine_conditions(entry_long_conditions, self.entry_logic_mode.value)
+            signal = self.combine_conditions(entry_long_conditions, self.enter_trade_mode.value)
             # Move the signal one (1) candle behind to ensure a genuine execution in the next open candle
             dataframe.loc[signal, 'enter_long'] = 1
            
         if entry_short_conditions:
-            signal = self.combine_conditions(entry_short_conditions, self.entry_logic_mode.value)
+            signal = self.combine_conditions(entry_short_conditions, self.enter_trade_mode.value)
             dataframe.loc[signal, 'enter_short'] = 1
 
         return dataframe
@@ -1095,37 +1095,37 @@ class Fibbo(IStrategy):
         exit_long_conditions.append(FIBBO_LONG_EXIT)
         exit_short_conditions.append(FIBBO_SHORT_EXIT)
         
-        if "BB" in self.sell_long_indicator.value:
+        if "BB" in self.exit_long_indicator.value:
             exit_long_conditions.append(BB_LONG_EXIT)
-        if "BB" in self.sell_short_indicator.value:
+        if "BB" in self.exit_short_indicator.value:
             exit_short_conditions.append(BB_SHORT_EXIT)
-        if "RSI" in self.sell_long_indicator.value:
+        if "RSI" in self.exit_long_indicator.value:
             exit_long_conditions.append(RSI_LONG_EXIT)
-        if "RSI" in self.sell_short_indicator.value:
+        if "RSI" in self.exit_short_indicator.value:
             exit_short_conditions.append(RSI_SHORT_EXIT)
-        if "VWAP" in self.sell_long_indicator.value:
+        if "VWAP" in self.exit_long_indicator.value:
             exit_long_conditions.append(VWAP_LONG_EXIT)
-        if "VWAP" in self.sell_short_indicator.value:
+        if "VWAP" in self.exit_short_indicator.value:
             exit_short_conditions.append(VWAP_SHORT_EXIT)
-        if "DEMA" in self.sell_long_indicator.value:
+        if "DEMA" in self.exit_long_indicator.value:
             exit_long_conditions.append(DEMA_LONG_EXIT)
-        if "DEMA" in self.sell_short_indicator.value:
+        if "DEMA" in self.exit_short_indicator.value:
             exit_short_conditions.append(DEMA_SHORT_EXIT)
-        if "MACD" in self.sell_long_indicator.value:
+        if "MACD" in self.exit_long_indicator.value:
             exit_long_conditions.append(MACD_LONG_EXIT)
-        if "MACD" in self.sell_short_indicator.value:
+        if "MACD" in self.exit_short_indicator.value:
             exit_short_conditions.append(MACD_SHORT_EXIT)
-        if "STOCHRSI" in self.sell_long_indicator.value:
+        if "STOCHRSI" in self.exit_long_indicator.value:
             exit_long_conditions.append(STOCHRSI_LONG_EXIT)
-        if "STOCHRSI" in self.sell_short_indicator.value:
+        if "STOCHRSI" in self.exit_short_indicator.value:
             exit_short_conditions.append(STOCHRSI_SHORT_EXIT)
 
         # === TTM Squeeze EXIT ===
-        if "TTM" in self.sell_long_indicator.value:
+        if "TTM" in self.exit_long_indicator.value:
             squeeze_on = dataframe['squeeze_on']
             momentum_negative = dataframe['momentum_hist'] < 0
             exit_long_conditions.append(squeeze_on & momentum_negative)
-        if "TTM" in self.sell_short_indicator.value:
+        if "TTM" in self.exit_short_indicator.value:
             squeeze_on = dataframe['squeeze_on']
             momentum_positive = dataframe['momentum_hist'] > 0
             exit_short_conditions.append(squeeze_on & momentum_positive)
@@ -1157,11 +1157,11 @@ class Fibbo(IStrategy):
 
         # ✅ IMPROVED: Use flexible exit logic instead of AND for all
         if exit_long_conditions:
-            signal = self.combine_conditions(exit_long_conditions, self.exit_logic_mode.value)
+            signal = self.combine_conditions(exit_long_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal, 'exit_long'] = 1
             
         if exit_short_conditions:
-            signal = self.combine_conditions(exit_short_conditions, self.exit_logic_mode.value)
+            signal = self.combine_conditions(exit_short_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal, 'exit_short'] = 1
 
         return dataframe
