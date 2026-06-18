@@ -39,9 +39,9 @@
     },
     "roi": {
       "0": 0.116,
-      "123": 0,
       "52": 0.047,
-      "90": 0.025
+      "90": 0.025,
+      "123": 0
     },
     "trailing": {
       "trailing_only_offset_is_reached": false,
