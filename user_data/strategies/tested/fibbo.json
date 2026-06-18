@@ -1,40 +1,23 @@
 {
   "strategy_name": "Fibbo",
   "params": {
-    "roi": {
-      "0": 0.116,
-      "52": 0.047,
-      "90": 0.025,
-      "123": 0,
-      "roi_p1": 0,
-      "roi_p2": 0.025,
-      "roi_p3": 0.047,
-      "roi_t1": 123,
-      "roi_t2": 90,
-      "roi_t3": 52
+    "enter": {
+      "enter_long_indicator": "BB, MACD",
+      "enter_short_indicator": "BB, DEMA, MACD, VWAP",
+      "enter_trade_mode": "all"
     },
-    "stoploss": {
-      "stoploss": -0.1
-    },
-    "trailing": {
-      "trailing_stop": true,
-      "trailing_stop_positive": 0.08,
-      "trailing_stop_positive_offset": 0.089,
-      "trailing_only_offset_is_reached": false
-    },
-    "max_open_trades": {
-      "max_open_trades": 5
-    },
-    "protection": {
-      "cooldown_lookback": 54,
-      "lookback_period_candles": 3,
-      "low_profit_trade_limit": 0,
-      "max_drawdown_trade_limit": 160,
-      "stop_duration_candles": 334,
-      "trade_limit": 213,
-      "use_low_profit": false,
-      "use_max_drawdown_protection": false,
-      "use_stop_protection": false
+    "buy": {
+      "buy_bb_period": 14,
+      "buy_fast_dema": "13",
+      "buy_fib_level": "0.618",
+      "buy_freqai": 0.22,
+      "buy_rsi": 331,
+      "buy_rsi_period": 7,
+      "buy_slow_ema": "144",
+      "buy_smoothD": 64,
+      "buy_smoothK": 125,
+      "buy_stoch_osc": 571,
+      "buy_swing_period": 1
     },
     "exit": {
       "exit_long_indicator": "BB, RSI, STOCHRSI, TTM",
@@ -54,23 +37,34 @@
       "shared_ttm_window": 2,
       "shared_vwap_window": 218
     },
-    "buy": {
-      "buy_bb_period": 14,
-      "buy_fast_dema": "13",
-      "buy_fib_level": "0.618",
-      "buy_freqai": 0.22,
-      "buy_rsi": 331,
-      "buy_rsi_period": 7,
-      "buy_slow_ema": "144",
-      "buy_smoothD": 64,
-      "buy_smoothK": 125,
-      "buy_stoch_osc": 571,
-      "buy_swing_period": 1
+    "roi": {
+      "0": 0.116,
+      "123": 0,
+      "52": 0.047,
+      "90": 0.025
     },
-    "enter": {
-      "enter_long_indicator": "BB, MACD",
-      "enter_short_indicator": "BB, DEMA, MACD, VWAP",
-      "enter_trade_mode": "all"
+    "trailing": {
+      "trailing_only_offset_is_reached": false,
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.08,
+      "trailing_stop_positive_offset": 0.089
+    },
+    "protection": {
+      "cooldown_lookback": 54,
+      "lookback_period_candles": 3,
+      "low_profit_trade_limit": 0,
+      "max_drawdown_trade_limit": 160,
+      "stop_duration_candles": 334,
+      "trade_limit": 213,
+      "use_low_profit": false,
+      "use_max_drawdown_protection": false,
+      "use_stop_protection": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 5
+    },
+    "stoploss": {
+      "stoploss": -0.1
     }
   },
   "ft_stratparam_v": 1,
