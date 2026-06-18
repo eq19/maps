@@ -130,7 +130,7 @@ calculate_score() {
     }
   " | bc -l)
 
-  echo "📦 3.2 Profit Factor: $(printf "%.2f" "$profit_factor") (score: $(printf "%.2f" "$profit_factor_score") of 10)"
+  echo "📦 1.4 Profit Factor: $(printf "%.2f" "$profit_factor") (score: $(printf "%.2f" "$profit_factor_score") of 10)"
   local profit=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $profit_factor_score"| bc -l)
   echo "📊 Profit Block: $(printf "%.2f" "$profit") of 40"
   echo ""
