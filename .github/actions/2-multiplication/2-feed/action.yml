@@ -172,7 +172,7 @@ runs:
             Environment="HOME=/home/runner"
             ExecStop=/usr/bin/docker exec mydb -s quit
             ExecStartPre=/usr/bin/docker-credential-gcr configure-docker
-            ExecStart=/usr/bin/docker run -e REPOSITORY=${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --memory=512M --memory-swap=10G --name=mydb -p 5432:5432 -p 8080:8080 -p 8081:8081 -p 8082:8082 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
+            ExecStart=/usr/bin/docker run -e REPOSITORY=${{ inputs.repository }} -e GH_TOKEN=${{ inputs.token }} -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -v /mnt:/mnt --memory=1G --memory-swap=10G --name=mydb -p 5432:5432 -p 8080:8080 -p 8081:8081 -p 8082:8082 --pull=always eq19/feed:spin-${{ env.IMAGE_TAG }}
 
         - path: /etc/systemd/system/runner2.service
           permissions: "0644"
