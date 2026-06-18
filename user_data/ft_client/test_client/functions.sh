@@ -64,8 +64,8 @@ calculate_score() {
   WINRATE=$(echo "$winrate * 100" | bc -l)
   WINRATE=$(printf "%.2f" "$WINRATE")
 
-  local winrate_score=$(echo "$winrate * 20" | bc -l)
-  echo "📊 1.1 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 20)"
+  local winrate_score=$(echo "$winrate * 10" | bc -l)
+  echo "📊 1.1 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
 
   [[ $(echo "$profit_mean < 0" | bc -l) -eq 1 ]] && profit_mean=0
   local profit_mean_score=$(echo "
@@ -99,12 +99,39 @@ calculate_score() {
 
   echo "💰 1.2 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
 
-  local profit_total_score=$(echo "$profit_total_pct * 0.2" | bc -l)
+  local profit_total_score=$(echo "$profit_total_pct * 0.4" | bc -l)
   [[ $(echo "$profit_total_pct < 0" | bc -l) -eq 1 ]] && profit_total_score=0
-  [[ $(echo "$profit_total_pct > 50" | bc -l) -eq 1 ]] && profit_total_score=10
+  [[ $(echo "$profit_total_pct > 25" | bc -l) -eq 1 ]] && profit_total_score=10
   echo "💰 1.3 Profit Total: $profit_total_pct% (score: $(printf "%.2f" "$profit_total_score") of 10)"
 
-  local profit=$(echo "$winrate_score + $profit_mean_score + $profit_total_score" | bc -l)
+  local profit_factor_score=$(echo "
+    scale=6
+    p = $profit_factor
+
+    # p Quality
+      # <1.0 Losing
+      # 1.0–1.1 Weak
+      # 1.1–1.25 Acceptable
+      # 1.25–1.5 Good
+      # >1.5 Strong
+
+    if (p < 1) {
+      0
+    } else if (p < 1.2) {
+      (p - 1) * (3 / 0.2)
+    } else if (p < 1.5) {
+      3 + (p - 1.2) * (2 / 0.3)
+    } else if (p < 2) {
+      5 + (p - 1.5) * (2 / 0.5)
+    } else if (p < 3) {
+      7 + (p - 2) * 2
+    } else {
+      10
+    }
+  " | bc -l)
+
+  echo "📦 3.2 Profit Factor: $(printf "%.2f" "$profit_factor") (score: $(printf "%.2f" "$profit_factor_score") of 10)"
+  local profit=$(echo "$winrate_score + $profit_mean_score + $profit_total_score + $profit_factor_score"| bc -l)
   echo "📊 Profit Block: $(printf "%.2f" "$profit") of 40"
   echo ""
 
@@ -197,43 +224,17 @@ calculate_score() {
     if (e < 0.02) {
       e * 100
     } else if (e < 0.1) {
-      2 + (e - 0.02) / 0.08
+      2 + (e - 0.02) / (0.08 / 2)
     } else if (e < 0.25) {
-      3 + (e - 0.10) / (0.15 / 2)
+      4 + (e - 0.1) / (0.15 / 2)
     } else if (e < 0.5) {
-      5 + (e - 0.25) / (0.25 / 2)
+      6 + (e - 0.25) / (0.25 / 2)
     } else if (e < 1) {
-      7 + (e - 0.5) / (0.5 / 2)
-    } else if (e < 2) {
-      9 + (e - 1)
+      8 + (e - 0.5) / (0.5 / 2)
+    } else if (e < 1.5) {
+      10 + (e - 1) / (0.5 / 5)
     } else {
-      10
-    }
-  " | bc -l)
-
-  local profit_factor_score=$(echo "
-    scale=6
-    p = $profit_factor
-
-    # p Quality
-      # <1.0 Losing
-      # 1.0–1.1 Weak
-      # 1.1–1.25 Acceptable
-      # 1.25–1.5 Good
-      # >1.5 Strong
-
-    if (p < 1) {
-      0
-    } else if (p < 1.2) {
-      (p - 1) * (3 / 0.2)
-    } else if (p < 1.5) {
-      3 + (p - 1.2) * (2 / 0.3)
-    } else if (p < 2) {
-      5 + (p - 1.5) * (2 / 0.5)
-    } else if (p < 3) {
-      7 + (p - 2) * 2
-    } else {
-      10
+      15
     }
   " | bc -l)
 
@@ -261,22 +262,21 @@ calculate_score() {
     if (s < 1) {
       s
     } else if (s < 2) {
-      1 + (s - 1)
+      2 + (s - 1) / 0.5
     } else if (s < 3) {
-      2 + (s - 2)
+      4 + (s - 2) / 0.5
     } else if (s < 5) {
-      3 + (s - 3) * 0.5
+      6 + (s - 3) / 0.5
     } else {
-      5
+      10
     }
   " | bc -l)
 
-  echo "📦 3.1 Expectancy: $(printf "%.2f" "$expectancy_ratio") (score: $(printf "%.2f" "$expectancy_score") of 10)"
-  echo "📦 3.2 Profit Factor: $(printf "%.2f" "$profit_factor") (score: $(printf "%.2f" "$profit_factor_score") of 10)"
-  echo "📌 3.3 Sortino: $(printf "%.2f" "$sortino") (score: $(printf "%.2f" "$sortino_score") of 5)"
-  echo "📌 3.4 SQN: $(printf "%.2f" "$sqn") (score: $(printf "%.2f" "$sqn_score") of 5)"
+  echo "📦 3.1 Expectancy: $(printf "%.2f" "$expectancy_ratio") (score: $(printf "%.2f" "$expectancy_score") of 15)"
+  echo "📌 3.2 Sortino: $(printf "%.2f" "$sortino") (score: $(printf "%.2f" "$sortino_score") of 5)"
+  echo "📌 3.3 SQN: $(printf "%.2f" "$sqn") (score: $(printf "%.2f" "$sqn_score") of 10)"
 
-  local quality=$(echo "$expectancy_score + $profit_factor_score + $sortino_score + $sqn_score" | bc -l)
+  local quality=$(echo "$expectancy_score + $sortino_score + $sqn_score" | bc -l)
   echo "📊 Quality Block: $(printf "%.2f" "$quality") of 30"
   echo ""
   
