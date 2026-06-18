@@ -408,18 +408,18 @@ hyperopt() {
     
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     jq '
-      def sort_alpha:
-        if type == "object" then to_entries | sort_by(.key) | from_entries | map_values(sort_alpha)
-        elif type == "array" then map(sort_alpha)
-        else .
-        end;
+    def sort_alpha:
+      if type == "object" then to_entries | sort_by(.key) | from_entries | map_values(sort_alpha)
+      elif type == "array" then map(sort_alpha)
+      else .
+      end;
 
-      .params |= (
-        {enter, buy, exit, sell, roi, trailing, protection, max_open_trades, stoploss}
-          + del(.enter, .buy, .exit, .sell, .roi, .trailing, .protection, .max_open_trades, .stoploss)
-        | map_values(sort_alpha)
-      .params.roi |= with_entries(select(.key | startswith("roi_") | not))
-      ' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
+    .params |= (
+      {enter, buy, exit, sell, roi, trailing, protection, max_open_trades, stoploss}
+        + del(.enter, .buy, .exit, .sell, .roi, .trailing, .protection, .max_open_trades, .stoploss)
+      | map_values(sort_alpha)
+    | .params.roi |= with_entries(select(.key | startswith("roi_") | not))
+    ' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protection
 
     calculate_score
