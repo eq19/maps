@@ -358,7 +358,9 @@ hyperopt() {
 
     # dispatch only for main workflow
     [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
-    if [[ "$GITHUB_JOB" == "lexering" ]]; then
+    if [[ "$GITHUB_JOB" != "lexering" ]]; then
+      hyperopt_loss="$HYPEROPT"
+    else
       curl -s -X POST \
         -H "Authorization: token $GH_TOKEN" \
         -H "Accept: application/vnd.github.v3+json" \
@@ -381,11 +383,9 @@ hyperopt() {
             )
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-      gh variable set JOB --body "${GITHUB_JOB}"
       hyperopt_loss="MaxDrawDownPerPairHyperOptLoss"
+      gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
-    else
-      hyperopt_loss="$HYPEROPT"
     fi
 
     #spaces="buy sell entry exit roi trailing"
