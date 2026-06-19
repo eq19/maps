@@ -116,18 +116,19 @@ calculate_score() {
       # 1.0–1.1 Weak
       # 1.1–1.25 Acceptable
       # 1.25–1.5 Good
-      # >1.5 Strong
+      # 1.50 – 2.00 Strong
+      # > 2.00 Exceptional
 
-    if (p < 1) {
-      0
-    } else if (p < 1.2) {
-      (p - 1) * (3 / 0.2)
-    } else if (p < 1.5) {
-      3 + (p - 1.2) * (2 / 0.3)
-    } else if (p < 2) {
-      5 + (p - 1.5) * (2 / 0.5)
-    } else if (p < 3) {
-      7 + (p - 2) * 2
+    if (e < 1.0) {
+      e
+    } else if (e < 1.1) {
+      1 + (e - 1.0) / (0.1 / 2)
+    } else if (e < 1.25) {
+      3 + (e - 1.1) / (0.15 / 2)
+    } else if (e < 1.5) {
+      5 + (e - 1.25) / (0.25 / 2)
+    } else if (e < 2) {
+      7 + (e - 1.5) / (0.5 / 3)
     } else {
       10
     }
