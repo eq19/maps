@@ -112,8 +112,8 @@ calculate_score() {
       # 1.0 – 1.1 Weak
       # 1.1 – 1.25 Acceptable
       # 1.25 – 1.5 Good
-      # 1.50 – 2.00 Strong
-      # > 2.00 Exceptional
+      # 1.50 – 3.00 Strong
+      # > 3.00 Exceptional
 
     if (p < 1.0) {
       p
@@ -123,8 +123,8 @@ calculate_score() {
       3 + (p - 1.1) / (0.15 / 2)
     } else if (p < 1.5) {
       5 + (p - 1.25) / (0.25 / 2)
-    } else if (p < 2) {
-      7 + (p - 1.5) / (0.5 / 3)
+    } else if (p < 3) {
+      7 + (p - 1.5) / (1.5 / 3)
     } else {
       10
     }
