@@ -69,7 +69,6 @@ calculate_score() {
 
   local profit_mean_score=$(echo "
     scale=6
-
     pm = $profit_mean
 
     # pm Quality
@@ -80,8 +79,7 @@ calculate_score() {
       # 0.50% – 1.00% Strong Edge
       # > 1.00% Exceptional Edge
 
-    pc = $pm * 100  # Convert to percentage
-
+    pc = $pm * 100
     if (pc <= 0) {
       0
     } else if (pc < 0.1) {
@@ -97,7 +95,6 @@ calculate_score() {
     } else {
       10
     }
-
   " | bc -l)
 
   echo "💰 1.2 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
