@@ -1056,7 +1056,10 @@ class Fibbo(IStrategy):
         
         exit_long_conditions = []
         exit_short_conditions = []
-        
+
+        sell_slow_ema_val = int(self.sell_slow_ema.value)
+        sell_fast_dema_val = int(self.sell_fast_dema.value)
+
         # === Your existing Fibbo exit conditions ===
         RSI_LONG_EXIT = dataframe['rsi'] >= self.sell_rsi.value
         RSI_SHORT_EXIT = dataframe['rsi'] <= self.sell_rsi.value
@@ -1071,12 +1074,12 @@ class Fibbo(IStrategy):
         MACD_SHORT_EXIT = dataframe['macd'] > dataframe['macdsignal']
 
         DEMA_LONG_EXIT = (
-            dataframe[f"dema{self.sell_fast_dema.value}"] <
-            dataframe[f"ema{self.sell_slow_ema.value}_{self.informative_timeframe}"]
+            (dataframe['close'] < dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"]) &
+            (dataframe[f"dema{sell_fast_dema_val}_{self.informative_timeframe}"] < dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"])
         )
         DEMA_SHORT_EXIT = (
-            dataframe[f"dema{self.sell_fast_dema.value}"] >
-            dataframe[f"ema{self.sell_slow_ema.value}_{self.informative_timeframe}"]
+            (dataframe['close'] > dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"]) &
+            (dataframe[f"dema{sell_fast_dema_val}_{self.informative_timeframe}"] > dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"])
         )
 
         STOCHRSI_LONG_EXIT = (
