@@ -557,7 +557,7 @@ freqai() {
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
   
     # Execute calculate_score ONLY if no errors and exit code 0
-    if [ $? -eq 0 ] && ! grep -qiE "(Error|Traceback|No further splits with positive gain)" backtest.log; then
+    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback|object has no attribute|no further splits with positive gain)" backtest.log; then
 
       export CALCULATION="false"
       OLD_SCORE=$SCORE            
@@ -604,7 +604,7 @@ freqai() {
       fi
     else
       echo "❌ Backtest failed or contained errors/warnings"
-      grep -iE "(error|traceback)" backtest.log
+      grep -iE "(error|traceback|object has no attribute|no further splits with positive gain)" backtest.log
     fi
   done
 
