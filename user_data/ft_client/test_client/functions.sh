@@ -113,9 +113,9 @@ calculate_score() {
 
     # p Quality
       # < 1.0 Losing
-      # 1.0–1.1 Weak
-      # 1.1–1.25 Acceptable
-      # 1.25–1.5 Good
+      # 1.0 – 1.1 Weak
+      # 1.1 – 1.25 Acceptable
+      # 1.25 – 1.5 Good
       # 1.50 – 2.00 Strong
       # > 2.00 Exceptional
 
