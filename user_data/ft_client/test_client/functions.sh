@@ -69,17 +69,16 @@ calculate_score() {
 
   local profit_mean_score=$(echo "
     scale=6
-    pm = $profit_mean
+    pm = $profit_mean * 100 # convert percentage
 
     # pm Quality
-      # < 0%  Losing
-      # 0% – 0.10% Very Small Edge
-      # 0.10% – 0.25% Small Edge
-      # 0.25% – 0.50% Good Edge
-      # 0.50% – 1.00% Strong Edge
-      # > 1.00% Exceptional Edge
+      # < 0  Losing
+      # 0 – 0.10 Very Small Edge
+      # 0.10 – 0.25 Small Edge
+      # 0.25 – 0.50 Good Edge
+      # 0.50 – 1.00 Strong Edge
+      # > 1.00 Exceptional Edge
 
-    pc = $pm * 100
     if (pc <= 0) {
       0
     } else if (pc < 0.1) {
