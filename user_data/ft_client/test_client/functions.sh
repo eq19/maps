@@ -119,11 +119,11 @@ calculate_score() {
       p
     } else if (p < 1.1) {
       1 + (p - 1.0) / (0.1 / 2)
-    } else if (e < 1.25) {
+    } else if (p < 1.25) {
       3 + (p - 1.1) / (0.15 / 2)
-    } else if (e < 1.5) {
+    } else if (p < 1.5) {
       5 + (p - 1.25) / (0.25 / 2)
-    } else if (e < 2) {
+    } else if (p < 2) {
       7 + (p - 1.5) / (0.5 / 3)
     } else {
       10
