@@ -805,9 +805,11 @@ class Fibbo(IStrategy):
 
         # EMA & DEMA
         for period in span["buy"]["buy_slow_ema"]["choices"]:
-            dataframe[f'ema{period}'] = ta.EMA(dataframe, timeperiod=int(period))
+            p_int = int(period)
+            dataframe[f'ema{p_int}'] = ta.EMA(dataframe, timeperiod=p_int)
         for period in span["buy"]["buy_fast_dema"]["choices"]:
-            dataframe[f'dema{period}'] = ta.DEMA(dataframe, timeperiod=int(period))
+            p_int = int(period)
+            dataframe[f'dema{p_int}'] = ta.DEMA(dataframe, timeperiod=p_int)
 
         # ✅ FIX #3: Fibonacci retracement - use shift(1) to avoid lookahead bias
         # Calculate swing high/low using only PREVIOUS candles, not current
@@ -857,9 +859,22 @@ class Fibbo(IStrategy):
         informative['macdsignal'] = macd_inf['macdsignal']
 
         for period in span["buy"]["buy_slow_ema"]["choices"]:
-            informative[f'ema{period}'] = ta.EMA(informative, timeperiod=int(period))
+            p_int = int(period)
+            informative[f'ema{p_int}'] = ta.EMA(informative, timeperiod=p_int)
         for period in span["buy"]["buy_fast_dema"]["choices"]:
-            informative[f'dema{period}'] = ta.DEMA(informative, timeperiod=int(period))
+            p_int = int(period)
+            informative[f'dema{p_int}'] = ta.DEMA(informative, timeperiod=p_int)
+
+        # Gabungkan juga indikator untuk space "sell" jika daftarnya berbeda di JSON Anda
+        if "sell" in span:
+            if "sell_slow_ema" in span["sell"]:
+                for period in span["sell"]["sell_slow_ema"]["choices"]:
+                    p_int = int(period)
+                    informative[f'ema{p_int}'] = ta.EMA(informative, timeperiod=p_int)
+            if "sell_fast_dema" in span["sell"]:
+                for period in span["sell"]["sell_fast_dema"]["choices"]:
+                    p_int = int(period)
+                    informative[f'dema{p_int}'] = ta.DEMA(informative, timeperiod=p_int)
 
         # Merge informative pair data into main dataframe
         dataframe = merge_informative_pair(
