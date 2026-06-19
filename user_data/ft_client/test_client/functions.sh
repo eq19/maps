@@ -70,7 +70,7 @@ calculate_score() {
   local profit_mean_score=$(echo "
     scale=6
 
-    pm = $profit_mean * 100  # Convert to percentage
+    pm = $profit_mean
 
     # pm Quality
       # < 0%  Losing
@@ -80,21 +80,23 @@ calculate_score() {
       # 0.50% – 1.00% Strong Edge
       # > 1.00% Exceptional Edge
 
-  if (pm <= 0) {
-    0
-  } else if (pm < 0.1) {
-    1 + pm / 0.1
-  } else if (pm < 0.25) {
-    2 + (pm - 0.10) / 0.15 * 2
-  } else if (pm < 0.50) {
-    4 + (pm - 0.25) / 0.25 * 2
-  } else if (pm < 0.75) {
-    6 + (pm - 0.5) / 0.25 * 2
-  } else if (pm < 1.00) {
-    8 + (pm - 0.75) / 0.25 * 2
-  } else {
-    10
-  }
+    pc = $pm * 100  # Convert to percentage
+
+    if (pc <= 0) {
+      0
+    } else if (pm < 0.1) {
+      1 + pc / 0.1
+    } else if (pm < 0.25) {
+      2 + (pc - 0.10) / 0.15 * 2
+    } else if (pm < 0.50) {
+      4 + (pc - 0.25) / 0.25 * 2
+    } else if (pm < 0.75) {
+      6 + (pc - 0.5) / 0.25 * 2
+    } else if (pm < 1.00) {
+      8 + (pc - 0.75) / 0.25 * 2
+    } else {
+      10
+    }
 
   " | bc -l)
 
