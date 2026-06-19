@@ -865,17 +865,6 @@ class Fibbo(IStrategy):
             p_int = int(period)
             informative[f'dema{p_int}'] = ta.DEMA(informative, timeperiod=p_int)
 
-        # Gabungkan juga indikator untuk space "sell" jika daftarnya berbeda di JSON Anda
-        if "sell" in span:
-            if "sell_slow_ema" in span["sell"]:
-                for period in span["sell"]["sell_slow_ema"]["choices"]:
-                    p_int = int(period)
-                    informative[f'ema{p_int}'] = ta.EMA(informative, timeperiod=p_int)
-            if "sell_fast_dema" in span["sell"]:
-                for period in span["sell"]["sell_fast_dema"]["choices"]:
-                    p_int = int(period)
-                    informative[f'dema{p_int}'] = ta.DEMA(informative, timeperiod=p_int)
-
         # Merge informative pair data into main dataframe
         dataframe = merge_informative_pair(
             dataframe,
