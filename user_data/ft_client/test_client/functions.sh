@@ -266,7 +266,9 @@ calculate_score() {
     } else if (s < 3) {
       4 + (s - 2) / 0.5
     } else if (s < 5) {
-      6 + (s - 3) / 0.5
+      6 + (s - 3)
+    } else if (s < 7) {
+      8 + (s - 5)
     } else {
       10
     }
