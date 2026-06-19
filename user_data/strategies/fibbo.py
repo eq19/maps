@@ -296,17 +296,9 @@ class Fibbo(IStrategy):
         Update ROI based on hyperopt parameters.
         This method converts roi_t* and roi_p* parameters into the final minimal_roi dict,
         keeping the results clean and free of intermediate parameters.
-        
-        How it works:
-        - If 'roi' space is included in hyperopt, freqtrade creates roi_p1, roi_p2, roi_p3 (profit levels)
-          and roi_t1, roi_t2, roi_t3 (timeframe thresholds)
-        - This method converts them back into the proper minimal_roi format
-        - If 'roi' space is NOT in hyperopt, this method gracefully skips and uses the default ROI
         """
-        # Check if we have ROI hyperopt parameters (they will be present if 'roi' space is enabled)
         if hasattr(self, 'roi_p1') and hasattr(self, 'roi_t1'):
             try:
-                # Build ROI table from hyperopt parameters
                 self.minimal_roi = {
                     "0": float(self.roi_p1.value),
                     str(int(self.roi_t1.value)): float(self.roi_p2.value),
@@ -323,7 +315,6 @@ class Fibbo(IStrategy):
     def protections(self):
         prot = []
 
-        # Disable protections during hyperopt if spaces contain 'all' or 'protection'
         if hasattr(self, 'config'):
             config: Configuration = self.config
             if config.get('runmode') == 'hyperopt':
@@ -331,13 +322,11 @@ class Fibbo(IStrategy):
                 if 'all' in spaces or 'protection' in spaces:
                     return prot
 
-        # Cooldown period to prevent over-trading
         prot.append({
             "method": "CooldownPeriod",
             "stop_duration_candles": self.cooldown_lookback.value
         })
 
-        # Stoploss guard to limit losses
         if self.use_stop_protection.value:
             prot.append({
                 "method": "StoplossGuard",
@@ -347,7 +336,6 @@ class Fibbo(IStrategy):
                 "only_per_pair": False
             })
 
-        # Max drawdown guard
         if self.use_max_drawdown_protection.value:
             prot.append({
                 "method": "MaxDrawdown",
@@ -358,7 +346,6 @@ class Fibbo(IStrategy):
                 "only_per_pair": False
             })
 
-        # Low profit pairs guard
         if self.use_low_profit.value:
             prot.append({
                 "method": "LowProfitPairs",
@@ -374,64 +361,43 @@ class Fibbo(IStrategy):
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
-    # Optional: Custom stoploss based on FreqAI confidence
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                        current_rate: float, current_profit: float, **kwargs) -> float:
-        """
-        Dynamic stoploss based on FreqAI confidence.
-        """
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
         
-        # If FreqAI confidence is high, use tighter stoploss
         if 'DI_values' in last_candle:
             confidence = last_candle['DI_values']
-            
-            # Adjust stoploss based on confidence
             if confidence > 0.8:
-                # High confidence: tighter stoploss
                 return -0.05
             elif confidence > 0.6:
-                # Medium confidence: normal stoploss
                 return self.stoploss
             else:
-                # Low confidence: wider stoploss
                 return -0.15
         
         return self.stoploss
 
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime, 
                    current_rate: float, current_profit: float, **kwargs):
-        """
-        Custom exit logic - can be used for advanced risk management
-        """
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
         
-        # Exit if entering high volatility regime with profit
         if last_candle.get('%-market_regime', 0) == 3 and current_profit > 0.01:
             return 'high_volatility_exit'
         
-        # Exit if model confidence drops (high DI values)
         if last_candle.get('DI_values', 0) > 2.0:
             return 'low_confidence_exit'
         
         return None
 
-    # Optional: Leverage adjustment based on FreqAI
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                 proposed_leverage: float, max_leverage: float, entry_tag: Optional[str],
                 side: str, **kwargs) -> float:
-        """
-        Adjust leverage based on FreqAI confidence.
-        """
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
         
         if 'DI_values' in last_candle:
             confidence = last_candle['DI_values']
-            
-            # Reduce leverage for low confidence predictions
             if confidence < 0.5:
                 leverage_factor = 0.5
             elif confidence < 0.7:
@@ -440,26 +406,18 @@ class Fibbo(IStrategy):
                 leverage_factor = 1.0
             
             adjusted_leverage = min(max_leverage, proposed_leverage * leverage_factor)
-            
             if adjusted_leverage != proposed_leverage:
                 logger.info(f"FreqAI adjusted leverage: {confidence:.2%} confidence, "
                           f"leverage {proposed_leverage:.1f} → {adjusted_leverage:.1f}")
-            
             return adjusted_leverage
         
         return proposed_leverage
 
     def ttm_squeeze(self, dataframe: DataFrame, bollinger_period: int = 20, keltner_period: int = 20, momentum_period: int = 12) -> DataFrame:
-        # Calculate Bollinger Bands
         bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=bollinger_period, stds=2)
-
-        # Calculate Keltner Channels
         keltner = qtpylib.keltner_channel(dataframe, window=keltner_period)
-
-        # Calculate Momentum Histogram
         momentum_hist = dataframe['close'] - dataframe['close'].shift(momentum_period)
 
-        # Determine squeeze conditions
         squeeze_on = (bollinger['lower'] > keltner["lower"]) & (bollinger['upper'] < keltner["upper"])
         squeeze_off = (bollinger['lower'] < keltner["lower"]) & (bollinger['upper'] > keltner["upper"])
 
@@ -469,35 +427,9 @@ class Fibbo(IStrategy):
 
         return dataframe
 
-    # ============ FreqAI Feature Engineering ============
-
     def feature_engineering_expand_all(
         self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
     ) -> DataFrame:
-        """
-        *Only functional with FreqAI enabled strategies*
-        This function will automatically expand the defined features on the config defined
-        `indicator_periods_candles`, `include_timeframes`, `include_shifted_candles`, and
-        `include_corr_pairs`. In other words, a single feature defined in this function
-        will automatically expand to a total of
-        `indicator_periods_candles` * `include_timeframes` * `include_shifted_candles` *
-        `include_corr_pairs` numbers of features added to the model.
-
-        All features must be prepended with `%` to be recognized by FreqAI internals.
-
-        More details on how these config defined parameters accelerate feature engineering
-        in the documentation at:
-
-        https://www.freqtrade.io/en/latest/freqai-parameter-table/#feature-parameters
-
-        https://www.freqtrade.io/en/latest/freqai-feature-engineering/#defining-the-features
-
-        :param dataframe: strategy dataframe which will receive the features
-        :param period: period of the indicator - usage example:
-        :param metadata: metadata of current pair
-        dataframe["%-ema-period"] = ta.EMA(dataframe, timeperiod=period)
-        """
-
         dataframe["%-rsi-period"] = ta.RSI(dataframe, timeperiod=period)
         dataframe["%-mfi-period"] = ta.MFI(dataframe, timeperiod=period)
         dataframe["%-adx-period"] = ta.ADX(dataframe, timeperiod=period)
@@ -515,44 +447,15 @@ class Fibbo(IStrategy):
             dataframe["bb_upperband-period"] - dataframe["bb_lowerband-period"]
         ) / dataframe["bb_middleband-period"]
         dataframe["%-close-bb_lower-period"] = dataframe["close"] / dataframe["bb_lowerband-period"]
-
         dataframe["%-roc-period"] = ta.ROC(dataframe, timeperiod=period)
-
         dataframe["%-relative_volume-period"] = (
             dataframe["volume"] / dataframe["volume"].rolling(period).mean()
         )
-
         return dataframe
 
     def feature_engineering_expand_basic(
         self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
-        """
-        *Only functional with FreqAI enabled strategies*
-        This function will automatically expand the defined features on the config defined
-        `include_timeframes`, `include_shifted_candles`, and `include_corr_pairs`.
-        In other words, a single feature defined in this function
-        will automatically expand to a total of
-        `include_timeframes` * `include_shifted_candles` * `include_corr_pairs`
-        numbers of features added to the model.
-
-        Features defined here will *not* be automatically duplicated on user defined
-        `indicator_periods_candles`
-
-        All features must be prepended with `%` to be recognized by FreqAI internals.
-
-        More details on how these config defined parameters accelerate feature engineering
-        in the documentation at:
-
-        https://www.freqtrade.io/en/latest/freqai-parameter-table/#feature-parameters
-
-        https://www.freqtrade.io/en/latest/freqai-feature-engineering/#defining-the-features
-
-        :param dataframe: strategy dataframe which will receive the features
-        :param metadata: metadata of current pair
-        dataframe["%-pct-change"] = dataframe["close"].pct_change()
-        dataframe["%-ema-200"] = ta.EMA(dataframe, timeperiod=200)
-        """
         dataframe["%-pct-change"] = dataframe["close"].pct_change()
         dataframe["%-raw_volume"] = dataframe["volume"]
         dataframe["%-raw_price"] = dataframe["close"]
@@ -561,143 +464,43 @@ class Fibbo(IStrategy):
     def feature_engineering_standard(
         self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
-        """
-        *Only functional with FreqAI enabled strategies*
-        This optional function will be called once with the dataframe of the base timeframe.
-        This is the final function to be called, which means that the dataframe entering this
-        function will contain all the features and columns created by all other
-        freqai_feature_engineering_* functions.
-
-        This function is a good place to do custom exotic feature extractions (e.g. tsfresh).
-        This function is a good place for any feature that should not be auto-expanded upon
-        (e.g. day of the week).
-
-        All features must be prepended with `%` to be recognized by FreqAI internals.
-
-        More details about feature engineering available:
-
-        https://www.freqtrade.io/en/latest/freqai-feature-engineering
-
-        :param dataframe: strategy dataframe which will receive the features
-        :param metadata: metadata of current pair
-        usage example: dataframe["%-day_of_week"] = (dataframe["date"].dt.dayofweek + 1) / 7
-        """
         dataframe["%-day_of_week"] = dataframe["date"].dt.dayofweek
         dataframe["%-hour_of_day"] = dataframe["date"].dt.hour
         return dataframe
 
     def set_freqai_targets(
-        self,
-        dataframe: DataFrame,
-        metadata: dict,
-        **kwargs
+        self, dataframe: DataFrame, metadata: dict, **kwargs
     ) -> DataFrame:
-        """
-        FreqAI target definition for:
-        - Classifier
-        - ClassifierMultiTarget
-        - Regressor
-        - RegressorMultiTarget
-        """
-
         model_name = self.model_name.lower()
         is_classifier = "classifier" in model_name
         is_multi_target = "multitarget" in model_name
-
         label_period = self.freqai_info["feature_parameters"]["label_period_candles"]
 
         if is_classifier:
-            # ==================================================
-            # CLASSIFIERS
-            # ==================================================
-
             if is_multi_target:
-                # CatboostClassifierMultiTarget
-                # IMPORTANT:
-                # - class labels must be UNIQUE across targets
-                # - target 1 uses {0, 1}
-                # - target 2 uses {2, 3}
                 self.freqai.class_names = [0, 1, 2, 3]
-
-                # Target 1: direction (0 = down, 1 = up)
-                dataframe["&s-up_or_down"] = (
-                    dataframe["close"].shift(-label_period) > dataframe["close"]
-                ).astype(int)
-
-                # Target 2: volatility (2 = low, 3 = high)
+                dataframe["&s-up_or_down"] = (dataframe["close"].shift(-label_period) > dataframe["close"]).astype(int)
                 dataframe["&s-volatility"] = (
-                    (
-                        dataframe["close"].rolling(label_period).std()
-                        > dataframe["close"].rolling(label_period).std().median()
-                    ).astype(int)
-                    + 2
+                    (dataframe["close"].rolling(label_period).std() > dataframe["close"].rolling(label_period).std().median()).astype(int) + 2
                 )
-
             else:
-                # CatboostClassifier (single target)
                 self.freqai.class_names = [0, 1]
-
-                dataframe["&s-up_or_down"] = (
-                    dataframe["close"].shift(-label_period) > dataframe["close"]
-                ).astype(int)
-
+                dataframe["&s-up_or_down"] = (dataframe["close"].shift(-label_period) > dataframe["close"]).astype(int)
         else:
-            # ==================================================
-            # REGRESSORS
-            # ==================================================
             if is_multi_target:
-                # CatboostRegressorMultiTarget
-                dataframe["&-s_close"] = (
-                    dataframe["close"]
-                    .shift(-label_period)
-                    .rolling(label_period)
-                    .mean()
-                    / dataframe["close"]
-                    - 1
-                )
-
-                dataframe["&-s_range"] = (
-                    dataframe["close"]
-                    .shift(-label_period)
-                    .rolling(label_period)
-                    .max()
-                    -
-                    dataframe["close"]
-                    .shift(-label_period)
-                    .rolling(label_period)
-                    .min()
-                )
-
+                dataframe["&-s_close"] = (dataframe["close"].shift(-label_period).rolling(label_period).mean() / dataframe["close"] - 1)
+                dataframe["&-s_range"] = (dataframe["close"].shift(-label_period).rolling(label_period).max() - dataframe["close"].shift(-label_period).rolling(label_period).min())
             else:
-                # CatboostRegressor
-                dataframe["&-s_close"] = (
-                    dataframe["close"]
-                    .shift(-label_period)
-                    .rolling(label_period)
-                    .mean()
-                    / dataframe["close"]
-                    - 1
-                )
+                dataframe["&-s_close"] = (dataframe["close"].shift(-label_period).rolling(label_period).mean() / dataframe["close"] - 1)
 
         return dataframe
 
-    # ============ Entry/Exit Logic ============
-
     def confirm_trade_entry(
-        self,
-        pair: str,
-        order_type: str,
-        amount: float,
-        rate: float,
-        time_in_force: str,
-        **kwargs
+        self, pair: str, order_type: str, amount: float, rate: float, time_in_force: str, **kwargs
     ) -> bool:
         return True
 
     def informative_pairs(self):
-        """
-        Define additional informative pairs
-        """
         whitelist_pairs = self.dp.current_whitelist()
         corr_pairs = self.config["freqai"]["feature_parameters"]["include_corr_pairlist"]
         informative_pairs = []
@@ -715,95 +518,52 @@ class Fibbo(IStrategy):
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = metadata["pair"]
 
-        # --- FreqAI (robust for dynamic pairs) ---
         if self.freqai is not None and self.freqai_enabled:
             try:
-                # Start FreqAI
                 dataframe = self.freqai.start(dataframe, metadata, self)
-                
-                # Process DI_values if available
                 if 'DI_values' in dataframe.columns:
-                    # Check if we have enough data for meaningful percentile
                     if len(dataframe) >= self.di_rolling_window:
-                        dataframe['di_percentile'] = (dataframe['DI_values']
-                                                      .rolling(self.di_rolling_window)
-                                                      .rank(pct=True))
+                        dataframe['di_percentile'] = (dataframe['DI_values'].rolling(self.di_rolling_window).rank(pct=True))
                         logger.debug(f"FreqAI DI_percentile calculated for {pair}")
                     else:
-                        # Not enough data yet, use neutral value
                         dataframe['di_percentile'] = 0.5
                         logger.debug(f"FreqAI: Insufficient data for {pair}, using neutral confidence")
-                        
-                    # Log DI_values stats for debugging
-                    logger.debug(f"DI_values - min: {dataframe['DI_values'].min():.3f}, "
-                                     f"max: {dataframe['DI_values'].max():.3f}, "
-                                     f"mean: {dataframe['DI_values'].mean():.3f}")
-                
-                # Also log do_predict stats
-                if 'do_predict' in dataframe.columns:
-                    buy_signals = (dataframe['do_predict'] == 1).sum()
-                    sell_signals = (dataframe['do_predict'] == -1).sum()
-                    logger.debug(f"FreqAI signals for {pair}: {buy_signals} buy, {sell_signals} sell")
-                    
             except KeyError:
-                # Pair introduced dynamically without FreqAI history/model
                 logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
             except Exception as e:
-                # Extra safety: never let AI crash the strategy
                 logger.warning(f"FreqAI error for {pair}: {e}")
-        else:
-            if self.freqai is None:
-                logger.debug("FreqAI not initialized for this strategy")
 
-        # --- Classical indicators (always run) ---
-
-        # ✅ FIX #1: RSI calculation - use buy_rsi_period, not buy_bb_period
         rsi_period = int(self.buy_rsi_period.value) if self.buy_rsi_period.value else 14
         dataframe['rsi'] = ta.RSI(dataframe['close'], timeperiod=max(2, rsi_period))
-        logger.debug(f"RSI calculated with period: {max(2, rsi_period)}")
 
-        # ✅ FIX #2: VWAP - use rolling_vwap to avoid look-ahead bias in backtesting
-        # rolling_vwap calculates VWAP in a rolling manner, preventing lookahead
         vwap_window = int(self.shared_vwap_window.value) if hasattr(self, 'shared_vwap_window') else 20
         dataframe['vwap'] = qtpylib.rolling_vwap(dataframe, window=vwap_window)
-        logger.debug(f"VWAP calculated using rolling_vwap (window={vwap_window}, no lookahead)")
 
-        # TTM Squeeze
         dataframe = self.ttm_squeeze(dataframe)
         dataframe['volume_mean'] = dataframe['volume'].rolling(self.shared_ttm_window.value).mean()
-
-        # ATR (Volatility)
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
         dataframe['atr_pct'] = dataframe['atr'] / dataframe['close']
 
-        # STOCHRSI (Missaligned Issue)
-        #stoch_rsi = ta.STOCHRSI(dataframe)
         rsi_min = dataframe['rsi'].rolling(self.shared_stoch_period.value).min()
         rsi_max = dataframe['rsi'].rolling(self.shared_stoch_period.value).max()
         stoch_rsi = (dataframe['rsi'] - rsi_min) / ((rsi_max - rsi_min).replace(0, 1e-10))
 
-        # --- buy smoothing ---
         dataframe['fastk_rsi_buy'] = (stoch_rsi * 100).rolling(self.buy_smoothK.value).mean()
         dataframe['fastd_rsi_buy'] = dataframe['fastk_rsi_buy'].rolling(self.buy_smoothD.value).mean()
-
-        # --- sell smoothing ---
         dataframe['fastk_rsi_sell'] = (stoch_rsi * 100).rolling(self.sell_smoothK.value).mean()
         dataframe['fastd_rsi_sell'] = dataframe['fastk_rsi_sell'].rolling(self.sell_smoothD.value).mean()
 
-        # MACD (See Hyperopt Table)
         macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
         dataframe['macd'] = macd['macd']
         dataframe['macdhist'] = macd['macdhist']
         dataframe['macdsignal'] = macd['macdsignal']
 
-        # Bollinger Bands
         bb_period = int(self.buy_bb_period.value) if self.buy_bb_period.value else 20
         bollinger = ta.BBANDS(dataframe, timeperiod=max(2, bb_period), nbdevup=2.0, nbdevdn=2.0, matype=0)
         dataframe['bb_upperband'] = bollinger['upperband']
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
 
-        # EMA & DEMA
         for period in span["buy"]["buy_slow_ema"]["choices"]:
             p_int = int(period)
             dataframe[f'ema{p_int}'] = ta.EMA(dataframe, timeperiod=p_int)
@@ -811,29 +571,21 @@ class Fibbo(IStrategy):
             p_int = int(period)
             dataframe[f'dema{p_int}'] = ta.DEMA(dataframe, timeperiod=p_int)
 
-        # ✅ FIX #3: Fibonacci retracement - use shift(1) to avoid lookahead bias
-        # Calculate swing high/low using only PREVIOUS candles, not current
         swing_lookback = self.buy_swing_period.value
         dataframe['swing_high'] = dataframe['high'].shift(1).rolling(swing_lookback).max()
         dataframe['swing_low'] = dataframe['low'].shift(1).rolling(swing_lookback).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
 
-        # LONG (retracement in uptrend)
         dataframe['fib_long_0236'] = dataframe['swing_high'] - swing_range * 0.236
         dataframe['fib_long_0382'] = dataframe['swing_high'] - swing_range * 0.382
         dataframe['fib_long_0618'] = dataframe['swing_high'] - swing_range * 0.618
         dataframe['fib_long_0786'] = dataframe['swing_high'] - swing_range * 0.786
 
-        # SHORT (retracement in downtrend)
         dataframe['fib_short_0236'] = dataframe['swing_low'] + swing_range * 0.236
         dataframe['fib_short_0382'] = dataframe['swing_low'] + swing_range * 0.382
         dataframe['fib_short_0618'] = dataframe['swing_low'] + swing_range * 0.618
         dataframe['fib_short_0786'] = dataframe['swing_low'] + swing_range * 0.786
 
-        logger.debug("Fibonacci levels calculated with shift(1) to avoid lookahead")
-
-        # ---- Fetch and merge informative timeframe ----
-        logger.debug("Informative pairs data: %s", self.informative_pairs)
         informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
 
         if (
@@ -842,14 +594,9 @@ class Fibbo(IStrategy):
             or len(informative) < 50
             or 'close' not in informative.columns
         ):
-            logger.warning(
-                f"Missing/insufficient informative data for "
-                f"{metadata['pair']} "
-                f"({self.informative_timeframe})"
-            )
+            logger.warning(f"Missing/insufficient informative data for {metadata['pair']} ({self.informative_timeframe})")
             return dataframe
     
-        # Now it's safe to use 'close'
         informative['atr'] = ta.ATR(informative, timeperiod=14)
         informative['rsi'] = ta.RSI(informative['close'], timeperiod=max(2, rsi_period))
 
@@ -865,65 +612,26 @@ class Fibbo(IStrategy):
             p_int = int(period)
             informative[f'dema{p_int}'] = ta.DEMA(informative, timeperiod=p_int)
 
-        # Merge informative pair data into main dataframe
         dataframe = merge_informative_pair(
-            dataframe,
-            informative,
-            self.timeframe,
-            self.informative_timeframe,
-            ffill=True
+            dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True
         )
 
         return dataframe
 
     def combine_conditions(self, conditions: list, mode: str) -> pd.Series:
-        """
-        ✅ IMPROVED: Flexible entry logic
-        Combines multiple conditions based on the specified mode.
-        
-        Args:
-            conditions: List of boolean Series
-            mode: 'all', 'any', 'half', or 'majority'
-        
-        Returns:
-            Combined boolean Series
-        """
         if not conditions:
             return pd.Series([False] * len(conditions[0]))
-        
         if mode == 'all':
-            # ALL conditions must be true (strict)
-            logger.debug(f"Entry logic: ALL ({len(conditions)} conditions)")
             return reduce(lambda x, y: x & y, conditions)
-        
         elif mode == 'any':
-            # ANY condition can be true (loose)
-            logger.debug(f"Entry logic: ANY ({len(conditions)} conditions)")
             return reduce(lambda x, y: x | y, conditions)
-        
         elif mode == 'half':
-            # At least 50% of conditions must be true (balanced)
-            num_true = sum(conditions)
-            threshold = len(conditions) * 0.5
-            logger.debug(f"Entry logic: 50% threshold ({int(threshold)}/{len(conditions)} conditions)")
-            return num_true >= threshold
-        
+            return sum(conditions) >= (len(conditions) * 0.5)
         elif mode == 'majority':
-            # More than 50% of conditions must be true (conservative)
-            num_true = sum(conditions)
-            threshold = len(conditions) * 0.66
-            logger.debug(f"Entry logic: 66% threshold ({int(threshold)}/{len(conditions)} conditions)")
-            return num_true >= threshold
-        
-        else:
-            # Default to all
-            return reduce(lambda x, y: x & y, conditions)
+            return sum(conditions) >= (len(conditions) * 0.66)
+        return reduce(lambda x, y: x & y, conditions)
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """
-        Combine your Fibbo strategy with FreqAI predictions.
-        FreqAI columns are now available in the dataframe.
-        """
         logger.debug(f"Generating entry signals for {metadata['pair']}")
         
         entry_long_conditions = []
@@ -932,36 +640,34 @@ class Fibbo(IStrategy):
         buy_slow_ema_val = int(self.buy_slow_ema.value)
         buy_fast_dema_val = int(self.buy_fast_dema.value)
 
-        # === Your existing Fibbo conditions ===
         RSI_LONG_ENTRY = dataframe['rsi'] < self.buy_rsi.value
         RSI_SHORT_ENTRY = dataframe['rsi'] > self.buy_rsi.value
-
         VWAP_LONG_ENTRY = dataframe['close'] > dataframe['vwap']
         VWAP_SHORT_ENTRY = dataframe['close'] < dataframe['vwap']
-
         BB_LONG_ENTRY = dataframe['close'] <= dataframe['bb_lowerband']
         BB_SHORT_ENTRY = dataframe['close'] >= dataframe['bb_upperband']
-
         MACD_LONG_ENTRY = dataframe['macd'] > dataframe['macdsignal']
         MACD_SHORT_ENTRY = dataframe['macd'] < dataframe['macdsignal']
 
-        STOCHRSI_LONG_ENTRY = (
-            (dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) &
-            (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value)
-        )
-        STOCHRSI_SHORT_ENTRY = (
-            (dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) &
-            (dataframe['fastk_rsi_buy'] > self.buy_stoch_osc.value)
-        )
+        STOCHRSI_LONG_ENTRY = ((dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) & (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value))
+        STOCHRSI_SHORT_ENTRY = ((dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) & (dataframe['fastk_rsi_buy'] > self.buy_stoch_osc.value))
 
-        DEMA_LONG_ENTRY = (
-            (dataframe['close'] > dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"]) &
-            (dataframe[f"dema{buy_fast_dema_val}_{self.informative_timeframe}"] > dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"])
-        )
-        DEMA_SHORT_ENTRY = (
-            (dataframe['close'] < dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"]) &
-            (dataframe[f"dema{buy_fast_dema_val}_{self.informative_timeframe}"] < dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"])
-        )
+        # ✅ FIX: Safe-checking column existence before assessing DEMA entry logic to prevent KeyError
+        ema_long_col = f"ema{buy_slow_ema_val}_{self.informative_timeframe}"
+        dema_long_col = f"dema{buy_fast_dema_val}_{self.informative_timeframe}"
+
+        if ema_long_col in dataframe.columns and dema_long_col in dataframe.columns:
+            DEMA_LONG_ENTRY = (
+                (dataframe['close'] > dataframe[ema_long_col]) &
+                (dataframe[dema_long_col] > dataframe[ema_long_col])
+            )
+            DEMA_SHORT_ENTRY = (
+                (dataframe['close'] < dataframe[ema_long_col]) &
+                (dataframe[dema_long_col] < dataframe[ema_long_col])
+            )
+        else:
+            DEMA_LONG_ENTRY = pd.Series(False, index=dataframe.index)
+            DEMA_SHORT_ENTRY = pd.Series(False, index=dataframe.index)
 
         FIBBO_LONG_ENTRY = (
             (dataframe['close'] >= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
@@ -972,73 +678,38 @@ class Fibbo(IStrategy):
             (dataframe['close'] <= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
         )
 
-        # Always include FIBBO
         entry_long_conditions.append(FIBBO_LONG_ENTRY)
         entry_short_conditions.append(FIBBO_SHORT_ENTRY)
         
-        if "BB" in self.enter_long_indicator.value:
-            entry_long_conditions.append(BB_LONG_ENTRY)
-        if "BB" in self.enter_short_indicator.value:
-            entry_short_conditions.append(BB_SHORT_ENTRY)
-        if "RSI" in self.enter_long_indicator.value:
-            entry_long_conditions.append(RSI_LONG_ENTRY)
-        if "RSI" in self.enter_short_indicator.value:
-            entry_short_conditions.append(RSI_SHORT_ENTRY)
-        if "VWAP" in self.enter_long_indicator.value:
-            entry_long_conditions.append(VWAP_LONG_ENTRY)
-        if "VWAP" in self.enter_short_indicator.value:
-            entry_short_conditions.append(VWAP_SHORT_ENTRY)
-        if "MACD" in self.enter_long_indicator.value:
-            entry_long_conditions.append(MACD_LONG_ENTRY)
-        if "MACD" in self.enter_short_indicator.value:
-            entry_short_conditions.append(MACD_SHORT_ENTRY)
-        if "DEMA" in self.enter_long_indicator.value:
-            entry_long_conditions.append(DEMA_LONG_ENTRY)
-        if "DEMA" in self.enter_short_indicator.value:
-            entry_short_conditions.append(DEMA_SHORT_ENTRY)
-        if "STOCHRSI" in self.enter_long_indicator.value:
-            entry_long_conditions.append(STOCHRSI_LONG_ENTRY)
-        if "STOCHRSI" in self.enter_short_indicator.value:
-            entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
+        if "BB" in self.enter_long_indicator.value: entry_long_conditions.append(BB_LONG_ENTRY)
+        if "BB" in self.enter_short_indicator.value: entry_short_conditions.append(BB_SHORT_ENTRY)
+        if "RSI" in self.enter_long_indicator.value: entry_long_conditions.append(RSI_LONG_ENTRY)
+        if "RSI" in self.enter_short_indicator.value: entry_short_conditions.append(RSI_SHORT_ENTRY)
+        if "VWAP" in self.enter_long_indicator.value: entry_long_conditions.append(VWAP_LONG_ENTRY)
+        if "VWAP" in self.enter_short_indicator.value: entry_short_conditions.append(VWAP_SHORT_ENTRY)
+        if "MACD" in self.enter_long_indicator.value: entry_long_conditions.append(MACD_LONG_ENTRY)
+        if "MACD" in self.enter_short_indicator.value: entry_short_conditions.append(MACD_SHORT_ENTRY)
+        if "DEMA" in self.enter_long_indicator.value: entry_long_conditions.append(DEMA_LONG_ENTRY)
+        if "DEMA" in self.enter_short_indicator.value: entry_short_conditions.append(DEMA_SHORT_ENTRY)
+        if "STOCHRSI" in self.enter_long_indicator.value: entry_long_conditions.append(STOCHRSI_LONG_ENTRY)
+        if "STOCHRSI" in self.enter_short_indicator.value: entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
 
-        # === TTM Squeeze ENTRY (breakout model) ===
         if "TTM" in self.enter_long_indicator.value:
-            squeeze_off = dataframe['squeeze_off']
-            momentum_positive = dataframe['momentum_hist'] > 0
-            entry_long_conditions.append(squeeze_off & momentum_positive)
+            entry_long_conditions.append(dataframe['squeeze_off'] & (dataframe['momentum_hist'] > 0))
         if "TTM" in self.enter_short_indicator.value:
-            squeeze_off = dataframe['squeeze_off']
-            momentum_negative = dataframe['momentum_hist'] < 0
-            entry_short_conditions.append(squeeze_off & momentum_negative)
-
-        # === FreqAI (SAFE FALLBACK) ===
-        use_freqai = False
+            entry_short_conditions.append(dataframe['squeeze_off'] & (dataframe['momentum_hist'] < 0))
 
         if 'do_predict' in dataframe.columns:
-
-            valid_preds = dataframe['do_predict'].isin([1, -1])
-
-            # Only activate AI if we actually have predictions
-            if valid_preds.any():
-                use_freqai = True
-
-                freqai_bullish = dataframe['do_predict'] == 1
-                freqai_bearish = dataframe['do_predict'] == -1
-
+            if dataframe['do_predict'].isin([1, -1]).any():
                 if 'di_percentile' in dataframe.columns:
-                    long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
-                    short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
-
-                    entry_long_conditions.append(freqai_bullish & long_conf)
-                    entry_short_conditions.append(freqai_bearish & short_conf)
+                    entry_long_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.buy_freqai.value)))
+                    entry_short_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.sell_freqai.value)))
                 else:
-                    entry_long_conditions.append(freqai_bullish)
-                    entry_short_conditions.append(freqai_bearish)
+                    entry_long_conditions.append(dataframe['do_predict'] == 1)
+                    entry_short_conditions.append(dataframe['do_predict'] == -1)
 
-        # ✅ IMPROVED: Use flexible entry logic instead of AND for all
         if entry_long_conditions:
             signal = self.combine_conditions(entry_long_conditions, self.enter_trade_mode.value)
-            # Move the signal one (1) candle behind to ensure a genuine execution in the next open candle
             dataframe.loc[signal, 'enter_long'] = 1
            
         if entry_short_conditions:
@@ -1048,10 +719,6 @@ class Fibbo(IStrategy):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        """
-        Exit logic combining Fibbo strategy with FreqAI sell signals.
-        Keep exit as strict AND logic to avoid premature exits.
-        """
         logger.debug(f"Generating exit signals for {metadata['pair']}")
         
         exit_long_conditions = []
@@ -1060,36 +727,34 @@ class Fibbo(IStrategy):
         sell_slow_ema_val = int(self.sell_slow_ema.value)
         sell_fast_dema_val = int(self.sell_fast_dema.value)
 
-        # === Your existing Fibbo exit conditions ===
         RSI_LONG_EXIT = dataframe['rsi'] >= self.sell_rsi.value
         RSI_SHORT_EXIT = dataframe['rsi'] <= self.sell_rsi.value
-
         VWAP_LONG_EXIT = dataframe['close'] < dataframe['vwap']
         VWAP_SHORT_EXIT = dataframe['close'] > dataframe['vwap']
-
         BB_LONG_EXIT = dataframe['close'] > dataframe['bb_middleband']
         BB_SHORT_EXIT = dataframe['close'] < dataframe['bb_middleband']
-
         MACD_LONG_EXIT = dataframe['macd'] < dataframe['macdsignal']
         MACD_SHORT_EXIT = dataframe['macd'] > dataframe['macdsignal']
 
-        DEMA_LONG_EXIT = (
-            (dataframe['close'] < dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"]) &
-            (dataframe[f"dema{sell_fast_dema_val}_{self.informative_timeframe}"] < dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"])
-        )
-        DEMA_SHORT_EXIT = (
-            (dataframe['close'] > dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"]) &
-            (dataframe[f"dema{sell_fast_dema_val}_{self.informative_timeframe}"] > dataframe[f"ema{sell_slow_ema_val}_{self.informative_timeframe}"])
-        )
+        # ✅ FIX: Safe-checking column existence before assessing DEMA exit logic to prevent KeyError
+        ema_exit_col = f"ema{sell_slow_ema_val}_{self.informative_timeframe}"
+        dema_exit_col = f"dema{sell_fast_dema_val}_{self.informative_timeframe}"
 
-        STOCHRSI_LONG_EXIT = (
-            (dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) &
-            (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value)
-        )
-        STOCHRSI_SHORT_EXIT = (
-            (dataframe['fastk_rsi_sell'] > dataframe['fastd_rsi_sell']) &
-            (dataframe['fastk_rsi_sell'] < self.sell_stoch_osc.value)
-        )
+        if ema_exit_col in dataframe.columns and dema_exit_col in dataframe.columns:
+            DEMA_LONG_EXIT = (
+                (dataframe['close'] < dataframe[ema_exit_col]) &
+                (dataframe[dema_exit_col] < dataframe[ema_exit_col])
+            )
+            DEMA_SHORT_EXIT = (
+                (dataframe['close'] > dataframe[ema_exit_col]) &
+                (dataframe[dema_exit_col] > dataframe[ema_exit_col])
+            )
+        else:
+            DEMA_LONG_EXIT = pd.Series(False, index=dataframe.index)
+            DEMA_SHORT_EXIT = pd.Series(False, index=dataframe.index)
+
+        STOCHRSI_LONG_EXIT = ((dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) & (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value))
+        STOCHRSI_SHORT_EXIT = ((dataframe['fastk_rsi_sell'] > dataframe['fastd_rsi_sell']) & (dataframe['fastk_rsi_sell'] < self.sell_stoch_osc.value))
 
         FIBBO_LONG_EXIT = (
             (dataframe['close'] >= (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
@@ -1100,71 +765,36 @@ class Fibbo(IStrategy):
             (dataframe['close'].shift(1) > (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
         )
        
-        # Always include FIBBO
         exit_long_conditions.append(FIBBO_LONG_EXIT)
         exit_short_conditions.append(FIBBO_SHORT_EXIT)
         
-        if "BB" in self.exit_long_indicator.value:
-            exit_long_conditions.append(BB_LONG_EXIT)
-        if "BB" in self.exit_short_indicator.value:
-            exit_short_conditions.append(BB_SHORT_EXIT)
-        if "RSI" in self.exit_long_indicator.value:
-            exit_long_conditions.append(RSI_LONG_EXIT)
-        if "RSI" in self.exit_short_indicator.value:
-            exit_short_conditions.append(RSI_SHORT_EXIT)
-        if "VWAP" in self.exit_long_indicator.value:
-            exit_long_conditions.append(VWAP_LONG_EXIT)
-        if "VWAP" in self.exit_short_indicator.value:
-            exit_short_conditions.append(VWAP_SHORT_EXIT)
-        if "DEMA" in self.exit_long_indicator.value:
-            exit_long_conditions.append(DEMA_LONG_EXIT)
-        if "DEMA" in self.exit_short_indicator.value:
-            exit_short_conditions.append(DEMA_SHORT_EXIT)
-        if "MACD" in self.exit_long_indicator.value:
-            exit_long_conditions.append(MACD_LONG_EXIT)
-        if "MACD" in self.exit_short_indicator.value:
-            exit_short_conditions.append(MACD_SHORT_EXIT)
-        if "STOCHRSI" in self.exit_long_indicator.value:
-            exit_long_conditions.append(STOCHRSI_LONG_EXIT)
-        if "STOCHRSI" in self.exit_short_indicator.value:
-            exit_short_conditions.append(STOCHRSI_SHORT_EXIT)
+        if "BB" in self.exit_long_indicator.value: exit_long_conditions.append(BB_LONG_EXIT)
+        if "BB" in self.exit_short_indicator.value: exit_short_conditions.append(BB_SHORT_EXIT)
+        if "RSI" in self.exit_long_indicator.value: exit_long_conditions.append(RSI_LONG_EXIT)
+        if "RSI" in self.exit_short_indicator.value: exit_short_conditions.append(RSI_SHORT_EXIT)
+        if "VWAP" in self.exit_long_indicator.value: exit_long_conditions.append(VWAP_LONG_EXIT)
+        if "VWAP" in self.exit_short_indicator.value: exit_short_conditions.append(VWAP_SHORT_EXIT)
+        if "DEMA" in self.exit_long_indicator.value: exit_long_conditions.append(DEMA_LONG_EXIT)
+        if "DEMA" in self.exit_short_indicator.value: exit_short_conditions.append(DEMA_SHORT_EXIT)
+        if "MACD" in self.exit_long_indicator.value: exit_long_conditions.append(MACD_LONG_EXIT)
+        if "MACD" in self.exit_short_indicator.value: exit_short_conditions.append(MACD_SHORT_EXIT)
+        if "STOCHRSI" in self.exit_long_indicator.value: exit_long_conditions.append(STOCHRSI_LONG_EXIT)
+        if "STOCHRSI" in self.exit_short_indicator.value: exit_short_conditions.append(STOCHRSI_SHORT_EXIT)
 
-        # === TTM Squeeze EXIT ===
         if "TTM" in self.exit_long_indicator.value:
-            squeeze_on = dataframe['squeeze_on']
-            momentum_negative = dataframe['momentum_hist'] < 0
-            exit_long_conditions.append(squeeze_on & momentum_negative)
+            exit_long_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] < 0))
         if "TTM" in self.exit_short_indicator.value:
-            squeeze_on = dataframe['squeeze_on']
-            momentum_positive = dataframe['momentum_hist'] > 0
-            exit_short_conditions.append(squeeze_on & momentum_positive)
-
-        # === FreqAI (SAFE FALLBACK) ===
-        use_freqai = False
+            exit_short_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] > 0))
 
         if 'do_predict' in dataframe.columns:
-
-            valid_preds = dataframe['do_predict'].isin([1, -1])
-
-            if valid_preds.any():
-                use_freqai = True
-
-                freqai_bullish = dataframe['do_predict'] == 1
-                freqai_bearish = dataframe['do_predict'] == -1
-
+            if dataframe['do_predict'].isin([1, -1]).any():
                 if 'di_percentile' in dataframe.columns:
-                    long_conf = dataframe['di_percentile'] > float(self.buy_freqai.value)
-                    short_conf = dataframe['di_percentile'] < float(self.sell_freqai.value)
-
-                    # IMPORTANT: reverse logic for exit
-                    exit_long_conditions.append(freqai_bearish & short_conf)
-                    exit_short_conditions.append(freqai_bullish & long_conf)
-
+                    exit_long_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.sell_freqai.value)))
+                    exit_short_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.buy_freqai.value)))
                 else:
-                    exit_long_conditions.append(freqai_bearish)
-                    exit_short_conditions.append(freqai_bullish)
+                    exit_long_conditions.append(dataframe['do_predict'] == -1)
+                    exit_short_conditions.append(dataframe['do_predict'] == 1)
 
-        # ✅ IMPROVED: Use flexible exit logic instead of AND for all
         if exit_long_conditions:
             signal = self.combine_conditions(exit_long_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal, 'exit_long'] = 1
