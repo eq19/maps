@@ -74,11 +74,21 @@ calculate_score() {
     t = sqrt($trades / $TRADES_MIN)
     e = $expectancy_ratio / 0.1
 
-    pm = $profit_mean / 0.02
-    if (pm > 1) {
-      pm_factor = 1
+    pm = $profit_mean
+
+    # pm Quality
+      # < 0%  Losing
+      # 0% – 0.10% Very Small Edge
+      # 0.10% – 0.25% Small Edge
+      # 0.25% – 0.50% Good Edge
+      # 0.50% – 1.00% Strong Edge
+      # > 1.00% Exceptional Edge
+
+    pw = $pm / 0.02
+    if (pw > 1) {
+      pw_factor = 1
     } else {
-      pm_factor = pm
+      pw_factor = pw
     }
 
     pf = $profit_factor / 2
@@ -88,7 +98,7 @@ calculate_score() {
       pf_factor = pf
     }
 
-    w = 10 * t * e * pm_factor * pf_factor
+    w = 10 * t * e * pw_factor * pf_factor
 
     if (w > 10) {
       10
