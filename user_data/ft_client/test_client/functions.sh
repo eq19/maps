@@ -112,23 +112,23 @@ calculate_score() {
     p = $profit_factor
 
     # p Quality
-      # <1.0 Losing
+      # < 1.0 Losing
       # 1.0–1.1 Weak
       # 1.1–1.25 Acceptable
       # 1.25–1.5 Good
       # 1.50 – 2.00 Strong
       # > 2.00 Exceptional
 
-    if (e < 1.0) {
-      e
-    } else if (e < 1.1) {
-      1 + (e - 1.0) / (0.1 / 2)
+    if (p < 1.0) {
+      p
+    } else if (p < 1.1) {
+      1 + (p - 1.0) / (0.1 / 2)
     } else if (e < 1.25) {
-      3 + (e - 1.1) / (0.15 / 2)
+      3 + (p - 1.1) / (0.15 / 2)
     } else if (e < 1.5) {
-      5 + (e - 1.25) / (0.25 / 2)
+      5 + (p - 1.25) / (0.25 / 2)
     } else if (e < 2) {
-      7 + (e - 1.5) / (0.5 / 3)
+      7 + (p - 1.5) / (0.5 / 3)
     } else {
       10
     }
