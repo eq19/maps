@@ -67,14 +67,10 @@ calculate_score() {
   local winrate_score=$(echo "$winrate * 10" | bc -l)
   echo "📊 1.1 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
 
-  [[ $(echo "$profit_mean < 0" | bc -l) -eq 1 ]] && profit_mean=0
   local profit_mean_score=$(echo "
     scale=6
 
-    t = sqrt($trades / $TRADES_MIN)
-    e = $expectancy_ratio / 0.1
-
-    pm = $profit_mean
+    pm = $profit_mean * 100  # Convert to percentage
 
     # pm Quality
       # < 0%  Losing
@@ -84,28 +80,23 @@ calculate_score() {
       # 0.50% – 1.00% Strong Edge
       # > 1.00% Exceptional Edge
 
-    pw = $pm / 0.02
-    if (pw > 1) {
-      pw_factor = 1
-    } else {
-      pw_factor = pw
-    }
+  if (pm <= 0) {
+    0
+  } else if (pm < 0.1) {
+    1 + pm / 0.1
+  } else if (pm < 0.25) {
+    2 + (pm - 0.10) / 0.15 * 2
+  } else if (pm < 0.50) {
+    4 + (pm - 0.25) / 0.25 * 2
+  } else if (pm < 0.75) {
+    6 + (pm - 0.5) / 0.25 * 2
+  } else if (pm < 1.00) {
+    8 + (pm - 0.75) / 0.25 * 2
+  } else {
+    10
+  }
 
-    pf = $profit_factor / 2
-    if (pf > 1) {
-      pf_factor = 1
-    } else {
-      pf_factor = pf
-    }
-
-    w = 10 * t * e * pw_factor * pf_factor
-
-    if (w > 10) {
-      10
-    } else {
-      w
-    }
-    " | bc -l)
+  " | bc -l)
 
   echo "💰 1.2 Profit Mean: $profit_mean_pct% (score: $(printf "%.2f" "$profit_mean_score") of 10)"
 
