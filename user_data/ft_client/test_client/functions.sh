@@ -84,15 +84,15 @@ calculate_score() {
 
     if (pc <= 0) {
       0
-    } else if (pm < 0.1) {
+    } else if (pc < 0.1) {
       1 + pc / 0.1
-    } else if (pm < 0.25) {
+    } else if (pc < 0.25) {
       2 + (pc - 0.10) / 0.15 * 2
-    } else if (pm < 0.50) {
+    } else if (pc < 0.50) {
       4 + (pc - 0.25) / 0.25 * 2
-    } else if (pm < 0.75) {
+    } else if (pc < 0.75) {
       6 + (pc - 0.5) / 0.25 * 2
-    } else if (pm < 1.00) {
+    } else if (pc < 1.00) {
       8 + (pc - 0.75) / 0.25 * 2
     } else {
       10
