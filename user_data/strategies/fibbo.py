@@ -929,6 +929,9 @@ class Fibbo(IStrategy):
         entry_long_conditions = []
         entry_short_conditions = []
         
+        buy_slow_ema_val = int(self.buy_slow_ema.value)
+        buy_fast_dema_val = int(self.buy_fast_dema.value)
+
         # === Your existing Fibbo conditions ===
         RSI_LONG_ENTRY = dataframe['rsi'] < self.buy_rsi.value
         RSI_SHORT_ENTRY = dataframe['rsi'] > self.buy_rsi.value
@@ -952,12 +955,12 @@ class Fibbo(IStrategy):
         )
 
         DEMA_LONG_ENTRY = (
-            dataframe[f"dema{self.buy_fast_dema.value}"] >
-            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
+            (dataframe['close'] > dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"]) &
+            (dataframe[f"dema{buy_fast_dema_val}_{self.informative_timeframe}"] > dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"])
         )
         DEMA_SHORT_ENTRY = (
-            dataframe[f"dema{self.buy_fast_dema.value}"] <
-            dataframe[f"ema{self.buy_slow_ema.value}_{self.informative_timeframe}"]
+            (dataframe['close'] < dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"]) &
+            (dataframe[f"dema{buy_fast_dema_val}_{self.informative_timeframe}"] < dataframe[f"ema{buy_slow_ema_val}_{self.informative_timeframe}"])
         )
 
         FIBBO_LONG_ENTRY = (
