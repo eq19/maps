@@ -79,18 +79,18 @@ calculate_score() {
       # 0.50 – 1.00 Strong Edge
       # > 1.00 Exceptional Edge
 
-    if (pc <= 0) {
+    if (pm <= 0) {
       0
-    } else if (pc < 0.1) {
-      1 + pc / 0.1
-    } else if (pc < 0.25) {
-      2 + (pc - 0.10) / 0.15 * 2
-    } else if (pc < 0.50) {
-      4 + (pc - 0.25) / 0.25 * 2
-    } else if (pc < 0.75) {
-      6 + (pc - 0.5) / 0.25 * 2
-    } else if (pc < 1.00) {
-      8 + (pc - 0.75) / 0.25 * 2
+    } else if (pm < 0.1) {
+      1 + pm / 0.1
+    } else if (pm < 0.25) {
+      2 + (pm - 0.10) / 0.15 * 2
+    } else if (pm < 0.50) {
+      4 + (pm - 0.25) / 0.25 * 2
+    } else if (pm < 0.75) {
+      6 + (pm - 0.5) / 0.25 * 2
+    } else if (pm < 1.00) {
+      8 + (pm - 0.75) / 0.25 * 2
     } else {
       10
     }
