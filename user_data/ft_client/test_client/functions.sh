@@ -565,7 +565,7 @@ freqai() {
       NEW_SCORE=$SCORE
 
       OLD_SCORE=$(gh variable get SCORE)
-      [[ "$TARGET_REPOSITORY" != "eq19/eq19.github.io" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="REMOVE_RUNNER"
+      [[ "$ID" != "169" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="REMOVE_RUNNER"
       if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
         cat $STRATEGY
         sed -i "s|Infinity|10|g" $STRATEGY
