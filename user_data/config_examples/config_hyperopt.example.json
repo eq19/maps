@@ -266,7 +266,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["default"],
+      "spaces": ["all"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -275,7 +275,7 @@
       "days": 7,
       "epochs": 1600,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["enter buy"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -284,7 +284,7 @@
       "days": 7,
       "epochs": 2500,
       "parallel_jobs": 4,
-      "spaces": ["enter buy"],
+      "spaces": ["exit sell"],
       "hyperopt_loss": "pairlists"
     },
     {
@@ -293,7 +293,7 @@
       "days": 7,
       "epochs": 2500,
       "parallel_jobs": 4,
-      "spaces": ["exit sell"],
+      "spaces": ["buy sell roi"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -302,7 +302,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["buy sell roi"],
+      "spaces": ["trailing protection trades"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -311,7 +311,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["trailing protection trades"],
+      "spaces": ["default trailing"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -320,7 +320,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["default stoploss"],
+      "spaces": ["default protection"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
@@ -329,7 +329,7 @@
       "days": 7,
       "epochs": 5000,
       "parallel_jobs": 4,
-      "spaces": ["all"],
+      "spaces": ["default trades"],
       "hyperopt_loss": "MaxDrawDownRelativeHyperOptLossWithTradePenalty"
     },
     {
