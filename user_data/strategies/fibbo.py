@@ -634,23 +634,36 @@ class Fibbo(IStrategy):
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         logger.debug(f"Generating entry signals for {metadata['pair']}")
         
+        # Initialize the enter_tag column with empty strings
+        dataframe['enter_tag'] = ''
+        
         entry_long_conditions = []
         entry_short_conditions = []
         
         buy_slow_ema_val = int(self.buy_slow_ema.value)
         buy_fast_dema_val = int(self.buy_fast_dema.value)
 
+        # === Base Indicators ===
         RSI_LONG_ENTRY = dataframe['rsi'] < self.buy_rsi.value
         RSI_SHORT_ENTRY = dataframe['rsi'] > self.buy_rsi.value
+
         VWAP_LONG_ENTRY = dataframe['close'] > dataframe['vwap']
         VWAP_SHORT_ENTRY = dataframe['close'] < dataframe['vwap']
+
         BB_LONG_ENTRY = dataframe['close'] <= dataframe['bb_lowerband']
         BB_SHORT_ENTRY = dataframe['close'] >= dataframe['bb_upperband']
+
         MACD_LONG_ENTRY = dataframe['macd'] > dataframe['macdsignal']
         MACD_SHORT_ENTRY = dataframe['macd'] < dataframe['macdsignal']
 
-        STOCHRSI_LONG_ENTRY = ((dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) & (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value))
-        STOCHRSI_SHORT_ENTRY = ((dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) & (dataframe['fastk_rsi_buy'] > self.buy_stoch_osc.value))
+        STOCHRSI_LONG_ENTRY = (
+            (dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) &
+            (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value)
+        )
+        STOCHRSI_SHORT_ENTRY = (
+            (dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) &
+            (dataframe['fastk_rsi_buy'] > self.buy_stoch_osc.value)
+        )
 
         # ✅ FIX: Safe-checking column existence before assessing DEMA entry logic to prevent KeyError
         ema_long_col = f"ema{buy_slow_ema_val}_{self.informative_timeframe}"
@@ -666,41 +679,64 @@ class Fibbo(IStrategy):
                 (dataframe[dema_long_col] < dataframe[ema_long_col])
             )
         else:
+            # Fallback arrays filled with False if columns haven't been populated yet
             DEMA_LONG_ENTRY = pd.Series(False, index=dataframe.index)
             DEMA_SHORT_ENTRY = pd.Series(False, index=dataframe.index)
 
-        FIBBO_LONG_ENTRY = (
-            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
-            (dataframe['close'] <= (dataframe[f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
-        )
-        FIBBO_SHORT_ENTRY = (
-            (dataframe['close'] >= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
-            (dataframe['close'] <= (dataframe[f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
-        )
+        fib_long_col = f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'
+        fib_short_col = f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'
 
+        if fib_long_col in dataframe.columns and fib_short_col in dataframe.columns:
+            FIBBO_LONG_ENTRY = (
+                (dataframe['close'] >= (dataframe[fib_long_col] * (1 - dataframe['atr_pct']))) &
+                (dataframe['close'] <= (dataframe[fib_long_col] * (1 + dataframe['atr_pct'])))
+            )
+            FIBBO_SHORT_ENTRY = (
+                (dataframe['close'] >= (dataframe[fib_short_col] * (1 - dataframe['atr_pct']))) &
+                (dataframe['close'] <= (dataframe[fib_short_col] * (1 + dataframe['atr_pct'])))
+            )
+        else:
+            FIBBO_LONG_ENTRY = pd.Series(False, index=dataframe.index)
+            FIBBO_SHORT_ENTRY = pd.Series(False, index=dataframe.index)
+
+        # Always include FIBBO
         entry_long_conditions.append(FIBBO_LONG_ENTRY)
         entry_short_conditions.append(FIBBO_SHORT_ENTRY)
         
-        if "BB" in self.enter_long_indicator.value: entry_long_conditions.append(BB_LONG_ENTRY)
-        if "BB" in self.enter_short_indicator.value: entry_short_conditions.append(BB_SHORT_ENTRY)
-        if "RSI" in self.enter_long_indicator.value: entry_long_conditions.append(RSI_LONG_ENTRY)
-        if "RSI" in self.enter_short_indicator.value: entry_short_conditions.append(RSI_SHORT_ENTRY)
-        if "VWAP" in self.enter_long_indicator.value: entry_long_conditions.append(VWAP_LONG_ENTRY)
-        if "VWAP" in self.enter_short_indicator.value: entry_short_conditions.append(VWAP_SHORT_ENTRY)
-        if "MACD" in self.enter_long_indicator.value: entry_long_conditions.append(MACD_LONG_ENTRY)
-        if "MACD" in self.enter_short_indicator.value: entry_short_conditions.append(MACD_SHORT_ENTRY)
-        if "DEMA" in self.enter_long_indicator.value: entry_long_conditions.append(DEMA_LONG_ENTRY)
-        if "DEMA" in self.enter_short_indicator.value: entry_short_conditions.append(DEMA_SHORT_ENTRY)
-        if "STOCHRSI" in self.enter_long_indicator.value: entry_long_conditions.append(STOCHRSI_LONG_ENTRY)
-        if "STOCHRSI" in self.enter_short_indicator.value: entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
+        if "BB" in self.enter_long_indicator.value:
+            entry_long_conditions.append(BB_LONG_ENTRY)
+        if "BB" in self.enter_short_indicator.value:
+            entry_short_conditions.append(BB_SHORT_ENTRY)
+        if "RSI" in self.enter_long_indicator.value:
+            entry_long_conditions.append(RSI_LONG_ENTRY)
+        if "RSI" in self.enter_short_indicator.value:
+            entry_short_conditions.append(RSI_SHORT_ENTRY)
+        if "VWAP" in self.enter_long_indicator.value:
+            entry_long_conditions.append(VWAP_LONG_ENTRY)
+        if "VWAP" in self.enter_short_indicator.value:
+            entry_short_conditions.append(VWAP_SHORT_ENTRY)
+        if "MACD" in self.enter_long_indicator.value:
+            entry_long_conditions.append(MACD_LONG_ENTRY)
+        if "MACD" in self.enter_short_indicator.value:
+            entry_short_conditions.append(MACD_SHORT_ENTRY)
+        if "DEMA" in self.enter_long_indicator.value:
+            entry_long_conditions.append(DEMA_LONG_ENTRY)
+        if "DEMA" in self.enter_short_indicator.value:
+            entry_short_conditions.append(DEMA_SHORT_ENTRY)
+        if "STOCHRSI" in self.enter_long_indicator.value:
+            entry_long_conditions.append(STOCHRSI_LONG_ENTRY)
+        if "STOCHRSI" in self.enter_short_indicator.value:
+            entry_short_conditions.append(STOCHRSI_SHORT_ENTRY)
 
-        if "TTM" in self.enter_long_indicator.value:
-            entry_long_conditions.append(dataframe['squeeze_off'] & (dataframe['momentum_hist'] > 0))
-        if "TTM" in self.enter_short_indicator.value:
-            entry_short_conditions.append(dataframe['squeeze_off'] & (dataframe['momentum_hist'] < 0))
+        if "TTM" in self.enter_long_indicator.value and 'squeeze_on' in dataframe.columns:
+            entry_long_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] > 0))
+        if "TTM" in self.enter_short_indicator.value and 'squeeze_on' in dataframe.columns:
+            entry_short_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] < 0))
 
+        use_freqai = False
         if 'do_predict' in dataframe.columns:
             if dataframe['do_predict'].isin([1, -1]).any():
+                use_freqai = True
                 if 'di_percentile' in dataframe.columns:
                     entry_long_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.buy_freqai.value)))
                     entry_short_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.sell_freqai.value)))
@@ -711,11 +747,20 @@ class Fibbo(IStrategy):
         if entry_long_conditions:
             signal = self.combine_conditions(entry_long_conditions, self.enter_trade_mode.value)
             dataframe.loc[signal, 'enter_long'] = 1
-           
+            
+            dataframe.loc[signal & DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Extension_Trend'
+            dataframe.loc[signal & FIBBO_LONG_ENTRY & ~DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Retracement'
+            if use_freqai:
+                dataframe.loc[signal & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'FreqAI_Impulse'
+            
         if entry_short_conditions:
             signal = self.combine_conditions(entry_short_conditions, self.enter_trade_mode.value)
             dataframe.loc[signal, 'enter_short'] = 1
+            
+            dataframe.loc[signal & DEMA_SHORT_ENTRY, 'enter_tag'] = 'Fib_Short_Extension'
+            dataframe.loc[signal & FIBBO_SHORT_ENTRY & ~DEMA_SHORT_ENTRY, 'enter_tag'] = 'Fib_Short_Retracement'
 
+        dataframe.loc[(dataframe['enter_long'] == 1) & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Standard_Mix'
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
