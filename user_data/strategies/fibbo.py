@@ -640,9 +640,6 @@ class Fibbo(IStrategy):
         entry_long_conditions = []
         entry_short_conditions = []
         
-        buy_slow_ema_val = int(self.buy_slow_ema.value)
-        buy_fast_dema_val = int(self.buy_fast_dema.value)
-
         # === Base Indicators ===
         RSI_LONG_ENTRY = dataframe['rsi'] < self.buy_rsi.value
         RSI_SHORT_ENTRY = dataframe['rsi'] > self.buy_rsi.value
@@ -666,6 +663,9 @@ class Fibbo(IStrategy):
         )
 
         # ✅ FIX: Safe-checking column existence before assessing DEMA entry logic to prevent KeyError
+        buy_slow_ema_val = int(self.buy_slow_ema.value)
+        buy_fast_dema_val = int(self.buy_fast_dema.value)
+
         ema_long_col = f"ema{buy_slow_ema_val}_{self.informative_timeframe}"
         dema_long_col = f"dema{buy_fast_dema_val}_{self.informative_timeframe}"
 
@@ -770,9 +770,6 @@ class Fibbo(IStrategy):
         exit_long_conditions = []
         exit_short_conditions = []
         
-        sell_slow_ema_val = int(self.sell_slow_ema.value)
-        sell_fast_dema_val = int(self.sell_fast_dema.value)
-
         # === Base Indicators ===
         RSI_LONG_EXIT = dataframe['rsi'] > self.sell_rsi.value
         RSI_SHORT_EXIT = dataframe['rsi'] < self.sell_rsi.value
@@ -796,6 +793,9 @@ class Fibbo(IStrategy):
         )
 
         # ✅ FIX: Safe-checking column existence before assessing DEMA exit logic to prevent KeyError
+        sell_slow_ema_val = int(self.sell_slow_ema.value)
+        sell_fast_dema_val = int(self.sell_fast_dema.value)
+
         ema_long_col = f"ema{sell_slow_ema_val}_{self.informative_timeframe}"
         dema_long_col = f"dema{sell_fast_dema_val}_{self.informative_timeframe}"
 
