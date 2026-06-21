@@ -784,12 +784,12 @@ class Fibbo(IStrategy):
         MACD_SHORT_EXIT = dataframe['macd'] > dataframe['macdsignal']
 
         STOCHRSI_LONG_EXIT = (
-            (dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) &
-            (dataframe['fastk_rsi_buy'] > self.sell_stoch_osc.value)
+            (dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) &
+            (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value)
         )
         STOCHRSI_SHORT_EXIT = (
-            (dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) &
-            (dataframe['fastk_rsi_buy'] < self.sell_stoch_osc.value)
+            (dataframe['fastk_rsi_sell'] > dataframe['fastd_rsi_sell']) &
+            (dataframe['fastk_rsi_sell'] < self.sell_stoch_osc.value)
         )
 
         # ✅ FIX: Safe-checking column existence before assessing DEMA exit logic to prevent KeyError
