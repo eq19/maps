@@ -816,13 +816,15 @@ class Fibbo(IStrategy):
         fib_short_col = f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'
 
         if fib_long_col in dataframe.columns and fib_short_col in dataframe.columns:
+            # LONG EXIT: Close is inside the cushion band around the long target level
             FIBBO_LONG_EXIT = (
-                (dataframe['close'] >= (dataframe[fib_short_col] * (1 - dataframe['atr_pct']))) &
-                (dataframe['close'] <= (dataframe[fib_short_col] * (1 + dataframe['atr_pct'])))
-            )
-            FIBBO_SHORT_EXIT = (
                 (dataframe['close'] >= (dataframe[fib_long_col] * (1 - dataframe['atr_pct']))) &
                 (dataframe['close'] <= (dataframe[fib_long_col] * (1 + dataframe['atr_pct'])))
+            )
+            # SHORT EXIT: Close is inside the cushion band around the short target level
+            FIBBO_SHORT_EXIT = (
+                (dataframe['close'] >= (dataframe[fib_short_col] * (1 - dataframe['atr_pct']))) &
+                (dataframe['close'] <= (dataframe[fib_short_col] * (1 + dataframe['atr_pct'])))
             )
         else:
             FIBBO_LONG_EXIT = pd.Series(False, index=dataframe.index)
