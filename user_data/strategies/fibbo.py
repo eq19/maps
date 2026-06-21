@@ -812,8 +812,8 @@ class Fibbo(IStrategy):
             DEMA_LONG_EXIT = pd.Series(False, index=dataframe.index)
             DEMA_SHORT_EXIT = pd.Series(False, index=dataframe.index)
 
-        fib_long_col = f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'
-        fib_short_col = f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'
+        fib_long_col = f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'
+        fib_short_col = f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'
 
         if fib_long_col in dataframe.columns and fib_short_col in dataframe.columns:
             FIBBO_LONG_EXIT = (
