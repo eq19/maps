@@ -764,75 +764,108 @@ class Fibbo(IStrategy):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        logger.debug(f"Generating exit signals for {metadata['pair']}")
-        
+        # Initialize the exit_tag column with empty strings
+        dataframe['exit_tag'] = ''
+
         exit_long_conditions = []
         exit_short_conditions = []
-
+        
         sell_slow_ema_val = int(self.sell_slow_ema.value)
         sell_fast_dema_val = int(self.sell_fast_dema.value)
 
-        RSI_LONG_EXIT = dataframe['rsi'] >= self.sell_rsi.value
-        RSI_SHORT_EXIT = dataframe['rsi'] <= self.sell_rsi.value
+        # === Base Indicators ===
+        RSI_LONG_EXIT = dataframe['rsi'] > self.sell_rsi.value
+        RSI_SHORT_EXIT = dataframe['rsi'] < self.sell_rsi.value
+
         VWAP_LONG_EXIT = dataframe['close'] < dataframe['vwap']
         VWAP_SHORT_EXIT = dataframe['close'] > dataframe['vwap']
-        BB_LONG_EXIT = dataframe['close'] > dataframe['bb_middleband']
-        BB_SHORT_EXIT = dataframe['close'] < dataframe['bb_middleband']
+
+        BB_LONG_EXIT = dataframe['close'] >= dataframe['bb_upperband']
+        BB_SHORT_EXIT = dataframe['close'] <= dataframe['bb_lowerband']
+
         MACD_LONG_EXIT = dataframe['macd'] < dataframe['macdsignal']
         MACD_SHORT_EXIT = dataframe['macd'] > dataframe['macdsignal']
 
-        # ✅ FIX: Safe-checking column existence before assessing DEMA exit logic to prevent KeyError
-        ema_exit_col = f"ema{sell_slow_ema_val}_{self.informative_timeframe}"
-        dema_exit_col = f"dema{sell_fast_dema_val}_{self.informative_timeframe}"
+        STOCHRSI_LONG_EXIT = (
+            (dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) &
+            (dataframe['fastk_rsi_buy'] > self.sell_stoch_osc.value)
+        )
+        STOCHRSI_SHORT_EXIT = (
+            (dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) &
+            (dataframe['fastk_rsi_buy'] < self.sell_stoch_osc.value)
+        )
 
-        if ema_exit_col in dataframe.columns and dema_exit_col in dataframe.columns:
+        # ✅ FIX: Safe-checking column existence before assessing DEMA exit logic to prevent KeyError
+        ema_long_col = f"ema{sell_slow_ema_val}_{self.informative_timeframe}"
+        dema_long_col = f"dema{sell_fast_dema_val}_{self.informative_timeframe}"
+
+        if ema_long_col in dataframe.columns and dema_long_col in dataframe.columns:
             DEMA_LONG_EXIT = (
-                (dataframe['close'] < dataframe[ema_exit_col]) &
-                (dataframe[dema_exit_col] < dataframe[ema_exit_col])
+                (dataframe['close'] < dataframe[ema_long_col]) &
+                (dataframe[dema_long_col] < dataframe[ema_long_col])
             )
             DEMA_SHORT_EXIT = (
-                (dataframe['close'] > dataframe[ema_exit_col]) &
-                (dataframe[dema_exit_col] > dataframe[ema_exit_col])
+                (dataframe['close'] > dataframe[ema_long_col]) &
+                (dataframe[dema_long_col] > dataframe[ema_long_col])
             )
         else:
             DEMA_LONG_EXIT = pd.Series(False, index=dataframe.index)
             DEMA_SHORT_EXIT = pd.Series(False, index=dataframe.index)
 
-        STOCHRSI_LONG_EXIT = ((dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) & (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value))
-        STOCHRSI_SHORT_EXIT = ((dataframe['fastk_rsi_sell'] > dataframe['fastd_rsi_sell']) & (dataframe['fastk_rsi_sell'] < self.sell_stoch_osc.value))
+        fib_long_col = f'fib_long_{str(self.buy_fib_level.value).replace(".", "")}'
+        fib_short_col = f'fib_short_{str(self.buy_fib_level.value).replace(".", "")}'
 
-        FIBBO_LONG_EXIT = (
-            (dataframe['close'] >= (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct']))) &
-            (dataframe['close'].shift(1) < (dataframe[f'fib_long_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 - dataframe['atr_pct'])))
-        )
-        FIBBO_SHORT_EXIT = (
-            (dataframe['close'] <= (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct']))) &
-            (dataframe['close'].shift(1) > (dataframe[f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'] * (1 + dataframe['atr_pct'])))
-        )
-       
+        if fib_long_col in dataframe.columns and fib_short_col in dataframe.columns:
+            FIBBO_LONG_EXIT = (
+                (dataframe['close'] >= (dataframe[fib_short_col] * (1 - dataframe['atr_pct']))) &
+                (dataframe['close'] <= (dataframe[fib_short_col] * (1 + dataframe['atr_pct'])))
+            )
+            FIBBO_SHORT_EXIT = (
+                (dataframe['close'] >= (dataframe[fib_long_col] * (1 - dataframe['atr_pct']))) &
+                (dataframe['close'] <= (dataframe[fib_long_col] * (1 + dataframe['atr_pct'])))
+            )
+        else:
+            FIBBO_LONG_EXIT = pd.Series(False, index=dataframe.index)
+            FIBBO_SHORT_EXIT = pd.Series(False, index=dataframe.index)
+
+        # Always include FIBBO
         exit_long_conditions.append(FIBBO_LONG_EXIT)
         exit_short_conditions.append(FIBBO_SHORT_EXIT)
         
-        if "BB" in self.exit_long_indicator.value: exit_long_conditions.append(BB_LONG_EXIT)
-        if "BB" in self.exit_short_indicator.value: exit_short_conditions.append(BB_SHORT_EXIT)
-        if "RSI" in self.exit_long_indicator.value: exit_long_conditions.append(RSI_LONG_EXIT)
-        if "RSI" in self.exit_short_indicator.value: exit_short_conditions.append(RSI_SHORT_EXIT)
-        if "VWAP" in self.exit_long_indicator.value: exit_long_conditions.append(VWAP_LONG_EXIT)
-        if "VWAP" in self.exit_short_indicator.value: exit_short_conditions.append(VWAP_SHORT_EXIT)
-        if "DEMA" in self.exit_long_indicator.value: exit_long_conditions.append(DEMA_LONG_EXIT)
-        if "DEMA" in self.exit_short_indicator.value: exit_short_conditions.append(DEMA_SHORT_EXIT)
-        if "MACD" in self.exit_long_indicator.value: exit_long_conditions.append(MACD_LONG_EXIT)
-        if "MACD" in self.exit_short_indicator.value: exit_short_conditions.append(MACD_SHORT_EXIT)
-        if "STOCHRSI" in self.exit_long_indicator.value: exit_long_conditions.append(STOCHRSI_LONG_EXIT)
-        if "STOCHRSI" in self.exit_short_indicator.value: exit_short_conditions.append(STOCHRSI_SHORT_EXIT)
+        if "BB" in self.exit_long_indicator.value:
+            exit_long_conditions.append(BB_LONG_EXIT)
+        if "BB" in self.exit_short_indicator.value:
+            exit_short_conditions.append(BB_SHORT_EXIT)
+        if "RSI" in self.exit_long_indicator.value:
+            exit_long_conditions.append(RSI_LONG_EXIT)
+        if "RSI" in self.exit_short_indicator.value:
+            exit_short_conditions.append(RSI_SHORT_EXIT)
+        if "VWAP" in self.exit_long_indicator.value:
+            exit_long_conditions.append(VWAP_LONG_EXIT)
+        if "VWAP" in self.exit_short_indicator.value:
+            exit_short_conditions.append(VWAP_SHORT_EXIT)
+        if "MACD" in self.exit_long_indicator.value:
+            exit_long_conditions.append(MACD_LONG_EXIT)
+        if "MACD" in self.exit_short_indicator.value:
+            exit_short_conditions.append(MACD_SHORT_EXIT)
+        if "DEMA" in self.exit_long_indicator.value:
+            exit_long_conditions.append(DEMA_LONG_EXIT)
+        if "DEMA" in self.exit_short_indicator.value:
+            exit_short_conditions.append(DEMA_SHORT_EXIT)
+        if "STOCHRSI" in self.exit_long_indicator.value:
+            exit_long_conditions.append(STOCHRSI_LONG_EXIT)
+        if "STOCHRSI" in self.exit_short_indicator.value:
+            exit_short_conditions.append(STOCHRSI_SHORT_EXIT)
 
-        if "TTM" in self.exit_long_indicator.value:
+        if "TTM" in self.exit_long_indicator.value and 'squeeze_on' in dataframe.columns:
             exit_long_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] < 0))
-        if "TTM" in self.exit_short_indicator.value:
+        if "TTM" in self.exit_short_indicator.value and 'squeeze_on' in dataframe.columns:
             exit_short_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] > 0))
 
+        use_freqai = False
         if 'do_predict' in dataframe.columns:
             if dataframe['do_predict'].isin([1, -1]).any():
+                use_freqai = True
                 if 'di_percentile' in dataframe.columns:
                     exit_long_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.sell_freqai.value)))
                     exit_short_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.buy_freqai.value)))
@@ -844,10 +877,19 @@ class Fibbo(IStrategy):
             signal = self.combine_conditions(exit_long_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal, 'exit_long'] = 1
             
+            dataframe.loc[signal & FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Fib_Extension'
+            dataframe.loc[signal & DEMA_LONG_EXIT & ~FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Trend_Break'
+            if use_freqai:
+                dataframe.loc[signal & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_FreqAI_Signal'
+            
         if exit_short_conditions:
             signal = self.combine_conditions(exit_short_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal, 'exit_short'] = 1
+            
+            dataframe.loc[signal & FIBBO_SHORT_EXIT, 'exit_tag'] = 'Exit_Short_Fib_Cover'
+            dataframe.loc[signal & DEMA_SHORT_EXIT & ~FIBBO_SHORT_EXIT, 'exit_tag'] = 'Exit_Short_Trend_Break'
 
+        dataframe.loc[(dataframe['exit_long'] == 1) & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_Standard_Mix'
         return dataframe
 
 # Inject hyperopt parameters AFTER class definition
