@@ -324,7 +324,7 @@ class Fibbo(IStrategy):
 
         prot.append({
             "method": "CooldownPeriod",
-            "stop_duration_candles": self.cooldown_lookback.value
+            "stop_duration_candles": int(self.cooldown_lookback.value)
         })
 
         if self.use_stop_protection.value:
