@@ -618,9 +618,9 @@ class Fibbo(IStrategy):
 
         return dataframe
 
-    def combine_conditions(self, conditions: list, mode: str) -> pd.Series:
+    def combine_conditions(self, dataframe: DataFrame, conditions: list, mode: str) -> pd.Series:
         if not conditions:
-            return pd.Series([False] * len(conditions[0]))
+            return pd.Series(False, index=dataframe.index)
         if mode == 'all':
             return reduce(lambda x, y: x & y, conditions)
         elif mode == 'any':
