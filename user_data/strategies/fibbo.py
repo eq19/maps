@@ -745,7 +745,7 @@ class Fibbo(IStrategy):
                     entry_short_conditions.append(dataframe['do_predict'] == -1)
 
         if entry_long_conditions:
-            signal = self.combine_conditions(entry_long_conditions, self.enter_trade_mode.value)
+            signal = self.combine_conditions(dataframe, entry_long_conditions, self.enter_trade_mode.value)
             dataframe.loc[signal, 'enter_long'] = 1
             
             dataframe.loc[signal & DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Extension_Trend'
@@ -754,7 +754,7 @@ class Fibbo(IStrategy):
                 dataframe.loc[signal & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'FreqAI_Impulse'
             
         if entry_short_conditions:
-            signal = self.combine_conditions(entry_short_conditions, self.enter_trade_mode.value)
+            signal = self.combine_conditions(dataframe, entry_short_conditions, self.enter_trade_mode.value)
             dataframe.loc[signal, 'enter_short'] = 1
             
             dataframe.loc[signal & DEMA_SHORT_ENTRY, 'enter_tag'] = 'Fib_Short_Extension'
@@ -879,7 +879,7 @@ class Fibbo(IStrategy):
                     exit_short_conditions.append(dataframe['do_predict'] == 1)
 
         if exit_long_conditions:
-            signal = self.combine_conditions(exit_long_conditions, self.exit_trade_mode.value)
+            signal = self.combine_conditions(dataframe, exit_long_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal, 'exit_long'] = 1
             
             dataframe.loc[signal & FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Fib_Extension'
@@ -888,7 +888,7 @@ class Fibbo(IStrategy):
                 dataframe.loc[signal & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_FreqAI_Signal'
             
         if exit_short_conditions:
-            signal = self.combine_conditions(exit_short_conditions, self.exit_trade_mode.value)
+            signal = self.combine_conditions(dataframe, exit_short_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal, 'exit_short'] = 1
             
             dataframe.loc[signal & FIBBO_SHORT_EXIT, 'exit_tag'] = 'Exit_Short_Fib_Cover'
