@@ -658,8 +658,8 @@ class Fibbo(IStrategy):
             (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value)
         )
         STOCHRSI_SHORT_ENTRY = (
-            (dataframe['fastk_rsi_buy'] < dataframe['fastd_rsi_buy']) &
-            (dataframe['fastk_rsi_buy'] > self.buy_stoch_osc.value)
+            (dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) &
+            (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value)
         )
 
         # ✅ FIX: Safe-checking column existence before assessing DEMA entry logic to prevent KeyError
@@ -783,13 +783,16 @@ class Fibbo(IStrategy):
         MACD_LONG_EXIT = dataframe['macd'] < dataframe['macdsignal']
         MACD_SHORT_EXIT = dataframe['macd'] > dataframe['macdsignal']
 
+        # LONG EXIT (Closing a Buy): Exit when Stochastic RSI crosses DOWN in an overbought zone
         STOCHRSI_LONG_EXIT = (
             (dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) &
             (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value)
         )
+
+        # SHORT EXIT (Covering a Short): Exit when Stochastic RSI crosses UP in an oversold zone
         STOCHRSI_SHORT_EXIT = (
-            (dataframe['fastk_rsi_sell'] > dataframe['fastd_rsi_sell']) &
-            (dataframe['fastk_rsi_sell'] < self.sell_stoch_osc.value)
+            (dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) &
+            (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value)
         )
 
         # ✅ FIX: Safe-checking column existence before assessing DEMA exit logic to prevent KeyError
