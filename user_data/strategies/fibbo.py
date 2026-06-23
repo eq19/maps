@@ -213,7 +213,7 @@ class Fibbo(IStrategy):
     # See the config
     trailing_stop = True
     use_exit_signal = True
-    exit_profit_only = False
+    exit_profit_only = True
     use_custom_stoploss = True
     ignore_roi_if_entry_signal = False
     position_adjustment_enable = False
@@ -381,19 +381,13 @@ class Fibbo(IStrategy):
                    current_rate: float, current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-    
-        # 1. Handle market regime anomalies
-        if last_candle.get('%-market_regime', 0) == 3 and current_profit > 0.01:
+
+        # Handle high market regime volatility anomalies (take profit early)
+        if last_candle.get('%-market_regime', 0) == 3 and current_profit > 0.02:
             return 'high_volatility_exit'
-    
-        if last_candle.get('DI_values', 0) > 2.0:
+
+        if last_candle.get('DI_values', 0) > 2.0 and current_profit > 0.01:
             return 'low_confidence_exit'
-    
-        # 2. Dynamic Safety: If our indicator exit is triggering but we are in a loss, 
-        # reject it and let the trailing stop or hard stop loss handle it.
-        if last_candle.get('exit_long') == 1 and current_profit < 0.005:
-            # Suppress indicator exit if we aren't at least covering fees (+0.5% profit)
-            return None
 
         return None
 
