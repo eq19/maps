@@ -314,12 +314,12 @@ calculate_score() {
   fi
 
   SCORE=$(printf "%.2f" "$SCORE")
-  echo "🧮 SCORE: $SCORE"
+  echo "🧮 Performance: $SCORE"
   CALCULATION="true"
 
   if (( $(echo "$expectancy_ratio >= 0" | bc -l) && $(echo "$sortino >= 0" | bc -l) )); then
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
-    echo "📈 Performance: $(printf "%.2f" "$SCORE")"
+    echo "📈 SCORE: $(printf "%.2f" "$SCORE")"
   fi
 
   echo ""
