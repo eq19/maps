@@ -329,8 +329,8 @@ calculate_score() {
   echo "  # PF < 1.0"
   echo "  # Sharpe < 0"
   echo "  # Expectancy Ratio < 0"
-  echo "  # Max DD > 50% (or >40% depending on risk tolerance)"
-  echo "  # Trade count < 30 (or 50 depending on timerange and number of pairlist)"
+  echo "  # Max DD > 50% (or > 40% depending on risk tolerance)"
+  echo "  # Trade count < 30 (or < 50 depending on timerange and number of pairlist)"
   echo ""
   echo "🔍 Behavior Profile:"
   if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
