@@ -319,7 +319,7 @@ calculate_score() {
 
   if (( $(echo "$expectancy_ratio >= 0" | bc -l) && $(echo "$sortino >= 0" | bc -l) )); then
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
-    SCORE=$(printf "%.2f" $( echo "$SCORE / 10" | bc -l))
+    SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
     echo "✅ SCORE: $SCORE"
   fi
 
