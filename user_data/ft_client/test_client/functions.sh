@@ -322,6 +322,7 @@ calculate_score() {
   echo ""
   echo "  # PF < 1.0"
   echo "  # Sharpe < 0"
+  echo "  # Sortino < 0"
   echo "  # Performance < 0"
   echo "  # Expectancy Ratio < 0"
   echo "  # Max DD > 50% (or > 40% depending on risk tolerance)"
