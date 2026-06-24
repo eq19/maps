@@ -317,8 +317,8 @@ calculate_score() {
   echo "🧮 SCORE: $SCORE"
   CALCULATION="true"
 
-  if (( $(echo "$expectancy_ratio > 0" | bc -l) && $(echo "$sortino > 0" | bc -l) )); then
-    SCORE=$(echo "$expectancy_ratio * $sortino / $max_drawdown_account" | bc -l)
+  if (( $(echo "$expectancy_ratio >= 0" | bc -l) && $(echo "$sortino >= 0" | bc -l) )); then
+    SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     echo "📈 Performance: $(printf "%.2f" "$SCORE")"
   fi
 
