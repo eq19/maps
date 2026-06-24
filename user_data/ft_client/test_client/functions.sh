@@ -317,12 +317,6 @@ calculate_score() {
   echo "🧮 Performance: $SCORE"
   CALCULATION="true"
 
-  if (( $(echo "$expectancy_ratio >= 0" | bc -l) && $(echo "$sortino >= 0" | bc -l) )); then
-    SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
-    SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
-    echo "✅ SCORE: $SCORE"
-  fi
-
   echo ""
   echo "🚧 Any of these → discard or penalize heavily:"
   echo ""
@@ -332,6 +326,15 @@ calculate_score() {
   echo "  # Max DD > 50% (or > 40% depending on risk tolerance)"
   echo "  # Trade count < 30 (or < 50 depending on timerange and number of pairlist)"
   echo ""
+
+  if (( $(echo "$profit_factor >= 1.0" | bc -l) && $(echo "$harpe >= 0" | bc -l) && $(echo "$expectancy_ratio >= 0" | bc -l) && $(echo "$sortino >= 0" | bc -l) )); then
+    SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
+    SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
+    echo "✅ SCORE: $SCORE"
+  else
+    SCORE=0
+  fi
+
   echo "🔍 Behavior Profile:"
   if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
     echo "♻️ High-profit and active trading strategy"
