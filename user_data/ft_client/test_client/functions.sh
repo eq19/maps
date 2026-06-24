@@ -313,8 +313,8 @@ calculate_score() {
     SCORE=$(echo "$SCORE * $trades / $TRADES_MIN" | bc -l)
   fi
 
-  SCORE=$(printf "%.2f" "$SCORE")
-  echo "🧮 Performance: $SCORE"
+  local performance=$(printf "%.2f" "$SCORE")
+  echo "🧮 Performance: $performance"
   CALCULATION="true"
 
   echo ""
@@ -322,12 +322,13 @@ calculate_score() {
   echo ""
   echo "  # PF < 1.0"
   echo "  # Sharpe < 0"
+  echo "  # Performance < 0"
   echo "  # Expectancy Ratio < 0"
   echo "  # Max DD > 50% (or > 40% depending on risk tolerance)"
   echo "  # Trade count < 30 (or < 50 depending on timerange and number of pairlist)"
   echo ""
 
-  if (( $(echo "$profit_factor >= 1.0" | bc -l) && $(echo "$harpe >= 0" | bc -l) && $(echo "$expectancy_ratio >= 0" | bc -l) && $(echo "$sortino >= 0" | bc -l) )); then
+  if (( $(echo "$profit_factor >= 1.0" | bc -l) && $(echo "$sharpe > 0" | bc -l) && $(echo "$performance > 0" | bc -l) && $(echo "$expectancy_ratio > 0" | bc -l) && $(echo "$sortino > 0" | bc -l) )); then
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
     echo "✅ SCORE: $SCORE"
