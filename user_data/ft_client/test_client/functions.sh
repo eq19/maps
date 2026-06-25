@@ -53,7 +53,7 @@ calculate_score() {
   fi
 
   if (( $(echo "$trades == 0" | bc -l) || $(echo "$profit_total_pct == 0" | bc -l) )); then
-    SCORE=0.00
+    SCORE=-100.00
     return
   fi
 
@@ -64,22 +64,20 @@ calculate_score() {
   WINRATE=$(echo "$winrate * 100" | bc -l)
   WINRATE=$(printf "%.2f" "$WINRATE")
 
-  local winrate_score=$(echo "($winrate - 0.5) * 50" | bc -l)
+  local winrate_score=$(echo "
+    scale=6
+    w = ($winrate - 0.5) * 50
+    if (w > 10) { 10 } else if (w < -10) { -10 } else { w }
+  " | bc -l)
+  
   echo "📊 1.1 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
 
   local profit_mean_score=$(echo "
     scale=6
-    pm = $profit_mean * 100 # convert percentage
-
-    # pm Quality
-      # < 0  Losing
-      # 0 – 0.10 Very Small Edge
-      # 0.10 – 0.25 Small Edge
-      # 0.25 – 0.50 Good Edge
-      # 0.50 – 1.00 Strong Edge
-      # > 1.00 Exceptional Edge
-
-    if (pm <= 0) {
+    pm = $profit_mean * 100 
+    if (pm <= -1.0) {
+      -10
+    } else if (pm < 0) {
       10 * pm
     } else if (pm < 0.1) {
       1 + pm / 0.1
@@ -106,17 +104,10 @@ calculate_score() {
   local profit_factor_score=$(echo "
     scale=6
     p = $profit_factor
-
-    # p Quality
-      # < 1.0 Losing
-      # 1.0 – 1.1 Weak
-      # 1.1 – 1.25 Acceptable
-      # 1.25 – 2.00 Good
-      # 2.00 – 3.00 Strong
-      # > 3.00 Exceptional
-
-    if (p < 1.0) {
-      -10 * p
+    if (p < 0.5) {
+      -10
+    } else if (p < 1.0) {
+      -10 * (1.0 - p) / 0.5
     } else if (p < 1.1) {
       0 + (p - 1.0) / (0.1 / 2)
     } else if (p < 1.25) {
@@ -137,9 +128,7 @@ calculate_score() {
 
   local dd_score=$(echo "
     scale=2
-
     dd = $max_drawdown_account * 100
-
     if (dd < 0.67) {
       13 + (0.67 - dd)
     } else if (dd < 1.67) {
@@ -150,31 +139,24 @@ calculate_score() {
       4 + (6.67 - dd) * (3 / 10)
     } else if (dd < 10) {
       2 + (10 - dd) * (2 / 10)
+    } else if (dd < 25) {
+      0 - (dd - 10) * (15 / 15)
     } else {
-      0
+      -15
     }
   " | bc -l)
 
   local DRAWDOWN=$(echo "$max_drawdown_account * 100" | bc -l)
-  if (( $(echo "$DRAWDOWN > 15" | bc -l) )); then
-    dd_score=$(echo "$dd_score * 0.7" | bc -l)
-  fi
-
   DRAWDOWN=$(printf "%.2f" "$DRAWDOWN")
   echo "📉 2.1 Max Drawdown: $DRAWDOWN% (score: $(printf "%.2f" "$dd_score") of 15)"
 
   local sharpe_score=$(echo "
     scale=6
     s = $sharpe
-
-    if (s < -5) {
-      -10 * (l(-s) / l(5))
-    } else if (s < -3) {
-      -8 - (s + 1) * 3
-    } else if (s < -1) {
-      -5 - (s + 1) * 3
+    if (s <= -2) {
+      -10
     } else if (s < 0) {
-      -2 - (s + 1) * 3
+      s * 5
     } else if (s < 1) {
       2 * s
     } else if (s < 3) {
@@ -189,15 +171,10 @@ calculate_score() {
   local calmar_score=$(echo "
     scale=6
     c = $calmar
-
-    if (c < -5) {
-      -5 * (l(-c) / l(5))
-    } else if (c < -3) {
-      -3 - (c + 2)
-    } else if (c < -2) {
-      -2 - (c + 1)
-    } else if (c < -1) {
-      -1 - (c + 0.5) * 2
+    if (c <= -2.5) {
+      -5
+    } else if (c < 0) {
+      c * 2
     } else if (c < 0.5) {
       c * 2
     } else if (c < 1) {
@@ -223,30 +200,10 @@ calculate_score() {
   local expectancy_score=$(echo "
     scale=6
     e = $expectancy_ratio
-
-    # e Quality
-      # < 0  Losing
-      # 0 – 0.10 Very Weak
-      # 0.10 – 0.25 Weak
-      # 0.25 – 0.50 Acceptable
-      # 0.50 – 1.00 Good
-      # 1.00 – 2.00 Strong
-      # > 2.00 Exceptional
-
-    if (e < -2) {
+    if (e <= -1.0) {
       -15
-    } else if (e < -1.5) {
-      -10 - (e + 1) / (0.5 / 5)
-    } else if (e < -1) {
-      -8 - (e + 0.5) / (0.5 / 3)
-    } else if (e < -0.5) {
-      -5 - (e + 0.25) / (0.25 / 2)
-    } else if (e < -0.25) {
-      -3 - (e + 0.1) / (0.15 / 2)
-    } else if (e < -0.1) {
-      -1 - e / (0.1 / 2)
     } else if (e < 0) {
-      e
+      e * 15
     } else if (e < 0.1) {
       0 + e / 0.1
     } else if (e < 0.25) {
@@ -265,11 +222,10 @@ calculate_score() {
   local sortino_score=$(echo "
     scale=6
     s = $sortino
-
-    if (s < -6) {
-      -10 * (l(-s) / l(6))
-    } else if (s < -3) {
-      -1 - (s + 1)
+    if (s <= -2.5) {
+      -5
+    } else if (s < 0) {
+      s * 2
     } else if (s < 1) {
       s
     } else if (s < 3) {
@@ -284,8 +240,11 @@ calculate_score() {
   local sqn_score=$(echo "
     scale=6
     s = $sqn
-
-    if (s < 1) {
+    if (s <= -2) {
+      -10
+    } else if (s < 0) {
+      s * 5
+    } else if (s < 1) {
       s
     } else if (s < 2) {
       2 + (s - 1) / 0.5
@@ -354,15 +313,13 @@ calculate_score() {
   echo "  # Trade count < 30 (or < 50 depending on timerange and number of pairlist)"
   echo ""
 
+  # Ensure the baseline failure properly outputs the (now negatively summed) score
   if (( $(echo "$profit_factor >= 1.0" | bc -l) && $(echo "$sharpe > 0" | bc -l) && $(echo "$expectancy_ratio > 0" | bc -l) && $(echo "$sortino > 0" | bc -l) )); then
-    # Passes baseline criteria: Use the efficient formula (Positive outcome)
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
     echo "✅ SCORE: $SCORE"
-  elif (( $(echo "$SCORE < 0" | bc -l) )); then
-    SCORE=$SCORE
   else
-    SCORE=0
+    echo "❌ SCORE: $SCORE (Failed baseline criteria)"
   fi
 
   echo "🔍 Behavior Profile:"
