@@ -64,7 +64,7 @@ calculate_score() {
   WINRATE=$(echo "$winrate * 100" | bc -l)
   WINRATE=$(printf "%.2f" "$WINRATE")
 
-  local winrate_score=$(echo "$winrate * 10" | bc -l)
+  local winrate_score=$(echo "($winrate - 0.5) * 50" | bc -l)
   echo "📊 1.1 Winrate: $WINRATE% (score: $(printf "%.2f" "$winrate_score") of 10)"
 
   local profit_mean_score=$(echo "
