@@ -11,12 +11,12 @@
       "buy_fast_dema": "5",
       "buy_fib_level": "0.786",
       "buy_freqai": 0.27,
-      "buy_rsi": 391,
+      "buy_rsi": 30,
       "buy_rsi_period": 74,
       "buy_slow_ema": "34",
-      "buy_smoothD": 133,
-      "buy_smoothK": 71,
-      "buy_stoch_osc": 566,
+      "buy_smoothD": 3,
+      "buy_smoothK": 3,
+      "buy_stoch_osc": 20,
       "buy_swing_period": 3
     },
     "exit": {
@@ -28,11 +28,11 @@
       "sell_fast_dema": "5",
       "sell_fib_level": "0.382",
       "sell_freqai": 0.34,
-      "sell_rsi": 254,
+      "sell_rsi": 70,
       "sell_slow_ema": "55",
-      "sell_smoothD": 404,
-      "sell_smoothK": 109,
-      "sell_stoch_osc": 817,
+      "sell_smoothD": 3,
+      "sell_smoothK": 3,
+      "sell_stoch_osc": 80,
       "shared_stoch_period": 171,
       "shared_ttm_window": 68,
       "shared_vwap_window": 123
@@ -68,5 +68,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-06-24 08:14:12.097195+00:00"
+  "export_time": "2026-06-25 10:40:22.097195+00:00"
 }
