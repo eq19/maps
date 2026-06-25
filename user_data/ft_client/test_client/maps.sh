@@ -54,5 +54,6 @@ while true; do
   fi
 
   #echo "Request failed. Retrying in ${DELAY}s..."
-  sleep "$DELAY"
+  WAIT=$((COUNT * DELAY))
+  sleep "$WAIT"
 done
