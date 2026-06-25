@@ -359,13 +359,10 @@ calculate_score() {
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
     echo "✅ SCORE: $SCORE"
+  elif (( $(echo "$SCORE < 0" | bc -l) )); then
+    SCORE=$SCORE
   else
-    # Fails baseline criteria: Use the evaluating blocks, but enforce a negative value
-    if (( $(echo "$SCORE > 0" | bc -l) )); then
-      SCORE=$(echo "-1 * $SCORE" | bc -l)
-    fi
-    SCORE=$(printf "%.2f" "$SCORE")
-    echo "❌ SCORE: $SCORE (Failed baseline criteria)"
+    SCORE=0
   fi
 
   echo "🔍 Behavior Profile:"
