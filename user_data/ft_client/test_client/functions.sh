@@ -80,7 +80,7 @@ calculate_score() {
       # > 1.00 Exceptional Edge
 
     if (pm <= 0) {
-      pm * 10
+      10 * pm
     } else if (pm < 0.1) {
       1 + pm / 0.1
     } else if (pm < 0.25) {
@@ -111,20 +111,20 @@ calculate_score() {
       # < 1.0 Losing
       # 1.0 – 1.1 Weak
       # 1.1 – 1.25 Acceptable
-      # 1.25 – 1.5 Good
-      # 1.50 – 3.00 Strong
+      # 1.25 – 2.00 Good
+      # 2.00 – 3.00 Strong
       # > 3.00 Exceptional
 
     if (p < 1.0) {
-      p
+      -10 * p
     } else if (p < 1.1) {
-      1 + (p - 1.0) / (0.1 / 2)
+      0 + (p - 1.0) / (0.1 / 2)
     } else if (p < 1.25) {
-      3 + (p - 1.1) / (0.15 / 2)
-    } else if (p < 1.5) {
-      5 + (p - 1.25) / (0.25 / 2)
+      2 + (p - 1.1) / (0.15 / 2)
+    } else if (p < 2) {
+      4 + (p - 1.25) / (0.75 / 3)
     } else if (p < 3) {
-      7 + (p - 1.5) / (1.5 / 3)
+      7 + (p - 2) / (1 / 3)
     } else {
       10
     }
