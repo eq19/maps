@@ -57,10 +57,37 @@ class ParamBuilder:
 
                 elif isinstance(value, int):
                     if value == 0:
-                        low, high = 0, 100
+                        self.params[section][key] = self.int_param(value, 0, 100)
                     else:
-                        low, high = max(0, value - self.epochs * 0.5), min(value * 2, value + self.epochs * 0.5)
-                    self.params[section][key] = self.int_param(value, int(low), int(high))
+                        # 1. Define absolute logical boundaries based on the indicator name
+                        if "rsi" in key and "period" not in key:
+                            abs_low, abs_high = 1, 99
+                        elif "stoch_osc" in key:
+                            abs_low, abs_high = 1, 99
+                        elif "smooth" in key:  # For smoothD and smoothK
+                            abs_low, abs_high = 1, 15
+                        elif "swing" in key:
+                            abs_low, abs_high = 2, 20
+                        elif "period" in key or "window" in key:
+                            abs_low, abs_high = 2, 300
+                        elif "candles" in key or "lookback" in key or "limit" in key:
+                            abs_low, abs_high = 1, 500
+                        else:
+                            abs_low, abs_high = 0, 1000  # Fallback
+
+                        # 2. Calculate your dynamic range
+                        dyn_low = value - (self.epochs * 0.5)
+                        dyn_high = value + (self.epochs * 0.5)
+
+                        # 3. Clamp the dynamic range within the absolute boundaries
+                        low = max(abs_low, dyn_low)
+                        high = min(abs_high, dyn_high)
+                        
+                        # 4. Ensure high is always strictly greater than low
+                        if high <= low:
+                            high = low + 1
+
+                        self.params[section][key] = self.int_param(value, int(low), int(high))
 
                 elif isinstance(value, float):
                     percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2%–10%
@@ -86,7 +113,7 @@ class ParamBuilder:
                         choices = [value]
                     self.params[section][key] = self.cat_param(value, choices)
 
-        # ROI re-mapping
+        # ROI re-mapping (unchanged)
         if "roi" in self.params:
             roi_dict = fibbo_params.get("roi", {})
             new_roi = {}
@@ -100,7 +127,6 @@ class ParamBuilder:
                 t_val = sorted_times[i]
                 p_val = roi_dict[str(t_val)]
 
-                # Use fixed time values (non-optimized)
                 new_roi[t_key] = {
                     "type": "IntParameter",
                     "low": 0,
@@ -109,13 +135,11 @@ class ParamBuilder:
                     "optimize": False
                 }
 
-                # Calculate % range for decimal precision tuning
-                percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2–10% window
+                percent = max(0.02, min(0.1, self.epochs * 0.002))
                 decimals = 4 if p_val < 0.05 else 3 if p_val < 1 else 2
                 low = max(0.001, round(p_val * (1 - percent), decimals))
                 high = round(p_val * (1 + percent), decimals)
 
-                # Adjust param type if value behaves like integer
                 if p_val >= 1 and round(p_val) == p_val:
                     new_roi[p_key] = {
                         "type": "IntParameter",
@@ -125,12 +149,7 @@ class ParamBuilder:
                         "optimize": True
                     }
                 else:
-                    new_roi[p_key] = self.dec_param(
-                        p_val,
-                        low,
-                        high,
-                        decimals
-                    )
+                    new_roi[p_key] = self.dec_param(p_val, low, high, decimals)
 
             self.params["roi"] = new_roi
 
