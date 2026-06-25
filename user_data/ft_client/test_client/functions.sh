@@ -80,7 +80,7 @@ calculate_score() {
       # > 1.00 Exceptional Edge
 
     if (pm <= 0) {
-      0
+      pm * 10
     } else if (pm < 0.1) {
       1 + pm / 0.1
     } else if (pm < 0.25) {
