@@ -168,7 +168,7 @@ calculate_score() {
     s = $sharpe
 
     if (s < 0) {
-      10 / (l(s) / l(5))
+      -1 * (l(-s) / l(5))
     } else if (s < 1) {
       2 * s
     } else if (s < 3) {
@@ -185,7 +185,7 @@ calculate_score() {
     c = $calmar
 
     if (c < 0) {
-      5 / (l(c) / l(5))
+      1 * (l(-c) / l(5))
     } else if (c < 0.5) {
       c * 2
     } else if (c < 1) {
