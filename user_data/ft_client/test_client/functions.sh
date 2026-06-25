@@ -333,6 +333,8 @@ calculate_score() {
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
     echo "✅ SCORE: $SCORE"
+  elif (( $(echo "$performance < 0" | bc -l) )); then
+    SCORE=$performance
   else
     SCORE=0
   fi
