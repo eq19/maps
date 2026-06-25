@@ -313,7 +313,7 @@ calculate_score() {
     SCORE=$(echo "$SCORE * $trades / $TRADES_MIN" | bc -l)
   fi
 
-  SCORE=$(echo "scale=2; ${SCORE:=0}" | bc)
+  SCORE=$(printf "%.2f" "$SCORE")
   echo "🧮 Performance: $SCORE"
   CALCULATION="true"
 
