@@ -243,7 +243,7 @@ calculate_score() {
     s = $sortino
 
     if (s < 0) {
-      5 / (l(s) / l(6))
+      -1 * (l(-s) / l(6))
     } else if (s < 1) {
       s
     } else if (s < 3) {
