@@ -247,17 +247,17 @@ class Fibbo(IStrategy):
         super().__init__(config)
 
         # Override settings ONLY during hyperopt
-        if self.config.get('runmode') == 'hyperopt':
-            self.trailing_stop = True
-            self.use_exit_signal = False
-            self.use_custom_stoploss = False
+        # if self.config.get('runmode') == 'hyperopt':
+            # self.trailing_stop = True
+            # self.use_exit_signal = False
+            # self.use_custom_stoploss = False
             # ✅ FIX: Use realistic ROI targets instead of unrealistic 100%
-            self.minimal_roi = {
-                "0": 0.08,      # 8% profit target
-                "30": 0.04,     # 4% profit target after 30 candles
-                "60": 0         # Exit at any profit after 60 candles
+            # self.minimal_roi = {
+                # "0": 0.08,      # 8% profit target
+                # "30": 0.04,     # 4% profit target after 30 candles
+                # "60": 0         # Exit at any profit after 60 candles
             }
-            logger.info("⚠️ Hyperopt mode: Using conservative ROI to avoid over-optimization")
+            # logger.info("⚠️ Hyperopt mode: Using conservative ROI to avoid over-optimization")
 
         # Update ROI from hyperopt parameters (if ROI space is being optimized)
         self.update_roi()
