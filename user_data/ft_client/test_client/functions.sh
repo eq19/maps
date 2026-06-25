@@ -136,20 +136,20 @@ calculate_score() {
   echo ""
 
   local dd_score=$(echo "
-    scale=6
+    scale=2
 
     dd = $max_drawdown_account * 100
 
-    if (dd < 2) {
-      13 + (2 - dd)
-    } else if (dd < 5) {
-      10 + (5 - dd)
+    if (dd < 0.67) {
+      13 + (0.67 - dd)
+    } else if (dd < 1.67) {
+      10 + (1.67 - dd)
+    } else if (dd < 3.33) {
+      7 + (3.33 - dd) * (3 / 5)
+    } else if (dd < 6.67) {
+      4 + (6.67 - dd) * (3 / 10)
     } else if (dd < 10) {
-      7 + (10 - dd) * (3 / 5)
-    } else if (dd < 20) {
-      4 + (20 - dd) * (3 / 10)
-    } else if (dd < 30) {
-      2 + (30 - dd) * (2 / 10)
+      2 + (10 - dd) * (2 / 10)
     } else {
       0
     }
