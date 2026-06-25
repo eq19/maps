@@ -167,8 +167,14 @@ calculate_score() {
     scale=6
     s = $sharpe
 
-    if (s < 0) {
-      -1 * (l(-s) / l(5))
+    if (s < -5) {
+      -10 * (l(-s) / l(5))
+    } else if (s < -3) {
+      -8 - (s + 1) * 3
+    } else if (s < -1) {
+      -5 - (s + 1) * 3
+    } else if (s < 0) {
+      -2 - (s + 1) * 3
     } else if (s < 1) {
       2 * s
     } else if (s < 3) {
@@ -184,8 +190,14 @@ calculate_score() {
     scale=6
     c = $calmar
 
-    if (c < 0) {
-      -1 * (l(-c) / l(5))
+    if (c < -5) {
+      -5 * (l(-c) / l(5))
+    } else if (c < -3) {
+      -3 - (c + 2)
+    } else if (c < -2) {
+      -2 - (c + 1)
+    } else if (c < -1) {
+      -1 - (c + 0.5) * 2
     } else if (c < 0.5) {
       c * 2
     } else if (c < 1) {
@@ -254,8 +266,10 @@ calculate_score() {
     scale=6
     s = $sortino
 
-    if (s < 0) {
-      -1 * (l(-s) / l(6))
+    if (s < -6) {
+      -10 * (l(-s) / l(6))
+    } else if (s < -3) {
+      -1 - (s + 1)
     } else if (s < 1) {
       s
     } else if (s < 3) {
