@@ -313,13 +313,17 @@ calculate_score() {
   echo "  # Trade count < 30 (or < 50 depending on timerange and number of pairlist)"
   echo ""
 
-  # Ensure the baseline failure properly outputs the (now negatively summed) score
+  # Ensure the baseline failure properly outputs the score
   if (( $(echo "$profit_factor >= 1.0" | bc -l) && $(echo "$sharpe > 0" | bc -l) && $(echo "$expectancy_ratio > 0" | bc -l) && $(echo "$sortino > 0" | bc -l) )); then
+    # Passes baseline: Use the highly efficient formula (Positive Score)
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
-    SCORE=$(printf "%.2f" "$SCORE")
     echo "✅ SCORE: $SCORE"
   else
+    # Fails baseline: Subtract 100 from the evaluating blocks to force a negative score
+    # This keeps the relative ranking intact (e.g., -92.51 is ranked higher than -99.00)
+    SCORE=$(echo "$SCORE - 100" | bc -l)
+    SCORE=$(printf "%.2f" "$SCORE")
     echo "❌ SCORE: $SCORE (Failed baseline criteria)"
   fi
 
