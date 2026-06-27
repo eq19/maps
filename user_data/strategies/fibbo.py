@@ -867,20 +867,21 @@ class Fibbo(IStrategy):
                     exit_short_conditions.append(dataframe['do_predict'] == 1)
 
         if exit_long_conditions:
-            signal = self.combine_conditions(dataframe, exit_long_conditions, self.exit_trade_mode.value)
-            dataframe.loc[signal, 'exit_long'] = 1
-            
-            dataframe.loc[signal & FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Fib_Extension'
-            dataframe.loc[signal & DEMA_LONG_EXIT & ~FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Trend_Break'
+            signal_long = self.combine_conditions(dataframe, exit_long_conditions, self.exit_trade_mode.value)
+            dataframe.loc[signal_long, 'exit_long'] = 1
+    
+            dataframe.loc[signal_long & FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Fib_Extension'
+            dataframe.loc[signal_long & DEMA_LONG_EXIT & ~FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Trend_Break'
             if use_freqai:
-                dataframe.loc[signal & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_FreqAI_Signal'
-            
-        if exit_short_conditions:
-            signal = self.combine_conditions(dataframe, exit_short_conditions, self.exit_trade_mode.value)
-            dataframe.loc[signal, 'exit_short'] = 1
-            
-            dataframe.loc[signal & FIBBO_SHORT_EXIT, 'exit_tag'] = 'Exit_Short_Fib_Cover'
-            dataframe.loc[signal & DEMA_SHORT_EXIT & ~FIBBO_SHORT_EXIT, 'exit_tag'] = 'Exit_Short_Trend_Break'
+                dataframe.loc[signal_long & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_FreqAI_Signal'
+
+        if exit_short_conditions and self.can_short: # Add can_short check here
+            signal_short = self.combine_conditions(dataframe, exit_short_conditions, self.exit_trade_mode.value)
+            dataframe.loc[signal_short, 'exit_short'] = 1
+    
+            # Only tag if it's not already tagged by a long exit
+            dataframe.loc[signal_short & FIBBO_SHORT_EXIT & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_Short_Fib_Cover'
+            dataframe.loc[signal_short & DEMA_SHORT_EXIT & ~FIBBO_SHORT_EXIT & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_Short_Trend_Break'
 
         dataframe.loc[(dataframe['exit_long'] == 1) & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_Standard_Mix'
         return dataframe
