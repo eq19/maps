@@ -318,6 +318,7 @@ calculate_score() {
     # Passes baseline: Use the highly efficient formula (Positive Score)
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
+    SCORE=$(printf "%.2f" "$SCORE")
     echo "✅ SCORE: $SCORE"
   else
     # Fails baseline: Subtract 100 from the evaluating blocks to force a negative score
