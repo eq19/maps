@@ -218,7 +218,7 @@ class Fibbo(IStrategy):
     ignore_roi_if_entry_signal = False
     position_adjustment_enable = False
     #max_entry_position_adjustment = 2
-    model_name = os.environ.get('FREQAI_MODEL', 'CatboostClassifier')
+    model_name = os.environ.get('FREQAI_MODEL', 'PyTorchMLPRegressor)
     
     # Plot config
     plot_config = {
