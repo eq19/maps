@@ -733,20 +733,22 @@ class Fibbo(IStrategy):
                     entry_short_conditions.append(dataframe['do_predict'] == -1)
 
         if entry_long_conditions:
-            signal = self.combine_conditions(dataframe, entry_long_conditions, self.enter_trade_mode.value)
-            dataframe.loc[signal, 'enter_long'] = 1
+            signal_long = self.combine_conditions(dataframe, entry_long_conditions, self.enter_trade_mode.value)
+            dataframe.loc[signal_long, 'enter_long'] = 1
             
-            dataframe.loc[signal & DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Extension_Trend'
-            dataframe.loc[signal & FIBBO_LONG_ENTRY & ~DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Retracement'
+            # Apply long tags
+            dataframe.loc[signal_long & DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Extension_Trend'
+            dataframe.loc[signal_long & FIBBO_LONG_ENTRY & ~DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Retracement'
             if use_freqai:
-                dataframe.loc[signal & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'FreqAI_Impulse'
+                dataframe.loc[signal_long & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'FreqAI_Impulse'
             
-        if entry_short_conditions:
-            signal = self.combine_conditions(dataframe, entry_short_conditions, self.enter_trade_mode.value)
-            dataframe.loc[signal, 'enter_short'] = 1
+        if entry_short_conditions and self.can_short: # Respect can_short setting
+            signal_short = self.combine_conditions(dataframe, entry_short_conditions, self.enter_trade_mode.value)
+            dataframe.loc[signal_short, 'enter_short'] = 1
             
-            dataframe.loc[signal & DEMA_SHORT_ENTRY, 'enter_tag'] = 'Fib_Short_Extension'
-            dataframe.loc[signal & FIBBO_SHORT_ENTRY & ~DEMA_SHORT_ENTRY, 'enter_tag'] = 'Fib_Short_Retracement'
+            # Apply short tags ONLY if the tag is still empty (prevents overwriting a valid long tag)
+            dataframe.loc[signal_short & DEMA_SHORT_ENTRY & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Fib_Short_Extension'
+            dataframe.loc[signal_short & FIBBO_SHORT_ENTRY & ~DEMA_SHORT_ENTRY & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Fib_Short_Retracement'
 
         dataframe.loc[(dataframe['enter_long'] == 1) & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Standard_Mix'
         return dataframe
