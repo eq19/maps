@@ -6,7 +6,7 @@
 calculate_score() {
 
   # Scoring breakdown:
-  TRADES_MIN=400
+  local TRADES_MIN=400
 
   sleep 5
   local dir="user_data/backtest_results"
@@ -314,7 +314,7 @@ calculate_score() {
   echo ""
 
   # Ensure the baseline failure properly outputs the score
-  if (( $(echo "$trades >= 50" | bc -l) && $(echo "$profit_factor >= 1.0" | bc -l) && $(echo "$sharpe > 0" | bc -l) && $(echo "$expectancy_ratio > 0" | bc -l) && $(echo "$sortino > 0" | bc -l) )); then
+  if (( $(echo "$trades >= $TRADES_MIN" | bc -l) && $(echo "$profit_factor >= 1.0" | bc -l) && $(echo "$sharpe > 0" | bc -l) && $(echo "$expectancy_ratio > 0" | bc -l) && $(echo "$sortino > 0" | bc -l) )); then
     # Passes baseline: Use the highly efficient formula (Positive Score)
     SCORE=$(echo "($expectancy_ratio * $sortino) / $max_drawdown_account" | bc -l)
     SCORE=$(echo "scale=2; ${SCORE:=0} / 10" | bc)
