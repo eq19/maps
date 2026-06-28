@@ -329,16 +329,34 @@ calculate_score() {
   fi
 
   echo "🔍 Behavior Profile:"
-  if (( $(echo "$profit_total_pct > 100" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
-    echo "♻️ High-profit and active trading strategy"
-  elif (( $(echo "$profit_total_pct > 100" | bc -l) )); then
-    echo "⚖️ High-profit but with fewer trades – consider increasing volume"
-  elif (( $(echo "$profit_total_pct < 20" | bc -l) && $(echo "$trades > 1000" | bc -l) )); then
-    echo "⚠️ Active trading but low profitability – review signal precision"
-  elif (( $(echo "$max_drawdown_account > 0.20" | bc -l) )); then
-    echo "🛑 Risky strategy with high drawdown – requires protection tuning"
+  
+  # 1. 🛑 Catastrophic Risk Evaluated FIRST
+  if (( $(echo "$max_drawdown_account > 0.20" | bc -l) )); then
+    echo "🛑 Risky Strategy: Drawdown exceeds 20%. Prioritize stop-loss and trailing-stop optimization."
+    
+  # 2. 🩸 Statistical Bleeding Evaluated SECOND
+  elif (( $(echo "$profit_factor < 1.0" | bc -l) )); then
+    echo "🩸 Bleeding Strategy: Profit factor is < 1.0. The strategy loses more money than it makes. Review core logic."
+    
+  # 3. 🏆 The "Golden" Zone (High profit, active, and safe)
+  elif (( $(echo "$profit_total_pct > 40" | bc -l) && $(echo "$trades > 200" | bc -l) && $(echo "$max_drawdown_account < 0.10" | bc -l) )); then
+    echo "🏆 Robust Strategy: High profitability, active trading, and excellent drawdown control."
+    
+  # 4. 🎯 The "Sniper" Zone (Low trades, but highly accurate and profitable)
+  elif (( $(echo "$trades < 100" | bc -l) && $(echo "$winrate > 0.70" | bc -l) && $(echo "$profit_factor > 2.0" | bc -l) )); then
+    echo "🎯 Sniper Strategy: Highly precise but rare trades. Consider expanding pairlist or slightly relaxing entry cushions."
+    
+  # 5. ⚠️ The "Churn" Zone (Overtrading)
+  elif (( $(echo "$trades > 500" | bc -l) && $(echo "$profit_total_pct < 15" | bc -l) )); then
+    echo "⚠️ Churning Strategy: High activity but low returns. Exchange fees and slippage will likely kill this in live trading."
+    
+  # 6. ⚖️ The "Overfitted / Lucky" Zone (High profit, very few trades)
+  elif (( $(echo "$profit_total_pct > 30" | bc -l) && $(echo "$trades < 50" | bc -l) )); then
+    echo "⚖️ Unverified Outlier: High profit but very few trades. Susceptible to overfitting. Needs a longer timerange to validate."
+    
+  # 7. 📌 Default Catch-All
   else
-    echo "📌 Balanced strategy – decent trade-off between risk and return"
+    echo "📌 Balanced Strategy: Decent baseline, but requires further Hyperopt tuning to reach optimal zones."
   fi
 
 }
