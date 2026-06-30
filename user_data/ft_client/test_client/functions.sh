@@ -405,7 +405,7 @@ hyperopt() {
             )
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
-      hyperopt_loss="SharpeSortinoHyperOptLoss"
+      hyperopt_loss="ShortTradeDurHyperOptLoss"
       gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
     fi
