@@ -2,71 +2,71 @@
   "strategy_name": "Fibbo",
   "params": {
     "enter": {
-      "enter_long_indicator": "BB, MACD, RSI",
-      "enter_short_indicator": "DEMA, STOCHRSI, VWAP",
-      "enter_trade_mode": "all"
+      "enter_long_indicator": "BB, RSI, STOCHRSI",
+      "enter_short_indicator": "BB, VWAP",
+      "enter_trade_mode": "half"
     },
     "buy": {
-      "buy_bb_period": 20,
-      "buy_fast_dema": "13",
-      "buy_fib_level": "0.786",
-      "buy_freqai": 0.28,
-      "buy_rsi": 98,
-      "buy_rsi_period": 47,
-      "buy_slow_ema": "34",
-      "buy_smoothD": 4,
-      "buy_smoothK": 12,
-      "buy_stoch_osc": 21,
-      "buy_swing_period": 6
+      "buy_bb_period": 2,
+      "buy_fast_dema": "8",
+      "buy_fib_level": "0.618",
+      "buy_freqai": 0.24,
+      "buy_rsi": 28,
+      "buy_rsi_period": 19,
+      "buy_slow_ema": "89",
+      "buy_smoothD": 13,
+      "buy_smoothK": 5,
+      "buy_stoch_osc": 11,
+      "buy_swing_period": 7
     },
     "exit": {
       "exit_long_indicator": "MACD, RSI, TTM",
-      "exit_short_indicator": "NONE",
+      "exit_short_indicator": "MACD, RSI, VWAP",
       "exit_trade_mode": "half"
     },
     "sell": {
       "sell_fast_dema": "5",
       "sell_fib_level": "0.236",
-      "sell_freqai": 0.36,
-      "sell_rsi": 49,
+      "sell_freqai": 0.43,
+      "sell_rsi": 34,
       "sell_slow_ema": "55",
-      "sell_smoothD": 13,
-      "sell_smoothK": 7,
-      "sell_stoch_osc": 51,
-      "shared_stoch_period": 209,
-      "shared_ttm_window": 61,
-      "shared_vwap_window": 17
+      "sell_smoothD": 8,
+      "sell_smoothK": 8,
+      "sell_stoch_osc": 89,
+      "shared_stoch_period": 226,
+      "shared_ttm_window": 50,
+      "shared_vwap_window": 50
     },
     "roi": {
-      "0": 0.289,
-      "30": 0.039,
-      "70": 0.024,
-      "358": 0
+      "0": 0.099,
+      "45": 0.039,
+      "222": 0.019,
+      "538": 0
     },
     "trailing": {
       "trailing_stop": true,
-      "trailing_stop_positive": 0.018,
-      "trailing_stop_positive_offset": 0.08,
+      "trailing_stop_positive": 0.013,
+      "trailing_stop_positive_offset": 0.037,
       "trailing_only_offset_is_reached": false
     },
     "protection": {
-      "cooldown_lookback": 46,
-      "lookback_period_candles": 173,
-      "low_profit_trade_limit": 122,
-      "max_drawdown_trade_limit": 210,
-      "stop_duration_candles": 337,
-      "trade_limit": 214,
+      "cooldown_lookback": 59,
+      "lookback_period_candles": 155,
+      "low_profit_trade_limit": 218,
+      "max_drawdown_trade_limit": 257,
+      "stop_duration_candles": 355,
+      "trade_limit": 281,
       "use_low_profit": true,
       "use_max_drawdown_protection": false,
-      "use_stop_protection": true
+      "use_stop_protection": false
     },
     "max_open_trades": {
       "max_open_trades": 3
     },
     "stoploss": {
-      "stoploss": -0.115
+      "stoploss": -0.045
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-06-26 19:55:48.762731+00:00"
+  "export_time": "2026-07-02 00:54:33.813072+00:00"
 }
