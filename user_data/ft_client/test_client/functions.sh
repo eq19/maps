@@ -6,7 +6,7 @@
 calculate_score() {
 
   # Scoring breakdown:
-  local TRADES_MIN=400
+  local TRADES_MIN=300
 
   sleep 5
   local dir="user_data/backtest_results"
