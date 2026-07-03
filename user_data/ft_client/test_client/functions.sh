@@ -6,10 +6,10 @@
 calculate_score() {
 
   sleep 5
-  local TRADES_MIN
+  local TRADES_MIN=400
 
   # Scoring breakdown:
-  [[ "$RUN_MODE" == "FreqAI" ]] && TRADES_MIN=300 || TRADES_MIN=400
+  [[ "$RUN_MODE" == "FreqAI" ]] && TRADES_MIN=300
 
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
