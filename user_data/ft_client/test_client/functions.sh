@@ -5,10 +5,12 @@
 
 calculate_score() {
 
-  # Scoring breakdown:
-  [[ "$RUN_MODE" == "FreqAI" ]] && local TRADES_MIN=300 || local TRADES_MIN=400
-
   sleep 5
+  local TRADES_MIN
+
+  # Scoring breakdown:
+  [[ "$RUN_MODE" == "FreqAI" ]] && TRADES_MIN=300 || TRADES_MIN=400
+
   local dir="user_data/backtest_results"
   local latest_zip=$(ls -t "$dir/backtest-result-"*.zip 2>/dev/null | head -n 1)
   if [[ -z "$latest_zip" ]]; then
