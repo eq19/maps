@@ -50,7 +50,7 @@ RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1
 # Install dependencies
 #RUN cd /home/runner && mkdir xml && DOXYGEN=$(doxygen > /dev/null 2>&1)
 #RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./.install
-RUN npm install --package-lock-only redis talib pg mathjs gauss commander handlebars object-assign winston xml2js && npm ci
+RUN npm install --package-lock-only redis pg mathjs gauss commander handlebars object-assign winston xml2js && npm ci
 
 # Install iree-dist
 #RUN IREE_VERSION=${IREE_VERSION:-$(curl -s https://api.github.com/repos/iree-org/iree/releases | jq -r 'map(select(.prerelease == true)) | .[0].tag_name' | sed 's/^iree-//')} && \
