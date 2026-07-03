@@ -45,28 +45,28 @@
     },
     "trailing": {
       "trailing_stop": true,
-      "trailing_stop_positive": 0.013,
+      "trailing_stop_positive": 0.021,
       "trailing_stop_positive_offset": 0.037,
-      "trailing_only_offset_is_reached": false
+      "trailing_only_offset_is_reached": true
     },
     "protection": {
-      "cooldown_lookback": 59,
-      "lookback_period_candles": 155,
-      "low_profit_trade_limit": 218,
-      "max_drawdown_trade_limit": 257,
-      "stop_duration_candles": 355,
-      "trade_limit": 281,
-      "use_low_profit": true,
+      "cooldown_lookback": 10,
+      "lookback_period_candles": 194,
+      "low_profit_trade_limit": 123,
+      "max_drawdown_trade_limit": 316,
+      "stop_duration_candles": 337,
+      "trade_limit": 313,
+      "use_low_profit": false,
       "use_max_drawdown_protection": false,
-      "use_stop_protection": false
+      "use_stop_protection": true
     },
     "max_open_trades": {
-      "max_open_trades": 3
+      "max_open_trades": 5
     },
     "stoploss": {
       "stoploss": -0.045
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-07-02 00:54:33.813072+00:00"
+  "export_time": "2026-07-02 13:09:43.826146+00:00"
 }
