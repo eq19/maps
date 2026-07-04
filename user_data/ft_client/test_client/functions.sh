@@ -574,7 +574,7 @@ freqai() {
       fi
     done
 
-    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: freqai | Days: $days | Epochs: $epochs\nFreqaimodel $FREQAI_MODEL Freqaimodel-path $FREQAIMODELS_PATH\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: freqai | Days: $days | Epochs: $epochs\nFreqaimodel $FREQAI_MODEL\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
       --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
@@ -585,6 +585,7 @@ freqai() {
     #Ref: https://www.freqtrade.io/en/stable/backtesting
     SCORE=$(gh variable get SCORE)
     freqtrade backtesting --help
+    jq '.params |= ({enter,buy,exit,sell,roi,freqai,trailing,protection,max_open_trades,stoploss} + del(.enter,.buy,.exit,.sell,.roi,.trailing,.protection,.max_open_trades,.stoploss)) | .params.roi |= (with_entries(select(.key|startswith("roi_")|not)))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
   
     # Execute calculate_score ONLY if no errors and exit code 0
@@ -602,6 +603,20 @@ freqai() {
         sed -i "s|Infinity|10|g" $STRATEGY
         sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
 
+        curl -L -s -X PATCH \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer $GH_TOKEN" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
+           https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
+ 
+        curl -L -s -X PATCH \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer $GH_TOKEN" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
+           https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON
+ 
         gh variable set SCORE --body "${NEW_SCORE}"
         gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"
         gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
