@@ -862,8 +862,8 @@ class Fibbo(IStrategy):
             if dataframe['do_predict'].isin([1, -1]).any():
                 use_freqai = True
                 if 'di_percentile' in dataframe.columns:
-                    exit_long_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.sell_freqai.value)))
-                    exit_short_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.sell_freqai.value)))
+                    exit_long_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.freqai_sell.value)))
+                    exit_short_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.freqai_sell.value)))
                 else:
                     exit_long_conditions.append(dataframe['do_predict'] == -1)
                     exit_short_conditions.append(dataframe['do_predict'] == 1)
