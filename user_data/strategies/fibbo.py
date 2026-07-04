@@ -355,12 +355,14 @@ class Fibbo(IStrategy):
         
         if 'DI_values' in last_candle:
             confidence = last_candle['DI_values']
-            if confidence > 0.8:
-                return -0.05
-            elif confidence > 0.6:
+            
+            # Use hyperoptable thresholds instead of hardcoded numbers
+            if confidence > self.freqai_sl_high_thresh.value:
+                return self.freqai_sl_high_val.value
+            elif confidence > self.freqai_sl_low_thresh.value:
                 return self.stoploss
             else:
-                return -0.15
+                return self.freqai_sl_low_val.value
         
         return self.stoploss
 
