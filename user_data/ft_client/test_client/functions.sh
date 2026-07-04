@@ -429,7 +429,7 @@ hyperopt() {
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1
     freqtrade hyperopt-list --best
-    
+
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
     jq '.params |= ({enter,buy,exit,sell,roi,trailing,protection,max_open_trades,stoploss} + del(.enter,.buy,.exit,.sell,.roi,.trailing,.protection,.max_open_trades,.stoploss)) | .params.roi |= (with_entries(select(.key|startswith("roi_")|not)))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
     freqtrade backtesting --fee=$FEE --timerange="$TB" --enable-protection
@@ -570,6 +570,12 @@ freqai() {
         break
       fi
     done
+
+    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
+      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
+      --random-state ${id} ${enable_protections} > /dev/null 2>&1
+    freqtrade hyperopt-list --best
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     #Ref: https://www.freqtrade.io/en/stable/backtesting
