@@ -10,7 +10,6 @@
       "buy_bb_period": 2,
       "buy_fast_dema": "8",
       "buy_fib_level": "0.618",
-      "buy_freqai": 0.24,
       "buy_rsi": 28,
       "buy_rsi_period": 19,
       "buy_slow_ema": "89",
@@ -27,7 +26,6 @@
     "sell": {
       "sell_fast_dema": "5",
       "sell_fib_level": "0.236",
-      "sell_freqai": 0.43,
       "sell_rsi": 34,
       "sell_slow_ema": "55",
       "sell_smoothD": 8,
@@ -42,6 +40,10 @@
       "45": 0.039,
       "222": 0.019,
       "538": 0
+    },
+    "freqai": {
+      "freqai_buy": 0.24,
+      "freqai_sell": 0.43
     },
     "trailing": {
       "trailing_stop": true,
