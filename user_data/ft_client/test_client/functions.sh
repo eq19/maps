@@ -506,13 +506,12 @@ freqai() {
     end_date=$BACKTESTING_START
 
     id=$(echo "$pipeline" | jq -r '.id')
+    hyperopt_loss=$(gh variable get HYPEROPT)
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
     # dispatch only for main workflow
     [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
-    if [[ "$GITHUB_JOB" != "lexering" ]]; then
-      hyperopt_loss="$HYPEROPT"
-    else
+    if [[ "$GITHUB_JOB" == "lexering" ]]; then
       # Extract clean list of hyperoptloss classes
       freqaimodels=$(printf '%s\n' "$(freqtrade list-freqaimodels --freqaimodel-path $FREQAIMODELS_PATH --one-column)" | jq -R . | jq -s .)
       curl -s -X POST \
