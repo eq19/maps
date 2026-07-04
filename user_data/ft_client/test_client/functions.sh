@@ -498,12 +498,14 @@ freqai() {
   
   # Load JSON and filter by given ID
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
-    end_date=$(date +"%Y%m%d")
-    days=$(echo "$pipeline" | jq -r '.days')
-    start_date=$(date -d "$days days ago" +"%Y%m%d")
+
+    days=60
+    epochs=3200
+
+    start_date=$EARLIEST_DATE
+    end_date=$BACKTESTING_START
 
     id=$(echo "$pipeline" | jq -r '.id')
-    epochs=$(echo "$pipeline" | jq -r '.epochs')
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
     # dispatch only for main workflow
