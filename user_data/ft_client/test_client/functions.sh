@@ -550,7 +550,7 @@ freqai() {
 
     pairs=$(gh variable get PAIRS)
     jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
-    #jq --argjson pairs "$pairs" '.freqai.feature_parameters.include_corr_pairlist = $pairs' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
+    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
 
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
     nohup freqtrade trade -v --dry-run --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE > freqtrade.log 2>&1 &
@@ -571,9 +571,9 @@ freqai() {
       fi
     done
 
-    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: freqai | Days: $days | Epochs: $epochs\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
-      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
+      --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1
     freqtrade hyperopt-list --best
 
@@ -581,7 +581,6 @@ freqai() {
     #Ref: https://www.freqtrade.io/en/stable/backtesting
     SCORE=$(gh variable get SCORE)
     freqtrade backtesting --help
-    jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
     freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
   
     # Execute calculate_score ONLY if no errors and exit code 0
