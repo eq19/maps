@@ -91,9 +91,30 @@ class ParamBuilder:
 
                 elif isinstance(value, float):
                     percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2%–10%
-                    decimals = 3 if value < 0.05 else 2 if value < 1 else 1
-                    low = max(0.001, round(value * (1 - percent), decimals))
-                    high = round(value * (1 + percent), decimals)
+                    
+                    # Use absolute value to determine decimal precision
+                    abs_value = abs(value)
+                    decimals = 3 if abs_value < 0.05 else 2 if abs_value < 1 else 1
+                    
+                    if value >= 0:
+                        low = max(0.0001, round(value * (1 - percent), decimals))
+                        high = round(value * (1 + percent), decimals)
+                        
+                        # Cap AI confidence thresholds and probabilities to 0.99 maximum
+                        if "freqai" in key or "thresh" in key:
+                            high = min(0.99, high)
+                            
+                    else:
+                        # Handle negative floats (e.g., stoploss values)
+                        # low is the MORE negative number
+                        low = round(value * (1 + percent), decimals) 
+                        # high is the LESS negative number, capped just below 0
+                        high = min(-0.0001, round(value * (1 - percent), decimals))
+                        
+                        # Failsafe for negative bounds
+                        if high <= low:
+                            high = low + (1 / (10 ** decimals))
+
                     self.params[section][key] = self.dec_param(value, low, high, decimals)
 
                 elif isinstance(value, str):
