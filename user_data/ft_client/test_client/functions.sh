@@ -500,7 +500,7 @@ freqai() {
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
     days=60
-    epochs=3200
+    epochs=32
 
     start_date=$EARLIEST_DATE
     end_date=$BACKTESTING_START
@@ -510,8 +510,9 @@ freqai() {
 
     # dispatch only for main workflow
     [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
-    if [[ "$GITHUB_JOB" == "lexering" ]]; then
-
+    if [[ "$GITHUB_JOB" != "lexering" ]]; then
+      hyperopt_loss="$HYPEROPT"
+    else
       # Extract clean list of hyperoptloss classes
       freqaimodels=$(printf '%s\n' "$(freqtrade list-freqaimodels --freqaimodel-path $FREQAIMODELS_PATH --one-column)" | jq -R . | jq -s .)
       curl -s -X POST \
