@@ -462,7 +462,7 @@ hyperopt() {
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"   
+        gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"   
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       fi
@@ -474,7 +474,7 @@ hyperopt() {
           PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
           gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
-          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         fi
       fi
     # Environment SCORE is unchanged in case calculation is failed
@@ -486,7 +486,7 @@ hyperopt() {
           PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
           gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
-          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         fi
       fi
     fi
@@ -500,7 +500,7 @@ freqai() {
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
     days=60
-    epochs=32
+    epochs=3200
 
     start_date=$EARLIEST_DATE
     end_date=$BACKTESTING_START
