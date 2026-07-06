@@ -33,8 +33,8 @@ calculate_score() {
     echo "$json_data" | jq .
     if [[ "$RUN_MODE" == "FreqAI" ]]; then
       # Search entry tags and exit reasons for "freqai" or "low_confidence"
-      local found_tags=$(jq -r '.strategy.Fibbo.enter_tag_stats, .strategy.Fibbo.exit_reasons | objects | keys[]' "$json_file" 2>/dev/null | grep -iE 'freqai|low_confidence' || true)
-      
+      local found_tags=$(jq -r '.strategy.Fibbo.enter_tag_stats[]?.enter_tag, .strategy.Fibbo.exit_reasons[]?.exit_reason' "$json_file" 2>/dev/null | grep -iE 'freqai|low_confidence' || true)
+  
       if [[ -n "$found_tags" ]]; then
         HAS_FREQAI_TAGS="true"
         echo "FreqAI tags detected in backtest: $(echo $found_tags | tr '\n' ' ')"
