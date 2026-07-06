@@ -39,9 +39,9 @@ calculate_score() {
         HAS_FREQAI_TAGS="true"
         echo "FreqAI tags detected in backtest: $(echo $found_tags | tr '\n' ' ')"
       else
-        echo "WARNING: No FreqAI tags detected in this backtest!"
+        HAS_FREQAI_TAGS="false"
+        echo "WARNING: No FreqAI tags detected in this backtest! Ignoring score."
       fi
-    fi
     rm -rf "$dir"/*
   fi
 
