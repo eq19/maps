@@ -135,7 +135,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
 
 elif [[ "$1" == "FreqAI" ]]; then
 
+  export HAS_FREQAI_TAGS="false"
   freqai $ID
-  HAS_FREQAI_TAGS="false"
 
 fi
