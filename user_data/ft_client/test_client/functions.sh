@@ -41,6 +41,7 @@ calculate_score() {
       else
         HAS_FREQAI_TAGS="false"
         echo "WARNING: No FreqAI tags detected in this backtest! Ignoring score."
+        return 1
       fi
     fi
     rm -rf "$dir"/*
