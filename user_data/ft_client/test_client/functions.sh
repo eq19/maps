@@ -31,13 +31,12 @@ calculate_score() {
     return 1
   else
     echo "$json_data" | jq .
-    local has_freqai_tags="false"
     if [[ "$RUN_MODE" == "FreqAI" ]]; then
       # Search entry tags and exit reasons for "freqai" or "low_confidence"
       local found_tags=$(jq -r '.strategy.Fibbo.enter_tag_stats, .strategy.Fibbo.exit_reasons | objects | keys[]' "$json_file" 2>/dev/null | grep -iE 'freqai|low_confidence' || true)
       
       if [[ -n "$found_tags" ]]; then
-        has_freqai_tags="true"
+        HAS_FREQAI_TAGS="true"
         echo "FreqAI tags detected in backtest: $(echo $found_tags | tr '\n' ' ')"
       else
         echo "WARNING: No FreqAI tags detected in this backtest!"
@@ -610,7 +609,7 @@ freqai() {
 
       OLD_SCORE=$(gh variable get SCORE)
       [[ "$ID" != "169" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="REMOVE_RUNNER"
-      if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+      if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )) && [[ "$HAS_FREQAI_TAGS" == "true" ]]; then
         cat $STRATEGY
         sed -i "s|Infinity|10|g" $STRATEGY
         sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
