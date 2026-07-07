@@ -46,7 +46,7 @@ calculate_score() {
 
       if [[ -n "$found_tags" ]]; then
         HAS_FREQAI_TAGS="true"
-        echo "FreqAI tags detected in backtest: $(echo $found_tags | tr '\n' ' ')"
+        echo -e "♻️ FreqAI tags detected in backtest:\n👉 $(echo $found_tags | tr '\n' ' ')"
       else
         HAS_FREQAI_TAGS="false"
         echo "❌ No FreqAI tags detected in this backtest! Ignoring score."
