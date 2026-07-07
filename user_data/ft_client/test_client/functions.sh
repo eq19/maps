@@ -598,7 +598,7 @@ freqai() {
       --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --log-file hyperopt.log \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1
-    if [ $? -eq 0 ] && ! grep -qiE "(traceback|object has no attribute|no further splits with positive gain)" hyperopt.log; then
+    if [ $? -eq 0 ] && ! grep -qiE "(traceback|object has no attribute|pickle not found)" hyperopt.log; then
       freqtrade hyperopt-list --best
     else
       exit 0
