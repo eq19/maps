@@ -334,7 +334,7 @@ calculate_score() {
   echo "  # Sortino < 0"
   echo "  # Expectancy Ratio < 0"
   echo "  # Max DD > 50% (or > 40% depending on risk tolerance)"
-  echo "  # Trade count < 30 (or < 50 depending on timerange and number of pairlist)"
+  echo "  # Trade count < 300 (or < 500 depending on timerange and number of pairlist)"
   echo ""
 
   # Ensure the baseline failure properly outputs the score
