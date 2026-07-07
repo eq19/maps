@@ -32,8 +32,8 @@ calculate_score() {
   else
     echo "$json_data" | jq .
     if [[ "$RUN_MODE" == "FreqAI" ]]; then
+
       # Search entry tags and exit reasons for "freqai" or "low_confidence"
-      # Search every Enter/Exit tag in the strategy JSON
       local found_tags=$(
         jq -r '
         .strategy.Fibbo
