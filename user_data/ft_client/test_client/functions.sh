@@ -578,12 +578,18 @@ freqai() {
     while read -r LOGLINE <&3; do
       echo "$LOGLINE"
       # Stop if Freqtrade has entered TRANING state
-      if grep -qiE "throttling|traceback|error" <<< "$LOGLINE"; then
+      if grep -qiE "throttling" <<< "$LOGLINE"; then
         echo "Stopping freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
+      elif grep -qiE "traceback|object has no attribute" <<< "$LOGLINE"; then
+        echo "Stopping freqtrade due to error..."
+        PID=$(cat freqtrade_pid.txt)
+        kill -SIGTERM $PID
+        echo "freqtrade trade stopped."
+        return 1
       fi
     done
 
