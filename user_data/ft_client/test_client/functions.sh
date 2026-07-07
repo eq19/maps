@@ -589,6 +589,7 @@ freqai() {
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
+        break
         return 1
       fi
     done
