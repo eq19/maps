@@ -40,7 +40,7 @@ calculate_score() {
         echo "FreqAI tags detected in backtest: $(echo $found_tags | tr '\n' ' ')"
       else
         HAS_FREQAI_TAGS="false"
-        echo "WARNING: No FreqAI tags detected in this backtest! Ignoring score."
+        echo "❌ No FreqAI tags detected in this backtest! Ignoring score."
         return 1
       fi
     fi
@@ -579,13 +579,13 @@ freqai() {
       echo "$LOGLINE"
       # Stop if Freqtrade has entered TRANING state
       if grep -qiE "throttling" <<< "$LOGLINE"; then
-        echo "Stopping freqtrade trade..."
+        echo "✅ Throttling freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
       elif grep -qiE "traceback|object has no attribute" <<< "$LOGLINE"; then
-        echo "Stopping freqtrade due to error..."
+        echo "❌ Stopping freqtrade due to error..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
