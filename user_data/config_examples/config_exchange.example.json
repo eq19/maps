@@ -83,7 +83,7 @@
       "XRP/IDR"
     ],
     "pair_blacklist": [
-      "(DRX|MOG|PENGU|PEPE|RFC|SHIB|TROLLSOL)/IDR",
+      "(DRX|MOG|PENGU|PEPE|RFC|SHIB|SYN|TROLLSOL)/IDR",
       "(BAKE|FARTCOIN|GID|KOMA|MOODENG|SIREN|UCJL)/IDR"
     ],
     "core_blacklist": [
