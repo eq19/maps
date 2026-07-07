@@ -513,7 +513,7 @@ freqai() {
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
     days=60
-    epochs=3200
+    epochs=6400
 
     start_date=$EARLIEST_DATE
     end_date=$BACKTESTING_START
@@ -550,7 +550,7 @@ freqai() {
           }}')" \
         "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/matrix.yml/dispatches"
       gh variable set JOB --body "${GITHUB_JOB}"
-      epochs=$((epochs * 4))
+      epochs=$((epochs * 2))
 
       jq '.pairlists |= map(if .method == "VolumePairList" then .number_assets = 169 else . end)' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
       freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
