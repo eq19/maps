@@ -593,7 +593,7 @@ freqai() {
       fi
     done
 
-    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: freqai | Days: $days | Epochs: $epochs\nFreqaimodel $FREQAI_MODEL\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: freqai | Days: $days | Epochs: $epochs\nHyoeropt: ${hyperopt_loss:-$loss}\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
       --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --log-file hyperopt.log \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
