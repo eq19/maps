@@ -595,10 +595,14 @@ freqai() {
 
     echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: freqai | Days: $days | Epochs: $epochs\nFreqaimodel $FREQAI_MODEL\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
-      --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
+      --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --log-file hyperopt.log \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
       --random-state ${id} ${enable_protections} > /dev/null 2>&1
-    freqtrade hyperopt-list --best
+    if [ $? -eq 0 ] && ! grep -qiE "(traceback|object has no attribute|no further splits with positive gain)" hyperopt.log; then
+      freqtrade hyperopt-list --best
+    else
+      exit 0
+    fi
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     #Ref: https://www.freqtrade.io/en/stable/backtesting
