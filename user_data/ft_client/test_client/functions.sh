@@ -586,14 +586,32 @@ freqai() {
 
     while read -r LOGLINE <&3; do
       echo "$LOGLINE"
-      # Stop if Freqtrade has entered TRANING state
+      # Stop if Freqtrade has entered TRAINING state
       if grep -qiE "throttling" <<< "$LOGLINE"; then
         echo "✅ Throttling freqtrade trade..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
-      elif grep -qiE "traceback|object has no attribute" <<< "$LOGLINE"; then
+      elif grep -qiE "traceback" <<< "$LOGLINE"; then
+        echo "❌ Error detected! Showing full traceback:"
+        # Print the traceback (the current line and next lines until empty or non-indented)
+        echo "$LOGLINE"  # Print the "Traceback" line
+        # Read and print subsequent traceback lines
+        while read -r NEXT_LINE <&3; do
+          echo "$NEXT_LINE"
+          # Stop reading when we hit a non-indented line (not part of traceback)
+          # or when we hit a line that doesn't start with space/tab
+          if [[ ! "$NEXT_LINE" =~ ^[[:space:]] ]] && [[ ! "$NEXT_LINE" =~ ^[A-Za-z] ]]; then
+            # Put it back for next iteration? Better to break and exit
+            break
+          fi
+          # Check if this line contains the actual exception message
+          if grep -qE "Error|Exception|AttributeError|KeyError|ValueError|TypeError" <<< "$NEXT_LINE"; then
+            echo "⚠️  Final error: $NEXT_LINE"
+            break
+          fi
+        done
         echo "❌ Stopping freqtrade due to error..."
         PID=$(cat freqtrade_pid.txt)
         kill -SIGTERM $PID
