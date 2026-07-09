@@ -522,7 +522,7 @@ freqai() {
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
     days=60
-    epochs=6400
+    epochs=640
 
     start_date=$EARLIEST_DATE
     end_date=$BACKTESTING_START
