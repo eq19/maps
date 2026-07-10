@@ -383,25 +383,9 @@ class Fibbo(IStrategy):
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                 proposed_leverage: float, max_leverage: float, entry_tag: Optional[str],
                 side: str, **kwargs) -> float:
-        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
-        
-        if 'DI_values' in last_candle:
-            confidence = last_candle['DI_values']
-            if confidence < 0.5:
-                leverage_factor = 0.5
-            elif confidence < 0.7:
-                leverage_factor = 0.75
-            else:
-                leverage_factor = 1.0
-            
-            adjusted_leverage = min(max_leverage, proposed_leverage * leverage_factor)
-            if adjusted_leverage != proposed_leverage:
-                logger.info(f"FreqAI adjusted leverage: {confidence:.2%} confidence, "
-                          f"leverage {proposed_leverage:.1f} → {adjusted_leverage:.1f}")
-            return adjusted_leverage
-        
+        # Disable FreqAI leverage scaling so you don't miss out on full profits
         return proposed_leverage
+
 
     def ttm_squeeze(self, dataframe: DataFrame, bollinger_period: int = 20, keltner_period: int = 20, momentum_period: int = 12) -> DataFrame:
         bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=bollinger_period, stds=2)
