@@ -349,8 +349,13 @@ class Fibbo(IStrategy):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
     def custom_stoploss(
-        self, pair: str, trade: Trade, current_time: datetime,
-        current_rate: float, current_profit: float, **kwargs,
+        self,
+        pair: str,
+        trade: Trade,
+        current_time: datetime,
+        current_rate: float,
+        current_profit: float,
+        **kwargs,
     ) -> float:
         """
         Dynamic stoploss based on the remaining upside predicted by FreqAI.
@@ -363,16 +368,18 @@ class Fibbo(IStrategy):
             return self.stoploss
 
         last = dataframe.iloc[-1]
+        
         if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
             return self.stoploss
 
-        predicted_price = float(last["&-s_close"])
+        # &-s_close is ALREADY a percentage return, not a raw price!
+        ai_prediction_pct = float(last["&-s_close"])
         
-        # 1. Handle Long vs Short math
+        # 1. Handle Long vs Short direction
         if trade.is_short:
-            expected_return = (current_rate - predicted_price) / current_rate
+            expected_return = -ai_prediction_pct  # Flip the sign for shorts
         else:
-            expected_return = (predicted_price - current_rate) / current_rate
+            expected_return = ai_prediction_pct
 
         # 2. Strong upside -> give trade more room
         if expected_return >= 0.05:
@@ -383,7 +390,7 @@ class Fibbo(IStrategy):
             return self.stoploss
 
         # 4. Weak prediction -> tighten stoploss (WITH SAFEGUARD)
-        tight_sl = float(self.freqai_sl_low_val.value) # e.g., -0.02
+        tight_sl = float(self.freqai_sl_low_val.value)  # e.g., -0.02
         
         # Safeguard: If tightening the SL would instantly kill the trade,
         # just use the normal SL and let the base strategy breathe.
@@ -393,8 +400,13 @@ class Fibbo(IStrategy):
         return tight_sl
 
     def custom_exit(
-        self, pair: str, trade: Trade, current_time: datetime,
-        current_rate: float, current_profit: float, **kwargs,
+        self,
+        pair: str,
+        trade: Trade,
+        current_time: datetime,
+        current_rate: float,
+        current_profit: float,
+        **kwargs,
     ):
         """
         Exit when FreqAI no longer predicts sufficient upside/downside.
@@ -407,20 +419,22 @@ class Fibbo(IStrategy):
             return None
 
         last = dataframe.iloc[-1]
+        
         if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
             return None
 
-        predicted_price = float(last["&-s_close"])
+        # &-s_close is ALREADY a percentage return, not a raw price!
+        ai_prediction_pct = float(last["&-s_close"])
         
-        # 1. Handle Long vs Short math and conditions
+        # 1. Handle Long vs Short direction and conditions
         if trade.is_short:
-            expected_return = (current_rate - predicted_price) / current_rate
-            # For a short, if predicted price is HIGHER than current rate, that is bad (bullish)
-            prediction_reversing = predicted_price > current_rate 
+            expected_return = -ai_prediction_pct
+            # For shorts: A predicted price hike (positive pct) is bad/reversing
+            prediction_reversing = ai_prediction_pct > 0
         else:
-            expected_return = (predicted_price - current_rate) / current_rate
-            # For a long, if predicted price is LOWER than current rate, that is bad (bearish)
-            prediction_reversing = predicted_price < current_rate
+            expected_return = ai_prediction_pct
+            # For longs: A predicted price drop (negative pct) is bad/reversing
+            prediction_reversing = ai_prediction_pct < 0 
 
         # 2. Prediction has completely reversed against our position
         if prediction_reversing:
