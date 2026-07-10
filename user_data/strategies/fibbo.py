@@ -542,26 +542,26 @@ class Fibbo(IStrategy):
         last = dataframe.iloc[-1]
 
         # Use the NEW regression target we just set above
-        if "&-s_future_max_high" in last.index and pd.notna(last["&-s_future_max_high"]):
+        if "&-s_close" in last.index and pd.notna(last["&-s_close"]):
             
-            # 1. Calculate percentage return using the ACTUAL order rate
+            ai_prediction_pct = float(last["&-s_close"])
+            
             if side == "long":
-                predicted_price = float(last["&-s_future_max_high"])
-                expected_return = (predicted_price - rate) / rate
+                expected_return = ai_prediction_pct
             else: # side == "short"
-                # If shorting, use the min_low target if you added it, or calculate downside
-                predicted_price = float(last.get("&-s_future_min_low", last["close"]))
-                expected_return = (rate - predicted_price) / rate
+                expected_return = -ai_prediction_pct
 
-            # 2. Minimum 2% profit gate
-            if expected_return < 0.02:
-                logger.info(f"{pair}: Rejected {side} ({entry_tag}) Expected return {expected_return:.2%} < 2%")
+            # Fetch hyperopt parameter for minimum expected return
+            min_return_gate = float(self.freqai_ret_low_thresh.value)
+
+            # 2. Minimum profit gate dynamically set by hyperopt
+            if expected_return < min_return_gate:
+                logger.info(f"{pair}: Rejected {side} ({entry_tag}) Expected return {expected_return:.2%} < {min_return_gate:.2%}")
                 return False
 
             # 3. Confidence filter
             if "di_percentile" in last.index and pd.notna(last["di_percentile"]):
                 confidence = float(last["di_percentile"])
-                # Note: Assuming self.freqai_buy/sell are hyperopt parameters
                 threshold = float(self.freqai_buy.value) if side == "long" else float(self.freqai_sell.value)
                 if confidence < threshold:
                     logger.info(f"{pair}: Rejected {side} ({entry_tag}) DI={confidence:.2%} < Threshold={threshold:.2%}")
@@ -571,7 +571,7 @@ class Fibbo(IStrategy):
             prediction = int(last["do_predict"])
             if side == "long" and prediction != 1:
                 return False
-            if side == "short" and prediction != -1: # ADDED MISSING SHORT CHECK
+            if side == "short" and prediction != -1: 
                 return False
         else:
             return False
