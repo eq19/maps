@@ -2,38 +2,38 @@
   "strategy_name": "Fibbo",
   "params": {
     "enter": {
-      "enter_long_indicator": "BB, RSI, STOCHRSI",
-      "enter_short_indicator": "BB, VWAP",
+      "enter_long_indicator": "BB, STOCHRSI",
+      "enter_short_indicator": "BB, DEMA, STOCHRSI, TTM",
       "enter_trade_mode": "half"
     },
     "buy": {
-      "buy_bb_period": 2,
-      "buy_fast_dema": "8",
+      "buy_bb_period": 12,
+      "buy_fast_dema": "5",
       "buy_fib_level": "0.618",
-      "buy_rsi": 28,
-      "buy_rsi_period": 19,
-      "buy_slow_ema": "89",
-      "buy_smoothD": 13,
-      "buy_smoothK": 5,
-      "buy_stoch_osc": 11,
-      "buy_swing_period": 7
+      "buy_rsi": 31,
+      "buy_rsi_period": 9,
+      "buy_slow_ema": "144",
+      "buy_smoothD": 4,
+      "buy_smoothK": 15,
+      "buy_stoch_osc": 8,
+      "buy_swing_period": 3
     },
     "exit": {
-      "exit_long_indicator": "MACD, RSI, TTM",
-      "exit_short_indicator": "MACD, RSI, VWAP",
-      "exit_trade_mode": "half"
+      "exit_long_indicator": "BB, RSI, STOCHRSI, TTM",
+      "exit_short_indicator": "MACD, RSI, STOCHRSI",
+      "exit_trade_mode": "any"
     },
     "sell": {
-      "sell_fast_dema": "5",
+      "sell_fast_dema": "8",
       "sell_fib_level": "0.236",
-      "sell_rsi": 34,
-      "sell_slow_ema": "55",
-      "sell_smoothD": 8,
-      "sell_smoothK": 8,
-      "sell_stoch_osc": 89,
-      "shared_stoch_period": 226,
-      "shared_ttm_window": 50,
-      "shared_vwap_window": 50
+      "sell_rsi": 24,
+      "sell_slow_ema": "34",
+      "sell_smoothD": 6,
+      "sell_smoothK": 6,
+      "sell_stoch_osc": 87,
+      "shared_stoch_period": 271,
+      "shared_ttm_window": 41,
+      "shared_vwap_window": 97
     },
     "roi": {
       "0": 0.099,
@@ -42,12 +42,12 @@
       "538": 0
     },
     "freqai": {
-      "freqai_buy": 0.24,
-      "freqai_sell": 0.43,
-      "freqai_sl_high_thresh": 0.80,
-      "freqai_sl_high_val": -0.05,
-      "freqai_sl_low_thresh": 0.60,
-      "freqai_sl_low_val": -0.15
+      "freqai_buy": 0.25,
+      "freqai_sell": 0.47,
+      "freqai_sl_high_thresh": 0.83,
+      "freqai_sl_high_val": -0.06,
+      "freqai_sl_low_thresh": 0.6,
+      "freqai_sl_low_val": -0.14
     },
     "trailing": {
       "trailing_stop": true,
@@ -74,5 +74,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-07-02 13:09:43.826146+00:00"
+  "export_time": "2026-07-10 13:25:36.325650+00:00"
 }
