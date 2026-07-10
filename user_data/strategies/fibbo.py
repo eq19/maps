@@ -392,17 +392,43 @@ class Fibbo(IStrategy):
             
         return tight_sl
 
-    def custom_exit(self, pair: str, trade: Trade, current_time: datetime, 
-                   current_rate: float, current_profit: float, **kwargs):
+    def custom_exit(
+        self, pair: str, trade: Trade, current_time: datetime,
+        current_rate: float, current_profit: float, **kwargs,
+    ):
+        """
+        Exit when FreqAI no longer predicts sufficient upside/downside.
+        """
+        if not self.freqai_enabled:
+            return None
+
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
+        if dataframe is None or dataframe.empty:
+            return None
 
-        # Handle high market regime volatility anomalies (take profit early)
-        if last_candle.get('%-market_regime', 0) == 3 and current_profit > 0.02:
-            return 'high_volatility_exit'
+        last = dataframe.iloc[-1]
+        if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
+            return None
 
-        if last_candle.get('DI_values', 0) > 2.0 and current_profit > 0.01:
-            return 'low_confidence_exit'
+        predicted_price = float(last["&-s_close"])
+        
+        # 1. Handle Long vs Short math and conditions
+        if trade.is_short:
+            expected_return = (current_rate - predicted_price) / current_rate
+            # For a short, if predicted price is HIGHER than current rate, that is bad (bullish)
+            prediction_reversing = predicted_price > current_rate 
+        else:
+            expected_return = (predicted_price - current_rate) / current_rate
+            # For a long, if predicted price is LOWER than current rate, that is bad (bearish)
+            prediction_reversing = predicted_price < current_rate
+
+        # 2. Prediction has completely reversed against our position
+        if prediction_reversing:
+            return "FreqAI_Trend_Reversed"
+
+        # 3. Remaining upside is too small (Only exit if we are already in profit)
+        if current_profit > 0 and expected_return < 0.01:
+            return "FreqAI_Target_Reached"
 
         return None
 
