@@ -398,13 +398,8 @@ class Fibbo(IStrategy):
         return tight_sl
 
     def custom_exit(
-        self,
-        pair: str,
-        trade: Trade,
-        current_time: datetime,
-        current_rate: float,
-        current_profit: float,
-        **kwargs,
+        self, pair: str, trade: Trade, current_time: datetime,
+        current_rate: float, current_profit: float, **kwargs,
     ):
         """
         Exit when FreqAI no longer predicts sufficient upside/downside.
@@ -417,29 +412,28 @@ class Fibbo(IStrategy):
             return None
 
         last = dataframe.iloc[-1]
-        
         if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
             return None
 
-        # &-s_close is ALREADY a percentage return, not a raw price!
         ai_prediction_pct = float(last["&-s_close"])
         
         # 1. Handle Long vs Short direction and conditions
         if trade.is_short:
             expected_return = -ai_prediction_pct
-            # For shorts: A predicted price hike (positive pct) is bad/reversing
             prediction_reversing = ai_prediction_pct > 0
         else:
             expected_return = ai_prediction_pct
-            # For longs: A predicted price drop (negative pct) is bad/reversing
             prediction_reversing = ai_prediction_pct < 0 
 
         # 2. Prediction has completely reversed against our position
         if prediction_reversing:
             return "FreqAI_Trend_Reversed"
 
+        # Fetch hyperopt target parameter
+        exit_profit_thresh = float(self.freqai_exit_profit_thresh.value)
+
         # 3. Remaining upside is too small (Only exit if we are already in profit)
-        if current_profit > 0 and expected_return < 0.01:
+        if current_profit > 0 and expected_return < exit_profit_thresh:
             return "FreqAI_Target_Reached"
 
         return None
