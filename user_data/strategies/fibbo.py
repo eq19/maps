@@ -348,23 +348,49 @@ class Fibbo(IStrategy):
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
-    def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
-                       current_rate: float, current_profit: float, **kwargs) -> float:
+    def custom_stoploss(
+        self, pair: str, trade: Trade, current_time: datetime,
+        current_rate: float, current_profit: float, **kwargs,
+    ) -> float:
+        """
+        Dynamic stoploss based on the remaining upside predicted by FreqAI.
+        """
+        if not self.freqai_enabled:
+            return self.stoploss
+
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        last_candle = dataframe.iloc[-1].squeeze()
+        if dataframe is None or dataframe.empty:
+            return self.stoploss
+
+        last = dataframe.iloc[-1]
+        if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
+            return self.stoploss
+
+        predicted_price = float(last["&-s_close"])
         
-        if 'DI_values' in last_candle:
-            confidence = last_candle['DI_values']
+        # 1. Handle Long vs Short math
+        if trade.is_short:
+            expected_return = (current_rate - predicted_price) / current_rate
+        else:
+            expected_return = (predicted_price - current_rate) / current_rate
+
+        # 2. Strong upside -> give trade more room
+        if expected_return >= 0.05:
+            return float(self.freqai_sl_high_val.value)
+
+        # 3. Moderate upside -> normal stoploss
+        if expected_return >= 0.02:
+            return self.stoploss
+
+        # 4. Weak prediction -> tighten stoploss (WITH SAFEGUARD)
+        tight_sl = float(self.freqai_sl_low_val.value) # e.g., -0.02
+        
+        # Safeguard: If tightening the SL would instantly kill the trade,
+        # just use the normal SL and let the base strategy breathe.
+        if current_profit <= -abs(tight_sl):
+            return self.stoploss 
             
-            # Use hyperoptable thresholds instead of hardcoded numbers
-            if confidence > self.freqai_sl_high_thresh.value:
-                return self.freqai_sl_high_val.value
-            elif confidence > self.freqai_sl_low_thresh.value:
-                return self.stoploss
-            else:
-                return self.freqai_sl_low_val.value
-        
-        return self.stoploss
+        return tight_sl
 
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime, 
                    current_rate: float, current_profit: float, **kwargs):
