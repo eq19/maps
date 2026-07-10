@@ -349,13 +349,8 @@ class Fibbo(IStrategy):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
     def custom_stoploss(
-        self,
-        pair: str,
-        trade: Trade,
-        current_time: datetime,
-        current_rate: float,
-        current_profit: float,
-        **kwargs,
+        self, pair: str, trade: Trade, current_time: datetime,
+        current_rate: float, current_profit: float, **kwargs,
     ) -> float:
         """
         Dynamic stoploss based on the remaining upside predicted by FreqAI.
@@ -368,7 +363,6 @@ class Fibbo(IStrategy):
             return self.stoploss
 
         last = dataframe.iloc[-1]
-        
         if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
             return self.stoploss
 
@@ -381,16 +375,20 @@ class Fibbo(IStrategy):
         else:
             expected_return = ai_prediction_pct
 
+        # Fetch hyperopt parameters
+        high_thresh = float(self.freqai_ret_high_thresh.value)
+        low_thresh = float(self.freqai_ret_low_thresh.value)
+
         # 2. Strong upside -> give trade more room
-        if expected_return >= 0.05:
+        if expected_return >= high_thresh:
             return float(self.freqai_sl_high_val.value)
 
         # 3. Moderate upside -> normal stoploss
-        if expected_return >= 0.02:
+        if expected_return >= low_thresh:
             return self.stoploss
 
         # 4. Weak prediction -> tighten stoploss (WITH SAFEGUARD)
-        tight_sl = float(self.freqai_sl_low_val.value)  # e.g., -0.02
+        tight_sl = float(self.freqai_sl_low_val.value)
         
         # Safeguard: If tightening the SL would instantly kill the trade,
         # just use the normal SL and let the base strategy breathe.
