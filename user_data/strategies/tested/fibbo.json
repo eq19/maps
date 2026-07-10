@@ -44,10 +44,11 @@
     "freqai": {
       "freqai_buy": 0.25,
       "freqai_sell": 0.47,
-      "freqai_sl_high_thresh": 0.83,
       "freqai_sl_high_val": -0.06,
-      "freqai_sl_low_thresh": 0.6,
-      "freqai_sl_low_val": -0.14
+      "freqai_sl_low_val": -0.14,
+      "freqai_ret_high_thresh": 0.05,
+      "freqai_ret_low_thresh": 0.02,
+      "freqai_exit_profit_thresh": 0.01
     },
     "trailing": {
       "trailing_stop": true,
