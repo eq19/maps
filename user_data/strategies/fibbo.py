@@ -806,15 +806,8 @@ class Fibbo(IStrategy):
             entry_short_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] < 0))
 
         use_freqai = False
-        if 'do_predict' in dataframe.columns:
-            if dataframe['do_predict'].isin([1, -1]).any():
-                use_freqai = True
-                if 'di_percentile' in dataframe.columns:
-                    entry_long_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.freqai_buy.value)))
-                    entry_short_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.freqai_sell.value)))
-                else:
-                    entry_long_conditions.append(dataframe['do_predict'] == 1)
-                    entry_short_conditions.append(dataframe['do_predict'] == -1)
+        # Safely define use_freqai for the tagging logic at the bottom
+        use_freqai = self.freqai_enabled and '&-s_close' in dataframe.columns
 
         if entry_long_conditions:
             signal_long = self.combine_conditions(dataframe, entry_long_conditions, self.enter_trade_mode.value)
@@ -942,15 +935,8 @@ class Fibbo(IStrategy):
             exit_short_conditions.append(dataframe['squeeze_on'] & (dataframe['momentum_hist'] > 0))
 
         use_freqai = False
-        if 'do_predict' in dataframe.columns:
-            if dataframe['do_predict'].isin([1, -1]).any():
-                use_freqai = True
-                if 'di_percentile' in dataframe.columns:
-                    exit_long_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.freqai_sell.value)))
-                    exit_short_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.freqai_sell.value)))
-                else:
-                    exit_long_conditions.append(dataframe['do_predict'] == -1)
-                    exit_short_conditions.append(dataframe['do_predict'] == 1)
+        # Safely define use_freqai for the tagging logic at the bottom
+        use_freqai = self.freqai_enabled and '&-s_close' in dataframe.columns
 
         if exit_long_conditions:
             signal_long = self.combine_conditions(dataframe, exit_long_conditions, self.exit_trade_mode.value)
