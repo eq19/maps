@@ -486,8 +486,54 @@ class Fibbo(IStrategy):
         return dataframe
 
     def confirm_trade_entry(
-        self, pair: str, order_type: str, amount: float, rate: float, time_in_force: str, **kwargs
+        self, pair: str, order_type: str, amount: float, rate: float,
+        time_in_force: str, current_time: datetime, entry_tag: Optional[str],
+        side: str, **kwargs,
     ) -> bool:
+        if not self.freqai_enabled:
+            return True
+
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if dataframe is None or dataframe.empty:
+            return False
+
+        last = dataframe.iloc[-1]
+
+        # Use the NEW regression target we just set above
+        if "&-s_future_max_high" in last.index and pd.notna(last["&-s_future_max_high"]):
+            
+            # 1. Calculate percentage return using the ACTUAL order rate
+            if side == "long":
+                predicted_price = float(last["&-s_future_max_high"])
+                expected_return = (predicted_price - rate) / rate
+            else: # side == "short"
+                # If shorting, use the min_low target if you added it, or calculate downside
+                predicted_price = float(last.get("&-s_future_min_low", last["close"]))
+                expected_return = (rate - predicted_price) / rate
+
+            # 2. Minimum 2% profit gate
+            if expected_return < 0.02:
+                logger.info(f"{pair}: Rejected {side} ({entry_tag}) Expected return {expected_return:.2%} < 2%")
+                return False
+
+            # 3. Confidence filter
+            if "di_percentile" in last.index and pd.notna(last["di_percentile"]):
+                confidence = float(last["di_percentile"])
+                # Note: Assuming self.freqai_buy/sell are hyperopt parameters
+                threshold = float(self.freqai_buy.value) if side == "long" else float(self.freqai_sell.value)
+                if confidence < threshold:
+                    logger.info(f"{pair}: Rejected {side} ({entry_tag}) DI={confidence:.2%} < Threshold={threshold:.2%}")
+                    return False
+
+        elif "do_predict" in last.index:
+            prediction = int(last["do_predict"])
+            if side == "long" and prediction != 1:
+                return False
+            if side == "short" and prediction != -1: # ADDED MISSING SHORT CHECK
+                return False
+        else:
+            return False
+
         return True
 
     def informative_pairs(self):
