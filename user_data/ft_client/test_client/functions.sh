@@ -593,7 +593,7 @@ freqai() {
         kill -SIGTERM $PID
         echo "freqtrade trade stopped."
         break
-      elif grep -qiE "(traceback|exception)" <<< "$LOGLINE"; then
+      elif grep -qiE "(traceback|exception|attributeerror|keyerror|valueerror)" <<< "$LOGLINE"; then
         echo "❌ Error detected! Showing full traceback:"
         # Print the traceback (the current line and next lines until empty or non-indented)
         echo "$LOGLINE"  # Print the "Traceback" line
