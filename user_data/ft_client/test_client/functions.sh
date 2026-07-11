@@ -671,6 +671,7 @@ freqai() {
 }
 
 monitor_freqtrade() {
+
   local log_file="${1:-freqtrade.log}"
   local pid_file="${2:-freqtrade_pid.txt}"
   
