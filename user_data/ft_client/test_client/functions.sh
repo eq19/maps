@@ -580,45 +580,7 @@ freqai() {
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
     nohup freqtrade trade -v --dry-run --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
-
-    # Open descriptor to log stream
-    exec 3< <(tail -f freqtrade.log)
-
-    while read -r LOGLINE <&3; do
-      echo "$LOGLINE"
-      # Stop if Freqtrade has entered TRAINING state
-      if grep -qiE "throttling" <<< "$LOGLINE"; then
-        echo "✅ Throttling freqtrade trade..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        break
-      elif grep -qiE "(traceback|exception|attributeerror|keyerror|valueerror)" <<< "$LOGLINE"; then
-        echo "❌ Error detected! Showing full traceback:"
-        # Print the traceback (the current line and next lines until empty or non-indented)
-        echo "$LOGLINE"  # Print the "Traceback" line
-        # Read and print subsequent traceback lines
-        while read -r NEXT_LINE <&3; do
-          echo "$NEXT_LINE"
-          # Stop reading when we hit a non-indented line (not part of traceback)
-          # or when we hit a line that doesn't start with space/tab
-          if [[ ! "$NEXT_LINE" =~ ^[[:space:]] ]] && [[ ! "$NEXT_LINE" =~ ^[A-Za-z] ]]; then
-            # Put it back for next iteration? Better to break and exit
-            break
-          fi
-          # Check if this line contains the actual exception message
-          if grep -qE "Error|Exception|AttributeError|KeyError|ValueError|TypeError" <<< "$NEXT_LINE"; then
-            echo "⚠️  Final error: $NEXT_LINE"
-            break
-          fi
-        done
-        echo "❌ Stopping freqtrade due to error..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        exit 0
-      fi
-    done
+    monitor_freqtrade
 
     echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: freqai | Days: $days | Epochs: $epochs\nHyoeropt: ${hyperopt_loss:-$loss}\n$hr"
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
