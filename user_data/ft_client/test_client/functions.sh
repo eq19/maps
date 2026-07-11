@@ -586,8 +586,7 @@ freqai() {
     freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
       --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --log-file hyperopt.log \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
-      --random-state ${id} ${enable_protections}
-      #> /dev/null 2>&1
+      --random-state ${id} ${enable_protections} > /dev/null 2>&1
     if [ $? -eq 0 ] && ! grep -qiE "(traceback|object has no attribute|pickle not found)" hyperopt.log; then
       freqtrade hyperopt-list --best
     else
