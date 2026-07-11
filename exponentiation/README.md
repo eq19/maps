@@ -528,7 +528,7 @@ They interact, they transfer energy and momentum and angular momentum; excitatio
 
 Please note that we are not talking about the number 19 which is the ***8th-prime***. Here we are talking about 19th as sequence follow backward position of the 18th.
 
-```tip
+```note
 The same number of 7 vs 11 dimensions as we have discussed are hold by 7 primes vs 11 natural numbers in every first term of the prime spin. Consider the following:
 - the prime 19 is not counted on the first term since it is taking the position of number 1 which is not prime, this prime takes it place only on the second term,
 - assume the number 1 is still in its position then the 18 would be the quantity of all numbers so it is eligible as the origin position of zero,
@@ -541,7 +541,7 @@ The further terms will only have their specific meaning when they are formed in 
 
 ![Δ(19 vs 18) Scenario](https://user-images.githubusercontent.com/36441664/274093531-0878e3e5-6be3-448e-9ad4-3b34523c1e9c.jpg)
 
-This paper presents a novel conceptual framework aligning the stages of trading strategy hyperoptimization with the hierarchy of fundamental forces in physics.
+_[This paper](https://github.com/freqtrade/freqtrade/tree/2025.12/docs)_ presents a novel conceptual framework aligning the stages of trading strategy hyperoptimization with the hierarchy of fundamental forces in physics.
 
 ```tip
 Hyperopt in algorithmic trading involves tuning multiple _[interacting components](https://schema.freqtrade.io/schema.json)_ such as buy/sell logic, ROI models, risk protections, and meta-settings. To manage this complexity and define a meaningful sequence, we draw an analogy from the layered architecture of physics: from weak nuclear interactions to the theory of everything.
@@ -588,9 +588,11 @@ By mapping the **13 available optimization spaces** to this seven-layered struct
     └── System Operations
 ```
 
-The second model is useful because it lets us generate naturally all 168 symmetries of the Fano plane by splitting a cube into a set of four parallel 1x1x2 slices in the three ways possible, then arbitrarily permuting the slices in each of the three sets of four. 
+Regarded as acting on the set of eight individual subcubes of each cube in the diagram, actually generates a group of 168*8 = 1,344 permutations. 
 
 [![Fano plane](https://github.com/user-attachments/assets/1dd886da-df4c-452f-b4aa-fdd5860d5447)](https://m759.net/wordpress/?p=1793)
+
+If we implemented with _[trading schema](https://schema.freqtrade.io/schema.json)_, the group's action on the diagram's ***seven partitions of the subcubes yields only 168 distinct results***.
 
 ```
 ├── DIVISION 1: TRADING STRATEGY CORE
@@ -721,9 +723,11 @@ The second model is useful because it lets us generate naturally all 168 symmetr
         └── max_open_trades
 ```
 
-This image illustrates key concepts in technical analysis used to predict price movements in financial markets.
+Many trading platforms​ enable traders to plot Fibonacci lines. In an upward trend, you can select the low price and drag the cursor up to the high price.
 
 ![](https://github.com/user-attachments/assets/fba6a1e1-a932-4379-bad6-173f968f5fa4)
+
+The second model is useful because it lets us generate naturally all 168 symmetries of the Fano plane by splitting a cube into a set of four parallel 1x1x2 slices in the three ways possible, then arbitrarily permuting the slices in each of the three sets of four. 
 
 ```bash
 jekyll_build() {
@@ -747,9 +751,9 @@ jekyll_build() {
   fi
 ```
 
-Many trading platforms​ enable traders to plot Fibonacci lines. In an upward trend, you can select the Fibonacci line tool, select the low price and drag the cursor up to the high price.
+This image illustrates key concepts of the value of 168 we have discussed in technical analysis used to predict price movements in financial markets.
 
-***0.786 = √0.618 👉 786 - 618 = 168***
+***0.786 = √0.618 👉 786 - 618 = 168 = 13² - 1***
 
 ![Fibonacci Retracement](https://github.com/user-attachments/assets/02a8c6a4-31a6-4d5c-8f79-be92079e588f)
 
@@ -757,12 +761,65 @@ Being a high level of non-patterned noise in the form of outlier data points, th
 
 ## Free Parameters
 
+```
+UPWARD TREND
+- Profit Total
+- Trade Count
+- Win Rate
+- Profit Mean
+
+RETRACEMENT (φ)
+- CAGR
+- Calmar
+- Sortino
+- Max Drawdown
+
+EXTENTION
+- SQN
+- Sharpe
+- Profit Factor
+- Expectancy Ratio
+```
+
+The cubes' partitioning planes are added in binary (1+1=0) fashion.  Three partitioned cubes are collinear if and only if their partitioning planes' binary sum equals zero.
+
+[<img width="200" height="200" alt="17814414845935992033767656219664" src="https://github.com/user-attachments/assets/f44f327b-ed78-492c-a26a-f4f8d7baa432" />](http://finitegeometry.org/sc/8/plane.html)
+
+The second model is useful because it lets us generate naturally all ***168 symmetries*** of the Fano plane by splitting a cube into a set of four parallel 1x1x2 slices in the three ways possible, then arbitrarily permuting the slices in each of the ***three sets of four***.
+
+```
+     |    168    |    618    |
+-----+-----+-----+-----+-----+
+ 19¨ |  3¨ |  4¨ |  6¨ |  6¨ | 4¤  
+```
+
+You may learn that sets of algebraic objects has a multilinear relationship related to a vector space called _[tensor](https://en.wikipedia.org/wiki/Tensor)_. Tensors may map between different objects such as vectors, scalars, and even other tensors.
+
+```note
+Tensors are multi-dimensional arrays with a uniform type (e.g. int32, float32) and a shape. Shapes consist of a rank and a list of dimensions and may be static (i.e. fully known and fixed) or varying degrees of dynamic. See these references:
+- PyTorch: [Compiler dynamic shapes](https://pytorch.org/docs/stable/torch.compiler_dynamic_shapes.html), [torch.Tensor](https://pytorch.org/docs/stable/tensors.html)
+- TensorFlow: [Introduction to Tensors](https://www.tensorflow.org/guide/tensor)
+
+All tensors are immutable like Python numbers and strings: you can never update the contents of a tensor, only create a new one. [Dynamic shapes](https://github.com/iree-org/iree/tree/main/samples/dynamic_shapes) are useful for passing variable sized batches as input, receiving variable length sentences of text as output.
+```
+
+[![300px-Components_stress_tensor svg](https://user-images.githubusercontent.com/8466209/211590875-9cae3c47-bbdc-43d8-acc5-d8c64c802967.png)](https://en.wikipedia.org/wiki/Tensor)
+
 ```txt
  Osp(1) |  1 |  2 |  3 |  4 
-
 --------+----+----+----+----
- π(10)  |  2 |  3 |  5 |  7 
- 
+ π(10)  |  2 |  3 |  5 |  7
+
+     |    168    |    618    |
+-----+-----+-----+-----+-----+
+ 19¨ |  3¨ |  4¨ |  6¨ |  6¨ | 4¤ 
+```
+
+Although seemingly different, the various approaches to defining tensors describe the same geometric concept using different levels of abstraction.
+
+<img width="300" height="200" alt="17811486385125201724301876605934" src="https://github.com/user-attachments/assets/9e31f417-20a8-4c5f-8695-316c66d9eee3" />
+
+```
  Level  ↑
         │
  100%   ───────  (Top / Swing High)
@@ -780,6 +837,161 @@ Being a high level of non-patterned noise in the form of outlier data points, th
  0%     ───────  (Bottom / Swing Low)
         │
         └────────────────────── Time
+```
+
+![image](https://github.com/eq19/maps/assets/36441664/67e4cc85-97e2-4e67-8b69-793a382e7149)
+
+```
+============================================
+BASIC FORMULAS for Freqtrade Backtest Metrics
+============================================
+
+UPWARD TREND
+------------
+
+Profit Total
+= Gross Profit - Gross Loss
+
+Trade Count
+= Total number of closed trades
+
+Trades            Confidence Level
+< 50              Very Low
+50 – 100          Low
+100 – 200         Moderate
+200 – 500         Good
+500 – 1000        High
+> 1000            Very High
+
+Win Rate
+= Winning_Trades / Total_Trades * 100
+
+Win Rate          Interpretation
+< 30%             Low
+30% – 40%         Moderate
+40% – 55%         Healthy
+55% – 70%         High
+> 70%             Verify PF and RR
+
+Profit Mean per Trade
+= Win_Rate/ Initial_Capital * 100
+
+Profit Mean       Quality
+< 0%              Losing
+0% – 0.10%        Very Small Edge
+0.10% – 0.25%     Small Edge
+0.25% – 0.50%     Good Edge
+0.50% – 1.00%     Strong Edge
+> 1.00%           Exceptional Edge
+
+RETRACEMENT (φ)
+---------------
+
+CAGR (Compound Annual Growth Rate)
+
+CAGR for backtests longer than 1 year
+= (End_Value / Start_Value) ^ (1 / Years) - 1 * 100
+
+CAGR              Rating
+< 0%              Losing
+0% – 10%          Weak
+10% – 20%         Acceptable
+20% – 40%         Good
+40% – 60%         Strong
+> 60%             Exceptional
+
+CAGR for backtests shorter than 6 months
+
+CAGR              Interpretation
+Any Value         Informational Only
+Use with caution due to annualization effects.
+
+Calmar Ratio
+= CAGR / Max_Drawdown
+
+Calmar            Interpretation
+< 0.5             Poor
+0.5 – 1.0         Weak
+1.0 – 2.0         Acceptable
+2.0 – 3.0         Good
+3.0 – 5.0         Excellent
+> 5.0             Exceptional
+> 10              Verify Time Horizon
+> 20              Annualization Artifact / Extraordinary
+
+Sortino Ratio
+= (CAGR - Risk_Free_Rate) / Downside_Deviation
+
+Sortino           Interpretation
+< 1               Weak
+1 – 2             Acceptable
+2 – 3             Good
+3 – 5             Excellent
+5 – 10            Exceptional
+> 10              Investigate Robustness
+
+Max Drawdown (DD)
+= (Peak_Value - Trough_Value) / Peak_Value * 100
+
+DD                Rating
+< 5%              Excellent
+5% – 10%          Good
+10% – 20%         Acceptable
+20% – 30%         Risky
+30% – 50%         Dangerous
+> 50%             Unacceptable
+
+EXTENSION
+---------
+
+SQN (System Quality Number)
+= (Mean_Trade_Profit / StdDev_Trade_Profit) * (Total_Trades ** 0.5)
+
+SQN               Rating
+< 1.6             Poor
+1.6 – 2.0         Average
+2.0 – 3.0         Good
+3.0 – 5.0         Excellent
+5.0 – 7.0         Superb
+> 7.0             Exceptional
+
+Sharpe Ratio
+= (CAGR - Risk_Free_Rate) / StdDev_Returns
+
+Sharpe            Interpretation
+< 0               Losing
+0 – 1             Weak
+1 – 2             Good
+2 – 3             Excellent
+3 – 5             Exceptional
+5 – 8             Extremely Rare
+> 8               Investigate Further
+
+Profit Factor (PF)
+ = Gross_Profit / abs(Gross_Loss)
+
+PF                Quality
+< 1.0             Losing
+1.0 – 1.10        Weak
+1.10 – 1.25       Acceptable
+1.25 – 1.50       Good
+1.50 – 2.00       Strong
+> 2.00            Exceptional
+
+Expectancy Ratio
+= (Win_Rate * Avg_Win) - ((1 - Win_Rate) * Avg_Loss)
+= (Profit_Total) / Total_Trades / (Risk_per_Trade)
+= (Avg_Win * Win_Rate) - (Avg_Loss * Loss_Rate)
+= (Avg_Win * Win_Rate) - (Avg_Loss * (1 - Win_Rate))
+
+Expectancy Ratio  Rating
+< 0              Losing
+0 – 0.10         Very Weak
+0.10 – 0.25      Weak
+0.25 – 0.50      Acceptable
+0.50 – 1.00      Good
+1.00 – 2.00      Strong
+> 2.00           Exceptional
 ```
 
 In our approach a 3-form is not an object that exist in addition to the metric, it is the only object that exist and in particular ***[the 4D metric, is defined by the 3-form](https://eq19.github.io/identition/span12/#three-3-layers)***.
@@ -2313,6 +2525,10 @@ In this example, the content from a Markdown document `document.md` that specifi
 ```
 
 [![Parsering](https://github-production-user-asset-6210df.s3.amazonaws.com/8466209/260864973-50fbc0a0-7441-4800-97aa-265b0dfd2ac2.png)](https://hub.docker.com/layers/jekyll/jekyll/latest/images/sha256-400b8d1569f118bca8a3a09a25f32803b00a55d1ea241feaf5f904d66ca9c625)
+
+The runner is the application that runs a job from a GitHub Actions workflow. It is used by GitHub Actions in the [hosted virtual environments](https://github.com/actions/virtual-environments), or you can [self-host the runner](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/about-self-hosted-runners) in your own environment. We use both of them to create [group as a four-vector](https://gist.github.com/eq19/e9832026b5b78f694e4ad22c3eb6c3ef#lexer-vs-parser).
+
+[![choosing-the-runner](https://user-images.githubusercontent.com/8466209/227559588-88480a1b-b339-46e8-9516-572f90f788f7.png)](https://docs.github.com/en/actions/using-jobs/choosing-the-runner-for-a-job#choosing-runners-in-a-group)
 
 Such of method is used to generate a _[basic grammar](https://github.com/chetabahana)_ which algorithm is adaptable for any kind of implementations or applications.
 
