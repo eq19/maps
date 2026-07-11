@@ -15,13 +15,43 @@ Gauge invariance is a powerful tool to determine the dynamical forces. Particle 
 
 ## Standard Theory
 
+Electroweak force is the unified description of two (2) fundamental interactions: electromagnetism (electromagnetic interaction) and the weak interaction.
+
 ```note
 ***The Higgs and the electromagnetic field have no effect on each other***, at the level of the fundamental forces ("tree level"), while any other combination of the hypercharge and the weak isospin must interact with the Higgs. ***This causes an apparent separation between the weak force, which interacts with the Higgs, and electromagnetism, which does not***. _([Wikipedia](https://en.wikipedia.org/wiki/Electroweak_interaction#Formulation))_
 ```
 
 ![image](https://github.com/eq19/maps/assets/8466209/7aa970a3-ee76-4b08-afd1-6e818392e78d)
 
+Thus, if the temperature is high enough – approximately 10¹⁵ K – then the electromagnetic force and weak force merge into a combined electroweak force.
+
 ![f22b28c976a4980061b601872e2faac8039dd7d8](https://github.com/eq19/maps/assets/8466209/0b47e7b5-ec45-4964-9dba-8fb03379483d)
+
+```
+- This diagram illustrates a triple gauge boson vertex involving two W bosons (\(W^{-}\)) and a neutral gauge boson (\(Z\) or \(\gamma \)).
+- The wavy lines represent the propagation of the gauge bosons, with arrows indicating the flow of charge or momentum.
+- The central dot signifies a vertex, a specific point in spacetime where these particles interact according to the laws of electroweak theory.
+```
+
+![TjQdBoIUDG](https://github.com/eq19/maps/assets/8466209/f99e8694-1f3d-4b9e-a224-01888fb406bb)
+
+After electroweak mixing, they would combine to form the photon and the Z boson while the gluons remain separate and continue to mediate color-changing interactions among quarks.
+
+![1591890434759 (1)](https://github.com/eq19/maps/assets/8466209/bf65715f-bace-4037-ab1d-6f46a29c7689)
+
+This section depicts Right-handed fermions, a classification of particles in the Standard Model that do not participate in the weak interaction.
+
+<img width="1024" height="1024" alt="17808752779779199908608727981542" src="https://github.com/user-attachments/assets/92be8e46-e110-4310-94fc-74ecba310839" />
+
+Experiments have verified that the weak and electromagnetic force become identical at very small distances and provide the GUT description of the carrier particles for the forces.
+
+![Beta-minus_Decay svg](https://github.com/eq19/maps/assets/8466209/9f176844-b61c-4623-80d8-fdcf6c457cf1)
+
+You can use this comprehensive reference to configure any pairlist method with all available parameters!
+
+<img width="1536" height="1024" alt="file_00000000e68072089a30810b1859e43d" src="https://github.com/user-attachments/assets/8309d259-f79e-407a-be3b-6d122a4e2a68" />
+
+## Interactions
 
 ![images (2)](https://github.com/eq19/maps/assets/8466209/898f7c2c-015b-46eb-ae9c-67a5222e9457)
 
@@ -29,17 +59,9 @@ Gauge invariance is a powerful tool to determine the dynamical forces. Particle 
 
 ![images (3)](https://github.com/eq19/maps/assets/8466209/37362c8c-a26a-4fe9-9ca1-b0b8f5fa8e56)
 
-Experiments have verified that the weak and electromagnetic force become identical at very small distances and provide the GUT description of the carrier particles for the forces.
-
-## Interactions
-
 ![images (1)](https://github.com/eq19/maps/assets/8466209/ae4e3b5e-cb48-49a4-9563-5ed07261c009)
 
 ![boson-particle-decay-virtual-particle-w-and-z-bosons-lepton-synchrotron-hadron-particle-physics-annihilation-scattering-thumbnail](https://github.com/eq19/maps/assets/8466209/1bb197ad-453f-4539-8df2-d674d05f626e)
-
-![TjQdBoIUDG](https://github.com/eq19/maps/assets/8466209/f99e8694-1f3d-4b9e-a224-01888fb406bb)
-
-![image](https://github.com/eq19/maps/assets/8466209/f7dd5f3a-e63d-4a7f-ac4a-b4e16e1038f6)
 
 ![EWT3b-600x400](https://github.com/eq19/maps/assets/8466209/70b992e3-252b-4e6f-8dcc-01bc1e982822)
 
@@ -92,9 +114,15 @@ majorana-3 |   2x2   |    -    |    13     |     -     |     13     |   i13
      Total |    20   |   12    |    55     |    72     |    192     |  96+i96 ✔️
 ```
 
+<img width="1536" height="1024" alt="file_0000000014d471fa8ba99a7796e964af" src="https://github.com/user-attachments/assets/5e101146-7516-4ec0-9a4b-11ef2605518e" />
+
 ## Symmetry Breaking
 
-```note
+<img width="330" height="208" alt="1780872554391282391694177762548" src="https://github.com/user-attachments/assets/646756c4-e988-4877-9f57-75775395b7a7" />
+
+![image](https://github.com/eq19/maps/assets/8466209/f7dd5f3a-e63d-4a7f-ac4a-b4e16e1038f6)
+
+```tip
 The pattern of [weak isospin](https://en.wikipedia.org/wiki/Weak_isospin), T3, and [weak hypercharge](https://en.wikipedia.org/wiki/Weak_hypercharge), YW, of the known elementary particles, showing electric charge along the [weak mixing angle](https://en.wikipedia.org/wiki/Weinberg_angle). The four components of the Higgs field (squares) break the electroweak symmetry and interact with other particles to give them mass, with three components becoming part of the massive W and Z bosons. Allowed decays of the neutral Higgs boson, H, (circled) satisfy electroweak charge conservation. _([Wikipedia](https://en.wikipedia.org/wiki/Electroweak_interaction))_
 ```
 
@@ -127,7 +155,118 @@ $True Prime Pairs:
                     Δ                 Δ                 Δ       
 ```
 
-![Beta-minus_Decay svg](https://github.com/eq19/maps/assets/8466209/9f176844-b61c-4623-80d8-fdcf6c457cf1)
+```note
+Here's a comprehensive summary of **all parameters for each pairlist method**:
+
+## Freqtrade Pairlist Methods - Complete Parameters
+
+### **Generators** (create initial pairlists)
+
+#### 1. **StaticPairList**
+- `allow_inactive` (boolean): Skip pair validation against active markets (optional)
+
+#### 2. **VolumePairList**
+- `number_assets` (number, required): Number of top pairs to select
+- `sort_key` (string, default: "quoteVolume"): Sort key for sorting
+- `min_value` (number, default: 0): Minimum volume threshold
+- `max_value` (number, default: None): Maximum volume threshold
+- `refresh_period` (number, default: 1800): Refresh interval in seconds
+- `lookback_days` (number, default: 0): Days to look back (for advanced mode)
+- `lookback_timeframe` (string, default: ""): Timeframe for lookback
+- `lookback_period` (number, default: 0): Number of periods to look back
+
+#### 3. **PercentChangePairList**
+- `number_assets` (number): Top pairs to select by % change
+- `min_value` (number): Minimum % change threshold
+- `max_value` (number): Maximum % change threshold
+- `sort_direction` (string): "asc" or "desc" for sort order
+- `refresh_period` (number, default: 1800): Refresh interval in seconds
+- `lookback_days` (number): Days to look back
+- `lookback_timeframe` (string): Timeframe for lookback
+- `lookback_period` (number): Number of periods
+
+#### 4. **ProducerPairList**
+- `number_assets` (number, optional): Limit pairlist length
+- `producer_name` (string, required): Name of the producer
+
+#### 5. **RemotePairList**
+- `pairlist_url` (string, required): Remote server URL or file path
+- `mode` (string, default: "whitelist"): "whitelist" or "blacklist"
+- `processing_mode` (string, default: "filter"): "filter" or "append"
+- `number_assets` (number, optional): Number of pairs to return
+- `refresh_period` (number, default: 1800): Refresh interval in seconds
+- `keep_pairlist_on_failure` (boolean, default: true): Keep last pairlist on failure
+- `read_timeout` (number, default: 60): Read timeout in seconds
+- `bearer_token` (string, optional): Bearer token for auth
+- `save_to_file` (string, optional): Save pairlist to file
+
+#### 6. **MarketCapPairList**
+- `number_assets` (number): Maximum pairs to return in whitelist mode
+- `max_rank` (number): Maximum marketcap rank to consider
+- `refresh_period` (number, default: 86400): Refresh interval in seconds
+- `mode` (string, default: "whitelist"): "whitelist" or "blacklist"
+- `categories` (array, default: []): CoinGecko category IDs to filter
+
+#### 7. **CrossMarketPairList**
+- `pairs_exist_on` (string, default: "both_markets"): "both_markets" or "current_market_only"
+
+---
+
+### **Filters** (refine existing pairlists)
+
+#### 8. **AgeFilter**
+- `min_days_listed` (number, default: 10): Minimum days pair must be listed
+- `max_days_listed` (number, default: None): Maximum days pair can be listed
+
+#### 9. **DelistFilter**
+- `max_days_from_now` (number, default: 0): Maximum days until delisting
+
+#### 10. **FullTradesFilter**
+- No parameters
+
+#### 11. **OffsetFilter**
+- `offset` (number, required): Number of pairs to skip
+- `number_assets` (number, optional): Number of pairs to take
+
+#### 12. **PairInformationFilter**
+- `selection_mode` (string): "whitelist" or "blacklist"
+- `info_key` (string): Field to check (supports dot notation for nested fields)
+- `info_compare_value` (string): Value to match
+
+#### 13. **PerformanceFilter**
+- `minutes` (number, default: 0): Rolling window in minutes (0 = all-time)
+- `min_profit` (number, optional): Minimum profit ratio (e.g., 0.01 = 1%)
+
+#### 14. **PrecisionFilter**
+- No parameters
+
+#### 15. **PriceFilter**
+- `min_price` (number, default: 0): Minimum price threshold
+- `max_price` (number, default: 0): Maximum price threshold
+- `max_value` (number, optional): Maximum minimum value change
+- `low_price_ratio` (number, default: 0): Filter low-priced pairs by ratio
+
+#### 16. **RangeStabilityFilter**
+- `lookback_days` (number): Days to look back
+- `min_rate_of_change` (number): Minimum rate of change (0.01 = 1%)
+- `max_rate_of_change` (number): Maximum rate of change (0.99 = 99%)
+- `refresh_period` (number, default: 86400): Refresh interval in seconds
+- `sort_direction` (string, optional): "asc" or "desc"
+
+#### 17. **ShuffleFilter**
+- `seed` (number, optional): Random seed for reproducibility
+- `shuffle_frequency` (string, default: "candle"): "candle" or "iteration"
+
+#### 18. **SpreadFilter**
+- `max_spread_ratio` (number, default: 0.005): Maximum bid/ask spread ratio
+
+#### 19. **VolatilityFilter**
+- `lookback_days` (number): Days to look back
+- `min_volatility` (number): Minimum volatility threshold
+- `max_volatility` (number): Maximum volatility threshold
+- `refresh_period` (number, default: 86400): Refresh interval in seconds
+- `sort_direction` (string, optional): "asc" or "desc"
+```
 
 ```txt
 $True Prime Pairs:
@@ -154,6 +293,7 @@ $True Prime Pairs:
                     Δ                 Δ                 Δ       
 ```
 
+<img width="1536" height="1024" alt="file_00000000ede871fab17942731c941cb3" src="https://github.com/user-attachments/assets/5fb267a3-0d4c-4daf-955b-5fddb08a04e6" />
 
 ## Problem
 
@@ -238,7 +378,9 @@ So, in the end, you do need. But the path can get similar when you move off arbi
 |-- 38 ---|              |-- 33 ---|                        |-- {27}--|
 ```
 
-![1591890434759 (1)](https://github.com/eq19/maps/assets/8466209/bf65715f-bace-4037-ab1d-6f46a29c7689)
+The lack of detection of _[proton decay](https://en.wikipedia.org/wiki/Proton_decay)_ (in any form) brings into question the veracity of SU(5) GUTs of all types; however, while the models are highly constrained by this result, they are not in general ruled out.
+
+[<img width="960" height="641" alt="17810483904164676175737635305855" src="https://github.com/user-attachments/assets/96c4b712-12f0-46f8-9655-4a4b6b1ae23e" />](https://en.wikipedia.org/wiki/Proton_decay)
 
 ```txt
 $True Prime Pairs:
@@ -305,6 +447,6 @@ Sequence Layers:
      |------ 102¨ -----|---------------  66¨ ----------------|
 ```
 
-
 ![IMG_20240118_121014](https://github.com/eq19/maps/assets/8466209/942b517a-954c-4f1e-b075-14a52e08d9be)
 
+<img width="1536" height="1024" alt="file_00000000ac0871fa9b78fb04644931ae" src="https://github.com/user-attachments/assets/8e21b8d4-9f4f-4a4f-aca9-22c07ce0a183" />

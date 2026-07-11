@@ -48,6 +48,12 @@ Einstein’s theory of General Relativity states that spacetime is curved by the
 ## Gravitating Objects
 
 ```note
+Despite being perhaps the most familiar fundamental interaction, gravity is not described by the Standard Model, due to contradictions that arise when combining general relativity—the modern theory of gravity—and quantum mechanics.[56][57] However, gravity is so weak at microscopic scales, that it is essentially unmeasurable. The graviton is postulated to be the mediating particle, but has not yet been proved to exist. _([Wikipedia](https://en.wikipedia.org/wiki/Standard_Model#Gravity))_
+```
+
+[![Fundamental Interactions of the Standard Model including the hypothetical graviton](https://github.com/user-attachments/assets/82de00f2-e014-47b0-9560-fa0226f00d4a)](https://en.wikipedia.org/wiki/Standard_Model#Gravity)
+
+```note
 A lot number of positive color-charges move from the positive charged particle toward the negative charged particles, and negative color-charges move from negative charged particle toward the positive charged particle and they combine in each other _([Gravity in Time space - pdf](https://github.com/eq19/maps/files/13950511/Descriptiongravityinteractwithspace-timeatthequantumlevel.pdf))_
 ```
 

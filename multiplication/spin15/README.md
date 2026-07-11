@@ -166,9 +166,7 @@ The Prime Recycling ζ(s):
 ----------------------+-----+                                                ---
 ```
 
-***1st Fermion Fields = 96 / 12 Moon Orbit = 8 (1st-gap)***
-
-[![8 (1st-gap)](https://github.com/eq19/maps/assets/8466209/5c478950-c4e2-4a83-b5c9-ec1e36cd6fa1)](https://eq19.github.io/#identition-zones)
+[![DE102011101032A9.pdf](https://user-images.githubusercontent.com/36441664/74591731-f5cfe300-504c-11ea-9e04-d814c57aa969.png)](https://eq19.github.io/exponentiation/#parsering-structure)
 
 ## Truncated Perturbation
 

@@ -23,11 +23,28 @@ GUT is also successful in describing a system of carrier particles for all four 
 
 ![Electroweak svg (1)](https://github.com/eq19/maps/assets/8466209/ee076e8d-f300-472b-b9f3-08ffc989483e)
 
-![image](https://github.com/eq19/maps/assets/36441664/67e4cc85-97e2-4e67-8b69-793a382e7149)
 
-![image](https://github.com/eq19/maps/assets/36441664/37c92ad8-99ee-4137-a7e3-3273d973cf1b)
+This diagram outlines the algebraic gauge structure of particle physics, which is mathematically formulated as the product group {U}(1) x {SU}(2) x {SU}(3).
+
+![1591890434759](https://github.com/eq19/maps/assets/8466209/f70d88d5-6d21-42ce-baea-131a52b0fcaf)
+
+A number of other GUT models are based upon subgroups of SO(10). ***They are the minimal [left-right model](https://eq19.github.io/identition/span12/#the-quantum-gravity), [SU(5)](https://en.wikipedia.org/wiki/SU(5)), [flipped SU(5)](https://en.wikipedia.org/wiki/Flipped_SU(5)) and the Pati–Salam model***.
+
+```note
+SU(5) fermions of standard model in 5+10 representations. The sterile neutrino singlet's 1 representation is omitted. Neutral bosons are omitted, but would occupy diagonal entries in complex superpositions. X and Y bosons as shown are the opposite of the conventional definition
+```
+
+[![SO(10)](https://github.com/eq19/maps/assets/8466209/b1d3bccd-a423-4ebb-a397-e973b2cc8e6e)
+](https://en.wikipedia.org/wiki/Grand_Unified_Theory)
+
+[![SU(5)_representation_of_fermions](https://github.com/eq19/maps/assets/8466209/2b1aa8f5-0028-4549-a091-eee291ed4890)
+](https://en.wikipedia.org/wiki/Grand_Unified_Theory)
+
+This results in a fundamental causal relation to the primes, systemically the products are entered into the position system.
 
 ## Unification
+
+![image](https://github.com/eq19/maps/assets/36441664/37c92ad8-99ee-4137-a7e3-3273d973cf1b)
 
 ```txt
 $True Prime Pairs:
@@ -188,8 +205,6 @@ These waves have phase offsets, meaning they peak at different times. This all r
 ## Black Hole
 
 ![main-qimg-6874830a97ce37b0b02cc3ae3d2268f1](https://github.com/eq19/maps/assets/8466209/d2e19618-dbba-4c29-b03c-8a4a3bdc0bcd)
-
-![1591890434759](https://github.com/eq19/maps/assets/8466209/f70d88d5-6d21-42ce-baea-131a52b0fcaf)
 
 ![I4dae](https://github.com/eq19/maps/assets/8466209/646da007-9322-4468-b36a-d73016a129b0)
 

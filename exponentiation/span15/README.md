@@ -63,6 +63,30 @@ A square system of coupled nonlinear equations can be solved iteratively by Newt
 
 [![gradien](https://user-images.githubusercontent.com/36441664/128025898-187ba576-795f-4578-af71-ff02a8b682b1.png)](https://eq19.github.io/multiplication/#transformation-to-exponentiation)
 
+By the paper of _[Standard Model Physics from an Algebra](https://arxiv.org/abs/1611.09182)_ the Complex octonions have been used to describe the generations of [quarks](https://en.wikipedia.org/wiki/Quark) and [leptons](https://en.wikipedia.org/wiki/Lepton)
+
+```txt
+Decoded Complex Numbers:
+
+[01] (r1.0 + i1.0j)  ‹--- quark-1
+[02] (r2.0 + i2.0j)  ‹--- quark-2
+[03] (r3.0 + i3.0j)  ‹--- quark-3
+[04] (r4.0 + i4.0j)  ‹--- quark-4
+[05] (r5.0 + i5.0j)  ‹--- quark-5
+[06] (r6.0 + i6.0j)  ‹--- quark-6
+[07] (r7.0 + i7.0j) 👈 Center of Metatron ✔️
+[08] (r8.0 + i8.0j)    ‹--- lepton-1
+[09] (r9.0 + i9.0j)    ‹--- lepton-2
+[10] (r10.0 + i10.0j)  ‹--- lepton-3
+[11] (r11.0 + i11.0j)  ‹--- lepton-4
+[12] (r12.0 + i12.0j)  ‹--- lepton-5
+[13] (r13.0 + i13.0j)  ‹--- lepton-6
+```
+
+Given a Model, _[MARTY](https://gitHub.com/eq19/lexer)_ may compute symbolically and automatically theoretical quantities. First, Feynman rules are derived.
+
+[![A Modern ARtificial Theoritical phYsicist (MARTY)](https://github.com/user-attachments/assets/9080b501-65ac-4eb7-b4d9-477e4f8bb4ad)](https://gitHub.com/eq19/lexer)
+
 A gauge colour rotation is _[a spacetime-dependent SU(3)](https://en.m.wikipedia.org/wiki/Special_unitary_group#The_group_SU(3))_ group element. They span the [Lie algebra](https://github.com/lkpetrich/Semisimple-Lie-Algebras) of the SU(3) group in the defining representation.
 
 ```note
@@ -79,19 +103,7 @@ The lattice is also the method to study QCD in extreme conditions (high temperat
 
 ![images6-ezgif com-resize](https://github.com/eq19/maps/assets/8466209/9831d77d-9c18-4691-b0be-5bb244509368)
 
-Both 1/89 and 1/109 have the Fibonacci sequence _[encoded in their decimal expansions](https://eq19.github.io/addition/#minor-hexagons)_ illustrates a period-24 palindromic that bring ***[the powers of pi](https://eq19.github.io/multiplication/#lineage-retracement)***. 
-
-```note
-When the digital root of perfect squares is sequenced within a ***modulo 30 x 3 = modulo 90 horizon***, beautiful symmetries in the form of period-24 palindromes are revealed, which the author has documented on the On-Line Encyclopedia of Integer Sequences as [Digital root of squares of numbers not divisible by 2, 3 or 5 (A24092)](https://oeis.org/A240924):
-
-1, 4, 4, 7, 1, 1, 7, 4, 7, 1, 7, 4, 4, 7, 1, 7, 4, 7, 1, 1, 7, 4, 4, 1
-
-In the matrix pictured below, we list ***the first 24 elements*** of our domain, take their squares, calculate the modulo 90 congruence and digital roots of each square, and display the digital root factorization dyad for each square (and map their collective bilateral 9 sum symmetry).  _([PrimesDemystified](https://primesdemystified.com/#Distribution_of_Perfect_Squares))_
-```
-
-[![root profiles](https://user-images.githubusercontent.com/36441664/277179073-e0411710-779e-4cea-8a37-ff7c635f46f7.png)](https://eq19.github.io/exponentiation/folder14/#root-profiles)
-
-Geometrically, a transformation matrix rotates, stretches, or shears the vectors it acts upon. The corresponding [eigenvalue](https://www.lancaster.ac.uk/staff/schomeru/lecturenotes/Quantum%20Mechanics/S15.html#E266) is often represented as the ***multiplying factor***.
+The simplest theory describing the above is the SU(3) one with the gluons as the basis states of the Lie algebra. That is, gluons transform in the adjoint representation of SU(3), which is 8-dimensional.
 
 ## Matrix Scheme
 
@@ -142,6 +154,22 @@ bispinor-4 |    2    |    3    |     3     |    18     |     24     |   19+i5
 ===========+=========+=========+===========+===========+============+===========
      Total |    8    |   12    |    12     |    72     |     96     |   66+i30
 ```
+
+```note
+When the digital root of perfect squares is sequenced within a ***modulo 30 x 3 = modulo 90 horizon***, beautiful symmetries in the form of period-24 palindromes are revealed, which the author has documented on the On-Line Encyclopedia of Integer Sequences as [Digital root of squares of numbers not divisible by 2, 3 or 5 (A24092)](https://oeis.org/A240924):
+
+1, 4, 4, 7, 1, 1, 7, 4, 7, 1, 7, 4, 4, 7, 1, 7, 4, 7, 1, 1, 7, 4, 4, 1
+
+In the matrix pictured below, we list ***the first 24 elements*** of our domain, take their squares, calculate the modulo 90 congruence and digital roots of each square, and display the digital root factorization dyad for each square (and map their collective bilateral 9 sum symmetry).  _([PrimesDemystified](https://primesdemystified.com/#Distribution_of_Perfect_Squares))_
+```
+
+[![root profiles](https://user-images.githubusercontent.com/36441664/277179073-e0411710-779e-4cea-8a37-ff7c635f46f7.png)](https://eq19.github.io/exponentiation/folder14/#root-profiles)
+
+Both 1/89 and 1/109 have the Fibonacci sequence _[encoded in their decimal expansions](https://eq19.github.io/addition/#minor-hexagons)_ illustrates a period-24 palindromic that bring ***[the powers of pi](https://eq19.github.io/multiplication/#lineage-retracement)***. 
+
+***7 x π(89) = 7 x 24 = 168 = π(1000)***
+
+![](https://user-images.githubusercontent.com/8466209/244855108-b80b3c2e-1a13-4b55-828a-72ed15b448dd.png)
 
 ## Interactions
 
@@ -362,3 +390,167 @@ From our consideration we can conclude that the distribution of prime numbers mu
 [![identities zones](https://user-images.githubusercontent.com/8466209/241491860-72da956a-1740-4ed7-83ef-3844ae1ff8d2.png)](https://eq19.github.io/#identition-zones)
 
 So by simple words this 11 dimensions brings us back to the _[root functions](https://eq19.github.io/exponentiation/#root-functions)_. The only difference is _the base unit_. It is now carrying the above `p(33) = 10143`.
+
+[![8 (1st-gap)](https://github.com/eq19/maps/assets/8466209/5c478950-c4e2-4a83-b5c9-ec1e36cd6fa1)](https://eq19.github.io/#identition-zones)
+
+***1st Fermion Fields = 96 / 12 Moon Orbit = 8 (1st-gap)***
+
+The product of each pair of terms can be given by multiplication of the coefficients and a [multiplication table](https://en.wikipedia.org/wiki/Multiplication_table) of the unit octonions, like this one:
+
+```tip
+This _[octonion](https://en.wikipedia.org/wiki/Octonion)_ with seven points and seven lines (the circle through 1, 2, and 3 is considered a line) is called the _[Fano plane](https://en.wikipedia.org/wiki/Fano_plane)_.
+
+- The product of each pair of terms can be given by multiplication of the coefficients and a multiplication table of the unit octonions, like this one (given both by Arthur Cayley in 1845 and John T. Graves in 1843.[![](https://github.com/user-attachments/assets/8904931c-40c8-4991-953b-f6922ae0405f)](https://en.wikipedia.org/wiki/Octonion)
+- Most off-diagonal elements of the table are antisymmetric, making it almost a skew-symmetric matrix except for the elements on the main diagonal, as well as the row and column for which e0 is an operand.[![Commutation relations of g2 and the incidence geometry of the Fano plane](https://github.com/user-attachments/assets/f6a69b96-d817-495c-80a2-242cca890bb4)](https://arxiv.org/abs/2207.13946v1)
+- The above definition is not unique, however; it is only one of 480 possible definitions for octonion multiplication with e0 = 1. The others can be obtained by permuting and changing the signs of the non-scalar basis elements {e1, e2, e3, e4, e5, e6, e7}.
+- The `16 x 30 = 480` different algebras are isomorphic, and there is rarely a need to consider which particular multiplication rule is used.
+- Each of these 480 definitions is invariant up to signs under some 7 cycle of the points (1 2 3 4 5 6 7), and for each 7 cycle there are four definitions, differing by signs and reversal of order.
+
+A common choice is to use the definition invariant under the 7 cycle (1 2 3 4 5 6 7) with e1e2 = e4 by using the triangular multiplication diagram, or Fano plane below that also shows the sorted list of 1 2 4 based 7-cycle triads and its associated multiplication matrices in both en and IJKL format. _([Wikipedia](https://en.wikipedia.org/wiki/Octonion))_
+```
+
+[![complex octonion](https://github.com/user-attachments/assets/c91dc9a3-4a8a-4a9f-84fe-2955b13aeca9)](https://eq19.github.io/exponentiation/#complex-octonions)
+
+## Lexering Structure
+
+If we implemented with _[trading schema](https://schema.freqtrade.io/schema.json)_, the group's action on the diagram's ***seven partitions of the subcubes yields only 168 distinct results***.
+
+```
+├── DIVISION 1: TRADING STRATEGY CORE
+│   ├── Entry/Exit Strategy
+│   │   ├── timeframe
+│   │   ├── minimal_roi
+│   │   ├── use_exit_signal
+│   │   ├── exit_profit_only
+│   │   ├── exit_profit_offset
+│   │   ├── ignore_roi_if_entry_signal
+│   │   ├── ignore_buying_expired_candle_after
+│   │   ├── process_only_new_candles
+│   │   └── force_entry_enable
+│   │
+│   └── Position Management
+│       ├── position_adjustment_enable
+│       ├── max_entry_position_adjustment
+│       ├── amend_last_stake_amount
+│       └── last_stake_amount_min_ratio
+│
+├── DIVISION 2: CAPITAL & RISK
+│   ├── Capital Allocation
+│   │   ├── stake_currency
+│   │   ├── stake_amount
+│   │   ├── tradable_balance_ratio
+│   │   ├── available_capital
+│   │   ├── dry_run_wallet
+│   │   ├── amount_reserve_percent
+│   │   ├── minimum_trade_amount
+│   │   └── targeted_trade_amount
+│   │
+│   └── Risk Boundaries
+│       ├── stoploss
+│       ├── trailing_stop
+│       ├── trailing_stop_positive
+│       ├── trailing_stop_positive_offset
+│       ├── trailing_only_offset_is_reached
+│       ├── fee
+│       ├── liquidation_buffer
+│       └── custom_price_max_distance_ratio
+│
+├── DIVISION 3: EXCHANGE OPERATIONS
+│   ├── Exchange Authentication
+│   │   └── exchange (contains: name, key, secret, password, uid, account_id, wallet_address, private_key, ccxt_config, ccxt_async_config, ccxt_sync_config)
+│   │
+│   ├── Market Connection
+│   │   ├── trading_mode
+│   │   ├── margin_mode
+│   │   ├── proxy_coin
+│   │   ├── coingecko
+│   │   ├── exchange.pair_whitelist
+│   │   ├── exchange.pair_blacklist
+│   │   ├── exchange.log_responses
+│   │   ├── exchange.enable_ws
+│   │   ├── exchange.unknown_fee_rate
+│   │   ├── exchange.outdated_offset
+│   │   └── exchange.markets_refresh_interval
+│   │
+│   └── Order Routing
+│       ├── order_types
+│       ├── order_time_in_force
+│       ├── unfilledtimeout
+│       └── cancel_open_orders_on_exit
+│
+├── DIVISION 4: MARKET DATA
+│   ├── Storage Layer
+│   │   ├── user_data_dir
+│   │   ├── dataformat_ohlcv
+│   │   ├── dataformat_trades
+│   │   ├── db_url
+│   │   ├── export
+│   │   └── disableparamexport
+│   │
+│   ├── Data Pipeline
+│   │   ├── datadir
+│   │   ├── startup_candle
+│   │   ├── pairlists ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ 👈 Center
+│   │   ├── new_pairs_days
+│   │   └── download_trades
+│   │
+│   └── Price Discovery
+│       ├── entry_pricing
+│       └── exit_pricing
+│
+├── DIVISION 5: INTELLIGENCE & ANALYTICS
+│   ├── Intelligence Suite
+│   │   ├── freqai
+│   │   └── orderflow
+│   │
+│   └── Analytics Dashboard
+│       ├── reduce_df_footprint
+│       ├── lookahead_analysis_exportfilename
+│       ├── recursive_strategy_search
+│       ├── disable_dataframe_checks
+│       ├── analyze_per_epoch
+│       └── print_all
+│
+├── DIVISION 6: DEVELOPMENT & OPTIMIZATION
+│   └── Development Suite
+│       ├── backtest_breakdown
+│       ├── backtest_cache
+│       ├── hyperopt_path
+│       ├── epochs
+│       ├── early_stop
+│       ├── spaces
+│       ├── hyperopt_loss
+│       ├── hyperopt_jobs
+│       ├── hyperopt_random_state
+│       └── hyperopt_min_trades
+│
+└── DIVISION 7: SYSTEM INTEGRATION
+    ├── External Communications
+    │   ├── telegram
+    │   ├── webhook
+    │   ├── discord
+    │   ├── api_server
+    │   └── bot_name
+    │
+    └── System Operations
+        ├── dry_run
+        ├── initial_state
+        ├── internals
+        ├── log_config
+        ├── external_message_consumer
+        ├── experimental
+        ├── add_config_files
+        ├── fiat_display_currency
+        └── max_open_trades
+```
+
+The product of each pair of terms can be given by multiplication of the coefficients and a [multiplication table](https://en.wikipedia.org/wiki/Multiplication_table) of the unit octonions.
+
+[![Freqtrade Database](https://github.com/user-attachments/assets/aeeda3c9-c22a-41e9-af41-66e6255df1fc)](https://databasesample.com/database/freqtrade-database)
+
+[<img width="1183" height="574" alt="17806090949934473714611364250223" src="https://github.com/user-attachments/assets/e4078dad-3925-411c-b2ce-dbf713935bb7" />](https://github.com/ariga/atlas)
+
+[![](https://github.com/user-attachments/assets/4570dde6-9052-464f-959b-696784da3a07)](https://GitHub.com/eq19/parser)
+
+[![teaching-machines-glouppe_compressed.pdf](https://user-images.githubusercontent.com/8466209/222966425-9da703ef-9189-44e6-8fc1-8b766cf9f7bb.png)](https://eq19.github.io/identition/)
+

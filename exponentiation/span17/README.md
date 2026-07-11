@@ -75,19 +75,6 @@ The indistinguishability criterion in (a) is very important: it means that there
 
 They are related to our everyday ideas of probability by the simple rule that the probability of an event is the square of the length of the corresponding amplitude arrow.
 
-```note
-Feynman replaces complex numbers with spinning arrows, which start at emission and end at detection of a particle.
-
-[![Feynmans_QED_probability_amplitudes](https://github.com/user-attachments/assets/df7b0132-ccc2-4372-8f4e-ca2211b7956c)](https://en.wikipedia.org/wiki/Quantum_electrodynamics#probability-amplitudes)
-
-- The sum of all resulting arrows gives a final arrow whose length squared equals the probability of the event.
-- In this diagram, light emitted by the source S can reach the detector at P by bouncing off the mirror (in blue) at various points.
-- Each one of the paths has an arrow associated with it (whose direction changes uniformly with the time taken for the light to traverse the path).
-- To correctly calculate the total probability for light to reach P starting at S, one needs to sum the arrows for all such paths.
-
-The graph below depicts the total time spent to traverse each of the paths above.
-```
-
 ![008869256_1-75ca18aad2faf65f52f4c7706d7d8bd3-768x994](https://github.com/eq19/maps/assets/8466209/7c7f069f-dcfb-439e-961e-68c63c76dc9d)
 
 Finally, one has to compute P(A to B) and E(C to D) corresponding to the probability amplitudes for the photon and the electron respectively.
@@ -255,6 +242,19 @@ Decoded complex numbers:
 [11] (r11.0 + i11.0j)
 [12] (r12.0 + i12.0j)
 [13] (r13.0 + i13.0j)
+```
+
+```note
+Feynman replaces complex numbers with spinning arrows, which start at emission and end at detection of a particle.
+
+[![Feynmans_QED_probability_amplitudes](https://github.com/user-attachments/assets/df7b0132-ccc2-4372-8f4e-ca2211b7956c)](https://en.wikipedia.org/wiki/Quantum_electrodynamics#probability_amplitudes)
+
+- The sum of all resulting arrows gives a final arrow whose length squared equals the probability of the event.
+- In this diagram, light emitted by the source S can reach the detector at P by bouncing off the mirror (in blue) at various points.
+- Each one of the paths has an arrow associated with it (whose direction changes uniformly with the time taken for the light to traverse the path).
+- To correctly calculate the total probability for light to reach P starting at S, one needs to sum the arrows for all such paths.
+
+The graph depicts the total time spent to traverse each of the paths above. _([Wikipedia](https://en.wikipedia.org/wiki/Quantum_electrodynamics#probability_amplitudes))_
 ```
 
 [![16 squares](https://github.com/eq19/maps/assets/8466209/efe55c6d-926c-47bb-80db-7d892eb3f103)](https://eq19.github.io/#exponentiation-zones)

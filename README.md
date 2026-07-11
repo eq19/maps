@@ -1,6 +1,6 @@
 # Prime Unit Identity
 
-We are going to assign prime identity as the _[Standard Model](https://en.wikipedia.org/wiki/Standard_Model)_ to stimulate a quantum field model denoted ***[eQuantum](https://github.com/eq19)*** for _[the four (4) known fundamental forces](https://en.wikipedia.org/wiki/Fundamental_interaction)_.
+We are going to assign prime identity as the _[Standard Model](https://en.wikipedia.org/wiki/Standard_Model)_ to formulate a quantum field model denoted ***[eQuantum](https://github.com/eq19)*** based on _[the four (4) known fundamental forces](https://en.wikipedia.org/wiki/Fundamental_interaction)_.
 
 {% include list.liquid all=true %}
 
@@ -666,7 +666,7 @@ There is a fascinating connection between prime numbers and the Golden ratio.
 However, the exact nature of the relationship between primes and the Golden ratio is still an active area of research.
 ```
 
-***π(Φ x (329 + 289)) = π(Φ x 618) = π(1000) = 168 = 169 - 1***
+***π(φ x (329 + 289)) = π(φ x 618) = π(1000) = 168 = 169 - 1***
 
 [![default](https://user-images.githubusercontent.com/8466209/195963923-0796217c-7a87-4b2d-ba93-f47465304c03.png)](https://www.nausetschools.org/cms/lib/MA02212418/Centricity/Domain/204/Linkage%20Map%20Worksheet%20Genetics%202017.pdf)
 

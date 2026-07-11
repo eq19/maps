@@ -51,7 +51,7 @@ Our physical space is observed to have only three large dimensions and taken tog
 
 [![time evolution](https://user-images.githubusercontent.com/36441664/275706241-356d91fc-da93-4edd-8a57-9489554b181b.gif)](https://en.wikipedia.org/wiki/Klein_bottle#properties)
 
-String theory, superstring theory, or M-theory, or some other variant on this theme is one of the Unsolved Problem in physic as [a step road](https://youtu.be/3mXwMhMIGMA?t=3h54s) to a _[Theory Of Everything (TOE)](https://en.wikipedia.org/wiki/Theory_of_everything)_.
+String theory, superstring theory, or M-theory, or some other variant on this theme is one of the Unsolved Problem in physic as [a step road](https://youtu.be/3mXwMhMIGMA?t=3h54s) to a _[Theory Of Everything (TOE)](https://eq19.github.io/grammar/identition/span12/)_.
 
 ```note
 Nothing prevents a theory from including more than 4 dimensions. In the case of string theory, consistency requires spacetime to have 10, 11 or 26 dimensions. ***The conflict between observation and theory is resolved by making the unobserved dimensions compactified***. _([Astrophysics Research](https://astrophysicsblogs.blogspot.com/2008/01/superstring-theory_03.html))_
@@ -1559,6 +1559,6 @@ It has been found recently that the expansion of N = 8 supergravity in terms of 
 For model building, it has been assumed that almost all the supersymmetries would be broken in nature,[[why?](https://en.wikipedia.org/wiki/Wikipedia:Please_clarify)] leaving just one supersymmetry (N = 1), although nowadays because of the lack of evidence for N = 1 supersymmetry higher supersymmetries are now being considered such as N = 2. _([Wikipedia](https://en.wikipedia.org/wiki/N_%3D_8_supergravity))_
 ```
 
-[![Particle Physics](https://github.com/eq19/maps/assets/8466209/e1e638e5-b96a-45c7-a096-f4ec0503fdb4)](https://eq19.github.io/identition/span12/)
+[![Particle Physics](https://github.com/eq19/maps/assets/8466209/e1e638e5-b96a-45c7-a096-f4ec0503fdb4)](https://eq19.github.io/grammar/identition/span12/)
 
-Let's discuss more detail about this particular topic as guided by [Prof Stephen Hawking](https://en.wikipedia.org/wiki/Stephen_Hawking) in one of his greatest book: [The Theory of Everything](https://youtu.be/3mXwMhMIGMA?t=3h56s).
+Let's discuss more detail about this particular topic as guided by [Prof Stephen Hawking](https://en.wikipedia.org/wiki/Stephen_Hawking) in one of his greatest book: [The Theory of Everything](https://eq19.github.io/grammar/identition/span12/).
