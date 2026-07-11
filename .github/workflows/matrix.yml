@@ -71,7 +71,7 @@ jobs:
           done          
 
           pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-plot.txt
-          [[ "$RUN_MODE" != "FreqAI" ]] && pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-hyperopt.txt
+          pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-hyperopt.txt
           [[ "$RUN_MODE" == "FreqAI" ]] && pip install -qq --no-cache-dir -r ${{ github.workspace }}/user_data/build_helpers/requirements-freqai-rl.txt
 
           #pip install -qq --no-cache-dir --no-build-isolation --upgrade freqtrade
