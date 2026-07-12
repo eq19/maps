@@ -692,12 +692,12 @@ monitor_freqtrade() {
       kill -SIGTERM "$process_id" 2>/dev/null
       echo "freqtrade trade stopped."
       break
-    elif grep -qiE "(traceback|exception)" <<< "$LOGLINE"; then
+    elif grep -qiE "(traceback|pickle not found)" <<< "$LOGLINE"; then
       echo "❌ Error detected! Showing traceback:"
       # Added a 1-second timeout (-t 1) to prevent infinite hanging
       while read -t 1 -r NEXT_LINE <&3; do
         echo "$NEXT_LINE"
-        if grep -qE "Error|Exception" <<< "$NEXT_LINE"; then
+        if grep -qiE "error|exception" <<< "$NEXT_LINE"; then
           echo "⚠️  Final error: $NEXT_LINE"
           break
         fi
