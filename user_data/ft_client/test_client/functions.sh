@@ -673,18 +673,28 @@ monitor_freqtrade() {
   local log_file="${1:-freqtrade.log}"
   local pid_file="${2:-freqtrade_pid.txt}"
   
-  exec 3< <(tail -f "$log_file")
+  # Ensure the PID file exists and grab the PID
+  if [[ ! -f "$pid_file" ]]; then
+    echo "❌ PID file not found."
+    return 1
+  fi
+  local process_id=$(cat "$pid_file")
+
+  # The --pid flag tells tail to stop following when freqtrade finishes
+  exec 3< <(tail -f --pid="$process_id" "$log_file")
   
   while read -r LOGLINE <&3; do
     if grep -qiE "throttling" <<< "$LOGLINE"; then
       echo "✅ Throttling detected - stopping..."
-      kill -SIGTERM $(cat "$pid_file") 2>/dev/null
+      kill -SIGTERM "$process_id" 2>/dev/null
       echo "freqtrade trade stopped."
       break
     elif grep -qiE "(traceback|exception)" <<< "$LOGLINE"; then
       echo "❌ Error detected! Showing traceback:"
       echo "$LOGLINE"
-      while read -r NEXT_LINE <&3; do
+      
+      # Added a 1-second timeout (-t 1) to prevent infinite hanging
+      while read -t 1 -r NEXT_LINE <&3; do
         echo "$NEXT_LINE"
         if grep -qE "Error|Exception" <<< "$NEXT_LINE"; then
           echo "⚠️  Final error: $NEXT_LINE"
@@ -692,13 +702,13 @@ monitor_freqtrade() {
         fi
         [[ ! "$NEXT_LINE" =~ ^[[:space:]] ]] && break
       done
+      
       echo "❌ Stopping freqtrade..."
-      kill -SIGTERM $(cat "$pid_file") 2>/dev/null
+      kill -SIGTERM "$process_id" 2>/dev/null
       echo "freqtrade trade stopped."
-      exit 0
+      return 1 
     fi
   done
   
   exec 3>&-
 }
-
