@@ -706,7 +706,7 @@ monitor_freqtrade() {
 
       echo "⛔ Stopping freqtrade..."
       kill -SIGTERM "$process_id" 2>/dev/null
-      echo "freqtrade trade stopped."
+      echo "freqtrade stopped and quit."
       exit 0
     fi
   done
