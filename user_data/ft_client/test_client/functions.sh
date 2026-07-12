@@ -703,10 +703,10 @@ monitor_freqtrade() {
         [[ ! "$NEXT_LINE" =~ ^[[:space:]] ]] && break
       done
       
-      echo "❌ Stopping freqtrade..."
+      echo "⛔ Stopping freqtrade..."
       kill -SIGTERM "$process_id" 2>/dev/null
       echo "freqtrade trade stopped."
-      return 1 
+      exit 0
     fi
   done
   
