@@ -598,10 +598,12 @@ freqai() {
     SCORE=$(gh variable get SCORE)
     freqtrade backtesting --help
     jq '.params |= ({enter,buy,exit,sell,roi,freqai,trailing,protection,max_open_trades,stoploss} + del(.enter,.buy,.exit,.sell,.roi,.trailing,.protection,.max_open_trades,.stoploss)) | .params.roi |= (with_entries(select(.key|startswith("roi_")|not)))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
+    nohup freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections  > freqtrade.log 2>&1 &
+    echo $! > freqtrade_pid.txt
+    monitor_freqtrade showlog
   
     # Execute calculate_score ONLY if no errors and exit code 0
-    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback|object has no attribute|no further splits with positive gain)" backtest.log; then
+    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback|object has no attribute|no further splits with positive gain)" freqtrade.log; then
 
       export CALCULATION="false"
       OLD_SCORE=$SCORE            
@@ -670,8 +672,8 @@ freqai() {
 
 monitor_freqtrade() {
 
-  local log_file="${1:-freqtrade.log}"
-  local pid_file="${2:-freqtrade_pid.txt}"
+  local log_file="freqtrade.log"
+  local pid_file="freqtrade_pid.txt"
 
   # Ensure the PID file exists and grab the PID
   if [[ ! -f "$pid_file" ]]; then
