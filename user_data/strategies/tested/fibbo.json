@@ -19,21 +19,21 @@
       "buy_swing_period": 3
     },
     "exit": {
-      "exit_long_indicator": "BB, RSI, STOCHRSI, TTM",
-      "exit_short_indicator": "MACD, RSI, STOCHRSI",
-      "exit_trade_mode": "any"
+      "exit_long_indicator": "MACD, RSI, TTM",
+      "exit_short_indicator": "BB, DEMA, MACD",
+      "exit_trade_mode": "half"
     },
     "sell": {
-      "sell_fast_dema": "8",
-      "sell_fib_level": "0.236",
-      "sell_rsi": 24,
+      "sell_fast_dema": "21",
+      "sell_fib_level": "0.382",
+      "sell_rsi": 25,
       "sell_slow_ema": "34",
-      "sell_smoothD": 6,
-      "sell_smoothK": 6,
-      "sell_stoch_osc": 87,
-      "shared_stoch_period": 271,
-      "shared_ttm_window": 41,
-      "shared_vwap_window": 97
+      "sell_smoothD": 4,
+      "sell_smoothK": 11,
+      "sell_stoch_osc": 47,
+      "shared_stoch_period": 222,
+      "shared_ttm_window": 65,
+      "shared_vwap_window": 134
     },
     "roi": {
       "0": 0.099,
@@ -43,12 +43,12 @@
     },
     "freqai": {
       "freqai_buy": 0.25,
-      "freqai_sell": 0.47,
-      "freqai_sl_high_val": -0.06,
-      "freqai_sl_low_val": -0.14,
+      "freqai_exit_profit_thresh": 0.01,
       "freqai_ret_high_thresh": 0.05,
       "freqai_ret_low_thresh": 0.02,
-      "freqai_exit_profit_thresh": 0.01
+      "freqai_sell": 0.47,
+      "freqai_sl_high_val": -0.06,
+      "freqai_sl_low_val": -0.14
     },
     "trailing": {
       "trailing_stop": true,
@@ -75,5 +75,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-07-10 13:25:36.325650+00:00"
+  "export_time": "2026-07-10 21:32:47.950491+00:00"
 }
