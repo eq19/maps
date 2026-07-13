@@ -664,7 +664,7 @@ freqai() {
       fi
     else
       echo "❌ Backtest failed or contained errors/warnings"
-      grep -iE "(error|traceback|object has no attribute|no further splits with positive gain)" backtest.log
+      grep -iE "(error|traceback|object has no attribute|no further splits with positive gain)" freqtrade.log
     fi
   done
 
