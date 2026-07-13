@@ -1,22 +1,21 @@
 # 💎 Main Workflow: eQuantum MEC30
 name: COmpendium of RElations Modulo 6
 run-name: >
-  COmpendium of RElations: ${{ 
-    inputs.RUN_MODE != 'false' && inputs.RUN_MODE || 
-    format(inputs.RUN_MODE, 
-      inputs.REDUCE_EPOCH == '2' && '¹' || 
-      inputs.REDUCE_EPOCH == '4' && '²' || 
-      inputs.REDUCE_EPOCH == '8' && '³' || 
-      inputs.REDUCE_EPOCH == '16' && '⁴' || 
-      inputs.REDUCE_EPOCH == '32' && '⁵' || 
-      inputs.REDUCE_EPOCH == '64' && '⁶' || 
-      inputs.REDUCE_EPOCH == '128' && '⁷' || 
-      inputs.REDUCE_EPOCH == '256' && '⁸' || 
-      inputs.REDUCE_EPOCH == '512' && '⁹' || 
-      ''
+  COmpendium of RElations: ${{
+    format('{0}{1}',
+      inputs.RUN_MODE != 'false' && inputs.RUN_MODE || 'Hyperopt',
+      inputs.REDUCE_EPOCH == '2' && '¹' ||
+      inputs.REDUCE_EPOCH == '4' && '²' ||
+      inputs.REDUCE_EPOCH == '8' && '³' ||
+      inputs.REDUCE_EPOCH == '16' && '⁴' ||
+      inputs.REDUCE_EPOCH == '32' && '⁵' ||
+      inputs.REDUCE_EPOCH == '64' && '⁶' ||
+      inputs.REDUCE_EPOCH == '128' && '⁷' ||
+      inputs.REDUCE_EPOCH == '256' && '⁸' ||
+      inputs.REDUCE_EPOCH == '512' && '⁹' || ''
     )
   }}
-  
+
 on:
   #push:
   workflow_run:
