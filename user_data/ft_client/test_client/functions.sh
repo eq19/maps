@@ -585,7 +585,7 @@ freqai() {
     monitor_freqtrade
 
     echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: freqai | Days: $days | Epochs: $epochs\nHyoeropt: ${hyperopt_loss:-$loss}\n$hr"
-    nohup freqtrade hyperopt -v --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} \
+    nohup freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} \
       --spaces freqai --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
       --random-state ${id} ${enable_protections} > freqtrade.log 2>&1 &
