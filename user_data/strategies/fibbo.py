@@ -360,9 +360,14 @@ class Fibbo(IStrategy):
 
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         if dataframe is None or dataframe.empty:
-            return self.stoploss
+            return False # Or return self.stoploss / None depending on the callback
 
-        last = dataframe.iloc[-1]
+        # Correctly isolate the candle for the exact time of the trade
+        current_candle = dataframe.loc[dataframe['date'] == current_time]
+        if current_candle.empty:
+            return False # Or return self.stoploss / None depending on the callback
+            
+        last = current_candle.squeeze()
         if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
             return self.stoploss
 
@@ -409,9 +414,14 @@ class Fibbo(IStrategy):
 
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         if dataframe is None or dataframe.empty:
-            return None
+            return False # Or return self.stoploss / None depending on the callback
 
-        last = dataframe.iloc[-1]
+        # Correctly isolate the candle for the exact time of the trade
+        current_candle = dataframe.loc[dataframe['date'] == current_time]
+        if current_candle.empty:
+            return False # Or return self.stoploss / None depending on the callback
+            
+        last = current_candle.squeeze()
         if "&-s_close" not in last.index or pd.isna(last["&-s_close"]):
             return None
 
@@ -537,9 +547,14 @@ class Fibbo(IStrategy):
 
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         if dataframe is None or dataframe.empty:
-            return False
+            return False # Or return self.stoploss / None depending on the callback
 
-        last = dataframe.iloc[-1]
+        # Correctly isolate the candle for the exact time of the trade
+        current_candle = dataframe.loc[dataframe['date'] == current_time]
+        if current_candle.empty:
+            return False # Or return self.stoploss / None depending on the callback
+            
+        last = current_candle.squeeze()
 
         # Use the NEW regression target we just set above
         if "&-s_close" in last.index and pd.notna(last["&-s_close"]):
