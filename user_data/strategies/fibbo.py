@@ -547,12 +547,12 @@ class Fibbo(IStrategy):
 
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         if dataframe is None or dataframe.empty:
-            return False # Or return self.stoploss / None depending on the callback
+            return False 
 
         # Correctly isolate the candle for the exact time of the trade
         current_candle = dataframe.loc[dataframe['date'] == current_time]
         if current_candle.empty:
-            return False # Or return self.stoploss / None depending on the callback
+            return False 
             
         last = current_candle.squeeze()
 
