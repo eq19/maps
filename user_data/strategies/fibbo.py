@@ -357,12 +357,13 @@ class Fibbo(IStrategy):
         if dataframe is None or dataframe.empty:
             return False 
 
-        # Correctly isolate the candle for the exact time of the trade
-        current_candle = dataframe.loc[dataframe['date'] == current_time]
-        if current_candle.empty:
+        # Safely fetch the most recent closed candle relative to the trade time
+        past_candles = dataframe.loc[dataframe['date'] <= current_time]
+        if past_candles.empty:
             return False 
             
-        last = current_candle.squeeze()
+        last = past_candles.iloc[-1].squeeze()
+
 
         # Use the NEW regression target we just set above
         if "&-s_close" in last.index and pd.notna(last["&-s_close"]):
