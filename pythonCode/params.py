@@ -50,7 +50,7 @@ class ParamBuilder:
             self.params[section] = {}
 
             for key, value in section_params.items():
-                self.optimize = True if self.param == "nil" or key == self.param else False
+                self.optimize = True if self.param == "nil" or self.param == section or key == self.param else False
 
                 if isinstance(value, bool):
                     self.params[section][key] = self.bool_param(value)
