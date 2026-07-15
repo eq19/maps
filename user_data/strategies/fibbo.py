@@ -345,6 +345,62 @@ class Fibbo(IStrategy):
 
         return prot
 
+    def confirm_trade_entry(
+        self, pair: str, order_type: str, amount: float, rate: float,
+        time_in_force: str, current_time: datetime, entry_tag: Optional[str],
+        side: str, **kwargs,
+    ) -> bool:
+        if not self.freqai_enabled:
+            return True
+
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if dataframe is None or dataframe.empty:
+            return False 
+
+        # Correctly isolate the candle for the exact time of the trade
+        current_candle = dataframe.loc[dataframe['date'] == current_time]
+        if current_candle.empty:
+            return False 
+            
+        last = current_candle.squeeze()
+
+        # Use the NEW regression target we just set above
+        if "&-s_close" in last.index and pd.notna(last["&-s_close"]):
+            
+            ai_prediction_pct = float(last["&-s_close"])
+            
+            if side == "long":
+                expected_return = ai_prediction_pct
+            else: # side == "short"
+                expected_return = -ai_prediction_pct
+
+            # Fetch hyperopt parameter for minimum expected return
+            min_return_gate = float(self.freqai_ret_low_thresh.value)
+
+            # 2. Minimum profit gate dynamically set by hyperopt
+            if expected_return < min_return_gate:
+                logger.info(f"{pair}: Rejected {side} ({entry_tag}) Expected return {expected_return:.2%} < {min_return_gate:.2%}")
+                return False
+
+            # 3. Confidence filter
+            if "di_percentile" in last.index and pd.notna(last["di_percentile"]):
+                confidence = float(last["di_percentile"])
+                threshold = float(self.freqai_buy.value) if side == "long" else float(self.freqai_sell.value)
+                if confidence < threshold:
+                    logger.info(f"{pair}: Rejected {side} ({entry_tag}) DI={confidence:.2%} < Threshold={threshold:.2%}")
+                    return False
+
+        elif "do_predict" in last.index:
+            prediction = int(last["do_predict"])
+            if side == "long" and prediction != 1:
+                return False
+            if side == "short" and prediction != -1: 
+                return False
+        else:
+            return False
+
+        return True
+
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
@@ -536,62 +592,6 @@ class Fibbo(IStrategy):
                 dataframe["&-s_close"] = (dataframe["close"].shift(-label_period).rolling(label_period).mean() / dataframe["close"] - 1)
 
         return dataframe
-
-    def confirm_trade_entry(
-        self, pair: str, order_type: str, amount: float, rate: float,
-        time_in_force: str, current_time: datetime, entry_tag: Optional[str],
-        side: str, **kwargs,
-    ) -> bool:
-        if not self.freqai_enabled:
-            return True
-
-        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
-        if dataframe is None or dataframe.empty:
-            return False 
-
-        # Correctly isolate the candle for the exact time of the trade
-        current_candle = dataframe.loc[dataframe['date'] == current_time]
-        if current_candle.empty:
-            return False 
-            
-        last = current_candle.squeeze()
-
-        # Use the NEW regression target we just set above
-        if "&-s_close" in last.index and pd.notna(last["&-s_close"]):
-            
-            ai_prediction_pct = float(last["&-s_close"])
-            
-            if side == "long":
-                expected_return = ai_prediction_pct
-            else: # side == "short"
-                expected_return = -ai_prediction_pct
-
-            # Fetch hyperopt parameter for minimum expected return
-            min_return_gate = float(self.freqai_ret_low_thresh.value)
-
-            # 2. Minimum profit gate dynamically set by hyperopt
-            if expected_return < min_return_gate:
-                logger.info(f"{pair}: Rejected {side} ({entry_tag}) Expected return {expected_return:.2%} < {min_return_gate:.2%}")
-                return False
-
-            # 3. Confidence filter
-            if "di_percentile" in last.index and pd.notna(last["di_percentile"]):
-                confidence = float(last["di_percentile"])
-                threshold = float(self.freqai_buy.value) if side == "long" else float(self.freqai_sell.value)
-                if confidence < threshold:
-                    logger.info(f"{pair}: Rejected {side} ({entry_tag}) DI={confidence:.2%} < Threshold={threshold:.2%}")
-                    return False
-
-        elif "do_predict" in last.index:
-            prediction = int(last["do_predict"])
-            if side == "long" and prediction != 1:
-                return False
-            if side == "short" and prediction != -1: 
-                return False
-        else:
-            return False
-
-        return True
 
     def informative_pairs(self):
         whitelist_pairs = self.dp.current_whitelist()
