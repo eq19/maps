@@ -447,9 +447,11 @@ hyperopt() {
     fi
 
     echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
-      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} -j 4 --logfile /dev/null \
-      --random-state ${id} ${enable_protections} > /dev/null 2>&1
+    nohup freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} \
+      --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
+      --random-state ${id} ${enable_protections} > freqtrade.log 2>&1 &
+    echo $! > freqtrade_pid.txt
+    monitor_freqtrade
     freqtrade hyperopt-list --best
 
     echo -e "\n$hr\nRERUN BACKTEST ($TB) without FREQAI_MODEL\n$hr" && freqtrade backtesting --help
@@ -580,66 +582,41 @@ freqai() {
     echo -e "\n$hr\nAI TRADES with $FREQAI_MODEL\n$hr" && freqtrade trade --help
     nohup freqtrade trade -v --dry-run --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
+    monitor_freqtrade
 
-    # Open descriptor to log stream
-    exec 3< <(tail -f freqtrade.log)
-
-    while read -r LOGLINE <&3; do
-      echo "$LOGLINE"
-      # Stop if Freqtrade has entered TRAINING state
-      if grep -qiE "throttling" <<< "$LOGLINE"; then
-        echo "✅ Throttling freqtrade trade..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        break
-      elif grep -qiE "traceback" <<< "$LOGLINE"; then
-        echo "❌ Error detected! Showing full traceback:"
-        # Print the traceback (the current line and next lines until empty or non-indented)
-        echo "$LOGLINE"  # Print the "Traceback" line
-        # Read and print subsequent traceback lines
-        while read -r NEXT_LINE <&3; do
-          echo "$NEXT_LINE"
-          # Stop reading when we hit a non-indented line (not part of traceback)
-          # or when we hit a line that doesn't start with space/tab
-          if [[ ! "$NEXT_LINE" =~ ^[[:space:]] ]] && [[ ! "$NEXT_LINE" =~ ^[A-Za-z] ]]; then
-            # Put it back for next iteration? Better to break and exit
-            break
-          fi
-          # Check if this line contains the actual exception message
-          if grep -qE "Error|Exception|AttributeError|KeyError|ValueError|TypeError" <<< "$NEXT_LINE"; then
-            echo "⚠️  Final error: $NEXT_LINE"
-            break
-          fi
-        done
-        echo "❌ Stopping freqtrade due to error..."
-        PID=$(cat freqtrade_pid.txt)
-        kill -SIGTERM $PID
-        echo "freqtrade trade stopped."
-        exit 0
-      fi
-    done
-
-    echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: freqai | Days: $days | Epochs: $epochs\nHyoeropt: ${hyperopt_loss:-$loss}\n$hr"
-    freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} --fee=$FEE \
-      --spaces freqai --ignore-missing-spaces --epochs ${epochs} -j 4 --log-file hyperopt.log \
-      --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
-      --random-state ${id} ${enable_protections} > /dev/null 2>&1
-    if [ $? -eq 0 ] && ! grep -qiE "(traceback|object has no attribute|pickle not found)" hyperopt.log; then
-      freqtrade hyperopt-list --best
+    #spaces="buy sell entry exit roi trailing"
+    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+ 
+    # Disable protections if 'all' or 'protection' is in the spaces
+    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
+      enable_protections=""
+      prot="disable"
     else
-      exit 0
+      enable_protections="--enable-protections"
+      prot="enable"
     fi
+
+    echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: +freqai | Days: $days | Epochs: $epochs\nHyoeropt: ${hyperopt_loss:-$loss}\n$hr"
+    nohup freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} \
+      --spaces $spaces freqai --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
+      --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
+      --random-state ${id} ${enable_protections} > freqtrade.log 2>&1 &
+    echo $! > freqtrade_pid.txt
+    monitor_freqtrade
+    freqtrade hyperopt-list --best
+    freqtrade hyperopt-show
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     #Ref: https://www.freqtrade.io/en/stable/backtesting
     SCORE=$(gh variable get SCORE)
     freqtrade backtesting --help
     jq '.params |= ({enter,buy,exit,sell,roi,freqai,trailing,protection,max_open_trades,stoploss} + del(.enter,.buy,.exit,.sell,.roi,.trailing,.protection,.max_open_trades,.stoploss)) | .params.roi |= (with_entries(select(.key|startswith("roi_")|not)))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
-    freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections --log-file backtest.log
+    nohup freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections  > freqtrade.log 2>&1 &
+    echo $! > freqtrade_pid.txt
+    monitor_freqtrade showlog
   
     # Execute calculate_score ONLY if no errors and exit code 0
-    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback|object has no attribute|no further splits with positive gain)" backtest.log; then
+    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback|object has no attribute|no further splits with positive gain)" freqtrade.log; then
 
       export CALCULATION="false"
       OLD_SCORE=$SCORE            
@@ -700,8 +677,52 @@ freqai() {
       fi
     else
       echo "❌ Backtest failed or contained errors/warnings"
-      grep -iE "(error|traceback|object has no attribute|no further splits with positive gain)" backtest.log
+      grep -iE "(error|traceback|object has no attribute|no further splits with positive gain)" freqtrade.log
     fi
   done
 
+}
+
+monitor_freqtrade() {
+
+  local log_file="freqtrade.log"
+  local pid_file="freqtrade_pid.txt"
+
+  # Ensure the PID file exists and grab the PID
+  if [[ ! -f "$pid_file" ]]; then
+    echo "❌ PID file not found."
+    return 1
+  fi
+  local process_id=$(cat "$pid_file")
+
+  # The --pid flag tells tail to stop following when freqtrade finishes
+  exec 3< <(tail -f --pid="$process_id" "$log_file")
+
+  while read -r LOGLINE <&3; do
+    [[ "$1" == "showlog" ]] && echo "$LOGLINE"
+    if grep -qiE "throttling" <<< "$LOGLINE"; then
+      echo "✅ Throttling detected - stopping..."
+      kill -SIGTERM "$process_id" 2>/dev/null
+      echo "freqtrade trade stopped."
+      break
+    elif grep -qiE "(traceback|pickle not found)" <<< "$LOGLINE"; then
+      echo "❌ Error detected! Showing traceback:"
+      # Added a 1-second timeout (-t 1) to prevent infinite hanging
+      while read -t 1 -r NEXT_LINE <&3; do
+        echo "$NEXT_LINE"
+        if grep -qiE "error|exception" <<< "$NEXT_LINE"; then
+          echo "⚠️  Final error: $NEXT_LINE"
+          break
+        fi
+        [[ ! "$NEXT_LINE" =~ ^[[:space:]] ]] && break
+      done
+
+      echo "⛔ Stopping freqtrade..."
+      kill -SIGTERM "$process_id" 2>/dev/null
+      echo "freqtrade stopped and quit."
+      exit 0
+    fi
+  done
+
+  exec 3>&-
 }
