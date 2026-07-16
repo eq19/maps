@@ -50,7 +50,7 @@ class ParamBuilder:
             self.params[section] = {}
 
             for key, value in section_params.items():
-                self.optimize = True if self.param == "nil" or key == self.param else False
+                self.optimize = True if self.param == "nil" or self.param == section or key == self.param else False
 
                 if isinstance(value, bool):
                     self.params[section][key] = self.bool_param(value)
@@ -90,11 +90,14 @@ class ParamBuilder:
                         self.params[section][key] = self.int_param(value, int(low), int(high))
 
                 elif isinstance(value, float):
-                    percent = max(0.02, min(0.1, self.epochs * 0.002))  # 2%–10%
+                    # Widen the variance slightly (5% to 20%) so Hyperopt has room to explore small fractions
+                    percent = max(0.05, min(0.20, self.epochs * 0.005))  
                     
                     # Use absolute value to determine decimal precision
                     abs_value = abs(value)
-                    decimals = 3 if abs_value < 0.05 else 2 if abs_value < 1 else 1
+                    
+                    # FIX: Increased decimal precision to prevent rounding errors on values like 0.06 or -0.06
+                    decimals = 4 if abs_value < 0.05 else 3 if abs_value < 1 else 2
                     
                     if value >= 0:
                         low = max(0.0001, round(value * (1 - percent), decimals))
@@ -103,6 +106,10 @@ class ParamBuilder:
                         # Cap AI confidence thresholds and probabilities to 0.99 maximum
                         if "freqai" in key or "thresh" in key:
                             high = min(0.99, high)
+                            
+                        # Failsafe for positive bounds
+                        if high <= low:
+                            high = low + (1 / (10 ** decimals))
                             
                     else:
                         # Handle negative floats (e.g., stoploss values)
