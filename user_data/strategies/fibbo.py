@@ -778,6 +778,21 @@ class Fibbo(IStrategy):
 
         if entry_long_conditions:
             signal_long = self.combine_conditions(dataframe, entry_long_conditions, self.enter_trade_mode.value)
+            
+            # --- Vectorized FreqAI Gatekeeper ---
+            if self.freqai_enabled:
+                if '&-s_close' in dataframe.columns and 'di_percentile' in dataframe.columns:
+                    # Dynamically applies hyperopt thresholds to the entire dataset instantly
+                    ai_long_ok = (
+                        (dataframe['&-s_close'] >= self.freqai_ret_low_thresh.value) &
+                        (dataframe['di_percentile'] >= self.freqai_buy.value)
+                    )
+                    signal_long = signal_long & ai_long_ok
+                elif 'do_predict' in dataframe.columns:
+                    signal_long = signal_long & (dataframe['do_predict'] == 1)
+                else:
+                    signal_long = pd.Series(False, index=dataframe.index)
+
             dataframe.loc[signal_long, 'enter_long'] = 1
             
             # Apply long tags
@@ -786,11 +801,26 @@ class Fibbo(IStrategy):
             if use_freqai:
                 dataframe.loc[signal_long & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'FreqAI_Impulse'
             
-        if entry_short_conditions and self.can_short: # Respect can_short setting
+        if entry_short_conditions and self.can_short: 
             signal_short = self.combine_conditions(dataframe, entry_short_conditions, self.enter_trade_mode.value)
+            
+            # --- Vectorized FreqAI Gatekeeper ---
+            if self.freqai_enabled:
+                if '&-s_close' in dataframe.columns and 'di_percentile' in dataframe.columns:
+                    # Dynamically applies hyperopt thresholds to the entire dataset instantly
+                    ai_short_ok = (
+                        (dataframe['&-s_close'] <= -self.freqai_ret_low_thresh.value) &
+                        (dataframe['di_percentile'] >= self.freqai_sell.value)
+                    )
+                    signal_short = signal_short & ai_short_ok
+                elif 'do_predict' in dataframe.columns:
+                    signal_short = signal_short & (dataframe['do_predict'] == -1)
+                else:
+                    signal_short = pd.Series(False, index=dataframe.index)
+
             dataframe.loc[signal_short, 'enter_short'] = 1
             
-            # Apply short tags ONLY if the tag is still empty (prevents overwriting a valid long tag)
+            # Apply short tags 
             dataframe.loc[signal_short & DEMA_SHORT_ENTRY & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Fib_Short_Extension'
             dataframe.loc[signal_short & FIBBO_SHORT_ENTRY & ~DEMA_SHORT_ENTRY & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Fib_Short_Retracement'
 
