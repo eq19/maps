@@ -584,9 +584,21 @@ freqai() {
     echo $! > freqtrade_pid.txt
     monitor_freqtrade
 
+    #spaces="buy sell entry exit roi trailing"
+    spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
+ 
+    # Disable protections if 'all' or 'protection' is in the spaces
+    if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
+      enable_protections=""
+      prot="disable"
+    else
+      enable_protections="--enable-protections"
+      prot="enable"
+    fi
+
     echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: freqai | Days: $days | Epochs: $epochs\nHyoeropt: ${hyperopt_loss:-$loss}\n$hr"
     nohup freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} \
-      --spaces freqai --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
+      --spaces $spaces freqai --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
       --random-state ${id} ${enable_protections} > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
