@@ -84,7 +84,7 @@
     ],
     "pair_blacklist": [
       "(DRX|MOG|PENGU|PEPE|RFC|SHIB|SYN|TROLLSOL)/IDR",
-      "(BAKE|FARTCOIN|GID|KOMA|MOODENG|SIREN|UCJL)/IDR"
+      "(BAKE|FARTCOIN|GID|KOMA|MOODENG|SIREN|TWELVE|UCJL)/IDR"
     ],
     "core_blacklist": [
       ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
