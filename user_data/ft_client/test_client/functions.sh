@@ -603,8 +603,8 @@ freqai() {
       --random-state ${id} ${enable_protections} > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
     monitor_freqtrade
+    #freqtrade hyperopt-show
     freqtrade hyperopt-list --best
-    freqtrade hyperopt-show
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     #Ref: https://www.freqtrade.io/en/stable/backtesting
