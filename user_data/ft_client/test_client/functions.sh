@@ -596,9 +596,9 @@ freqai() {
       prot="enable"
     fi
 
-    echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: +freqai | Days: $days | Epochs: $epochs\nHyperopt: ${hyperopt_loss:-$loss}\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running Freqaimodel: $FREQAI_MODEL\nSpaces: freqai | Days: $days | Epochs: $epochs\nHyperopt: ${hyperopt_loss:-$loss}\n$hr"
     nohup freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} \
-      --spaces $spaces freqai --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
+      --spaces freqai --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH \
       --random-state ${id} ${enable_protections} > freqtrade.log 2>&1 &
     echo $! > freqtrade_pid.txt
