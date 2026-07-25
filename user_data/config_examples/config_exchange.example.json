@@ -83,7 +83,7 @@
       "XRP/IDR"
     ],
     "pair_blacklist": [
-      "(BAKE|BUILDON|DRX|FARTCOIN|GID|KOMA|MOODENG|MOG)/IDR",
+      "(BAKE|BUILDON|DRX|FARTCOIN|GID|ISLM|KOMA|MOODENG|MOG)/IDR",
       "(PENGU|PEPE|RFC|SHIB|SYN|TROLLSOL|SIREN|TLM|TWELVE|UCJL|ZEREBRO)/IDR"
     ],
     "core_blacklist": [
