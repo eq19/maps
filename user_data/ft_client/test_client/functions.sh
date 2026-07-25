@@ -612,9 +612,14 @@ freqai() {
     SCORE=$(gh variable get SCORE)
     freqtrade backtesting --help
     jq '.params |= ({enter,buy,exit,sell,roi,freqai,trailing,protection,max_open_trades,stoploss} + del(.enter,.buy,.exit,.sell,.roi,.trailing,.protection,.max_open_trades,.stoploss)) | .params.roi |= (with_entries(select(.key|startswith("roi_")|not)))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
-    nohup freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections  > freqtrade.log 2>&1 &
-    echo $! > freqtrade_pid.txt
-    monitor_freqtrade showlog
+
+    if [[ "$FREQAI_MODEL" != "$(gh variable get FREQAIMODEL)" ]]; then
+      nohup freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections > freqtrade.log 2>&1 &
+      echo $! > freqtrade_pid.txt
+      monitor_freqtrade showlog
+    else
+      freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections
+    fi
   
     export CALCULATION="false"
     OLD_SCORE=$SCORE            
