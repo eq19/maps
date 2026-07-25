@@ -616,69 +616,62 @@ freqai() {
     echo $! > freqtrade_pid.txt
     monitor_freqtrade showlog
   
-    # Execute calculate_score ONLY if no errors and exit code 0
-    if [ $? -eq 0 ] && ! grep -qiE "(error|traceback|object has no attribute|no further splits with positive gain)" freqtrade.log; then
+    export CALCULATION="false"
+    OLD_SCORE=$SCORE            
+    calculate_score
+    NEW_SCORE=$SCORE
 
-      export CALCULATION="false"
-      OLD_SCORE=$SCORE            
-      calculate_score
-      NEW_SCORE=$SCORE
+    OLD_SCORE=$(gh variable get SCORE)
+    [[ "$ID" != "169" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="REMOVE_RUNNER"
+    if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )) && [[ "$HAS_FREQAI_TAGS" == "true" ]]; then
+      cat $STRATEGY
+      sed -i "s|Infinity|10|g" $STRATEGY
+      sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
 
-      OLD_SCORE=$(gh variable get SCORE)
-      [[ "$ID" != "169" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="REMOVE_RUNNER"
-      if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )) && [[ "$HAS_FREQAI_TAGS" == "true" ]]; then
-        cat $STRATEGY
-        sed -i "s|Infinity|10|g" $STRATEGY
-        sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
-
-        curl -L -s -X PATCH \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer $GH_TOKEN" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-           https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
+      curl -L -s -X PATCH \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
+        https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
  
-        curl -L -s -X PATCH \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer $GH_TOKEN" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-           https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON
+      curl -L -s -X PATCH \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
+        https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON
  
-        gh variable set SCORE --body "${NEW_SCORE}"
-        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"
-        gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+      gh variable set SCORE --body "${NEW_SCORE}"
+      gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"
+      gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
 
-        if [[ "$GITHUB_JOB" != "lexering" ]]; then
-          gh variable set JOB --body "${GITHUB_JOB}"
+      if [[ "$GITHUB_JOB" != "lexering" ]]; then
+        gh variable set JOB --body "${GITHUB_JOB}"
+      else
+        gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"   
+      fi
+    elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
+      if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        if [[ "$(gh variable get JOB)" != "lexering" ]]; then
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
-          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"   
-        fi
-      elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
-        if [[ "$GITHUB_JOB" == "lexering" ]]; then
-          if [[ "$(gh variable get JOB)" != "lexering" ]]; then
-            gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
-          else
-            FREQAI_MODEL=$(gh variable get FREQAIMODEL)
-            gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
-          fi
-        fi
-      # Environment SCORE is unchanged in case calculation is failed
-      elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
-        if [[ "$GITHUB_JOB" == "lexering" ]]; then
-          if [[ "$CALCULATION" == "false" ]]; then
-            gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
-          else
-            FREQAI_MODEL=$(gh variable get FREQAIMODEL)
-            gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
-          fi
+          FREQAI_MODEL=$(gh variable get FREQAIMODEL)
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
         fi
       fi
-    else
-      echo "❌ Backtest failed or contained errors/warnings"
-      grep -iE "(error|traceback|object has no attribute|no further splits with positive gain)" freqtrade.log
+    # Environment SCORE is unchanged in case calculation is failed
+    elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
+      if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        if [[ "$CALCULATION" == "false" ]]; then
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        else
+          FREQAI_MODEL=$(gh variable get FREQAIMODEL)
+          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
+        fi
+      fi
     fi
   done
 
