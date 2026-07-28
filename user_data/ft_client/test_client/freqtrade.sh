@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # Define the function to send a Telegram message
-LOG_FILE="/home/runner/data_live/logs/freqtrade.log"
-rm -rf $LOG_FILE.* /home/runner/data_dry/logs/freqtrade.log.*
 
 send_telegram_message() {
     local message="$1"
@@ -14,6 +12,14 @@ send_telegram_message() {
         -d chat_id="$chat_id" \
         -d text="$message" > /dev/null
 }
+
+if supervisorctl status freqtrade_live | grep -q "RUNNING"; then
+  LOG_FILE="/home/runner/data_live/logs/freqtrade.log"
+  rm -rf $LOG_FILE.* /home/runner/data_dry/logs/freqtrade.log.*
+else
+  LOG_FILE="/home/runner/data_dry/logs/freqtrade.log"
+  rm -rf $LOG_FILE.* /home/runner/data_live/logs/freqtrade.log.*
+fi
 
 # Check if the log file exists
 if [[ ! -f "$LOG_FILE" ]]; then
