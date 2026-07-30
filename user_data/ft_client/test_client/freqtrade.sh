@@ -13,12 +13,28 @@ send_telegram_message() {
         -d text="$message" > /dev/null
 }
 
+
 if supervisorctl status freqtrade_live | grep -q "RUNNING"; then
-  LOG_FILE="/home/runner/data_live/logs/freqtrade.log"
-  rm -rf $LOG_FILE.* /home/runner/data_dry/logs/freqtrade.log.*
+
+    if curl -s -u "YourUsername:YourPassword" \
+        "http://172.17.0.1:8082/api/v1/show_config" \
+        | jq -e '.state == "running"' >/dev/null; then
+
+        LOG_FILE="/home/runner/data_live/logs/freqtrade.log"
+        rm -rf "$LOG_FILE".* /home/runner/data_dry/logs/freqtrade.log.*
+
+    else
+
+        LOG_FILE="/home/runner/data_dry/logs/freqtrade.log"
+        rm -rf "$LOG_FILE".* /home/runner/data_live/logs/freqtrade.log.*
+
+    fi
+
 else
-  LOG_FILE="/home/runner/data_dry/logs/freqtrade.log"
-  rm -rf $LOG_FILE.* /home/runner/data_live/logs/freqtrade.log.*
+
+    LOG_FILE="/home/runner/data_dry/logs/freqtrade.log"
+    rm -rf "$LOG_FILE".* /home/runner/data_live/logs/freqtrade.log.*
+
 fi
 
 # Check if the log file exists
