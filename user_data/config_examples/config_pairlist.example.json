@@ -12,7 +12,8 @@
     },
     {
       "method": "PriceFilter",
-      "low_price_ratio": 0.001
+      "low_price_ratio": 0.001,
+      "min_price": 1000
     },
     {
       "method": "VolatilityFilter",
