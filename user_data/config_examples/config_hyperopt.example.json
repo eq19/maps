@@ -345,7 +345,7 @@
       "id": 38,
       "description": "Optimize sell (last 60 days)",
       "days": 6,
-      "epochs": 13,
+      "epochs": 5000,
       "parallel_jobs": 4,
       "spaces": ["all"],
       "hyperopt_loss": "CombinedDrawDownProfitHyperOptLoss"
