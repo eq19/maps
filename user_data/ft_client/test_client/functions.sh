@@ -480,13 +480,13 @@ hyperopt() {
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
          https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON
- 
-      gh variable set SCORE --body "${NEW_SCORE}"
-      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}"
-      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
       freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
+
+      gh variable set SCORE --body "${NEW_SCORE}"
       gh variable set PAIRS --body "$(cat pairs.json)"
+      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}"
+      gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"   
