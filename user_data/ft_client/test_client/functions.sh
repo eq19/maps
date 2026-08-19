@@ -485,6 +485,9 @@ hyperopt() {
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}"
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
+      freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
+      gh variable set PAIRS --body "$(cat pairs.json)"
+
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"   
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
