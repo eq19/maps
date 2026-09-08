@@ -150,9 +150,9 @@ jobs:
         id: gen_outputs
         run: |
           output=${{ steps.feed-mapping.outputs.addition || steps.set-lexering.outputs.multiplication }}
-          bash ${{ github.workspace }}/_user/ft_client/test_client/gcp.sh
+          bash /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/gcp.sh
           echo "output_${id}=${output}" >> "${GITHUB_OUTPUT}"
-        if: ${{ env.JOBS_ID == 2 && env.RERUN_RUNNER == 'true' }}
+        if: ${{ env.JOBS_ID == 2 }}
 
     outputs:
       # ♻️ Simulate Gell-Mann Matrices
