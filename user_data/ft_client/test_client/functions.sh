@@ -446,7 +446,7 @@ hyperopt() {
       prot="enable"
     fi
 
-    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss}\nSpaces: $spaces | Days: $days | Epochs: $epochs\n$hr"
+    echo -e "\n$hr\nID: $id 👉 Running ${hyperopt_loss:-$loss} | Days: $days | Epochs: $epochs\nSpaces: $spaces\n$hr"
     nohup freqtrade hyperopt --timerange ${start_date}-${end_date} --hyperopt-loss ${hyperopt_loss:-$loss} \
       --spaces ${spaces} --ignore-missing-spaces --epochs ${epochs} --fee=$FEE -j 4 \
       --random-state ${id} ${enable_protections} > freqtrade.log 2>&1 &
