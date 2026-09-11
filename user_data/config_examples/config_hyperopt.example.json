@@ -176,6 +176,6 @@
     { "id": 166, "description": "Sequential combo 166/168", "days": 7, "epochs": 5000, "parallel_jobs": 4, "spaces": ["protection trades"] },
     { "id": 167, "description": "Sequential combo 167/168", "days": 7, "epochs": 5000, "parallel_jobs": 4, "spaces": ["enter roi stoploss"] },
     { "id": 168, "description": "Sequential combo 168/168", "days": 7, "epochs": 5000, "parallel_jobs": 4, "spaces": ["exit roi stoploss"] },
-    { "id": 169, "description": "Comprehensive optimization with all parameters (last 180 days)", "days": 7, "epochs": 5000, "parallel_jobs": 4, "spaces": ["all"] }
+    { "id": 169, "description": "Comprehen combo with all", "days": 7, "epochs": 5000, "parallel_jobs": 4, "spaces": ["all"] }
   ]
 }
