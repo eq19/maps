@@ -1,0 +1,1702 @@
+{
+  "print_all": true,
+  "hyperopt_jobs": 32,
+  "hyperopt_min_trades": 150,
+  "max_parallel_backtest": 8,
+  "enable_protections": true,
+  "position_stacking": false,
+  "disableparamexport": false,
+  "max_generated_candidates": 100,
+  "pipelines": [
+    {
+      "id": 1,
+      "description": "Sequential combo 1/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell"
+      ]
+    },
+    {
+      "id": 2,
+      "description": "Sequential combo 2/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter"
+      ]
+    },
+    {
+      "id": 3,
+      "description": "Sequential combo 3/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy exit"
+      ]
+    },
+    {
+      "id": 4,
+      "description": "Sequential combo 4/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy roi"
+      ]
+    },
+    {
+      "id": 5,
+      "description": "Sequential combo 5/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy stoploss"
+      ]
+    },
+    {
+      "id": 6,
+      "description": "Sequential combo 6/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy trailing"
+      ]
+    },
+    {
+      "id": 7,
+      "description": "Sequential combo 7/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy protection"
+      ]
+    },
+    {
+      "id": 8,
+      "description": "Sequential combo 8/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy trades"
+      ]
+    },
+    {
+      "id": 9,
+      "description": "Sequential combo 9/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter"
+      ]
+    },
+    {
+      "id": 10,
+      "description": "Sequential combo 10/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell exit"
+      ]
+    },
+    {
+      "id": 11,
+      "description": "Sequential combo 11/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell roi"
+      ]
+    },
+    {
+      "id": 12,
+      "description": "Sequential combo 12/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell stoploss"
+      ]
+    },
+    {
+      "id": 13,
+      "description": "Sequential combo 13/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell trailing"
+      ]
+    },
+    {
+      "id": 14,
+      "description": "Sequential combo 14/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell protection"
+      ]
+    },
+    {
+      "id": 15,
+      "description": "Sequential combo 15/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell trades"
+      ]
+    },
+    {
+      "id": 16,
+      "description": "Sequential combo 16/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit"
+      ]
+    },
+    {
+      "id": 17,
+      "description": "Sequential combo 17/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter roi"
+      ]
+    },
+    {
+      "id": 18,
+      "description": "Sequential combo 18/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter stoploss"
+      ]
+    },
+    {
+      "id": 19,
+      "description": "Sequential combo 19/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter trailing"
+      ]
+    },
+    {
+      "id": 20,
+      "description": "Sequential combo 20/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter protection"
+      ]
+    },
+    {
+      "id": 21,
+      "description": "Sequential combo 21/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter trades"
+      ]
+    },
+    {
+      "id": 22,
+      "description": "Sequential combo 22/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi"
+      ]
+    },
+    {
+      "id": 23,
+      "description": "Sequential combo 23/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit stoploss"
+      ]
+    },
+    {
+      "id": 24,
+      "description": "Sequential combo 24/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit trailing"
+      ]
+    },
+    {
+      "id": 25,
+      "description": "Sequential combo 25/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit protection"
+      ]
+    },
+    {
+      "id": 26,
+      "description": "Sequential combo 26/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit trades"
+      ]
+    },
+    {
+      "id": 27,
+      "description": "Sequential combo 27/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi stoploss"
+      ]
+    },
+    {
+      "id": 28,
+      "description": "Sequential combo 28/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi trailing"
+      ]
+    },
+    {
+      "id": 29,
+      "description": "Sequential combo 29/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi protection"
+      ]
+    },
+    {
+      "id": 30,
+      "description": "Sequential combo 30/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi trades"
+      ]
+    },
+    {
+      "id": 31,
+      "description": "Sequential combo 31/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "stoploss trailing"
+      ]
+    },
+    {
+      "id": 32,
+      "description": "Sequential combo 32/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "stoploss protection"
+      ]
+    },
+    {
+      "id": 33,
+      "description": "Sequential combo 33/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "stoploss trades"
+      ]
+    },
+    {
+      "id": 34,
+      "description": "Sequential combo 34/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "trailing protection"
+      ]
+    },
+    {
+      "id": 35,
+      "description": "Sequential combo 35/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "trailing trades"
+      ]
+    },
+    {
+      "id": 36,
+      "description": "Sequential combo 36/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "protection trades"
+      ]
+    },
+    {
+      "id": 37,
+      "description": "Sequential combo 37/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell enter"
+      ]
+    },
+    {
+      "id": 38,
+      "description": "Sequential combo 38/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell exit"
+      ]
+    },
+    {
+      "id": 39,
+      "description": "Sequential combo 39/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell roi"
+      ]
+    },
+    {
+      "id": 40,
+      "description": "Sequential combo 40/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell stoploss"
+      ]
+    },
+    {
+      "id": 41,
+      "description": "Sequential combo 41/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell trailing"
+      ]
+    },
+    {
+      "id": 42,
+      "description": "Sequential combo 42/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell protection"
+      ]
+    },
+    {
+      "id": 43,
+      "description": "Sequential combo 43/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell trades"
+      ]
+    },
+    {
+      "id": 44,
+      "description": "Sequential combo 44/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter exit"
+      ]
+    },
+    {
+      "id": 45,
+      "description": "Sequential combo 45/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter roi"
+      ]
+    },
+    {
+      "id": 46,
+      "description": "Sequential combo 46/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter stoploss"
+      ]
+    },
+    {
+      "id": 47,
+      "description": "Sequential combo 47/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter trailing"
+      ]
+    },
+    {
+      "id": 48,
+      "description": "Sequential combo 48/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter protection"
+      ]
+    },
+    {
+      "id": 49,
+      "description": "Sequential combo 49/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter trades"
+      ]
+    },
+    {
+      "id": 50,
+      "description": "Sequential combo 50/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy exit roi"
+      ]
+    },
+    {
+      "id": 51,
+      "description": "Sequential combo 51/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy exit stoploss"
+      ]
+    },
+    {
+      "id": 52,
+      "description": "Sequential combo 52/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy exit trailing"
+      ]
+    },
+    {
+      "id": 53,
+      "description": "Sequential combo 53/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy exit protection"
+      ]
+    },
+    {
+      "id": 54,
+      "description": "Sequential combo 54/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy exit trades"
+      ]
+    },
+    {
+      "id": 55,
+      "description": "Sequential combo 55/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy roi stoploss"
+      ]
+    },
+    {
+      "id": 56,
+      "description": "Sequential combo 56/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy roi trailing"
+      ]
+    },
+    {
+      "id": 57,
+      "description": "Sequential combo 57/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy roi protection"
+      ]
+    },
+    {
+      "id": 58,
+      "description": "Sequential combo 58/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy roi trades"
+      ]
+    },
+    {
+      "id": 59,
+      "description": "Sequential combo 59/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy stoploss trailing"
+      ]
+    },
+    {
+      "id": 60,
+      "description": "Sequential combo 60/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy stoploss protection"
+      ]
+    },
+    {
+      "id": 61,
+      "description": "Sequential combo 61/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy stoploss trades"
+      ]
+    },
+    {
+      "id": 62,
+      "description": "Sequential combo 62/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy trailing protection"
+      ]
+    },
+    {
+      "id": 63,
+      "description": "Sequential combo 63/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy trailing trades"
+      ]
+    },
+    {
+      "id": 64,
+      "description": "Sequential combo 64/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy protection trades"
+      ]
+    },
+    {
+      "id": 65,
+      "description": "Sequential combo 65/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter exit"
+      ]
+    },
+    {
+      "id": 66,
+      "description": "Sequential combo 66/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter roi"
+      ]
+    },
+    {
+      "id": 67,
+      "description": "Sequential combo 67/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter stoploss"
+      ]
+    },
+    {
+      "id": 68,
+      "description": "Sequential combo 68/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter trailing"
+      ]
+    },
+    {
+      "id": 69,
+      "description": "Sequential combo 69/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter protection"
+      ]
+    },
+    {
+      "id": 70,
+      "description": "Sequential combo 70/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter trades"
+      ]
+    },
+    {
+      "id": 71,
+      "description": "Sequential combo 71/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell exit roi"
+      ]
+    },
+    {
+      "id": 72,
+      "description": "Sequential combo 72/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell exit stoploss"
+      ]
+    },
+    {
+      "id": 73,
+      "description": "Sequential combo 73/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell exit trailing"
+      ]
+    },
+    {
+      "id": 74,
+      "description": "Sequential combo 74/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell exit protection"
+      ]
+    },
+    {
+      "id": 75,
+      "description": "Sequential combo 75/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell exit trades"
+      ]
+    },
+    {
+      "id": 76,
+      "description": "Sequential combo 76/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell roi stoploss"
+      ]
+    },
+    {
+      "id": 77,
+      "description": "Sequential combo 77/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell roi trailing"
+      ]
+    },
+    {
+      "id": 78,
+      "description": "Sequential combo 78/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell roi protection"
+      ]
+    },
+    {
+      "id": 79,
+      "description": "Sequential combo 79/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell roi trades"
+      ]
+    },
+    {
+      "id": 80,
+      "description": "Sequential combo 80/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell stoploss trailing"
+      ]
+    },
+    {
+      "id": 81,
+      "description": "Sequential combo 81/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell stoploss protection"
+      ]
+    },
+    {
+      "id": 82,
+      "description": "Sequential combo 82/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell stoploss trades"
+      ]
+    },
+    {
+      "id": 83,
+      "description": "Sequential combo 83/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell trailing protection"
+      ]
+    },
+    {
+      "id": 84,
+      "description": "Sequential combo 84/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell trailing trades"
+      ]
+    },
+    {
+      "id": 85,
+      "description": "Sequential combo 85/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell protection trades"
+      ]
+    },
+    {
+      "id": 86,
+      "description": "Sequential combo 86/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit roi"
+      ]
+    },
+    {
+      "id": 87,
+      "description": "Sequential combo 87/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit stoploss"
+      ]
+    },
+    {
+      "id": 88,
+      "description": "Sequential combo 88/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit trailing"
+      ]
+    },
+    {
+      "id": 89,
+      "description": "Sequential combo 89/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit protection"
+      ]
+    },
+    {
+      "id": 90,
+      "description": "Sequential combo 90/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit trades"
+      ]
+    },
+    {
+      "id": 91,
+      "description": "Sequential combo 91/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter roi stoploss"
+      ]
+    },
+    {
+      "id": 92,
+      "description": "Sequential combo 92/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter roi trailing"
+      ]
+    },
+    {
+      "id": 93,
+      "description": "Sequential combo 93/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter roi protection"
+      ]
+    },
+    {
+      "id": 94,
+      "description": "Sequential combo 94/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter roi trades"
+      ]
+    },
+    {
+      "id": 95,
+      "description": "Sequential combo 95/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter stoploss trailing"
+      ]
+    },
+    {
+      "id": 96,
+      "description": "Sequential combo 96/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter stoploss protection"
+      ]
+    },
+    {
+      "id": 97,
+      "description": "Sequential combo 97/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter stoploss trades"
+      ]
+    },
+    {
+      "id": 98,
+      "description": "Sequential combo 98/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter trailing protection"
+      ]
+    },
+    {
+      "id": 99,
+      "description": "Sequential combo 99/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter trailing trades"
+      ]
+    },
+    {
+      "id": 100,
+      "description": "Sequential combo 100/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter protection trades"
+      ]
+    },
+    {
+      "id": 101,
+      "description": "Sequential combo 101/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi stoploss"
+      ]
+    },
+    {
+      "id": 102,
+      "description": "Sequential combo 102/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi trailing"
+      ]
+    },
+    {
+      "id": 103,
+      "description": "Sequential combo 103/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi protection"
+      ]
+    },
+    {
+      "id": 104,
+      "description": "Sequential combo 104/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi trades"
+      ]
+    },
+    {
+      "id": 105,
+      "description": "Sequential combo 105/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit stoploss trailing"
+      ]
+    },
+    {
+      "id": 106,
+      "description": "Sequential combo 106/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit stoploss protection"
+      ]
+    },
+    {
+      "id": 107,
+      "description": "Sequential combo 107/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit stoploss trades"
+      ]
+    },
+    {
+      "id": 108,
+      "description": "Sequential combo 108/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit trailing protection"
+      ]
+    },
+    {
+      "id": 109,
+      "description": "Sequential combo 109/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit trailing trades"
+      ]
+    },
+    {
+      "id": 110,
+      "description": "Sequential combo 110/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit protection trades"
+      ]
+    },
+    {
+      "id": 111,
+      "description": "Sequential combo 111/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi stoploss trailing"
+      ]
+    },
+    {
+      "id": 112,
+      "description": "Sequential combo 112/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi stoploss protection"
+      ]
+    },
+    {
+      "id": 113,
+      "description": "Sequential combo 113/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi stoploss trades"
+      ]
+    },
+    {
+      "id": 114,
+      "description": "Sequential combo 114/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi trailing protection"
+      ]
+    },
+    {
+      "id": 115,
+      "description": "Sequential combo 115/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi trailing trades"
+      ]
+    },
+    {
+      "id": 116,
+      "description": "Sequential combo 116/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi protection trades"
+      ]
+    },
+    {
+      "id": 117,
+      "description": "Sequential combo 117/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "stoploss trailing protection"
+      ]
+    },
+    {
+      "id": 118,
+      "description": "Sequential combo 118/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "stoploss trailing trades"
+      ]
+    },
+    {
+      "id": 119,
+      "description": "Sequential combo 119/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "stoploss protection trades"
+      ]
+    },
+    {
+      "id": 120,
+      "description": "Sequential combo 120/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "trailing protection trades"
+      ]
+    },
+    {
+      "id": 121,
+      "description": "Sequential combo 121/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "stoploss trailing protection trades"
+      ]
+    },
+    {
+      "id": 122,
+      "description": "Sequential combo 122/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter exit roi"
+      ]
+    },
+    {
+      "id": 123,
+      "description": "Sequential combo 123/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy trailing protection trades"
+      ]
+    },
+    {
+      "id": 124,
+      "description": "Sequential combo 124/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit roi stoploss"
+      ]
+    },
+    {
+      "id": 125,
+      "description": "Sequential combo 125/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell protection trades"
+      ]
+    },
+    {
+      "id": 126,
+      "description": "Sequential combo 126/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi stoploss trailing"
+      ]
+    },
+    {
+      "id": 127,
+      "description": "Sequential combo 127/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell enter trades"
+      ]
+    },
+    {
+      "id": 128,
+      "description": "Sequential combo 128/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi stoploss trailing protection"
+      ]
+    },
+    {
+      "id": 129,
+      "description": "Sequential combo 129/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell enter exit"
+      ]
+    },
+    {
+      "id": 130,
+      "description": "Sequential combo 130/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi trailing protection trades"
+      ]
+    },
+    {
+      "id": 131,
+      "description": "Sequential combo 131/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter exit stoploss"
+      ]
+    },
+    {
+      "id": 132,
+      "description": "Sequential combo 132/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy stoploss protection trades"
+      ]
+    },
+    {
+      "id": 133,
+      "description": "Sequential combo 133/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit roi trailing"
+      ]
+    },
+    {
+      "id": 134,
+      "description": "Sequential combo 134/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell trailing trades"
+      ]
+    },
+    {
+      "id": 135,
+      "description": "Sequential combo 135/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi stoploss protection"
+      ]
+    },
+    {
+      "id": 136,
+      "description": "Sequential combo 136/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell enter protection"
+      ]
+    },
+    {
+      "id": 137,
+      "description": "Sequential combo 137/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi stoploss trailing trades"
+      ]
+    },
+    {
+      "id": 138,
+      "description": "Sequential combo 138/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "roi stoploss protection trades"
+      ]
+    },
+    {
+      "id": 139,
+      "description": "Sequential combo 139/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter exit trailing"
+      ]
+    },
+    {
+      "id": 140,
+      "description": "Sequential combo 140/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy stoploss trailing trades"
+      ]
+    },
+    {
+      "id": 141,
+      "description": "Sequential combo 141/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit roi protection"
+      ]
+    },
+    {
+      "id": 142,
+      "description": "Sequential combo 142/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell trailing protection"
+      ]
+    },
+    {
+      "id": 143,
+      "description": "Sequential combo 143/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi stoploss trades"
+      ]
+    },
+    {
+      "id": 144,
+      "description": "Sequential combo 144/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell enter trailing"
+      ]
+    },
+    {
+      "id": 145,
+      "description": "Sequential combo 145/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit stoploss protection trades"
+      ]
+    },
+    {
+      "id": 146,
+      "description": "Sequential combo 146/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell enter roi"
+      ]
+    },
+    {
+      "id": 147,
+      "description": "Sequential combo 147/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit trailing protection trades"
+      ]
+    },
+    {
+      "id": 148,
+      "description": "Sequential combo 148/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell enter stoploss"
+      ]
+    },
+    {
+      "id": 149,
+      "description": "Sequential combo 149/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter exit roi"
+      ]
+    },
+    {
+      "id": 150,
+      "description": "Sequential combo 150/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell trailing protection trades"
+      ]
+    },
+    {
+      "id": 151,
+      "description": "Sequential combo 151/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell exit roi stoploss"
+      ]
+    },
+    {
+      "id": 152,
+      "description": "Sequential combo 152/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter protection trades"
+      ]
+    },
+    {
+      "id": 153,
+      "description": "Sequential combo 153/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter roi stoploss trailing"
+      ]
+    },
+    {
+      "id": 154,
+      "description": "Sequential combo 154/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell exit trades"
+      ]
+    },
+    {
+      "id": 155,
+      "description": "Sequential combo 155/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit stoploss trailing protection"
+      ]
+    },
+    {
+      "id": 156,
+      "description": "Sequential combo 156/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit stoploss trailing trades"
+      ]
+    },
+    {
+      "id": 157,
+      "description": "Sequential combo 157/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell enter roi protection"
+      ]
+    },
+    {
+      "id": 158,
+      "description": "Sequential combo 158/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy stoploss trailing protection"
+      ]
+    },
+    {
+      "id": 159,
+      "description": "Sequential combo 159/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter exit roi trades"
+      ]
+    },
+    {
+      "id": 160,
+      "description": "Sequential combo 160/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell stoploss trades"
+      ]
+    },
+    {
+      "id": 161,
+      "description": "Sequential combo 161/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi trailing protection"
+      ]
+    },
+    {
+      "id": 162,
+      "description": "Sequential combo 162/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi protection trades"
+      ]
+    },
+    {
+      "id": 163,
+      "description": "Sequential combo 163/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "sell roi stoploss trailing"
+      ]
+    },
+    {
+      "id": 164,
+      "description": "Sequential combo 164/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy enter trailing trades"
+      ]
+    },
+    {
+      "id": 165,
+      "description": "Sequential combo 165/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter roi stoploss protection"
+      ]
+    },
+    {
+      "id": 166,
+      "description": "Sequential combo 166/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "buy sell stoploss protection"
+      ]
+    },
+    {
+      "id": 167,
+      "description": "Sequential combo 167/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "exit roi trailing trades"
+      ]
+    },
+    {
+      "id": 168,
+      "description": "Sequential combo 168/168",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "enter trailing protection trades"
+      ]
+    },
+    {
+      "id": 169,
+      "description": "Comprehen combo with all",
+      "days": 7,
+      "epochs": 5000,
+      "parallel_jobs": 4,
+      "spaces": [
+        "all"
+      ]
+    }
+  ]
+}
