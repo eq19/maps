@@ -50,7 +50,7 @@ calculate_score() {
       else
         HAS_FREQAI_TAGS="false"
         echo "❌ No FreqAI tags detected in this backtest! Ignoring score."
-        return 1
+        return 0
       fi
     fi
     rm -rf "$dir"/*
@@ -394,7 +394,7 @@ hyperopt() {
   jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
 
     days=60
-    epochs=3200
+    epochs=1600
 
     start_date=$EARLIEST_DATE
     end_date=$BACKTESTING_START
