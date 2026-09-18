@@ -42,12 +42,12 @@
       "538": 0
     },
     "freqai": {
-      "freqai_buy": 0.24,
-      "freqai_sell": 0.43,
-      "freqai_sl_high_thresh": 0.80,
-      "freqai_sl_high_val": -0.05,
-      "freqai_sl_low_thresh": 0.60,
-      "freqai_sl_low_val": -0.15
+      "freqai_buy": 0.25,
+      "freqai_sell": 0.47,
+      "freqai_sl_high_thresh": 0.83,
+      "freqai_sl_high_val": -0.06,
+      "freqai_sl_low_thresh": 0.6,
+      "freqai_sl_low_val": -0.14
     },
     "trailing": {
       "trailing_stop": true,
@@ -74,5 +74,5 @@
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-07-02 13:09:43.826146+00:00"
+  "export_time": "2026-07-05 03:20:02.872621+00:00"
 }
