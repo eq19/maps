@@ -48,9 +48,9 @@ calculate_score() {
         echo -e "♻️ FreqAI tags detected in backtest:\n👉 $(echo $found_tags | tr '\n' ' ')"
         HAS_FREQAI_TAGS="true"
       else
-        echo "❌ No FreqAI tags detected in this backtest! Ignoring score.."
         PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
         gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
+        echo "❌ No FreqAI tags detected in this backtest! Ignoring score.."
         HAS_FREQAI_TAGS="false"
         CALCULATION="true"
         return 0
