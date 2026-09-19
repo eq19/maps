@@ -49,7 +49,7 @@ calculate_score() {
         HAS_FREQAI_TAGS="true"
       else
         echo "❌ No FreqAI tags detected in this backtest! Ignoring score.."
-        PARAMS_LIVE=$(gh variable get PARAMS_LIVE --repo "ZeoWeak/Spectra" --json value -q .value)
+        PARAMS_LIVE=$(gh variable get PARAMS_LIVE --repo "ZeoWeak/spectral" --json value -q .value)
         gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_LIVE"
         HAS_FREQAI_TAGS="false"
         CALCULATION="true"
