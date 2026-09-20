@@ -48,8 +48,6 @@ calculate_score() {
         echo -e "♻️ FreqAI tags detected in backtest:\n👉 $(echo $found_tags | tr '\n' ' ')"
         HAS_FREQAI_TAGS="true"
       else
-        PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
-        gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
         echo "❌ No FreqAI tags detected in this backtest! Ignoring score.."
         HAS_FREQAI_TAGS="false"
         CALCULATION="true"
@@ -664,6 +662,8 @@ freqai() {
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
+        gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
@@ -675,6 +675,8 @@ freqai() {
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
+        PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
+        gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
         if [[ "$CALCULATION" == "false" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
