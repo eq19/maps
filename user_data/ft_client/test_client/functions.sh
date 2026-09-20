@@ -662,26 +662,26 @@ freqai() {
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
-        gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
         if [[ "$(gh variable get JOB)" != "lexering" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
           FREQAI_MODEL=$(gh variable get FREQAIMODEL)
           gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+          PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
+          gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
           gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
         fi
       fi
     # Environment SCORE is unchanged in case calculation is failed
     elif (( $(echo "$NEW_SCORE == $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
-        gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
         if [[ "$CALCULATION" == "false" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
           FREQAI_MODEL=$(gh variable get FREQAIMODEL)
-          gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+          gh variable set FREQAIMODEL --repo "$TARGET_REPOSITORY" --body "${FREQAI_MODEL}"
+          PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
+          gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
           gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
         fi
       fi
