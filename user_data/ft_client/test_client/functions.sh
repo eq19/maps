@@ -658,6 +658,9 @@ freqai() {
       if [[ "$GITHUB_JOB" != "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}"
       else
+        REMOVE_REPOSITORY=$(gh variable get REMOVE_REPOSITORY)
+        PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "$REMOVE_REPOSITORY" --json value -q .value)
+        gh variable set PARAMS_DRY --body "$PARAMS_DRY"
         gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"   
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
