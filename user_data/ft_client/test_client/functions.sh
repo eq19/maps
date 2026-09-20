@@ -667,7 +667,9 @@ freqai() {
         else
           FREQAI_MODEL=$(gh variable get FREQAIMODEL)
           gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
-          PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
+
+          REMOVE_REPOSITORY=$(gh variable get REMOVE_REPOSITORY)
+          PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "$REMOVE_REPOSITORY" --json value -q .value)
           gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
           gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
         fi
@@ -680,7 +682,9 @@ freqai() {
         else
           FREQAI_MODEL=$(gh variable get FREQAIMODEL)
           gh variable set FREQAIMODEL --repo "$TARGET_REPOSITORY" --body "${FREQAI_MODEL}"
-          PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "ZeroWeak/spectral" --json value -q .value)
+
+          REMOVE_REPOSITORY=$(gh variable get REMOVE_REPOSITORY)
+          PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "$REMOVE_REPOSITORY" --json value -q .value)
           gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
           gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
         fi
