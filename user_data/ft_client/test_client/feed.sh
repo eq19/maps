@@ -6,7 +6,7 @@
 #
 hr='------------------------------------------------------------------------------'
 FEE=0.003322
-TIMEFRAMES='15m 1h'
+TIMEFRAMES='1m 15m'
 
 STRATEGY=user_data/strategies/fibbo.json
 FREQAIMODELS_PATH=user_data/freqaimodels/standalone
@@ -23,8 +23,8 @@ TODAY=$(date -u +%Y%m%d)
 YESTERDAY=$(date -u -d "yesterday" +%Y%m%d)
 
 # Download vs Backtesting
-EARLIEST_DATE=$(date -u -d "3 months ago" +%Y%m%d)
-BACKTESTING_START=$(date -u -d "1 months ago" +%Y%m%d)
+EARLIEST_DATE=$(date -u -d "7 days ago" +%Y%m%d)
+BACKTESTING_START=$(date -u -d "3 days ago" +%Y%m%d)
 
 # Time range
 TD="$EARLIEST_DATE-$TODAY"
