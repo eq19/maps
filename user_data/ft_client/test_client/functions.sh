@@ -560,7 +560,7 @@ freqai() {
       gh variable set JOB --body "${GITHUB_JOB}"
       epochs=$((epochs * 2))
 
-      jq '.pairlists |= map(if .method == "VolumePairList" then .number_assets = 169 else . end)' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
+      jq '.pairlists |= map(if .method == "VolumePairList" then .number_assets = 100 else . end)' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE
       freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
       freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
 
