@@ -7,19 +7,11 @@
     "backtest_period_days": 3,
     "live_retrain_hours": 24,
     "feature_parameters": {
-      "include_timeframes": [
-        "15m",
-        "1h",
-        "4h"
-      ],
+      "include_timeframes": ["15m"],
       "include_corr_pairlist": [],
       "label_period_candles": 24,
       "include_shifted_candles": 5,
-      "indicator_periods_candles": [
-        12,
-        24,
-        48
-      ],
+      "indicator_periods_candles": [12,24,48],
       "DI_threshold": 0.75,
       "weight_factor": 0.9,
       "principal_component_analysis": false,
