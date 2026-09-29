@@ -176,7 +176,7 @@ class Fibbo(IStrategy):
 
     # Optimal timeframe for the strategy.
     timeframe = "1m"
-    informative_timeframe = "1m"
+    informative_timeframe = "15m"
 
     # Hyperoptable parameters
     stoploss = -0.1
