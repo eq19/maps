@@ -3,8 +3,8 @@
     "enabled": true,
     "identifier": "indodax-1m-v1",
     "purge_old_models": 1,
-    "train_period_days": 7,
-    "backtest_period_days": 3,
+    "train_period_days": 2,
+    "backtest_period_days": 2,
     "live_retrain_hours": 24,
     "feature_parameters": {
       "include_timeframes": [],
