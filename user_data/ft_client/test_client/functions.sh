@@ -518,22 +518,26 @@ hyperopt() {
 }
 
 freqai() {
-  
+
   # Load JSON and filter by given ID
-  jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
+  jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' "$HYPERFILE" | while read -r pipeline; do
 
-    days=7
-    epochs=$EPOCHS
-
-    start_date=$EARLIEST_DATE
-    end_date=$BACKTESTING_START
+    local days=7
+    local epochs=$EPOCHS
+    local start_date=$EARLIEST_DATE
+    local end_date=$BACKTESTING_START
+    local id hyperopt_loss loss
+    local freqaimodels pairs
+    local spaces enable_protections prot
+    local NEW_SCORE OLD_SCORE
+    local SET_INPUT REMOVE_REPOSITORY PARAMS_DRY FREQAI_MODEL
 
     id=$(echo "$pipeline" | jq -r '.id')
     hyperopt_loss=$(gh variable get HYPEROPT)
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
     # dispatch only for main workflow
-    [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
+    [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))
     if [[ "$GITHUB_JOB" == "lexering" ]]; then
       # Extract clean list of hyperoptloss classes
       freqaimodels=$(printf '%s\n' "$(freqtrade list-freqaimodels --freqaimodel-path $FREQAIMODELS_PATH --one-column)" | jq -R . | jq -s .)
@@ -554,7 +558,7 @@ freqai() {
                 run_id: $runId,
                 repo_id: $repo_id,
                 fields: $freqaimodels,
-                reduce_epoch: $reduce_epoch                
+                reduce_epoch: $reduce_epoch
               } | @json
             )
           }}')" \
@@ -585,7 +589,7 @@ freqai() {
 
     #spaces="buy sell entry exit roi trailing"
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
- 
+
     # Disable protections if 'all' or 'protection' is in the spaces
     if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
       enable_protections=""
@@ -619,9 +623,9 @@ freqai() {
     else
       freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections
     fi
-  
+
     export CALCULATION="false"
-    OLD_SCORE=$SCORE            
+    OLD_SCORE=$SCORE
     calculate_score
     NEW_SCORE=$SCORE
 
@@ -638,14 +642,14 @@ freqai() {
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
         https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
- 
+
       curl -L -s -X PATCH \
         -H "Accept: application/vnd.github+json" \
         -H "Authorization: Bearer $GH_TOKEN" \
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
         https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON
- 
+
       gh variable set SCORE --body "${NEW_SCORE}"
       gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"
       gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
@@ -656,7 +660,7 @@ freqai() {
         REMOVE_REPOSITORY=$(gh variable get REMOVE_REPOSITORY)
         PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "$REMOVE_REPOSITORY" --json value -q .value)
         gh variable set PARAMS_DRY --body "$PARAMS_DRY"
-        gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"   
+        gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
