@@ -389,22 +389,24 @@ calculate_score() {
 hyperopt() {
 
   # Extract clean list of hyperoptloss classes
+  local hyperopts
   hyperopts=$(printf '%s\n' "$(freqtrade list-hyperoptloss --one-column)" | jq -R . | jq -s .)
-  
+
   # Load JSON and filter by given ID
-  jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' $HYPERFILE | while read -r pipeline; do
+  jq -c --argjson ids "[$(echo "$*" | sed 's/ /,/g')]" '.pipelines[] | select(.id as $id | $ids | index($id))' "$HYPERFILE" | while read -r pipeline; do
 
-    days=7
-    epochs=$EPOCHS
-
-    start_date=$EARLIEST_DATE
-    end_date=$BACKTESTING_START
+    local days=7
+    local epochs=$EPOCHS
+    local start_date=$EARLIEST_DATE
+    local end_date=$BACKTESTING_START
+    local id loss hyperopt_loss spaces enable_protections prot
+    local NEW_SCORE OLD_SCORE
 
     id=$(echo "$pipeline" | jq -r '.id')
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
 
     # dispatch only for main workflow
-    [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))          
+    [[ "$REDUCE_EPOCH" != "false" ]] && epochs=$((epochs / REDUCE_EPOCH))
     if [[ "$GITHUB_JOB" != "lexering" ]]; then
       hyperopt_loss="$HYPEROPT"
     else
@@ -437,7 +439,7 @@ hyperopt() {
 
     #spaces="buy sell entry exit roi trailing"
     spaces=$(echo "$pipeline" | jq -r '.spaces | join(" ")')  # Space-separated
- 
+
     # Disable protections if 'all' or 'protection' is in the spaces
     if [[ "$spaces" =~ (^|[[:space:]])(all|protection)($|[[:space:]]) ]]; then
       enable_protections=""
@@ -474,7 +476,7 @@ hyperopt() {
         -H "X-GitHub-Api-Version: 2022-11-28" \
         -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
          https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
- 
+
       freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
 
       gh variable set SCORE --body "${NEW_SCORE}"
@@ -483,7 +485,7 @@ hyperopt() {
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"   
+        gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       fi
