@@ -400,7 +400,7 @@ hyperopt() {
     local start_date=$EARLIEST_DATE
     local end_date=$BACKTESTING_START
     local id loss hyperopt_loss spaces enable_protections prot
-    local NEW_SCORE OLD_SCORE
+    local NEW_SCORE OLD_SCORE PARAMS_JSON
 
     id=$(echo "$pipeline" | jq -r '.id')
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
@@ -529,8 +529,8 @@ freqai() {
     local id hyperopt_loss loss
     local freqaimodels pairs
     local spaces enable_protections prot
-    local NEW_SCORE OLD_SCORE
-    local SET_INPUT REMOVE_REPOSITORY PARAMS_DRY FREQAI_MODEL
+    local NEW_SCORE OLD_SCORE PARAMS_JSON PARAMS_DRY
+    local SET_INPUT REMOVE_REPOSITORY FREQAI_MODEL
 
     id=$(echo "$pipeline" | jq -r '.id')
     hyperopt_loss=$(gh variable get HYPEROPT)
