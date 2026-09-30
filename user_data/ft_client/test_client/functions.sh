@@ -612,7 +612,6 @@ freqai() {
 
     echo -e "\n$hr\nRUN BACKTEST with $FREQAI_MODEL\n$hr"
     #Ref: https://www.freqtrade.io/en/stable/backtesting
-    SCORE=$(gh variable get SCORE)
     freqtrade backtesting --help
     jq '.params |= ({enter,buy,exit,sell,roi,freqai,trailing,protection,max_open_trades,stoploss} + del(.enter,.buy,.exit,.sell,.roi,.trailing,.protection,.max_open_trades,.stoploss)) | .params.roi |= (with_entries(select(.key|startswith("roi_")|not)))' "$STRATEGY" > tmp.$$ && mv tmp.$$ "$STRATEGY"
 
@@ -624,12 +623,10 @@ freqai() {
       freqtrade backtesting --freqaimodel $FREQAI_MODEL --freqaimodel-path $FREQAIMODELS_PATH --fee=$FEE --timerange="$TB" --enable-protections
     fi
 
-    export CALCULATION="false"
-    OLD_SCORE=$SCORE
     calculate_score
     NEW_SCORE=$SCORE
-
     OLD_SCORE=$(gh variable get SCORE)
+    
     [[ "$ID" != "169" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="REMOVE_RUNNER"
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )) && [[ "$HAS_FREQAI_TAGS" == "true" ]]; then
       cat $STRATEGY
@@ -698,6 +695,7 @@ freqai() {
 
 monitor_freqtrade() {
 
+  local LOGLINE NEXT_LINE
   local log_file="freqtrade.log"
   local pid_file="freqtrade_pid.txt"
 
@@ -712,7 +710,7 @@ monitor_freqtrade() {
   exec 3< <(tail -f --pid="$process_id" "$log_file")
 
   while read -r LOGLINE <&3; do
-    [[ "$1" == "showlog" ]] && echo "$LOGLINE"
+    [[ "${1:-}" == "showlog" ]] && echo "$LOGLINE"
     if grep -qiE "throttling" <<< "$LOGLINE"; then
       echo "✅ Throttling detected - stopping..."
       kill -SIGTERM "$process_id" 2>/dev/null
