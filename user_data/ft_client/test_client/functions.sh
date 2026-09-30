@@ -532,6 +532,7 @@ freqai() {
     local NEW_SCORE OLD_SCORE PARAMS_JSON PARAMS_DRY
     local SET_INPUT REMOVE_REPOSITORY FREQAI_MODEL
 
+    HAS_FREQAI_TAGS="false"
     id=$(echo "$pipeline" | jq -r '.id')
     hyperopt_loss=$(gh variable get HYPEROPT)
     loss=$(echo "$pipeline" | jq -r '.hyperopt_loss')
