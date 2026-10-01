@@ -640,9 +640,6 @@ freqai() {
       if [[ "$GITHUB_JOB" != "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}"
       else
-        REMOVE_REPOSITORY=$(gh variable get REMOVE_REPOSITORY)
-        PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "$REMOVE_REPOSITORY" --json value -q .value)
-        gh variable set PARAMS_DRY --body "$PARAMS_DRY"
         gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"   
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
@@ -652,10 +649,6 @@ freqai() {
         else
           FREQAI_MODEL=$(gh variable get FREQAIMODEL)
           gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
-
-          REMOVE_REPOSITORY=$(gh variable get REMOVE_REPOSITORY)
-          PARAMS_DRY=$(gh variable get PARAMS_DRY --repo "$REMOVE_REPOSITORY" --json value -q .value)
-          gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" --body "$PARAMS_DRY"
           gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "$SET_INPUT=true"
         fi
       fi
