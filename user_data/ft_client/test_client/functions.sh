@@ -470,12 +470,8 @@ hyperopt() {
       sed -i "s|Infinity|10|g" $STRATEGY
       sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
 
-      curl -L -s -X PATCH \
-        -H "Accept: application/vnd.github+json" \
-        -H "Authorization: Bearer $GH_TOKEN" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-         https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
+      gh variable set PARAMS_JSON --repo "$GITHUB_REPOSITORY" < "$STRATEGY"
+      gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" < "$STRATEGY"
 
       freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
 
@@ -632,9 +628,12 @@ freqai() {
       sed -i "s|Infinity|5|g" $STRATEGY
       sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 5/g' $STRATEGY
 
-      gh variable set SCORE --body "${NEW_SCORE}"
+      gh variable set PARAMS_DRY --repo "$GITHUB_REPOSITORY" < "$STRATEGY"
+      gh variable set PARAMS_DRY --repo "$TARGET_REPOSITORY" < "$STRATEGY"
       gh variable set PARAMS_JSON --repo "$GITHUB_REPOSITORY" < "$STRATEGY"
       gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" < "$STRATEGY"
+
+      gh variable set SCORE --body "${NEW_SCORE}"
       gh variable set FREQAIMODEL --repo "$GITHUB_REPOSITORY" --body "${FREQAI_MODEL}"
       gh variable set FREQAIMODEL --repo "$TARGET_REPOSITORY" --body "${FREQAI_MODEL}"
 
