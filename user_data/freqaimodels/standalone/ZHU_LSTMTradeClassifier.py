@@ -50,7 +50,7 @@ class LSTMClassifier(nn.Module):
         out = self.fc(out[:, -1, :])
         return out
 
-class ZHU_LSTMTradeClassifier02h(BasePyTorchClassifier):
+class ZHU_LSTMTradeClassifier(BasePyTorchClassifier):
     @property
     def data_convertor(self) -> PyTorchDataConvertor:
         return DefaultPyTorchDataConvertor(
