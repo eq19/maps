@@ -629,26 +629,14 @@ freqai() {
     [[ "$ID" != "169" ]] && SET_INPUT="BYPASS_LEXERING" || SET_INPUT="REMOVE_RUNNER"
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )) && [[ "$HAS_FREQAI_TAGS" == "true" ]]; then
       cat $STRATEGY
-      sed -i "s|Infinity|10|g" $STRATEGY
-      sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 10/g' $STRATEGY
+      sed -i "s|Infinity|5|g" $STRATEGY
+      sed -i 's/"max_open_trades":\s*-1/"max_open_trades": 5/g' $STRATEGY
 
-      curl -L -s -X PATCH \
-        -H "Accept: application/vnd.github+json" \
-        -H "Authorization: Bearer $GH_TOKEN" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-        https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/PARAMS_JSON
- 
-      curl -L -s -X PATCH \
-        -H "Accept: application/vnd.github+json" \
-        -H "Authorization: Bearer $GH_TOKEN" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        -d "$(jq -n '{name:"PARAMS_JSON", value:$value}' --arg value "$(cat "$STRATEGY")")" \
-        https://api.github.com/repos/$TARGET_REPOSITORY/actions/variables/PARAMS_JSON
- 
       gh variable set SCORE --body "${NEW_SCORE}"
-      gh variable set FREQAIMODEL --body "${FREQAI_MODEL}"
-      gh variable set FREQAIMODEL --body "${FREQAI_MODEL}" --repo "$TARGET_REPOSITORY"
+      gh variable set PARAMS_JSON --repo "$GITHUB_REPOSITORY" < "$STRATEGY"
+      gh variable set PARAMS_JSON --repo "$TARGET_REPOSITORY" < "$STRATEGY"
+      gh variable set FREQAIMODEL --repo "$GITHUB_REPOSITORY" --body "${FREQAI_MODEL}"
+      gh variable set FREQAIMODEL --repo "$TARGET_REPOSITORY" --body "${FREQAI_MODEL}"
 
       if [[ "$GITHUB_JOB" != "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}"
