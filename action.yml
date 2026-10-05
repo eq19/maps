@@ -38,6 +38,9 @@ inputs:
   bot_token:
     description: The monitor token
     required: true
+  live_token:
+    description: The trading token
+    required: true
   logs_token:
     description: The warning token
     required: true
@@ -73,6 +76,7 @@ runs:
         api_secret: ${{ inputs.api_secret }}
         pypi_token: ${{ inputs.pypi_token }}
         logs_token: ${{ inputs.logs_token }}
+        live_token: ${{ inputs.live_token }}
         bot_token: ${{ inputs.bot_token }}
         api_key: ${{ inputs.api_key }}
         chat_id: ${{ inputs.chat_id }}
@@ -88,6 +92,7 @@ runs:
         api_key: ${{ inputs.api_key }}
         pypi_token: ${{ inputs.pypi_token }}
         bot_token: ${{ inputs.bot_token }}
+        live_token: ${{ inputs.live_token }}
         logs_token: ${{ inputs.logs_token }}
         api_secret: ${{ inputs.api_secret }}
         image_name: ${{ inputs.image_name }}
