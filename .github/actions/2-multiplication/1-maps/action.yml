@@ -186,7 +186,16 @@ runs:
         GCP_CREDENTIALS: ${{ inputs.credentials }}
       run: |
         secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
-        for secret in $secrets; do gh secret set $secret --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"; done
+        for secret in $secrets; do
+          if [ -z "${!secret+x}" ]; then
+            echo "❌ Error: Secret '$secret' is not defined" >&2
+            exit 1
+          elif [ -z "${!secret}" ]; then
+            echo "❌ Error: Secret '$secret' is defined but empty" >&2
+            exit 1
+          fi
+          gh secret set "$secret" --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"
+        done
 
     - name: Build and Push my_awesome_microservice
       uses: mr-smithers-excellent/docker-build-push@v5
