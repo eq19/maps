@@ -113,7 +113,7 @@ runs:
 
     # See https://github.com/thesofproject/sof/blob/main/zephyr/docker-run.sh
     - name: 🪂 Cloud Config
-      if: env.RERUN_RUNNER == 'true'
+      if: env.REMOVE_RUNNER == 'true'
       id: metadata
       shell: bash
       run: |
@@ -235,7 +235,7 @@ runs:
         
     # Ref: https://stackoverflow.com/a/47018417/4058484
     - name: 🪂 Setup Runner by Gcloud
-      if: env.RERUN_RUNNER == 'true'
+      if: env.REMOVE_RUNNER == 'true'
       id: instances
       shell: bash
       run: >
@@ -251,5 +251,5 @@ runs:
       shell: bash
       run: |
         [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
-          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER" \
           --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"

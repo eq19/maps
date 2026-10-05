@@ -29,6 +29,7 @@ jobs:
         FIELDS: ${{ fromJson(inputs.MATRIX_JSON).fields }}
 
     env:
+      REMOVE_RUNNER: 'false'
       SCORE: ${{ vars.SCORE }}
       RUN_MODE: ${{ inputs.RUN_MODE }}
       GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}

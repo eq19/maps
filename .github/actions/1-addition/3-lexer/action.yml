@@ -132,7 +132,7 @@ runs:
         imageName: ${{ inputs.image_name }}
         runCmd: bash user_data/ft_client/test_client/lexer.sh
         configFile: ${{ inputs.action_path }}/.devcontainer.json
-        push: ${{ env.RERUN_RUNNER == 'true' && 'always' || 'never' }}
+        push: ${{ env.REMOVE_RUNNER == 'true' && 'always' || 'never' }}
         env: |
           ID=${{ env.ID }}
           GH_TOKEN=${{ env.GH_TOKEN }}
@@ -163,5 +163,5 @@ runs:
       shell: bash
       run: |
         [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
-          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER" \
           --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"

@@ -39,24 +39,6 @@ set_monitor() {
   done
 }
 
-restart_mydb() {
-
-  echo -e "\n$hr\nRestart mydb container\n$hr"
-  $DOCKER restart mydb
-
-  echo "Waiting container stabilization..."
-  sleep 20
-
-  $DOCKER exec mydb supervisorctl reread
-  $DOCKER exec mydb supervisorctl update
-
-  $DOCKER exec mydb supervisorctl start postgres || true
-  $DOCKER exec mydb supervisorctl start freqtrade_dry || true
-  $DOCKER exec mydb supervisorctl start freqtrade_live || true
-  set_monitor
-
-}
-
 if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
 
   echo -e "\n$hr\nDocker images\n$hr"
@@ -65,38 +47,24 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
   echo -e "\n$hr\nNetwork images\n$hr"
   $DOCKER network inspect bridge
 
-  RERUN_RUNNER=$(curl -s \
-    -H "Authorization: token $GH_TOKEN" \
-    -H "Accept: application/vnd.github.v3+json" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/RERUN_RUNNER" | jq -r '.value')
-
-  REMOVE_REPOSITORY=$(curl -s \
-    -H "Authorization: token $GH_TOKEN" \
-    -H "Accept: application/vnd.github.v3+json" \
-    "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/REMOVE_REPOSITORY" | jq -r '.value')
-
+  #Check if ✅ target runner is exist 
   TARGET_REPOSITORY=$(curl -s \
     -H "Authorization: token $GH_TOKEN" \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/TARGET_REPOSITORY" | jq -r '.value')
 
-  if [[ "$RERUN_RUNNER" == "true" ]]; then
-
-    echo "🚀 Start all applications."
-
-    $DOCKER exec mydb supervisorctl reread
-    $DOCKER exec mydb supervisorctl update
-
-    $DOCKER exec mydb supervisorctl start postgres || true
-    $DOCKER exec mydb supervisorctl start freqtrade_dry || true
-    $DOCKER exec mydb supervisorctl start freqtrade_live || true
-
-    set_monitor
-
-  #Check if ✅ freqtrade_live is running
-  elif $DOCKER exec mydb supervisorctl status freqtrade_live | grep -q "RUNNING"; then
+  TOTAL_COUNT=$(curl -s \
+    -H "Authorization: token $GH_TOKEN" \
+    -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/repos/${TARGET_REPOSITORY}/actions/runners" | jq '.total_count')
+  
+  if [[ "$TOTAL_COUNT" -eq 0 ]]; then
 
     echo -e "\n$hr\nStart Network\n$hr"
+    REMOVE_REPOSITORY=$(curl -s \
+      -H "Authorization: token $GH_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/REMOVE_REPOSITORY" | jq -r '.value')
 
     if [[ "$CONTAINER_NAME" == "runner1" ]]; then
       $DOCKER exec runner2 /home/runner/scripts/exitpoint.sh "$REMOVE_REPOSITORY" "$TARGET_REPOSITORY"
@@ -104,13 +72,16 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
       $DOCKER exec runner1 /home/runner/scripts/exitpoint.sh "$REMOVE_REPOSITORY" "$TARGET_REPOSITORY"
     fi
 
-    echo "🌀 Reload all application's configs upon the updated configuration."
-    restart_mydb
-
-  else
-
-    echo "🏃 Rerun all applications upon the given configuration."
-    restart_mydb
-
   fi
+
+  echo -e "\n$hr\nRestart all applications\n$hr"
+  $DOCKER exec mydb supervisorctl reread
+  $DOCKER exec mydb supervisorctl update
+
+  $DOCKER exec mydb supervisorctl start postgres || true
+  $DOCKER exec mydb supervisorctl start freqtrade_dry || true
+  $DOCKER exec mydb supervisorctl start freqtrade_live || true
+
+  set_monitor
+
 fi

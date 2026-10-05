@@ -103,7 +103,7 @@ runs:
         mkdir -p ${{ inputs.action_path }} && cp -R ${{ github.workspace }}/_site/. ${{ inputs.action_path }}/
   
     - uses: ikalnytskyi/action-setup-postgres@v7
-      if: env.RERUN_RUNNER == 'false'
+      if: env.REMOVE_RUNNER == 'false'
       id: postgres
       with:
         username: yoda
@@ -114,7 +114,7 @@ runs:
         ssl: true
 
     - name: 🪂 Install Freqtrafe
-      if: env.RERUN_RUNNER == 'false'
+      if: env.REMOVE_RUNNER == 'false'
       shell: bash
       env:
         VERSION: "2025.12"
@@ -140,13 +140,13 @@ runs:
 
     - name: Upload downloaded data as artifact
       uses: actions/upload-artifact@v6
-      if: env.RERUN_RUNNER == 'false'
+      if: env.REMOVE_RUNNER == 'false'
       with:
         name: freqtrade-data
         path: user_data/data/
 
     - name: 🪂 Test postgres
-      if: env.RERUN_RUNNER == 'false'
+      if: env.REMOVE_RUNNER == 'false'
       shell: bash
       env:
         CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
@@ -171,7 +171,7 @@ runs:
         #python ${{ github.workspace }}/web_programming/cc_exchanges.py
 
     - name: 🚀 Initiate Feed Container
-      if: env.RERUN_RUNNER == 'true'
+      if: env.REMOVE_RUNNER == 'true'
       uses: devcontainers/ci@v0.3
       id: set_output
       with:
@@ -180,16 +180,16 @@ runs:
         imageName: ${{ inputs.image_name }}
         configFile: _site/.devcontainer.json
         #runCmd: bash user_data/ft_client/test_client/feed.sh
-        push: ${{ env.RERUN_RUNNER == 'true' && 'always' || 'never' }}
+        push: ${{ env.REMOVE_RUNNER == 'true' && 'always' || 'never' }}
         env: |
           ID=${{ env.ID }}
           GH_TOKEN=${{ env.GH_TOKEN }}
           REMOTE_REPO=${{ inputs.repository }}
-          RERUN_RUNNER=${{ env.RERUN_RUNNER }}
+          REMOVE_RUNNER=${{ env.REMOVE_RUNNER }}
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
 
     - name: 🪂 Remove existing images
-      if: env.RERUN_RUNNER == 'true'
+      if: env.REMOVE_RUNNER == 'true'
       id: variables
       shell: bash
       run: |
@@ -208,5 +208,5 @@ runs:
       shell: bash
       run: |
         [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
-          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER" \
           --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"

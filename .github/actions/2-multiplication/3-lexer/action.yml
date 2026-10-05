@@ -82,7 +82,7 @@ runs:
   using: composite
   steps:
     - name: configure
-      if: env.RERUN_RUNNER == 'true'
+      if: env.REMOVE_RUNNER == 'true'
       shell: bash
       env:
         CXX: g++-12
@@ -170,5 +170,5 @@ runs:
       shell: bash
       run: |
         [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
-          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$RERUN_RUNNER" \
+          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER" \
           --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"
