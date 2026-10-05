@@ -5,7 +5,7 @@
 # Ref: https://strat.ninja/ranking.php
 #
 hr='------------------------------------------------------------------------------'
-EPOCHS=32
+EPOCHS=3200
 FEE=0.003322
 TIMEFRAMES='1m 15m'
 
