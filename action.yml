@@ -105,7 +105,6 @@ runs:
       if:  ${{ env.JOBS_ID == 2 }}
       id: multiplication
       with:
-        repo_source: ${{ inputs.source }}    
         token: ${{ inputs.token }}
         chat_id: ${{ inputs.chat_id }}
         api_key: ${{ inputs.api_key }}
@@ -125,3 +124,4 @@ runs:
         gcp_sa_key: ${ inputs.gcp_sa_key }}
         jekyll_github_owner: ${{ inputs.jekyll_github_owner }}
         jekyll_github_token: ${{ inputs.jekyll_github_token }}
+        repo_source: ${{ inputs.repo_source }}
