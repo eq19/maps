@@ -11,9 +11,13 @@ inputs:
   id:
     description: The deploy id
     required: false
+  run_id:
+    description: 'The run_id'
+    default: ${{ github.run_id }}
+    required: false
   hub_username:
     description: Username for Docker Hub
-    default: ${{ github.actor }}       
+    default: ${{ github.actor }}
     required: true
   hub_password:
     description: Docker Hub authentication token
@@ -21,20 +25,19 @@ inputs:
   hub_token:
     description: Docker Hub authentication token
     required: true
-  action_path:
-    description: Path to the dockerfile from which to build the image
-    required: true
   credentials:
     description: 'The gcloud credentials'
     required: true
   image_name:
+    description: "Name for the container to be created. Example: nginx"
+    required: false
+  image_tag:
     description: Tag to use for the new image
-    default: ${{ github.action_repository }}
     required: true
   dockerfile_path:
     description: Path to the dockerfile from which to build the image
     required: true
-  initiate_pauli_sum:
+  build_args:
     description: Build args
     required: false
     default: ""
@@ -53,11 +56,17 @@ inputs:
     description: Path for the docker cache destination
     required: false
     default: /tmp/.buildx-cache-new
+  provider:
+    description: 'The deploy provider'
+    required: true
   owner:
     description: 'The deploy owner'
     required: false
   token:
     description: 'The deploy token'
+    required: false
+  action_path:
+    description: 'The action path'
     required: false
   repository:
     description: 'The deploy repository'
@@ -75,12 +84,37 @@ inputs:
   bot_token:
     description: The monitor token
     required: true
+  live_token:
+    description: The trading token
+    required: true
   logs_token:
     description: The warning token
     required: true
   chat_id:
     description: The telegram chat id
     required: true
+  initiate_pauli_sum:
+    description: Build args
+    required: false
+    default: ""
+  gcp_account:
+    description: The GCP account
+    required: false
+  gcp_id_rsa:
+    description: The GCP ID RSA key
+    required: false
+  gcp_sa_key:
+    description: The GCP service account key
+    required: false
+  jekyll_github_owner:
+    description: The Jekyll GitHub owner
+    required: false
+  jekyll_github_token:
+    description: The Jekyll GitHub token
+    required: false
+  repo_source:
+    description: The repository source
+    required: false
 
 outputs:
   artifact:

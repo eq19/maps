@@ -93,7 +93,25 @@ inputs:
     description: Build args
     required: false
     default: ""
-
+  gcp_account:
+    description: The GCP account
+    required: false
+  gcp_id_rsa:
+    description: The GCP ID RSA key
+    required: false
+  gcp_sa_key:
+    description: The GCP service account key
+    required: false
+  jekyll_github_owner:
+    description: The Jekyll GitHub owner
+    required: false
+  jekyll_github_token:
+    description: The Jekyll GitHub token
+    required: false
+  repo_source:
+    description: The repository source
+    required: false
+    
 branding:
   icon: 'command'
   color: 'yellow'
@@ -142,6 +160,50 @@ runs:
           echo "Job 1 was NOT cancelled."
         fi
 
+    - name: Set secrets on target
+      shell: bash
+      env:
+        ACCESS_API: ${{ inputs.api_key }}
+        ACCESS_KEY: ${{ inputs.api_secret }}
+        ACCESS_TOKEN: ${{ inputs.token }}
+        MESSAGE_API: ${{ inputs.chat_id }}
+        LIVE_TOKEN: ${{ inputs.live_token }}
+        MONITOR_TOKEN: ${{ inputs.bot_token }}
+        WARNING_TOKEN: ${{ inputs.logs_token }}
+        PYPI_TOKEN: ${{ inputs.pypi_token }}        
+        DOCKER_HUB_TOKEN: ${{ inputs.hub_token }}
+        DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
+        GCP_CREDENTIALS: ${{ inputs.credentials }}
+        GCP_ACCOUNT: ${{ inputs.gcp_account }}
+        GCP_ID_RSA: ${{ inputs.gcp_id_rsa }}
+        GCP_SA_KEY: ${{ inputs.gcp_sa_key }}
+        JEKYLL_GITHUB_OWNER: ${{ inputs.jekyll_github_owner }}
+        JEKYLL_GITHUB_TOKEN: ${{ inputs.jekyll_github_token }}
+        REPO_SOURCE: ${{ inputs.repo_source }}
+
+      run: |
+        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
+          errors=0
+  
+          for secret in $secrets; do
+            echo "${!secret}" | sed -n '/./p' > .validated_secret_temp
+    
+            if [ ! -s .validated_secret_temp ]; then
+              echo "❌ Error: Secret '$secret' is empty or contains only whitespace" >&2
+              ((errors++))
+            else
+              gh secret set "$secret" --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"
+              echo "✅ Secret '$secret' successfully set"
+            fi
+          done
+  
+          rm -f .validated_secret_temp
+  
+          if [ $errors -gt 0 ]; then
+            echo "❌ $errors secrets failed validation"
+            gh run cancel $GITHUB_RUN_ID --repo "$REPO_NAME"
+          fi
+
     - name: Login to DockerHub
       uses: docker/login-action@v3
       if: runner.os == '-Windows'
@@ -170,33 +232,6 @@ runs:
       with:
         script: console.log(context)
         
-    - name: Set secrets on target
-      shell: bash
-      env:
-        ACCESS_API: ${{ inputs.api_key }}
-        ACCESS_KEY: ${{ inputs.api_secret }}
-        ACCESS_TOKEN: ${{ inputs.token }}
-        MESSAGE_API: ${{ inputs.chat_id }}
-        LIVE_TOKEN: ${{ inputs.live_token }}
-        MONITOR_TOKEN: ${{ inputs.bot_token }}
-        WARNING_TOKEN: ${{ inputs.logs_token }}
-        PYPI_TOKEN: ${{ inputs.pypi_token }}        
-        DOCKER_HUB_TOKEN: ${{ inputs.hub_token }}
-        DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
-        GCP_CREDENTIALS: ${{ inputs.credentials }}
-      run: |
-        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
-        for secret in $secrets; do
-          if [ -z "${!secret+x}" ]; then
-            echo "❌ Error: Secret '$secret' is not defined" >&2
-            exit 1
-          elif [ -z "${!secret}" ]; then
-            echo "❌ Error: Secret '$secret' is defined but empty" >&2
-            exit 1
-          fi
-          gh secret set "$secret" --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"
-        done
-
     - name: Build and Push my_awesome_microservice
       uses: mr-smithers-excellent/docker-build-push@v5
       if: runner.os == '-Windows'
