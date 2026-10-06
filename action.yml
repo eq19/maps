@@ -87,6 +87,7 @@ runs:
       if:  ${{ env.JOBS_ID == 2 }}
       id: multiplication
       with:
+        repo_source: ${{ inputs.source }}    
         token: ${{ inputs.token }}
         chat_id: ${{ inputs.chat_id }}
         api_key: ${{ inputs.api_key }}
@@ -101,3 +102,8 @@ runs:
         hub_token: ${{ inputs.docker_hub_token }} 
         hub_password: ${{ inputs.docker_hub_password }}
         hub_username: ${{ inputs.docker_hub_username }} 
+        gcp_account: ${{ inputs.gcp_account }}
+        gcp_id_rsa: ${{ inputs.gcp_id_rsa }}
+        gcp_sa_key: ${ inputs.gcp_sa_key }}
+        jekyll_github_owner: ${{ inputs.jekyll_github_owner }}
+        jekyll_github_token: ${{ inputs.jekyll_github_token }}
