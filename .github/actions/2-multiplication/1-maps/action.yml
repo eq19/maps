@@ -156,6 +156,7 @@ runs:
           fi
           
           gh workflow run "main.yml" --repo $REPO_NAME --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          exit 0
         else
           echo "Job 1 was NOT cancelled."
         fi
