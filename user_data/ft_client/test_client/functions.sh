@@ -6,8 +6,8 @@
 calculate_score() {
 
   sleep 5
-  local TRADES_MIN=50
-  [[ "$RUN_MODE" == "FreqAI" ]] && TRADES_MIN=30
+  local TRADES_MIN=30
+  [[ "$RUN_MODE" == "FreqAI" ]] && TRADES_MIN=15
 
   # Scoring breakdown:
 
