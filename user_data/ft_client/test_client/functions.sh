@@ -327,6 +327,7 @@ calculate_score() {
   echo "🧮 Performance: $SCORE"
   CALCULATION="true"
 
+: <<'COMMENT'
   echo ""
   echo "🚧 Any of these → discard or penalize heavily:"
   echo ""
@@ -383,7 +384,7 @@ calculate_score() {
   else
     echo "📌 Balanced Strategy: Decent baseline, but requires further Hyperopt tuning to reach optimal zones."
   fi
-
+COMMENT
 }
 
 hyperopt() {
