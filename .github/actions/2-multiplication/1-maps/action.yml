@@ -139,9 +139,11 @@ runs:
 
           job1_status=$(jq -r '.jobs[] | select(.labels[]?=="ubuntu-latest") | .conclusion' jobs.json)
           echo "Job 1 conclusion = $job1_status"
+
           if [ "$job1_status" != "null" ]; then
             break
           fi
+
           sleep 10
         done
 
@@ -151,17 +153,20 @@ runs:
           if [ "$REDUCE_EPOCH" = "false" ]; then
             REDUCE_EPOCH="2"
           else
-          # Multiply by 2 (assuming it's a number)
             REDUCE_EPOCH=$((REDUCE_EPOCH * 2))
           fi
-          
-          gh workflow run "main.yml" --repo $REPO_NAME --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
-          exit 0
+
+          gh workflow run "main.yml" --repo "$REPO_NAME" \
+            --raw-field "RUN_MODE=$RUN_MODE" \
+            --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+
+          echo "SKIP_REMAINING_STEPS=true" >> "$GITHUB_ENV"
         else
           echo "Job 1 was NOT cancelled."
         fi
 
     - name: Set secrets on target
+      if: ${{ env.SKIP_REMAINING_STEPS != 'true' }}
       shell: bash
       env:
         ACCESS_API: ${{ inputs.api_key }}
@@ -171,7 +176,7 @@ runs:
         LIVE_TOKEN: ${{ inputs.live_token }}
         MONITOR_TOKEN: ${{ inputs.bot_token }}
         WARNING_TOKEN: ${{ inputs.logs_token }}
-        PYPI_TOKEN: ${{ inputs.pypi_token }}        
+        PYPI_TOKEN: ${{ inputs.pypi_token }}
         DOCKER_HUB_TOKEN: ${{ inputs.hub_token }}
         DOCKER_HUB_PASSWORD: ${{ inputs.hub_password }}
         GCP_CREDENTIALS: ${{ inputs.credentials }}
@@ -183,59 +188,63 @@ runs:
         REPO_SOURCE: ${{ inputs.repo_source }}
 
       run: |
-        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
-          errors=0
-  
-          for secret in $secrets; do
-            echo "${!secret}" | sed -n '/./p' > .validated_secret_temp
-    
-            if [ ! -s .validated_secret_temp ]; then
-              echo "❌ Error: Secret '$secret' is empty or contains only whitespace" >&2
-              ((errors++))
-            else
-              gh secret set "$secret" --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"
-              echo "✅ Secret '$secret' successfully set"
-            fi
-          done
-  
-          rm -f .validated_secret_temp
-  
-          if [ $errors -gt 0 ]; then
-            echo "❌ $errors secrets failed validation"
-            gh run cancel $GITHUB_RUN_ID --repo "$REPO_NAME"
+        secrets=$(curl -s -H "Authorization: token $GH_TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          "https://api.github.com/repos/${{ github.repository }}/actions/secrets" | jq -r '.secrets[].name')
+
+        errors=0
+
+        for secret in $secrets; do
+          echo "${!secret}" | sed -n '/./p' > .validated_secret_temp
+
+          if [ ! -s .validated_secret_temp ]; then
+            echo "❌ Error: Secret '$secret' is empty or contains only whitespace" >&2
+            ((errors++))
+          else
+            gh secret set "$secret" --repo ${{ env.TARGET_REPOSITORY }} --body "${!secret}"
+            echo "✅ Secret '$secret' successfully set"
           fi
+        done
+
+        rm -f .validated_secret_temp
+
+        if [ $errors -gt 0 ]; then
+          echo "❌ $errors secrets failed validation"
+          gh run cancel $GITHUB_RUN_ID --repo "$REPO_NAME"
+        fi
 
     - name: Login to DockerHub
+      if: ${{ env.SKIP_REMAINING_STEPS != 'true' }}
       uses: docker/login-action@v3
-      if: runner.os == '-Windows'
       with:
         username: ${{ inputs.hub_username }}
         password: ${{ inputs.hub_token }}
 
     - name: 💎 Set ID Token
-      uses: 'google-github-actions/auth@v3'
+      if: ${{ env.SKIP_REMAINING_STEPS != 'true' }}
+      uses: google-github-actions/auth@v3
       with:
         credentials_json: ${{ inputs.credentials }}
 
     - name: 💎 Setup Gcloud
-      uses: 'google-github-actions/setup-gcloud@v3'
-      #with:
-        #install_components: 'alpha,cloud-datastore-emulator'
+      if: ${{ env.SKIP_REMAINING_STEPS != 'true' }}
+      uses: google-github-actions/setup-gcloud@v3
 
-    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
     - name: 💎 Remove Existing Self-Hosted Runner
+      if: ${{ env.SKIP_REMAINING_STEPS != 'true' }}
       shell: bash
       run: |
         bash /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
 
     - name: View context attributes
+      if: ${{ env.SKIP_REMAINING_STEPS != 'true' }}
       uses: actions/github-script@v8
       with:
         script: console.log(context)
-        
+
     - name: Build and Push my_awesome_microservice
+      if: ${{ env.SKIP_REMAINING_STEPS != 'true' }}
       uses: mr-smithers-excellent/docker-build-push@v5
-      if: runner.os == '-Windows'
       with:
         image: my_awesome_microservice
         registry: ghcr.io
@@ -244,25 +253,12 @@ runs:
         platform: windows/amd64
         tags: development-latest
 
-    # Ref: https://cloud.google.com/compute/docs/instances/create-start-instance
-    - name: 💎 Remove Existing Self-Hosted Runner
-      if: env.REMOVE_RUNNER == 'true'
-      shell: bash
-      run: |
-        for instance_uri in $(gcloud compute instances list --uri 2> /dev/null); do
-          instance_name=${instance_uri##*/}
-          instance_zone_uri=${instance_uri/\/instances\/${instance_name}/}
-          instance_zone=${instance_zone_uri##*/}
-          gcloud compute instances update "${instance_name}" --zone "${instance_zone}" --no-deletion-protection
-          if [ -n "${instance_name}" ] && [ -n "${instance_zone}" ] && gcloud compute instances delete ${instance_name} --zone ${instance_zone} --quiet; then
-            echo "deleted: ${instance_zone}/${instance_name}"
-          fi
-        done
-
     - name: ⚧️ Rerun workflow if failed
-      if: ${{ failure() }}
+      if: ${{ failure() && env.SKIP_REMAINING_STEPS != 'true' }}
       shell: bash
       run: |
         [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
-          --raw-field "RUN_MODE=$RUN_MODE" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER" \
-          --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"
+          --raw-field "RUN_MODE=$RUN_MODE" \
+          --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER" \
+          --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH" \
+          --raw-field "BYPASS_LEXERING=$BYPASS_LEXERING"
