@@ -259,7 +259,7 @@ runs:
         bash user_data/ft_client/test_client/maps.sh $ID $JOBS_ID $APP_PATH ${DIR_PATH:-user_data} ${PARAM_NAME:-nil} $ARTIFACT $HYPEROPT_PARAM 
 
     - name: Login to DockerHub
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       if:  ${{ env.REMOVE_RUNNER == 'true' }}
       with:
         username: ${{ inputs.hub_username }}
