@@ -13,24 +13,28 @@ DELAY=10  # seconds
 COUNT=0
 
 # Run application
-python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-100}
+if [[ "${BYPASS_LEXERING}" == "false" ]]; then
+  python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-0}
+else
+  python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-100}
 
-# Run IREE and capture ALL output
-RAW_OUTPUT=$(iree-run-module \
-  --module=complex_module.vmfb \
-  --function=serving_default \
-  --input="13xf32=[1,2,3,4,5,6,7,8,9,10,11,12,13]" \
-  --print_statistics=false 2>&1)
+  # Run IREE and capture ALL output
+  RAW_OUTPUT=$(iree-run-module \
+    --module=complex_module.vmfb \
+    --function=serving_default \
+    --input="13xf32=[1,2,3,4,5,6,7,8,9,10,11,12,13]" \
+    --print_statistics=false 2>&1)
 
-# Debug: Save output to file
-echo "$RAW_OUTPUT" > iree_output.txt
-echo "---- RAW OUTPUT ----"
-cat iree_output.txt
-echo "--------------------"
+  # Debug: Save output to file
+  echo "$RAW_OUTPUT" > iree_output.txt
+  echo "---- RAW OUTPUT ----"
+  cat iree_output.txt
+  echo "--------------------"
 
-# Pass to decoder
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-$SCRIPT_DIR/float_decoder "$RAW_OUTPUT"
+  # Pass to decoder
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  $SCRIPT_DIR/float_decoder "$RAW_OUTPUT"
+fi
 
 while true; do
   #echo "Attempt $((COUNT+1))..."
