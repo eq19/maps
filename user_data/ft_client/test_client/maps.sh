@@ -7,6 +7,7 @@ DIR_PATH=$4
 PARAM_NAME=$5
 ARTIFACT=$6
 HYPEROPT_PARAM=$7
+COMPILE_FILE=$8
 
 MAX_RETRIES=5
 DELAY=10  # seconds
@@ -14,6 +15,7 @@ COUNT=0
 
 # Run application
 if [[ "${BYPASS_LEXERING}" == "false" ]]; then
+  rm -rf $COMPILE_FILE
   python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-0}
 else
   python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-100}
