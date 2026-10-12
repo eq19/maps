@@ -112,8 +112,8 @@ with open(output_path, "w") as f:
     json.dump(data, f, indent=2)
 
 # Print how long it took
-compile.export_model()
-#print(datetime.now() - start_time)
+if int(epochs) != 0:
+    compile.export_model()
 
 if __name__ == '__main__':
     #program, *args = sys.argv
