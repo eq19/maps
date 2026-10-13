@@ -466,6 +466,7 @@ hyperopt() {
     NEW_SCORE=$SCORE
     OLD_SCORE=$(gh variable get SCORE)
 
+    [[ "$ID" == "169" ]] && REMOVE_RUNNER="true" || REMOVE_RUNNER="false"
     if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) && $(echo "$NEW_SCORE != 0" | bc -l) )); then
       cat $STRATEGY
       sed -i "s|Infinity|10|g" $STRATEGY
@@ -485,7 +486,7 @@ hyperopt() {
         if [[ "$BYPASS_LEXERING" == "true" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
         else
-          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30"
+          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER"
         fi
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
@@ -501,7 +502,7 @@ hyperopt() {
           if [[ "$BYPASS_LEXERING" == "true" ]]; then
             gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
           else
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30"
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER"
           fi
         fi
       fi
@@ -517,7 +518,7 @@ hyperopt() {
           if [[ "$BYPASS_LEXERING" == "true" ]]; then
             gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
           else
-            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30"  
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER"
           fi
         fi
       fi
