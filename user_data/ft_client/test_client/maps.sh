@@ -14,7 +14,7 @@ DELAY=10  # seconds
 COUNT=0
 
 # Run application
-if [[ "${BYPASS_LEXERING}" == "false" ]]; then
+if [[ "${BYPASS_LEXERING}" != "true" ]]; then
   rm -rf $COMPILE_FILE
   python $APP_PATH $DIR_PATH ${ID:-30} ${PARAM_NAME:-nil} ${EPOCHS:-0}
 else
