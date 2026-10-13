@@ -482,7 +482,11 @@ hyperopt() {
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
-        gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        if [[ "$BYPASS_LEXERING" == "true" ]]; then
+          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+        else
+          gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30"
+        fi
       elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
       fi
@@ -494,7 +498,11 @@ hyperopt() {
           PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
           gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
-          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          if [[ "$BYPASS_LEXERING" == "true" ]]; then
+            gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          else
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30"
+          fi
         fi
       fi
     # Environment SCORE is unchanged in case calculation is failed
@@ -506,7 +514,11 @@ hyperopt() {
           PARAMS_JSON=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/PARAMS_JSON" | jq -r '.value')
           gh variable set PARAMS_JSON --repo ${TARGET_REPOSITORY} --body "${PARAMS_JSON}"
-          gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          if [[ "$BYPASS_LEXERING" == "true" ]]; then
+            gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+          else
+            gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30"  
+          fi
         fi
       fi
     fi
