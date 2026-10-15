@@ -266,17 +266,20 @@ class Fibbo(IStrategy):
 
     def bot_start(self, **kwargs) -> None:
 
+        # Diagnostic patch should be active in BOTH live and dry-run modes.
+        patch_dataprovider()
+
         if not self.config.get("dry_run", False):
 
-            patch_ccxt_pair_only()          # 🔥 REQUIRED
-            patch_indodax_fetch_order()     # 🔥 REQUIRED
-            patch_indodax_cancel_order()    # 🔥 REQUIRED
-            patch_indodax_create_order()    # ⚠️ optional but recommended
-            patch_dataprovider()            # 🔥 optional but recommended
+            # Indodax exchange patches remain live-only.
+            patch_ccxt_pair_only()
+            patch_indodax_fetch_order()
+            patch_indodax_cancel_order()
+            patch_indodax_create_order()
 
-            logger.info("✅ Indodax fully patched (stable mode)")
+            logger.info("✅ Indodax exchange patches applied (live mode)")
         else:
-            logger.info(f"ℹ️ CCXT patches skipped (dry_run mode).")
+            logger.info("ℹ️ Indodax exchange patches skipped (dry_run mode).")
 
     def update_roi(self):
         """
