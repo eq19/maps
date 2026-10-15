@@ -74,7 +74,7 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
 
   fi
 
-  echo -e "\n$hr\nRestart all applications\n$hr"
+  echo -e "\n$hr\nRestart all\n$hr"
   $DOCKER exec mydb supervisorctl reread
   $DOCKER exec mydb supervisorctl update
 

@@ -49,14 +49,20 @@ export MAP_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
   https://api.github.com/repos/eq19/maps | jq -r .default_branch)
 export DEFAULT_BRANCH=$(curl -s -H "Authorization: token $GH_TOKEN" \
   https://api.github.com/repos/$GITHUB_REPOSITORY | jq -r .default_branch)
-export FREQAIMODEL_DRY=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/FREQAIMODEL" | jq -r '.value')
-export FREQAIMODEL_LIVE=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/FREQAIMODEL" | jq -r '.value')
 export RERUN_RUNNER=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/RERUN_RUNNER" | jq -r '.value')
 export TARGET_REPOSITORY=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
   "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/TARGET_REPOSITORY" | jq -r '.value')
+
+if [[ "${BYPASS_LEXERING}" == "false" ]]; then
+  export FREQAIMODEL_DRY=""
+  export FREQAIMODEL_LIVE=""
+else
+  export FREQAIMODEL_DRY=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/FREQAIMODEL" | jq -r '.value')
+  export FREQAIMODEL_LIVE=$(curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/variables/FREQAIMODEL" | jq -r '.value')
+fi
 
 echo 'RERUN_RUNNER='${RERUN_RUNNER} >> ${GITHUB_ENV}
 echo 'DEFAULT_BRANCH='${DEFAULT_BRANCH} >> ${GITHUB_ENV}
@@ -359,10 +365,14 @@ fi
     SCRIPT_PATH="${DIR_PATH}/ft_client/test_client/maps.sh"
     HYPEROPT_PARAM="${DIR_PATH}/strategies/hyperopt_params.json"
     ARTIFACT="${DIR_PATH}/ft_client/test_client/results/orgs.json"
+    INIT_FILE="${DIR_PATH}/ft_client/test_client/pythonCode/__init__.py"
+    COMPILE_FILE="${DIR_PATH}/ft_client/test_client/pythonCode/compile.py"
 
     $DOCKER exec mydb mkdir -p "$(dirname "$ARTIFACT")"
-    echo -e "$hr\nFolder: ${DIR_PATH} → Params: ${PARAM_NAME}"
+    $DOCKER exec mydb sed -i 's/^\(\s*\)#"compile",/\1"compile",/' $INIT_FILE
+    [[ "${BYPASS_LEXERING}" == "false" ]] && $DOCKER exec mydb sed -i 's/^\(\s*\)"compile",/\1#"compile",/' $INIT_FILE
 
+    echo -e "$hr\nFolder: ${DIR_PATH} → Params: ${PARAM_NAME}"
     for REL_PATH in "${FILES[@]}"; do
       DOWNLOAD_URL="${BASE_URL}/${REL_PATH}"
       DEST_PATH="${DIR_PATH}/${REL_PATH}"
@@ -407,7 +417,7 @@ fi
       https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/${PARAM_NAME} \
       | jq -r '.value' > ${DIR_PATH}/strategies/fibbo.json"
     $DOCKER exec -e BEARER="$BEARER" mydb bash -c \
-      "bash ${SCRIPT_PATH} ${ID:-30} $JOBS_ID $APP_PATH $DIR_PATH $PARAM_NAME $ARTIFACT $HYPEROPT_PARAM"
+      "bash ${SCRIPT_PATH} ${ID:-30} $JOBS_ID $APP_PATH $DIR_PATH $PARAM_NAME $ARTIFACT $HYPEROPT_PARAM $COMPILE_FILE $BYPASS_LEXERING"
 
   done
 

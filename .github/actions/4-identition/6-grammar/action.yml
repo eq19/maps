@@ -146,6 +146,10 @@ runs:
 
             DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
 
+            # Clean up any uncommitted changes before switching branches
+            git reset --hard
+            git clean -fd
+  
             git checkout $DEFAULT_BRANCH
             git pull origin $DEFAULT_BRANCH
 

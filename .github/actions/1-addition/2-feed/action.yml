@@ -186,8 +186,9 @@ runs:
           GH_TOKEN=${{ env.GH_TOKEN }}
           REMOTE_REPO=${{ inputs.repository }}
           REMOVE_RUNNER=${{ env.REMOVE_RUNNER }}
+          BYPASS_LEXERING=${{ env.BYPASS_LEXERING }}
           TARGET_REPOSITORY=${{ env.TARGET_REPOSITORY }}
-
+          
     - name: 🪂 Remove existing images
       if: env.REMOVE_RUNNER == 'true'
       id: variables
