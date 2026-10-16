@@ -516,7 +516,7 @@ class Fibbo(IStrategy):
             self.informative_timeframe,
             self.config["freqai"]["feature_parameters"]["include_timeframes"],
             len(whitelist_pairs),
-           nlen(informative_pairs),
+            len(informative_pairs),
             ("GTC/IDR", "15m") in informative_pairs,
         )
 
