@@ -12,7 +12,6 @@
     },
     {
       "method": "PriceFilter",
-      "low_price_ratio": 0.001,
       "min_price": 100
     },
     {
