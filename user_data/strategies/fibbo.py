@@ -495,32 +495,33 @@ class Fibbo(IStrategy):
 
     def informative_pairs(self):
         whitelist_pairs = self.dp.current_whitelist()
-        corr_pairs = self.config["freqai"]["feature_parameters"]["include_corr_pairlist"]
-        informative_pairs = []
 
-        for tf in self.config["freqai"]["feature_parameters"]["include_timeframes"]:
-            for pair in whitelist_pairs:
-                informative_pairs.append((pair, self.informative_timeframe))
+        # Always register the strategy's required informative timeframe.
+        informative_pairs = [
+            (pair, self.informative_timeframe)
+            for pair in whitelist_pairs
+        ]
 
-            for pair in corr_pairs:
-                if pair in whitelist_pairs:
-                    continue
-                informative_pairs.append((pair, tf))
+        # Register additional correlation pairs when FreqAI is enabled.
+        if self.freqai_enabled:
+            feature_parameters = self.config["freqai"]["feature_parameters"]
+
+            for tf in feature_parameters.get("include_timeframes", []):
+                for pair in feature_parameters.get("include_corr_pairlist", []):
+                    if pair not in whitelist_pairs:
+                        informative_pairs.append((pair, tf))
 
         logger.info(
             "INFORMATIVE PAIRS DIAGNOSTIC: "
             "base_timeframe=%s, informative_timeframe=%s, "
-            "include_timeframes=%s, whitelist_count=%d, "
-            "requested_count=%d, GTC/IDR_15m_requested=%s",
+            "whitelist_count=%d, requested_count=%d",
             self.timeframe,
             self.informative_timeframe,
-            self.config["freqai"]["feature_parameters"]["include_timeframes"],
             len(whitelist_pairs),
             len(informative_pairs),
-            ("GTC/IDR", "15m") in informative_pairs,
         )
 
-        return informative_pairs
+        return list(dict.fromkeys(informative_pairs))
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = metadata["pair"]
