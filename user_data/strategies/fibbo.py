@@ -38,7 +38,7 @@ from itertools import permutations
 from utils import (
     patch_dataprovider,
     patch_ccxt_pair_only,
-    patch_indodax_fetch_order, 
+    patch_indodax_fetch_order,
     patch_indodax_cancel_order,
     patch_indodax_create_order,
 )
@@ -50,7 +50,6 @@ exit_indicators = ["BB", "RSI", "TTM", "VWAP", "MACD", "DEMA", "STOCHRSI"]
 logger = logging.getLogger(__name__)
 
 
-# ✅ 1. Recursively find the first occurrence of the 'span' key
 def find_span(obj):
     if isinstance(obj, dict):
         if "span" in obj:
@@ -66,25 +65,38 @@ def find_span(obj):
                 return result
     return None
 
-# Load JSON and extract 'span'
-param_file = Path(__file__).parent/'hyperopt_params.json'
-logger.info(f"Load params file: {param_file}")
-try:
-    with open(param_file) as file:
-        span = find_span(json.load(file))
-except FileNotFoundError:
-    logger.warning(f"Params file not found: {param_file}")
-except json.JSONDecodeError:
-    logger.error(f"Invalid JSON in params file: {param_file}")
-except Exception as e:
-    logger.error(f"Error loading params: {str(e)}")
 
-# ✅ 2. Helper function to construct parameters
+def load_hyperopt_span(path: Path) -> dict:
+    default = {"enter": {}, "exit": {}}
+    try:
+        with open(path, encoding="utf-8") as file:
+            data = json.load(file)
+        span = find_span(data)
+        if not isinstance(span, dict):
+            logger.warning("Hyperopt span not found or invalid in %s", path)
+            return default
+        return span
+    except FileNotFoundError:
+        logger.info("Hyperopt params file not found: %s - using defaults", path)
+        return default
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON in params file: %s - using defaults", path)
+        return default
+    except Exception as e:
+        logger.error("Error loading hyperopt params: %s - using defaults", str(e))
+        return default
+
+
 def get_param_config(span: dict, space: str, name: str):
-    config = span[space][name]
-    param_type = config["type"]
+    section = span.get(space)
+    if section is None:
+        raise KeyError(f"Missing section '{space}' in strategy span")
+    config = section.get(name)
+    if config is None:
+        raise KeyError(f"Missing parameter '{name}' in '{space}'")
+    param_type = config.get("type")
     optimize = config.get("optimize", False)
-    default = config["default"]
+    default = config.get("default")
 
     if param_type == "IntParameter":
         return IntParameter(
@@ -111,7 +123,7 @@ def get_param_config(span: dict, space: str, name: str):
         )
     elif param_type == "CategoricalParameter":
         return CategoricalParameter(
-            categories=config['choices'],
+            categories=config.get('choices', []),
             default=default,
             space=space,
             optimize=optimize
@@ -119,7 +131,7 @@ def get_param_config(span: dict, space: str, name: str):
     else:
         raise ValueError(f"Unknown parameter type: {param_type}")
 
-# ✅ 3. Generate permutations and insert them into the span config before using them
+
 def indicator_permutations(profiles, max_indicators=1, include_none=False):
     profile_permutations = set()
     if include_none:
@@ -133,94 +145,79 @@ def indicator_permutations(profiles, max_indicators=1, include_none=False):
                 profile_permutations.add(", ".join(sorted(perm)))
     return profile_permutations
 
-# Insert computed categories into the JSON-loaded span
-span["enter"]["enter_long_indicator"]["choices"] = sorted(
-    indicator_permutations(enter_indicators, max_indicators=4, include_none=True)
-)
-span["enter"]["enter_short_indicator"]["choices"] = sorted(
-    indicator_permutations(enter_indicators, max_indicators=4, include_none=True)
-)
-span["exit"]["exit_long_indicator"]["choices"] = sorted(
-    indicator_permutations(exit_indicators, max_indicators=4, include_none=True)
-)
-span["exit"]["exit_short_indicator"]["choices"] = sorted(
-    indicator_permutations(exit_indicators, max_indicators=4, include_none=True)
-)
 
-# Preload strategy attributes
+param_file = Path(__file__).parent / 'hyperopt_params.json'
+logger.info("Attempting to load hyperopt params file: %s", param_file)
+span = load_hyperopt_span(param_file)
+
+try:
+    if 'enter' in span:
+        if 'enter_long_indicator' in span['enter']:
+            span['enter']['enter_long_indicator']['choices'] = sorted(
+                indicator_permutations(enter_indicators, max_indicators=4, include_none=True)
+            )
+        if 'enter_short_indicator' in span['enter']:
+            span['enter']['enter_short_indicator']['choices'] = sorted(
+                indicator_permutations(enter_indicators, max_indicators=4, include_none=True)
+            )
+    if 'exit' in span:
+        if 'exit_long_indicator' in span['exit']:
+            span['exit']['exit_long_indicator']['choices'] = sorted(
+                indicator_permutations(exit_indicators, max_indicators=4, include_none=True)
+            )
+        if 'exit_short_indicator' in span['exit']:
+            span['exit']['exit_short_indicator']['choices'] = sorted(
+                indicator_permutations(exit_indicators, max_indicators=4, include_none=True)
+            )
+except Exception as e:
+    logger.warning("Error while filling indicator permutations: %s", e)
+
 strategy_attrs = {}
 for section, keys in span.items():
+    if not isinstance(keys, dict):
+        continue
     for key in keys:
-        strategy_attrs[key] = get_param_config(span, section, key)
+        try:
+            strategy_attrs[key] = get_param_config(span, section, key)
+        except Exception as e:
+            logger.debug("Skipping hyperopt param %s/%s: %s", section, key, e)
 
-# 👇 Now define the strategy below
+
 class Fibbo(IStrategy):
     """
     Fibonacci Strategy with Indodax exchange workarounds.
-    
-    Includes special handling for:
-    - Order creation delays (30s wait)
-    - Cancel order side requirements
-    
-    IMPROVED:
-    - Flexible entry conditions (AND vs OR logic vs N-out-of-M)
-    - Can now trade more frequently with softer entry requirements
     """
 
-    # Strategy interface version - allow new iterations of the strategy interface.
-    # Check the documentation or the Sample strategy to get the latest version.
     INTERFACE_VERSION = 3
-
-    # Can this strategy go short?
     can_short: bool = False
 
-    # Optimal timeframe for the strategy.
     timeframe = "1m"
     informative_timeframe = "15m"
 
-    # Hyperoptable parameters
     stoploss = -0.1
     minimal_roi = {
-        "0": 0.10,      # 10% profit target immediately
-        "60": 0.05,     # 5% profit target after 60 candles (~15 hours at 15m)
-        "180": 0.02,    # 2% profit target after 180 candles (~45 hours)
-        "360": 0        # Exit at any profit after 360 candles (~6 days)
+        "0": 0.10,
+        "60": 0.05,
+        "180": 0.02,
+        "360": 0
     }
 
     macd_profiles = {
-        "1m": {
-            "fast": 6,
-            "slow": 13,
-            "signal": 4
-        },
-        "15m": {
-            "fast": 8,
-            "slow": 17,
-            "signal": 9
-        },
-        "1h": {
-            "fast": 12,
-            "slow": 26,
-            "signal": 9
-        },
+        "1m": {"fast": 6, "slow": 13, "signal": 4},
+        "15m": {"fast": 8, "slow": 17, "signal": 9},
+        "1h": {"fast": 12, "slow": 26, "signal": 9},
     }
 
-    order_time_in_force = {
-        "entry": "GTC",
-        "exit": "GTC"
-    }
+    order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
-    # See the config
     trailing_stop = True
     use_exit_signal = True
     exit_profit_only = True
     use_custom_stoploss = True
     ignore_roi_if_entry_signal = False
     position_adjustment_enable = False
-    #max_entry_position_adjustment = 2
     model_name = os.environ.get('FREQAI_MODEL', 'PyTorchMLPRegressor')
-    
-    # Plot config
+
     plot_config = {
         "main_plot": {
             "tema": {},
@@ -245,48 +242,40 @@ class Fibbo(IStrategy):
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
+        self._informative_cache = {}
+        self._last_populate_indicators_time = 0.0
 
-        # Update ROI from hyperopt parameters
-        self.update_roi()
+        try:
+            self.update_roi()
+        except Exception as e:
+            logger.debug("update_roi failed during init: %s", e)
 
-        # Optional: apply hyperopt value of max_open_trades to config
-        if hasattr(self, 'max_open_trades') and self.max_open_trades.value != -1:
-            self.config['max_open_trades'] = self.max_open_trades.value
+        if hasattr(self, 'max_open_trades'):
+            try:
+                if self.max_open_trades.value != -1:
+                    self.config['max_open_trades'] = self.max_open_trades.value
+            except Exception:
+                pass
 
-        # Make rolling window configurable
         self.di_rolling_window = getattr(self, 'di_rolling_window', 200)
-
-        # Read from config
         freqai_config = self.config.get('freqai', {})
         self.freqai_enabled = freqai_config.get('enabled', False)
-    
-        # Also ensure 'freqai' attribute exists check for safety
+
         if not self.freqai_enabled:
             self.freqai = None
 
     def bot_start(self, **kwargs) -> None:
-
-        # Diagnostic patch should be active in BOTH live and dry-run modes.
         patch_dataprovider()
-
         if not self.config.get("dry_run", False):
-
-            # Indodax exchange patches remain live-only.
             patch_ccxt_pair_only()
             patch_indodax_fetch_order()
             patch_indodax_cancel_order()
             patch_indodax_create_order()
-
             logger.info("✅ Indodax exchange patches applied (live mode)")
         else:
             logger.info("ℹ️ Indodax exchange patches skipped (dry_run mode).")
 
     def update_roi(self):
-        """
-        Update ROI based on hyperopt parameters.
-        This method converts roi_t* and roi_p* parameters into the final minimal_roi dict,
-        keeping the results clean and free of intermediate parameters.
-        """
         if hasattr(self, 'roi_p1') and hasattr(self, 'roi_t1'):
             try:
                 self.minimal_roi = {
@@ -304,7 +293,6 @@ class Fibbo(IStrategy):
     @property
     def protections(self):
         prot = []
-
         if hasattr(self, 'config'):
             config: Configuration = self.config
             if config.get('runmode') == 'hyperopt':
@@ -355,32 +343,25 @@ class Fibbo(IStrategy):
                        current_rate: float, current_profit: float, **kwargs) -> float:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-        
+
         if 'DI_values' in last_candle:
             confidence = last_candle['DI_values']
-            
-            # Use hyperoptable thresholds instead of hardcoded numbers
             if confidence > self.freqai_sl_high_thresh.value:
                 return self.freqai_sl_high_val.value
             elif confidence > self.freqai_sl_low_thresh.value:
                 return self.stoploss
             else:
                 return self.freqai_sl_low_val.value
-        
         return self.stoploss
 
-    def custom_exit(self, pair: str, trade: Trade, current_time: datetime, 
+    def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
                    current_rate: float, current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-
-        # Handle high market regime volatility anomalies (take profit early)
         if last_candle.get('%-market_regime', 0) == 3 and current_profit > 0.02:
             return 'high_volatility_exit'
-
         if last_candle.get('DI_values', 0) > 2.0 and current_profit > 0.01:
             return 'low_confidence_exit'
-
         return None
 
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
@@ -388,7 +369,6 @@ class Fibbo(IStrategy):
                 side: str, **kwargs) -> float:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-        
         if 'DI_values' in last_candle:
             confidence = last_candle['DI_values']
             if confidence < 0.5:
@@ -397,22 +377,24 @@ class Fibbo(IStrategy):
                 leverage_factor = 0.75
             else:
                 leverage_factor = 1.0
-            
             adjusted_leverage = min(max_leverage, proposed_leverage * leverage_factor)
             if adjusted_leverage != proposed_leverage:
                 logger.info(f"FreqAI adjusted leverage: {confidence:.2%} confidence, "
-                          f"leverage {proposed_leverage:.1f} → {adjusted_leverage:.1f}")
+                            f"leverage {proposed_leverage:.1f} → {adjusted_leverage:.1f}")
             return adjusted_leverage
-        
         return proposed_leverage
 
     def ttm_squeeze(self, dataframe: DataFrame, bollinger_period: int = 20, keltner_period: int = 20, momentum_period: int = 12) -> DataFrame:
-        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=bollinger_period, stds=2)
-        keltner = qtpylib.keltner_channel(dataframe, window=keltner_period)
-        momentum_hist = dataframe['close'] - dataframe['close'].shift(momentum_period)
+        tp = qtpylib.typical_price(dataframe)
+        boll = qtpylib.bollinger_bands(tp, window=bollinger_period, stds=2)
+        kelt = qtpylib.keltner_channel(dataframe, window=keltner_period)
 
-        squeeze_on = (bollinger['lower'] > keltner["lower"]) & (bollinger['upper'] < keltner["upper"])
-        squeeze_off = (bollinger['lower'] < keltner["lower"]) & (bollinger['upper'] > keltner["upper"])
+        close_np = dataframe['close'].to_numpy()
+        shifted_close = dataframe['close'].shift(momentum_period).to_numpy()
+        momentum_hist = close_np - shifted_close
+
+        squeeze_on = (boll['lower'].to_numpy() > kelt['lower'].to_numpy()) & (boll['upper'].to_numpy() < kelt['upper'].to_numpy())
+        squeeze_off = (boll['lower'].to_numpy() < kelt['lower'].to_numpy()) & (boll['upper'].to_numpy() > kelt['upper'].to_numpy())
 
         dataframe['squeeze_on'] = squeeze_on
         dataframe['squeeze_off'] = squeeze_off
@@ -495,22 +477,13 @@ class Fibbo(IStrategy):
 
     def informative_pairs(self):
         whitelist_pairs = self.dp.current_whitelist()
-
-        # Always register the strategy's required informative timeframe.
-        informative_pairs = [
-            (pair, self.informative_timeframe)
-            for pair in whitelist_pairs
-        ]
-
-        # Register additional correlation pairs when FreqAI is enabled.
+        informative_pairs = [(pair, self.informative_timeframe) for pair in whitelist_pairs]
         if self.freqai_enabled:
             feature_parameters = self.config["freqai"]["feature_parameters"]
-
             for tf in feature_parameters.get("include_timeframes", []):
                 for pair in feature_parameters.get("include_corr_pairlist", []):
                     if pair not in whitelist_pairs:
                         informative_pairs.append((pair, tf))
-
         logger.info(
             "INFORMATIVE PAIRS DIAGNOSTIC: "
             "base_timeframe=%s, informative_timeframe=%s, "
@@ -520,11 +493,43 @@ class Fibbo(IStrategy):
             len(whitelist_pairs),
             len(informative_pairs),
         )
-
         return list(dict.fromkeys(informative_pairs))
+
+    def combine_conditions(self, dataframe: DataFrame, conditions: list, mode: str) -> pd.Series:
+        if not conditions:
+            return pd.Series(False, index=dataframe.index)
+
+        cond_arrays = []
+        for cond in conditions:
+            if isinstance(cond, pd.Series):
+                arr = cond.fillna(False).astype(bool).to_numpy()
+            else:
+                arr = np.asarray(cond)
+                if arr.dtype == object:
+                    arr = pd.Series(cond, index=dataframe.index).fillna(False).astype(bool).to_numpy()
+                else:
+                    arr = arr.astype(bool)
+            cond_arrays.append(arr)
+
+        n = len(cond_arrays)
+        if mode == 'all':
+            out = np.logical_and.reduce(cond_arrays)
+        elif mode == 'any':
+            out = np.logical_or.reduce(cond_arrays)
+        else:
+            votes = np.sum(np.vstack(cond_arrays), axis=0)
+            if mode == 'half':
+                out = votes >= (n * 0.5)
+            elif mode == 'majority':
+                out = votes >= (n * 0.66)
+            else:
+                out = np.logical_and.reduce(cond_arrays)
+
+        return pd.Series(out, index=dataframe.index)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = metadata["pair"]
+        start_time = time.perf_counter()
 
         if self.freqai is not None and self.freqai_enabled:
             try:
@@ -532,10 +537,8 @@ class Fibbo(IStrategy):
                 if 'DI_values' in dataframe.columns:
                     if len(dataframe) >= self.di_rolling_window:
                         dataframe['di_percentile'] = (dataframe['DI_values'].rolling(self.di_rolling_window).rank(pct=True))
-                        logger.debug(f"FreqAI DI_percentile calculated for {pair}")
                     else:
                         dataframe['di_percentile'] = 0.5
-                        logger.debug(f"FreqAI: Insufficient data for {pair}, using neutral confidence")
             except KeyError:
                 logger.debug(f"FreqAI model not ready for {pair} - skipping AI signals")
             except Exception as e:
@@ -602,67 +605,50 @@ class Fibbo(IStrategy):
             dataframe[f'fib_long_{sell_fib_str}'] = dataframe['swing_high'] - swing_range * sell_fib_val
             dataframe[f'fib_short_{sell_fib_str}'] = dataframe['swing_low'] + swing_range * sell_fib_val
 
-        informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
+        informative = None
+        try:
+            informative = self.dp.get_pair_dataframe(pair=pair, timeframe=self.informative_timeframe)
+        except Exception:
+            informative = None
 
-        if (
-            informative is None
-            or informative.empty
-            or len(informative) < 50
-            or 'close' not in informative.columns
-        ):
-            logger.warning(f"Missing/insufficient informative data for {metadata['pair']} ({self.informative_timeframe})")
+        if informative is None or informative.empty or len(informative) < 50 or 'close' not in informative.columns:
+            logger.warning(f"Missing/insufficient informative data for {pair} ({self.informative_timeframe})")
+            self._last_populate_indicators_time = time.perf_counter() - start_time
             return dataframe
 
-        #informative['atr'] = ta.ATR(informative, timeperiod=14)
-        #informative['rsi'] = ta.RSI(informative['close'], timeperiod=max(2, rsi_period))
+        cache_key = (pair, self.informative_timeframe, informative['date'].iat[-1] if 'date' in informative.columns else len(informative))
+        cached = self._informative_cache.get(cache_key)
+        if cached is None:
+            informative[f'ema{buy_slow_ema_val}'] = ta.EMA(informative, timeperiod=buy_slow_ema_val)
+            informative[f'dema{buy_fast_dema_val}'] = ta.DEMA(informative, timeperiod=buy_fast_dema_val)
 
-        #macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
-        #informative['macd'] = macd_inf['macd']
-        #informative['macdhist'] = macd_inf['macdhist']
-        #informative['macdsignal'] = macd_inf['macdsignal']
+            if buy_slow_ema_val != sell_slow_ema_val:
+                informative[f'ema{sell_slow_ema_val}'] = ta.EMA(informative, timeperiod=sell_slow_ema_val)
+            if buy_fast_dema_val != sell_fast_dema_val:
+                informative[f'dema{sell_fast_dema_val}'] = ta.DEMA(informative, timeperiod=sell_fast_dema_val)
 
-        informative[f'ema{buy_slow_ema_val}'] = ta.EMA(informative, timeperiod=buy_slow_ema_val)
-        informative[f'dema{buy_fast_dema_val}'] = ta.DEMA(informative, timeperiod=buy_fast_dema_val)
-
-        if buy_slow_ema_val != sell_slow_ema_val:
-            informative[f'ema{sell_slow_ema_val}'] = ta.EMA(informative, timeperiod=sell_slow_ema_val)
-        if buy_fast_dema_val != sell_fast_dema_val:
-            informative[f'dema{sell_fast_dema_val}'] = ta.DEMA(informative, timeperiod=sell_fast_dema_val)
+            self._informative_cache[cache_key] = informative
+            cached = informative
 
         dataframe = merge_informative_pair(
-            dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True
+            dataframe, cached, self.timeframe, self.informative_timeframe, ffill=True
         )
+
+        elapsed = time.perf_counter() - start_time
+        self._last_populate_indicators_time = elapsed
+        if elapsed > 2.0:
+            logger.warning("populate_indicators for %s took %.2fs", pair, elapsed)
 
         return dataframe
 
-    def combine_conditions(self, dataframe: DataFrame, conditions: list, mode: str) -> pd.Series:
-        if not conditions:
-            return pd.Series(False, index=dataframe.index)
-        if mode == 'all':
-            return reduce(lambda x, y: x & y, conditions)
-        elif mode == 'any':
-            return reduce(lambda x, y: x | y, conditions)
-            
-        # Vectorized summation is exponentially faster than built-in sum()
-        cond_sum = pd.concat(conditions, axis=1).sum(axis=1)
-        
-        if mode == 'half':
-            return cond_sum >= (len(conditions) * 0.5)
-        elif mode == 'majority':
-            return cond_sum >= (len(conditions) * 0.66)
-            
-        return reduce(lambda x, y: x & y, conditions)
-
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         logger.debug(f"Generating entry signals for {metadata['pair']}")
-        
-        # Initialize the enter_tag column with empty strings
+
         dataframe['enter_tag'] = ''
-        
+
         entry_long_conditions = []
         entry_short_conditions = []
-        
-        # === Base Indicators ===
+
         RSI_LONG_ENTRY = dataframe['rsi'] < self.buy_rsi.value
         RSI_SHORT_ENTRY = dataframe['rsi'] > self.buy_rsi.value
 
@@ -684,7 +670,6 @@ class Fibbo(IStrategy):
             (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value)
         )
 
-        # ✅ FIX: Safe-checking column existence before assessing DEMA entry logic to prevent KeyError
         buy_slow_ema_val = int(self.buy_slow_ema.value)
         buy_fast_dema_val = int(self.buy_fast_dema.value)
 
@@ -701,7 +686,6 @@ class Fibbo(IStrategy):
                 (dataframe[dema_long_col] < dataframe[ema_long_col])
             )
         else:
-            # Fallback arrays filled with False if columns haven't been populated yet
             DEMA_LONG_ENTRY = pd.Series(False, index=dataframe.index)
             DEMA_SHORT_ENTRY = pd.Series(False, index=dataframe.index)
 
@@ -721,10 +705,9 @@ class Fibbo(IStrategy):
             FIBBO_LONG_ENTRY = pd.Series(False, index=dataframe.index)
             FIBBO_SHORT_ENTRY = pd.Series(False, index=dataframe.index)
 
-        # Always include FIBBO
         entry_long_conditions.append(FIBBO_LONG_ENTRY)
         entry_short_conditions.append(FIBBO_SHORT_ENTRY)
-        
+
         if "BB" in self.enter_long_indicator.value:
             entry_long_conditions.append(BB_LONG_ENTRY)
         if "BB" in self.enter_short_indicator.value:
@@ -769,18 +752,15 @@ class Fibbo(IStrategy):
         if entry_long_conditions:
             signal_long = self.combine_conditions(dataframe, entry_long_conditions, self.enter_trade_mode.value)
             dataframe.loc[signal_long, 'enter_long'] = 1
-            
-            # Apply long tags
+
             dataframe.loc[signal_long & DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Extension_Trend'
             dataframe.loc[signal_long & FIBBO_LONG_ENTRY & ~DEMA_LONG_ENTRY, 'enter_tag'] = 'Fib_Retracement'
             if use_freqai:
                 dataframe.loc[signal_long & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'FreqAI_Impulse'
-            
-        if entry_short_conditions and self.can_short: # Respect can_short setting
+
+        if entry_short_conditions and self.can_short:
             signal_short = self.combine_conditions(dataframe, entry_short_conditions, self.enter_trade_mode.value)
             dataframe.loc[signal_short, 'enter_short'] = 1
-            
-            # Apply short tags ONLY if the tag is still empty (prevents overwriting a valid long tag)
             dataframe.loc[signal_short & DEMA_SHORT_ENTRY & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Fib_Short_Extension'
             dataframe.loc[signal_short & FIBBO_SHORT_ENTRY & ~DEMA_SHORT_ENTRY & (dataframe['enter_tag'] == ''), 'enter_tag'] = 'Fib_Short_Retracement'
 
@@ -788,13 +768,11 @@ class Fibbo(IStrategy):
         return dataframe
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Initialize the exit_tag column with empty strings
         dataframe['exit_tag'] = ''
 
         exit_long_conditions = []
         exit_short_conditions = []
-        
-        # === Base Indicators ===
+
         RSI_LONG_EXIT = dataframe['rsi'] > self.sell_rsi.value
         RSI_SHORT_EXIT = dataframe['rsi'] < self.sell_rsi.value
 
@@ -807,19 +785,15 @@ class Fibbo(IStrategy):
         MACD_LONG_EXIT = dataframe['macd'] < dataframe['macdsignal']
         MACD_SHORT_EXIT = dataframe['macd'] > dataframe['macdsignal']
 
-        # LONG EXIT (Closing a Buy): Exit when Stochastic RSI crosses DOWN in an overbought zone
         STOCHRSI_LONG_EXIT = (
             (dataframe['fastk_rsi_sell'] < dataframe['fastd_rsi_sell']) &
             (dataframe['fastk_rsi_sell'] > self.sell_stoch_osc.value)
         )
-
-        # SHORT EXIT (Covering a Short): Exit when Stochastic RSI crosses UP in an oversold zone
         STOCHRSI_SHORT_EXIT = (
             (dataframe['fastk_rsi_buy'] > dataframe['fastd_rsi_buy']) &
             (dataframe['fastk_rsi_buy'] < self.buy_stoch_osc.value)
         )
 
-        # ✅ FIX: Safe-checking column existence before assessing DEMA exit logic to prevent KeyError
         sell_slow_ema_val = int(self.sell_slow_ema.value)
         sell_fast_dema_val = int(self.sell_fast_dema.value)
 
@@ -843,12 +817,10 @@ class Fibbo(IStrategy):
         fib_short_col = f'fib_short_{str(self.sell_fib_level.value).replace(".", "")}'
 
         if fib_long_col in dataframe.columns and fib_short_col in dataframe.columns:
-            # LONG EXIT: Close is inside the cushion band around the long target level
             FIBBO_LONG_EXIT = (
                 (dataframe['close'] >= (dataframe[fib_long_col] * (1 - dataframe['atr_pct']))) &
                 (dataframe['close'] <= (dataframe[fib_long_col] * (1 + dataframe['atr_pct'])))
             )
-            # SHORT EXIT: Close is inside the cushion band around the short target level
             FIBBO_SHORT_EXIT = (
                 (dataframe['close'] >= (dataframe[fib_short_col] * (1 - dataframe['atr_pct']))) &
                 (dataframe['close'] <= (dataframe[fib_short_col] * (1 + dataframe['atr_pct'])))
@@ -857,10 +829,9 @@ class Fibbo(IStrategy):
             FIBBO_LONG_EXIT = pd.Series(False, index=dataframe.index)
             FIBBO_SHORT_EXIT = pd.Series(False, index=dataframe.index)
 
-        # Always include FIBBO
         exit_long_conditions.append(FIBBO_LONG_EXIT)
         exit_short_conditions.append(FIBBO_SHORT_EXIT)
-        
+
         if "BB" in self.exit_long_indicator.value:
             exit_long_conditions.append(BB_LONG_EXIT)
         if "BB" in self.exit_short_indicator.value:
@@ -897,7 +868,7 @@ class Fibbo(IStrategy):
                 use_freqai = True
                 if 'di_percentile' in dataframe.columns:
                     exit_long_conditions.append((dataframe['do_predict'] == -1) & (dataframe['di_percentile'] < float(self.freqai_sell.value)))
-                    exit_short_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.freqai_sell.value)))
+                    exit_short_conditions.append((dataframe['do_predict'] == 1) & (dataframe['di_percentile'] > float(self.freqai_buy.value)))
                 else:
                     exit_long_conditions.append(dataframe['do_predict'] == -1)
                     exit_short_conditions.append(dataframe['do_predict'] == 1)
@@ -905,23 +876,25 @@ class Fibbo(IStrategy):
         if exit_long_conditions:
             signal_long = self.combine_conditions(dataframe, exit_long_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal_long, 'exit_long'] = 1
-    
+
             dataframe.loc[signal_long & FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Fib_Extension'
             dataframe.loc[signal_long & DEMA_LONG_EXIT & ~FIBBO_LONG_EXIT, 'exit_tag'] = 'Exit_Trend_Break'
             if use_freqai:
                 dataframe.loc[signal_long & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_FreqAI_Signal'
 
-        if exit_short_conditions and self.can_short: # Add can_short check here
+        if exit_short_conditions and self.can_short:
             signal_short = self.combine_conditions(dataframe, exit_short_conditions, self.exit_trade_mode.value)
             dataframe.loc[signal_short, 'exit_short'] = 1
-    
-            # Only tag if it's not already tagged by a long exit
+
             dataframe.loc[signal_short & FIBBO_SHORT_EXIT & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_Short_Fib_Cover'
             dataframe.loc[signal_short & DEMA_SHORT_EXIT & ~FIBBO_SHORT_EXIT & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_Short_Trend_Break'
 
         dataframe.loc[(dataframe['exit_long'] == 1) & (dataframe['exit_tag'] == ''), 'exit_tag'] = 'Exit_Standard_Mix'
         return dataframe
 
-# Inject hyperopt parameters AFTER class definition
+
 for key, value in strategy_attrs.items():
-    setattr(Fibbo, key, value)
+    try:
+        setattr(Fibbo, key, value)
+    except Exception:
+        logger.debug("Failed to attach hyperopt param to Fibbo: %s", key)
