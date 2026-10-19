@@ -181,16 +181,6 @@ for section, keys in span.items():
 
 
 class Fibbo(IStrategy):
-    """
-    Fibonacci Strategy with Indodax exchange workarounds.
-
-    This version:
-    - avoids import-time crashes
-    - reduces repeated work
-    - computes TA on the recent tail rather than all history
-    - adds caching for expensive indicator calculations and FreqAI outputs
-    """
-
     INTERFACE_VERSION = 3
     can_short: bool = False
 
@@ -198,12 +188,7 @@ class Fibbo(IStrategy):
     informative_timeframe = "15m"
 
     stoploss = -0.1
-    minimal_roi = {
-        "0": 0.10,
-        "60": 0.05,
-        "180": 0.02,
-        "360": 0,
-    }
+    minimal_roi = {"0": 0.10, "60": 0.05, "180": 0.02, "360": 0}
 
     macd_profiles = {
         "1m": {"fast": 6, "slow": 13, "signal": 4},
@@ -222,30 +207,17 @@ class Fibbo(IStrategy):
     model_name = os.environ.get("FREQAI_MODEL", "PyTorchMLPRegressor")
 
     plot_config = {
-        "main_plot": {
-            "tema": {},
-            "sar": {"color": "white"},
-        },
+        "main_plot": {"tema": {}, "sar": {"color": "white"}},
         "subplots": {
-            "&-s_close": {
-                "&-s_close": {"color": "green"}
-            },
-            "do_predict": {
-                "do_predict": {"color": "brown"},
-            },
-            "MACD": {
-                "macd": {"color": "blue"},
-                "macdsignal": {"color": "orange"},
-            },
-            "RSI": {
-                "rsi": {"color": "red"},
-            },
+            "&-s_close": {"&-s_close": {"color": "green"}},
+            "do_predict": {"do_predict": {"color": "brown"}},
+            "MACD": {"macd": {"color": "blue"}, "macdsignal": {"color": "orange"}},
+            "RSI": {"rsi": {"color": "red"}},
         },
     }
 
     def __init__(self, config: dict) -> None:
         super().__init__(config)
-
         self._indicator_cache = {}
         self._freqai_cache = {}
         self._last_populate_indicators_time = 0.0
@@ -265,13 +237,11 @@ class Fibbo(IStrategy):
         self.di_rolling_window = getattr(self, "di_rolling_window", 200)
         freqai_config = self.config.get("freqai", {})
         self.freqai_enabled = freqai_config.get("enabled", False)
-
         if not self.freqai_enabled:
             self.freqai = None
 
     def bot_start(self, **kwargs) -> None:
         patch_dataprovider()
-
         if not self.config.get("dry_run", False):
             patch_ccxt_pair_only()
             patch_indodax_fetch_order()
@@ -306,12 +276,7 @@ class Fibbo(IStrategy):
                 if "all" in spaces or "protection" in spaces:
                     return prot
 
-        prot.append(
-            {
-                "method": "CooldownPeriod",
-                "stop_duration_candles": int(self.cooldown_lookback.value),
-            }
-        )
+        prot.append({"method": "CooldownPeriod", "stop_duration_candles": int(self.cooldown_lookback.value)})
 
         if self.use_stop_protection.value:
             prot.append(
@@ -352,42 +317,31 @@ class Fibbo(IStrategy):
     def custom_params(self, pair: str, param: str):
         return self.custom_pair_params.get(pair, {}).get(param, getattr(self, param).value)
 
-    def custom_stoploss(self, pair: str, trade: "Trade", current_time: datetime,
-                       current_rate: float, current_profit: float, **kwargs) -> float:
+    def custom_stoploss(self, pair: str, trade: "Trade", current_time: datetime, current_rate: float, current_profit: float, **kwargs) -> float:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-
         if "DI_values" in last_candle:
             confidence = last_candle["DI_values"]
-
             if confidence > self.freqai_sl_high_thresh.value:
                 return self.freqai_sl_high_val.value
             elif confidence > self.freqai_sl_low_thresh.value:
                 return self.stoploss
             else:
                 return self.freqai_sl_low_val.value
-
         return self.stoploss
 
-    def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
-                   current_rate: float, current_profit: float, **kwargs):
+    def custom_exit(self, pair: str, trade: Trade, current_time: datetime, current_rate: float, current_profit: float, **kwargs):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-
         if last_candle.get("%-market_regime", 0) == 3 and current_profit > 0.02:
             return "high_volatility_exit"
-
         if last_candle.get("DI_values", 0) > 2.0 and current_profit > 0.01:
             return "low_confidence_exit"
-
         return None
 
-    def leverage(self, pair: str, current_time: datetime, current_rate: float,
-                 proposed_leverage: float, max_leverage: float, entry_tag: Optional[str],
-                 side: str, **kwargs) -> float:
+    def leverage(self, pair: str, current_time: datetime, current_rate: float, proposed_leverage: float, max_leverage: float, entry_tag: Optional[str], side: str, **kwargs) -> float:
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
-
         if "DI_values" in last_candle:
             confidence = last_candle["DI_values"]
             if confidence < 0.5:
@@ -396,15 +350,10 @@ class Fibbo(IStrategy):
                 leverage_factor = 0.75
             else:
                 leverage_factor = 1.0
-
             adjusted_leverage = min(max_leverage, proposed_leverage * leverage_factor)
             if adjusted_leverage != proposed_leverage:
-                logger.info(
-                    f"FreqAI adjusted leverage: {confidence:.2%} confidence, "
-                    f"leverage {proposed_leverage:.1f} → {adjusted_leverage:.1f}"
-                )
+                logger.info(f"FreqAI adjusted leverage: {confidence:.2%} confidence, leverage {proposed_leverage:.1f} → {adjusted_leverage:.1f}")
             return adjusted_leverage
-
         return proposed_leverage
 
     def _selected_indicators(self):
@@ -426,20 +375,11 @@ class Fibbo(IStrategy):
         tp = qtpylib.typical_price(dataframe)
         boll = qtpylib.bollinger_bands(tp, window=bollinger_period, stds=2)
         kelt = qtpylib.keltner_channel(dataframe, window=keltner_period)
-
         close_np = dataframe["close"].to_numpy()
         shifted_close = dataframe["close"].shift(momentum_period).to_numpy()
         momentum_hist = close_np - shifted_close
-
-        squeeze_on = (
-            (boll["lower"].to_numpy() > kelt["lower"].to_numpy())
-            & (boll["upper"].to_numpy() < kelt["upper"].to_numpy())
-        )
-        squeeze_off = (
-            (boll["lower"].to_numpy() < kelt["lower"].to_numpy())
-            & (boll["upper"].to_numpy() > kelt["upper"].to_numpy())
-        )
-
+        squeeze_on = (boll["lower"].to_numpy() > kelt["lower"].to_numpy()) & (boll["upper"].to_numpy() < kelt["upper"].to_numpy())
+        squeeze_off = (boll["lower"].to_numpy() < kelt["lower"].to_numpy()) & (boll["upper"].to_numpy() > kelt["upper"].to_numpy())
         dataframe["squeeze_on"] = squeeze_on
         dataframe["squeeze_off"] = squeeze_off
         dataframe["momentum_hist"] = momentum_hist
@@ -450,108 +390,102 @@ class Fibbo(IStrategy):
             return dataframe.copy()
         return dataframe.tail(min_period).copy()
 
-    def feature_engineering_expand_all(
-        self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
-    ) -> DataFrame:
+    def _ensure_default_columns(self, dataframe: DataFrame):
+        critical_defaults = {
+            "vwap": dataframe["close"],
+            "rsi": np.nan,
+            "atr": np.nan,
+            "atr_pct": np.nan,
+            "macd": np.nan,
+            "macdsignal": np.nan,
+            "macdhist": np.nan,
+            "bb_upperband": np.nan,
+            "bb_middleband": np.nan,
+            "bb_lowerband": np.nan,
+            "fastk_rsi_buy": np.nan,
+            "fastd_rsi_buy": np.nan,
+            "fastk_rsi_sell": np.nan,
+            "fastd_rsi_sell": np.nan,
+            "squeeze_on": False,
+            "squeeze_off": False,
+            "momentum_hist": np.nan,
+            "di_percentile": 0.5,
+        }
+        for col, default in critical_defaults.items():
+            if col not in dataframe.columns:
+                if isinstance(default, pd.Series):
+                    dataframe[col] = default
+                elif np.isscalar(default):
+                    dataframe[col] = default
+                else:
+                    dataframe[col] = pd.Series(default, index=dataframe.index)
+
+    def feature_engineering_expand_all(self, dataframe: DataFrame, period: int, metadata: dict, **kwargs) -> DataFrame:
         dataframe["%-rsi-period"] = ta.RSI(dataframe, timeperiod=period)
         dataframe["%-mfi-period"] = ta.MFI(dataframe, timeperiod=period)
         dataframe["%-adx-period"] = ta.ADX(dataframe, timeperiod=period)
         dataframe["%-sma-period"] = ta.SMA(dataframe, timeperiod=period)
         dataframe["%-ema-period"] = ta.EMA(dataframe, timeperiod=period)
-
-        bollinger = qtpylib.bollinger_bands(
-            qtpylib.typical_price(dataframe), window=period, stds=2.2
-        )
+        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=period, stds=2.2)
         dataframe["bb_lowerband-period"] = bollinger["lower"]
         dataframe["bb_middleband-period"] = bollinger["mid"]
         dataframe["bb_upperband-period"] = bollinger["upper"]
-
-        dataframe["%-bb_width-period"] = (
-            dataframe["bb_upperband-period"] - dataframe["bb_lowerband-period"]
-        ) / dataframe["bb_middleband-period"]
+        dataframe["%-bb_width-period"] = (dataframe["bb_upperband-period"] - dataframe["bb_lowerband-period"]) / dataframe["bb_middleband-period"]
         dataframe["%-close-bb_lower-period"] = dataframe["close"] / dataframe["bb_lowerband-period"]
         dataframe["%-roc-period"] = ta.ROC(dataframe, timeperiod=period)
-        dataframe["%-relative_volume-period"] = (
-            dataframe["volume"] / dataframe["volume"].rolling(period).mean()
-        )
+        dataframe["%-relative_volume-period"] = dataframe["volume"] / dataframe["volume"].rolling(period).mean()
         return dataframe
 
-    def feature_engineering_expand_basic(
-        self, dataframe: DataFrame, metadata: dict, **kwargs
-    ) -> DataFrame:
+    def feature_engineering_expand_basic(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
         dataframe["%-pct-change"] = dataframe["close"].pct_change()
         dataframe["%-raw_volume"] = dataframe["volume"]
         dataframe["%-raw_price"] = dataframe["close"]
         return dataframe
 
-    def feature_engineering_standard(
-        self, dataframe: DataFrame, metadata: dict, **kwargs
-    ) -> DataFrame:
+    def feature_engineering_standard(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
         dataframe["%-day_of_week"] = dataframe["date"].dt.dayofweek
         dataframe["%-hour_of_day"] = dataframe["date"].dt.hour
         return dataframe
 
-    def set_freqai_targets(
-        self, dataframe: DataFrame, metadata: dict, **kwargs
-    ) -> DataFrame:
+    def set_freqai_targets(self, dataframe: DataFrame, metadata: dict, **kwargs) -> DataFrame:
         model_name = self.model_name.lower()
         is_classifier = "classifier" in model_name
         is_multi_target = "multitarget" in model_name
         label_period = self.freqai_info["feature_parameters"]["label_period_candles"]
-
         if is_classifier:
             if is_multi_target:
                 self.freqai.class_names = [0, 1, 2, 3]
                 dataframe["&s-up_or_down"] = (dataframe["close"].shift(-label_period) > dataframe["close"]).astype(int)
-                dataframe["&s-volatility"] = (
-                    (dataframe["close"].rolling(label_period).std() > dataframe["close"].rolling(label_period).std().median()).astype(int) + 2
-                )
+                dataframe["&s-volatility"] = ((dataframe["close"].rolling(label_period).std() > dataframe["close"].rolling(label_period).std().median()).astype(int) + 2)
             else:
                 self.freqai.class_names = [0, 1]
                 dataframe["&s-up_or_down"] = (dataframe["close"].shift(-label_period) > dataframe["close"]).astype(int)
         else:
             if is_multi_target:
                 dataframe["&-s_close"] = (dataframe["close"].shift(-label_period).rolling(label_period).mean() / dataframe["close"] - 1)
-                dataframe["&-s_range"] = (
-                    dataframe["close"].shift(-label_period).rolling(label_period).max()
-                    - dataframe["close"].shift(-label_period).rolling(label_period).min()
-                )
+                dataframe["&-s_range"] = (dataframe["close"].shift(-label_period).rolling(label_period).max() - dataframe["close"].shift(-label_period).rolling(label_period).min())
             else:
                 dataframe["&-s_close"] = (dataframe["close"].shift(-label_period).rolling(label_period).mean() / dataframe["close"] - 1)
-
         return dataframe
 
-    def confirm_trade_entry(
-        self, pair: str, order_type: str, amount: float, rate: float, time_in_force: str, **kwargs
-    ) -> bool:
+    def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float, time_in_force: str, **kwargs) -> bool:
         return True
 
     def informative_pairs(self):
         whitelist_pairs = self.dp.current_whitelist()
         informative_pairs = [(pair, self.informative_timeframe) for pair in whitelist_pairs]
-
         if self.freqai_enabled:
             feature_parameters = self.config["freqai"]["feature_parameters"]
             for tf in feature_parameters.get("include_timeframes", []):
                 for pair in feature_parameters.get("include_corr_pairlist", []):
                     if pair not in whitelist_pairs:
                         informative_pairs.append((pair, tf))
-
-        logger.info(
-            "INFORMATIVE PAIRS DIAGNOSTIC: "
-            "base_timeframe=%s, informative_timeframe=%s, "
-            "whitelist_count=%d, requested_count=%d",
-            self.timeframe,
-            self.informative_timeframe,
-            len(whitelist_pairs),
-            len(informative_pairs),
-        )
+        logger.info("INFORMATIVE PAIRS DIAGNOSTIC: base_timeframe=%s, informative_timeframe=%s, whitelist_count=%d, requested_count=%d", self.timeframe, self.informative_timeframe, len(whitelist_pairs), len(informative_pairs))
         return list(dict.fromkeys(informative_pairs))
 
     def combine_conditions(self, dataframe: DataFrame, conditions: list, mode: str) -> pd.Series:
         if not conditions:
             return pd.Series(False, index=dataframe.index)
-
         cond_arrays = []
         for cond in conditions:
             if isinstance(cond, pd.Series):
@@ -563,7 +497,6 @@ class Fibbo(IStrategy):
                 else:
                     arr = arr.astype(bool)
             cond_arrays.append(arr)
-
         n = len(cond_arrays)
         if mode == "all":
             out = np.logical_and.reduce(cond_arrays)
@@ -577,12 +510,11 @@ class Fibbo(IStrategy):
                 out = votes >= (n * 0.66)
             else:
                 out = np.logical_and.reduce(cond_arrays)
-
         return pd.Series(out, index=dataframe.index)
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         pair = metadata["pair"]
-        start_time = time.perf_counter()
+        start = time.perf_counter()
 
         selected = self._selected_indicators()
         use_rsi = "RSI" in selected
@@ -593,13 +525,11 @@ class Fibbo(IStrategy):
         use_stochrsi = "STOCHRSI" in selected
         use_ttm = "TTM" in selected
 
-        # Keep heavy computations on recent tail only, not full candles
         rsi_period = int(self.buy_rsi_period.value) if hasattr(self, "buy_rsi_period") and self.buy_rsi_period.value else 14
         bb_period = int(self.buy_bb_period.value) if hasattr(self, "buy_bb_period") and self.buy_bb_period.value else 20
         tail_len = max(500, rsi_period, bb_period, 50)
         recent_df = self._recent_tail(dataframe, min_period=tail_len)
 
-        # FreqAI: cache by pair + latest timestamp
         if self.freqai is not None and self.freqai_enabled:
             freq_key = (pair, self.timeframe, recent_df["date"].iat[-1] if "date" in recent_df.columns else len(recent_df))
             freq_cached = self._freqai_cache.get(freq_key)
@@ -611,21 +541,17 @@ class Fibbo(IStrategy):
                     logger.debug("FreqAI error for %s: %s", pair, e)
                     freq_cached = recent_df
             recent_df = freq_cached
-
             if "DI_values" in recent_df.columns:
                 if len(recent_df) >= self.di_rolling_window:
                     recent_df["di_percentile"] = recent_df["DI_values"].rolling(self.di_rolling_window).rank(pct=True)
                 else:
                     recent_df["di_percentile"] = 0.5
 
-        # Base / heavy indicators
         if use_rsi:
             recent_df["rsi"] = ta.RSI(recent_df["close"], timeperiod=max(2, rsi_period))
-
         if use_vwap:
             vwap_window = int(self.shared_vwap_window.value) if hasattr(self, "shared_vwap_window") else 20
             recent_df["vwap"] = qtpylib.rolling_vwap(recent_df, window=vwap_window)
-
         if use_ttm:
             recent_df = self.ttm_squeeze(recent_df)
             recent_df["volume_mean"] = recent_df["volume"].rolling(self.shared_ttm_window.value).mean()
@@ -662,7 +588,6 @@ class Fibbo(IStrategy):
         if use_dema:
             recent_df[f"ema{buy_slow_ema_val}"] = ta.EMA(recent_df, timeperiod=buy_slow_ema_val)
             recent_df[f"dema{buy_fast_dema_val}"] = ta.DEMA(recent_df, timeperiod=buy_fast_dema_val)
-
             if buy_slow_ema_val != sell_slow_ema_val:
                 recent_df[f"ema{sell_slow_ema_val}"] = ta.EMA(recent_df, timeperiod=sell_slow_ema_val)
             if buy_fast_dema_val != sell_fast_dema_val:
@@ -680,54 +605,40 @@ class Fibbo(IStrategy):
 
         recent_df[f"fib_long_{buy_fib_str}"] = recent_df["swing_high"] - swing_range * buy_fib_val
         recent_df[f"fib_short_{buy_fib_str}"] = recent_df["swing_low"] + swing_range * buy_fib_val
-
         if buy_fib_str != sell_fib_str:
             recent_df[f"fib_long_{sell_fib_str}"] = recent_df["swing_high"] - swing_range * sell_fib_val
             recent_df[f"fib_short_{sell_fib_str}"] = recent_df["swing_low"] + swing_range * sell_fib_val
 
-        # Merge informative data only when needed
         try:
             informative = self.dp.get_pair_dataframe(pair=pair, timeframe=self.informative_timeframe)
         except Exception:
             informative = None
 
         if informative is not None and not informative.empty and len(informative) >= 50 and "close" in informative.columns:
-            info_key = (
-                pair,
-                self.informative_timeframe,
-                informative["date"].iat[-1] if "date" in informative.columns else len(informative),
-            )
+            info_key = (pair, self.informative_timeframe, informative["date"].iat[-1] if "date" in informative.columns else len(informative))
             info_cached = self._indicator_cache.get(info_key)
             if info_cached is None:
                 info_buf = informative.copy()
                 info_buf[f"ema{buy_slow_ema_val}"] = ta.EMA(info_buf, timeperiod=buy_slow_ema_val)
                 info_buf[f"dema{buy_fast_dema_val}"] = ta.DEMA(info_buf, timeperiod=buy_fast_dema_val)
-
                 if buy_slow_ema_val != sell_slow_ema_val:
                     info_buf[f"ema{sell_slow_ema_val}"] = ta.EMA(info_buf, timeperiod=sell_slow_ema_val)
                 if buy_fast_dema_val != sell_fast_dema_val:
                     info_buf[f"dema{sell_fast_dema_val}"] = ta.DEMA(info_buf, timeperiod=sell_fast_dema_val)
-
                 self._indicator_cache[info_key] = info_buf
                 info_cached = info_buf
             recent_df = merge_informative_pair(recent_df, info_cached, self.timeframe, self.informative_timeframe, ffill=True)
 
-        # Write back computed results to original dataframe only for the overlapping rows
+        # write back computed columns
         for col in recent_df.columns:
-            if col in dataframe.columns:
-                dataframe.loc[recent_df.index, col] = recent_df[col]
+            dataframe.loc[recent_df.index, col] = recent_df[col]
+        self._ensure_default_columns(dataframe)
 
-        # Any columns not yet added to the original frame are added directly
-        for col in recent_df.columns:
-            if col not in dataframe.columns:
-                dataframe[col] = recent_df[col]
-
-        elapsed = time.perf_counter() - start_time
+        elapsed = time.perf_counter() - start
         self._last_populate_indicators_time = elapsed
         if elapsed > 2.0:
             logger.warning("populate_indicators for %s took %.2fs", pair, elapsed)
 
-        # trim cache churn
         if len(self._indicator_cache) > 128:
             self._indicator_cache.pop(next(iter(self._indicator_cache)))
 
@@ -735,8 +646,8 @@ class Fibbo(IStrategy):
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         logger.debug(f"Generating entry signals for {metadata['pair']}")
-
         dataframe["enter_tag"] = ""
+
         entry_long_conditions = []
         entry_short_conditions = []
 
