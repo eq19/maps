@@ -642,10 +642,15 @@ class Fibbo(IStrategy):
             return reduce(lambda x, y: x & y, conditions)
         elif mode == 'any':
             return reduce(lambda x, y: x | y, conditions)
-        elif mode == 'half':
-            return sum(conditions) >= (len(conditions) * 0.5)
+            
+        # Vectorized summation is exponentially faster than built-in sum()
+        cond_sum = pd.concat(conditions, axis=1).sum(axis=1)
+        
+        if mode == 'half':
+            return cond_sum >= (len(conditions) * 0.5)
         elif mode == 'majority':
-            return sum(conditions) >= (len(conditions) * 0.66)
+            return cond_sum >= (len(conditions) * 0.66)
+            
         return reduce(lambda x, y: x & y, conditions)
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
