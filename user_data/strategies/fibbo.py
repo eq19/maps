@@ -582,15 +582,17 @@ class Fibbo(IStrategy):
         dataframe['swing_low'] = dataframe['low'].shift(1).rolling(swing_lookback).min()
         swing_range = dataframe['swing_high'] - dataframe['swing_low']
 
-        dataframe['fib_long_0236'] = dataframe['swing_high'] - swing_range * 0.236
-        dataframe['fib_long_0382'] = dataframe['swing_high'] - swing_range * 0.382
-        dataframe['fib_long_0618'] = dataframe['swing_high'] - swing_range * 0.618
-        dataframe['fib_long_0786'] = dataframe['swing_high'] - swing_range * 0.786
+        buy_fib_val = float(self.buy_fib_level.value)
+        buy_fib_str = str(self.buy_fib_level.value).replace(".", "")
+        sell_fib_val = float(self.sell_fib_level.value)
+        sell_fib_str = str(self.sell_fib_level.value).replace(".", "")
 
-        dataframe['fib_short_0236'] = dataframe['swing_low'] + swing_range * 0.236
-        dataframe['fib_short_0382'] = dataframe['swing_low'] + swing_range * 0.382
-        dataframe['fib_short_0618'] = dataframe['swing_low'] + swing_range * 0.618
-        dataframe['fib_short_0786'] = dataframe['swing_low'] + swing_range * 0.786
+        dataframe[f'fib_long_{buy_fib_str}'] = dataframe['swing_high'] - swing_range * buy_fib_val
+        dataframe[f'fib_short_{buy_fib_str}'] = dataframe['swing_low'] + swing_range * buy_fib_val
+
+        if buy_fib_str != sell_fib_str:
+            dataframe[f'fib_long_{sell_fib_str}'] = dataframe['swing_high'] - swing_range * sell_fib_val
+            dataframe[f'fib_short_{sell_fib_str}'] = dataframe['swing_low'] + swing_range * sell_fib_val
 
         informative = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe=self.informative_timeframe)
 
