@@ -15,8 +15,7 @@ from freqtrade.strategy import (
     IntParameter,
     merge_informative_pair,
 )
-from freqtrade.exchange import Exchange
-from freqtrade.persistence import Trade, Order
+from freqtrade.persistence import Trade
 from freqtrade.configuration import Configuration
 from freqtrade.exceptions import OperationalException
 
@@ -185,10 +184,11 @@ class Fibbo(IStrategy):
     """
     Fibonacci Strategy with Indodax exchange workarounds.
 
-    - Safe import-time hyperopt loading
-    - Reduced repeated DataFrame work
-    - Caches informative data by pair/timeframe/last timestamp
-    - Uses numpy boolean reductions in condition assembly
+    This version:
+    - avoids import-time crashes
+    - reduces repeated work
+    - computes TA on the recent tail rather than all history
+    - adds caching for expensive indicator calculations and FreqAI outputs
     """
 
     INTERFACE_VERSION = 3
@@ -246,7 +246,6 @@ class Fibbo(IStrategy):
     def __init__(self, config: dict) -> None:
         super().__init__(config)
 
-        # Cache heavy indicator blocks and FreqAI outputs by pair/timeframe/last_ts
         self._indicator_cache = {}
         self._freqai_cache = {}
         self._last_populate_indicators_time = 0.0
@@ -348,7 +347,6 @@ class Fibbo(IStrategy):
                     "only_per_pair": False,
                 }
             )
-
         return prot
 
     def custom_params(self, pair: str, param: str):
@@ -376,7 +374,6 @@ class Fibbo(IStrategy):
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         last_candle = dataframe.iloc[-1].squeeze()
 
-        # Handle high market regime volatility anomalies (take profit early)
         if last_candle.get("%-market_regime", 0) == 3 and current_profit > 0.02:
             return "high_volatility_exit"
 
@@ -447,6 +444,11 @@ class Fibbo(IStrategy):
         dataframe["squeeze_off"] = squeeze_off
         dataframe["momentum_hist"] = momentum_hist
         return dataframe
+
+    def _recent_tail(self, dataframe: DataFrame, min_period: int = 500):
+        if len(dataframe) <= min_period:
+            return dataframe.copy()
+        return dataframe.tail(min_period).copy()
 
     def feature_engineering_expand_all(
         self, dataframe: DataFrame, period: int, metadata: dict, **kwargs
@@ -591,134 +593,141 @@ class Fibbo(IStrategy):
         use_stochrsi = "STOCHRSI" in selected
         use_ttm = "TTM" in selected
 
-        # FreqAI
+        # Keep heavy computations on recent tail only, not full candles
+        rsi_period = int(self.buy_rsi_period.value) if hasattr(self, "buy_rsi_period") and self.buy_rsi_period.value else 14
+        bb_period = int(self.buy_bb_period.value) if hasattr(self, "buy_bb_period") and self.buy_bb_period.value else 20
+        tail_len = max(500, rsi_period, bb_period, 50)
+        recent_df = self._recent_tail(dataframe, min_period=tail_len)
+
+        # FreqAI: cache by pair + latest timestamp
         if self.freqai is not None and self.freqai_enabled:
-            key = (pair, self.timeframe, dataframe["date"].iat[-1] if "date" in dataframe.columns else len(dataframe))
-            cache = self._freqai_cache.get(key)
-            if cache is None:
+            freq_key = (pair, self.timeframe, recent_df["date"].iat[-1] if "date" in recent_df.columns else len(recent_df))
+            freq_cached = self._freqai_cache.get(freq_key)
+            if freq_cached is None:
                 try:
-                    cache = self.freqai.start(dataframe.copy(), metadata, self)
-                    self._freqai_cache[key] = cache
+                    freq_cached = self.freqai.start(recent_df.copy(), metadata, self)
+                    self._freqai_cache[freq_key] = freq_cached
                 except Exception as e:
                     logger.debug("FreqAI error for %s: %s", pair, e)
-                    cache = dataframe
-            dataframe = cache
+                    freq_cached = recent_df
+            recent_df = freq_cached
 
-            if "DI_values" in dataframe.columns:
-                if len(dataframe) >= self.di_rolling_window:
-                    dataframe["di_percentile"] = dataframe["DI_values"].rolling(self.di_rolling_window).rank(pct=True)
+            if "DI_values" in recent_df.columns:
+                if len(recent_df) >= self.di_rolling_window:
+                    recent_df["di_percentile"] = recent_df["DI_values"].rolling(self.di_rolling_window).rank(pct=True)
                 else:
-                    dataframe["di_percentile"] = 0.5
+                    recent_df["di_percentile"] = 0.5
 
-        # Core indicators that are always used by the strategy unless explicitly impossible
-        if use_rsi or True:
-            rsi_period = int(self.buy_rsi_period.value) if hasattr(self, "buy_rsi_period") and self.buy_rsi_period.value else 14
-            dataframe["rsi"] = ta.RSI(dataframe["close"], timeperiod=max(2, rsi_period))
+        # Base / heavy indicators
+        if use_rsi:
+            recent_df["rsi"] = ta.RSI(recent_df["close"], timeperiod=max(2, rsi_period))
 
-        if use_vwap or True:
+        if use_vwap:
             vwap_window = int(self.shared_vwap_window.value) if hasattr(self, "shared_vwap_window") else 20
-            dataframe["vwap"] = qtpylib.rolling_vwap(dataframe, window=vwap_window)
+            recent_df["vwap"] = qtpylib.rolling_vwap(recent_df, window=vwap_window)
 
-        if use_ttm or True:
-            dataframe = self.ttm_squeeze(dataframe)
-            dataframe["volume_mean"] = dataframe["volume"].rolling(self.shared_ttm_window.value).mean()
+        if use_ttm:
+            recent_df = self.ttm_squeeze(recent_df)
+            recent_df["volume_mean"] = recent_df["volume"].rolling(self.shared_ttm_window.value).mean()
 
-        if use_bb or True:
-            bb_period = int(self.buy_bb_period.value) if hasattr(self, "buy_bb_period") and self.buy_bb_period.value else 20
-            bollinger = ta.BBANDS(dataframe, timeperiod=max(2, bb_period), nbdevup=2.0, nbdevdn=2.0, matype=0)
-            dataframe["bb_upperband"] = bollinger["upperband"]
-            dataframe["bb_middleband"] = bollinger["middleband"]
-            dataframe["bb_lowerband"] = bollinger["lowerband"]
+        if use_bb:
+            bollinger = ta.BBANDS(recent_df, timeperiod=max(2, bb_period), nbdevup=2.0, nbdevdn=2.0, matype=0)
+            recent_df["bb_upperband"] = bollinger["upperband"]
+            recent_df["bb_middleband"] = bollinger["middleband"]
+            recent_df["bb_lowerband"] = bollinger["lowerband"]
 
-        dataframe["atr"] = ta.ATR(dataframe, timeperiod=14)
-        dataframe["atr_pct"] = dataframe["atr"] / dataframe["close"]
+        recent_df["atr"] = ta.ATR(recent_df, timeperiod=14)
+        recent_df["atr_pct"] = recent_df["atr"] / recent_df["close"]
 
-        if use_stochrsi or True:
-            rsi_min = dataframe["rsi"].rolling(self.shared_stoch_period.value).min()
-            rsi_max = dataframe["rsi"].rolling(self.shared_stoch_period.value).max()
-            stoch_rsi = (dataframe["rsi"] - rsi_min) / ((rsi_max - rsi_min).replace(0, 1e-10))
-            dataframe["fastk_rsi_buy"] = (stoch_rsi * 100).rolling(self.buy_smoothK.value).mean()
-            dataframe["fastd_rsi_buy"] = dataframe["fastk_rsi_buy"].rolling(self.buy_smoothD.value).mean()
-            dataframe["fastk_rsi_sell"] = (stoch_rsi * 100).rolling(self.sell_smoothK.value).mean()
-            dataframe["fastd_rsi_sell"] = dataframe["fastk_rsi_sell"].rolling(self.sell_smoothD.value).mean()
+        if use_stochrsi:
+            rsi_min = recent_df["rsi"].rolling(self.shared_stoch_period.value).min()
+            rsi_max = recent_df["rsi"].rolling(self.shared_stoch_period.value).max()
+            stoch_rsi = (recent_df["rsi"] - rsi_min) / ((rsi_max - rsi_min).replace(0, 1e-10))
+            recent_df["fastk_rsi_buy"] = (stoch_rsi * 100).rolling(self.buy_smoothK.value).mean()
+            recent_df["fastd_rsi_buy"] = recent_df["fastk_rsi_buy"].rolling(self.buy_smoothD.value).mean()
+            recent_df["fastk_rsi_sell"] = (stoch_rsi * 100).rolling(self.sell_smoothK.value).mean()
+            recent_df["fastd_rsi_sell"] = recent_df["fastk_rsi_sell"].rolling(self.sell_smoothD.value).mean()
 
-        if use_macd or True:
-            macd = ta.MACD(dataframe, fastperiod=6, slowperiod=13, signalperiod=4)
-            dataframe["macd"] = macd["macd"]
-            dataframe["macdhist"] = macd["macdhist"]
-            dataframe["macdsignal"] = macd["macdsignal"]
+        if use_macd:
+            macd = ta.MACD(recent_df, fastperiod=6, slowperiod=13, signalperiod=4)
+            recent_df["macd"] = macd["macd"]
+            recent_df["macdhist"] = macd["macdhist"]
+            recent_df["macdsignal"] = macd["macdsignal"]
 
         buy_slow_ema_val = int(self.buy_slow_ema.value)
         buy_fast_dema_val = int(self.buy_fast_dema.value)
         sell_slow_ema_val = int(self.sell_slow_ema.value)
         sell_fast_dema_val = int(self.sell_fast_dema.value)
 
-        if use_dema or True:
-            dataframe[f"ema{buy_slow_ema_val}"] = ta.EMA(dataframe, timeperiod=buy_slow_ema_val)
-            dataframe[f"dema{buy_fast_dema_val}"] = ta.DEMA(dataframe, timeperiod=buy_fast_dema_val)
+        if use_dema:
+            recent_df[f"ema{buy_slow_ema_val}"] = ta.EMA(recent_df, timeperiod=buy_slow_ema_val)
+            recent_df[f"dema{buy_fast_dema_val}"] = ta.DEMA(recent_df, timeperiod=buy_fast_dema_val)
 
             if buy_slow_ema_val != sell_slow_ema_val:
-                dataframe[f"ema{sell_slow_ema_val}"] = ta.EMA(dataframe, timeperiod=sell_slow_ema_val)
+                recent_df[f"ema{sell_slow_ema_val}"] = ta.EMA(recent_df, timeperiod=sell_slow_ema_val)
             if buy_fast_dema_val != sell_fast_dema_val:
-                dataframe[f"dema{sell_fast_dema_val}"] = ta.DEMA(dataframe, timeperiod=sell_fast_dema_val)
+                recent_df[f"dema{sell_fast_dema_val}"] = ta.DEMA(recent_df, timeperiod=sell_fast_dema_val)
 
         swing_lookback = self.buy_swing_period.value
-        dataframe["swing_high"] = dataframe["high"].shift(1).rolling(swing_lookback).max()
-        dataframe["swing_low"] = dataframe["low"].shift(1).rolling(swing_lookback).min()
-        swing_range = dataframe["swing_high"] - dataframe["swing_low"]
+        recent_df["swing_high"] = recent_df["high"].shift(1).rolling(swing_lookback).max()
+        recent_df["swing_low"] = recent_df["low"].shift(1).rolling(swing_lookback).min()
+        swing_range = recent_df["swing_high"] - recent_df["swing_low"]
 
         buy_fib_val = float(self.buy_fib_level.value)
         buy_fib_str = str(self.buy_fib_level.value).replace(".", "")
         sell_fib_val = float(self.sell_fib_level.value)
         sell_fib_str = str(self.sell_fib_level.value).replace(".", "")
 
-        dataframe[f"fib_long_{buy_fib_str}"] = dataframe["swing_high"] - swing_range * buy_fib_val
-        dataframe[f"fib_short_{buy_fib_str}"] = dataframe["swing_low"] + swing_range * buy_fib_val
+        recent_df[f"fib_long_{buy_fib_str}"] = recent_df["swing_high"] - swing_range * buy_fib_val
+        recent_df[f"fib_short_{buy_fib_str}"] = recent_df["swing_low"] + swing_range * buy_fib_val
 
         if buy_fib_str != sell_fib_str:
-            dataframe[f"fib_long_{sell_fib_str}"] = dataframe["swing_high"] - swing_range * sell_fib_val
-            dataframe[f"fib_short_{sell_fib_str}"] = dataframe["swing_low"] + swing_range * sell_fib_val
+            recent_df[f"fib_long_{sell_fib_str}"] = recent_df["swing_high"] - swing_range * sell_fib_val
+            recent_df[f"fib_short_{sell_fib_str}"] = recent_df["swing_low"] + swing_range * sell_fib_val
 
-        informative = None
+        # Merge informative data only when needed
         try:
             informative = self.dp.get_pair_dataframe(pair=pair, timeframe=self.informative_timeframe)
         except Exception:
             informative = None
 
-        if informative is None or informative.empty or len(informative) < 50 or "close" not in informative.columns:
-            logger.warning(f"Missing/insufficient informative data for {pair} ({self.informative_timeframe})")
-            self._last_populate_indicators_time = time.perf_counter() - start_time
-            return dataframe
+        if informative is not None and not informative.empty and len(informative) >= 50 and "close" in informative.columns:
+            info_key = (
+                pair,
+                self.informative_timeframe,
+                informative["date"].iat[-1] if "date" in informative.columns else len(informative),
+            )
+            info_cached = self._indicator_cache.get(info_key)
+            if info_cached is None:
+                info_buf = informative.copy()
+                info_buf[f"ema{buy_slow_ema_val}"] = ta.EMA(info_buf, timeperiod=buy_slow_ema_val)
+                info_buf[f"dema{buy_fast_dema_val}"] = ta.DEMA(info_buf, timeperiod=buy_fast_dema_val)
 
-        cache_key = (
-            pair,
-            self.informative_timeframe,
-            informative["date"].iat[-1] if "date" in informative.columns else len(informative),
-        )
-        cached = self._indicator_cache.get(cache_key)
-        if cached is None:
-            informative_buf = informative.copy()
-            informative_buf[f"ema{buy_slow_ema_val}"] = ta.EMA(informative_buf, timeperiod=buy_slow_ema_val)
-            informative_buf[f"dema{buy_fast_dema_val}"] = ta.DEMA(informative_buf, timeperiod=buy_fast_dema_val)
+                if buy_slow_ema_val != sell_slow_ema_val:
+                    info_buf[f"ema{sell_slow_ema_val}"] = ta.EMA(info_buf, timeperiod=sell_slow_ema_val)
+                if buy_fast_dema_val != sell_fast_dema_val:
+                    info_buf[f"dema{sell_fast_dema_val}"] = ta.DEMA(info_buf, timeperiod=sell_fast_dema_val)
 
-            if buy_slow_ema_val != sell_slow_ema_val:
-                informative_buf[f"ema{sell_slow_ema_val}"] = ta.EMA(informative_buf, timeperiod=sell_slow_ema_val)
-            if buy_fast_dema_val != sell_fast_dema_val:
-                informative_buf[f"dema{sell_fast_dema_val}"] = ta.DEMA(informative_buf, timeperiod=sell_fast_dema_val)
+                self._indicator_cache[info_key] = info_buf
+                info_cached = info_buf
+            recent_df = merge_informative_pair(recent_df, info_cached, self.timeframe, self.informative_timeframe, ffill=True)
 
-            self._indicator_cache[cache_key] = informative_buf
-            cached = informative_buf
+        # Write back computed results to original dataframe only for the overlapping rows
+        for col in recent_df.columns:
+            if col in dataframe.columns:
+                dataframe.loc[recent_df.index, col] = recent_df[col]
 
-        dataframe = merge_informative_pair(
-            dataframe, cached, self.timeframe, self.informative_timeframe, ffill=True
-        )
+        # Any columns not yet added to the original frame are added directly
+        for col in recent_df.columns:
+            if col not in dataframe.columns:
+                dataframe[col] = recent_df[col]
 
         elapsed = time.perf_counter() - start_time
         self._last_populate_indicators_time = elapsed
         if elapsed > 2.0:
             logger.warning("populate_indicators for %s took %.2fs", pair, elapsed)
 
-        # Simple cache trim
+        # trim cache churn
         if len(self._indicator_cache) > 128:
             self._indicator_cache.pop(next(iter(self._indicator_cache)))
 
@@ -728,7 +737,6 @@ class Fibbo(IStrategy):
         logger.debug(f"Generating entry signals for {metadata['pair']}")
 
         dataframe["enter_tag"] = ""
-
         entry_long_conditions = []
         entry_short_conditions = []
 
