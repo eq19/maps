@@ -613,16 +613,21 @@ class Fibbo(IStrategy):
             logger.warning(f"Missing/insufficient informative data for {metadata['pair']} ({self.informative_timeframe})")
             return dataframe
 
+        #informative['atr'] = ta.ATR(informative, timeperiod=14)
+        #informative['rsi'] = ta.RSI(informative['close'], timeperiod=max(2, rsi_period))
+
         #macd_inf = ta.MACD(informative, fastperiod=12, slowperiod=26, signalperiod=9)
         #informative['macd'] = macd_inf['macd']
         #informative['macdhist'] = macd_inf['macdhist']
         #informative['macdsignal'] = macd_inf['macdsignal']
 
-        #informative['atr'] = ta.ATR(informative, timeperiod=14)
-        #informative['rsi'] = ta.RSI(informative['close'], timeperiod=max(2, rsi_period))
-    
         informative[f'ema{buy_slow_ema_val}'] = ta.EMA(informative, timeperiod=buy_slow_ema_val)
         informative[f'dema{buy_fast_dema_val}'] = ta.DEMA(informative, timeperiod=buy_fast_dema_val)
+
+        if buy_slow_ema_val != sell_slow_ema_val:
+            informative[f'ema{sell_slow_ema_val}'] = ta.EMA(informative, timeperiod=sell_slow_ema_val)
+        if buy_fast_dema_val != sell_fast_dema_val:
+            informative[f'dema{sell_fast_dema_val}'] = ta.DEMA(informative, timeperiod=sell_fast_dema_val)
 
         dataframe = merge_informative_pair(
             dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True
