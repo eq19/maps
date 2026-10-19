@@ -574,8 +574,16 @@ class Fibbo(IStrategy):
 
         buy_slow_ema_val = int(self.buy_slow_ema.value)
         buy_fast_dema_val = int(self.buy_fast_dema.value)
+        sell_slow_ema_val = int(self.sell_slow_ema.value)
+        sell_fast_dema_val = int(self.sell_fast_dema.value)
+
         dataframe[f'ema{buy_slow_ema_val}'] = ta.EMA(dataframe, timeperiod=buy_slow_ema_val)
         dataframe[f'dema{buy_fast_dema_val}'] = ta.DEMA(dataframe, timeperiod=buy_fast_dema_val)
+
+        if buy_slow_ema_val != sell_slow_ema_val:
+            dataframe[f'ema{sell_slow_ema_val}'] = ta.EMA(dataframe, timeperiod=sell_slow_ema_val)
+        if buy_fast_dema_val != sell_fast_dema_val:
+            dataframe[f'dema{sell_fast_dema_val}'] = ta.DEMA(dataframe, timeperiod=sell_fast_dema_val)
 
         swing_lookback = self.buy_swing_period.value
         dataframe['swing_high'] = dataframe['high'].shift(1).rolling(swing_lookback).max()
