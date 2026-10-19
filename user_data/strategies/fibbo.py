@@ -572,12 +572,10 @@ class Fibbo(IStrategy):
         dataframe['bb_middleband'] = bollinger['middleband']
         dataframe['bb_lowerband'] = bollinger['lowerband']
 
-        for period in span["buy"]["buy_slow_ema"]["choices"]:
-            p_int = int(period)
-            dataframe[f'ema{p_int}'] = ta.EMA(dataframe, timeperiod=p_int)
-        for period in span["buy"]["buy_fast_dema"]["choices"]:
-            p_int = int(period)
-            dataframe[f'dema{p_int}'] = ta.DEMA(dataframe, timeperiod=p_int)
+        buy_slow_ema_val = int(self.buy_slow_ema.value)
+        buy_fast_dema_val = int(self.buy_fast_dema.value)
+        dataframe[f'ema{buy_slow_ema_val}'] = ta.EMA(dataframe, timeperiod=buy_slow_ema_val)
+        dataframe[f'dema{buy_fast_dema_val}'] = ta.DEMA(dataframe, timeperiod=buy_fast_dema_val)
 
         swing_lookback = self.buy_swing_period.value
         dataframe['swing_high'] = dataframe['high'].shift(1).rolling(swing_lookback).max()
@@ -613,12 +611,8 @@ class Fibbo(IStrategy):
         informative['macdhist'] = macd_inf['macdhist']
         informative['macdsignal'] = macd_inf['macdsignal']
 
-        for period in span["buy"]["buy_slow_ema"]["choices"]:
-            p_int = int(period)
-            informative[f'ema{p_int}'] = ta.EMA(informative, timeperiod=p_int)
-        for period in span["buy"]["buy_fast_dema"]["choices"]:
-            p_int = int(period)
-            informative[f'dema{p_int}'] = ta.DEMA(informative, timeperiod=p_int)
+        informative[f'ema{buy_slow_ema_val}'] = ta.EMA(informative, timeperiod=buy_slow_ema_val)
+        informative[f'dema{buy_fast_dema_val}'] = ta.DEMA(informative, timeperiod=buy_fast_dema_val)
 
         dataframe = merge_informative_pair(
             dataframe, informative, self.timeframe, self.informative_timeframe, ffill=True
