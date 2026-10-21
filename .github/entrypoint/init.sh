@@ -389,7 +389,7 @@ fi
         if $DOCKER exec mydb curl -sf -o "$DEST_PATH" "$DOWNLOAD_URL"; then
           if $DOCKER exec mydb test -s "$DEST_PATH"; then
             [[ "$DEST_PATH" == *.sh ]] && $DOCKER exec mydb chmod +x "$DEST_PATH"
-            [[ "$DEST_PATH" == *config_pairlist* ]] && "$DOCKER" exec mydb bash -c "jq '.pairlists = [{\"method\": \"StaticPairList\"}]' \"$DEST_PATH\" > tmp.json && mv tmp.json \"$DEST_PATH\""
+            [[ "$DEST_PATH" == *config_pairlist* && "$BYPASS_LEXERING" != "false" ]] && "$DOCKER" exec mydb bash -c "jq '.pairlists = [{\"method\": \"StaticPairList\"}]' \"$DEST_PATH\" > tmp.json && mv tmp.json \"$DEST_PATH\""
             echo "✅ [SUCCESS] Downloaded: $DEST_PATH"
             break
           else
