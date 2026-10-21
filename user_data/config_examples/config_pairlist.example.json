@@ -12,7 +12,7 @@
     },
     {
       "method": "PriceFilter",
-      "min_price": 100
+      "min_price": 1000
     },
     {
       "method": "VolatilityFilter",
