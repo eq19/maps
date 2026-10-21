@@ -65,7 +65,6 @@ jobs:
     if: >
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
-    timeout-minutes: 90
 
     strategy:
       max-parallel: 1
@@ -84,6 +83,7 @@ jobs:
 
     runs-on: ${{ matrix.config.os }}
     continue-on-error: ${{ matrix.config.jobs_id != 1 }}
+    timeout-minutes: ${{ matrix.config.os == 'macos-latest' && 90 || 360 }}
 
     steps:
       - name: 📥 Checkout
@@ -172,7 +172,6 @@ jobs:
     if: >
       github.event_name != 'workflow_run' ||
       github.event.workflow_run.conclusion == 'success'
-    timeout-minutes: 60
 
     strategy:
       matrix:
@@ -192,6 +191,7 @@ jobs:
       BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING }}
 
     needs: lexering
+    timeout-minutes: 60
     runs-on: ${{ matrix.config.os }}
     continue-on-error: ${{ matrix.config.jobs_id == 3 && true || false }}
 
