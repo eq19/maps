@@ -482,6 +482,13 @@ hyperopt() {
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}"
       gh variable set HYPEROPT --body "${HYPEROPT:-$loss}" --repo "$TARGET_REPOSITORY"
 
+      SOURCE_REPOSITORY=$(gh variable get SOURCE_REPOSITORY)
+      OLD_SCORE=$(gh variable get SCORE --repo "$SOURCE_REPOSITORY")
+      if (( $(echo "$NEW_SCORE > $OLD_SCORE" | bc -l) )); then
+        gh variable set PARAMS_JSON --repo "$SOURCE_REPOSITORY" < "$STRATEGY"
+        gh variable set SCORE --body "${NEW_SCORE}" --repo "$SOURCE_REPOSITORY"
+      fi
+
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
         if [[ "$BYPASS_LEXERING" == "true" ]]; then
           gh workflow run "main.yml" --raw-field "RUN_MODE=FreqAI" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
