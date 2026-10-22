@@ -84,6 +84,8 @@ set_target() {
       fi
     done
     echo "]" >> ${RUNNER_TEMP}/orgs.json
+    SOURCE_REPOSITORY=$(jq -r '[.[] | .login as $org | (.key1[] | "\($org)/\(.)"), (.key2[] | "\($org)/\(.)")] | .[-2]' "${RUNNER_TEMP}/orgs.json")
+    gh variable set SOURCE_REPOSITORY --body "$SOURCE_REPOSITORY"
   fi
  
   # Iterate the Structure
