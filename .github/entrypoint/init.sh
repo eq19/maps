@@ -206,8 +206,8 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
   METHOD="getInfo"
   NONCE=$(date +%s)
   METHODS="method=${METHOD}&nonce=${NONCE}"
-  DOCKER="/mnt/disks/deeplearning/usr/bin/docker"
-  GCLOUD="/mnt/disks/deeplearning/usr/bin/gcloud"  
+  DOCKER=/mnt/disks/deeplearning/usr/bin/docker
+  GCLOUD=/mnt/disks/deeplearning/usr/bin/gcloud
   STATUS=$($DOCKER exec mydb supervisorctl status freqtrade_live)
   BASE_URL="https://raw.githubusercontent.com/eq19/maps/$MAP_BRANCH/user_data"
   PARAMS_URL="https://raw.githubusercontent.com/eq19/maps/$MAP_BRANCH/pythonCode/params.py"
@@ -321,6 +321,8 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
       $DOCKER exec mydb sed -i 's|"dry_run": true|"dry_run": true|g' $CONFIG_LIVE
       $DOCKER exec mydb sed -i "s|$TRADING_BOT_TOKEN|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
       $DOCKER exec mydb sed -i "s|$MONITOR_BOT_TOKEN|$TRADING_BOT_TOKEN|g" $CONFIG_LIVE
+      $DOCKER exec mydb bash -c "jq '.telegram.enabled = true' '$CONFIG_DRY' > /tmp/c && mv /tmp/c '$CONFIG_DRY'"
+      $DOCKER exec mydb bash -c "jq '.telegram.enabled = true' '$CONFIG_LIVE' > /tmp/c && mv /tmp/c '$CONFIG_LIVE'"
 
       curl -L -s -X PATCH \
         -H "Accept: application/vnd.github+json" \
@@ -366,6 +368,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
         "PARAMS_JSON"
       )
 
+      $DOCKER exec mydb bash -c "jq '.telegram.enabled = true' '$CONFIG_LIVE' > /tmp/c && mv /tmp/c '$CONFIG_LIVE'"
       $DOCKER exec mydb bash -c "jq '.telegram.enabled = true | .api_server.listen_port = 8081' $CONFIG > $CONFIG_DRY"
       $DOCKER exec mydb sed -i "s|your_telegram_token|$MONITOR_BOT_TOKEN|g" $CONFIG_DRY
       $DOCKER exec mydb sed -i "s|tradesv3|tradesv3_dry|g" $CONFIG_DRY
