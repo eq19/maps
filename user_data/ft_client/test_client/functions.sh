@@ -495,8 +495,15 @@ hyperopt() {
         else
           gh workflow run "main.yml" --raw-field "RUN_MODE=MEC30" --raw-field "REMOVE_RUNNER=$REMOVE_RUNNER"
         fi
-      elif [[ "$GITHUB_JOB" != "lexering" &&  "$(gh variable get JOB)" == "lexering" ]]; then
+      elif [[ "$GITHUB_JOB" != "lexering" && "$(gh variable get JOB)" == "lexering" ]]; then
         gh variable set JOB --body "${GITHUB_JOB}" && gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
+
+        echo "Canceling the current workflow..."
+        gh run cancel $GITHUB_RUN_ID --repo "$REPO_NAME"
+
+        # Sleep briefly to ensure the cancellation goes through before the step finishes
+        sleep 10 
+        exit 0
       fi
     elif (( $(echo "$NEW_SCORE < $OLD_SCORE" | bc -l) )); then
       if [[ "$GITHUB_JOB" == "lexering" ]]; then
