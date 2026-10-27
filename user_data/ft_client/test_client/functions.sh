@@ -500,7 +500,7 @@ hyperopt() {
         gh workflow run "main.yml" --raw-field "REDUCE_EPOCH=$REDUCE_EPOCH"
 
         echo "Canceling the current workflow..."
-        gh run cancel $GITHUB_RUN_ID --repo "$REPO_NAME"
+        gh run cancel $GITHUB_RUN_ID
 
         # Sleep briefly to ensure the cancellation goes through before the step finishes
         sleep 10 
