@@ -42,7 +42,7 @@ LABEL maintainer="me@eq19.github.io" \
     org.label-schema.vendor="Thomas Cardonne" \
     org.label-schema.docker.cmd="docker run -it tcardonne/github-runner:latest"
 
-# Find the required package in ubuntu with the current GitHub CLI
+# Install the current GitHub CLI
 RUN set -eux; \
     DEBIAN_FRONTEND=noninteractive apt-get update -qq -o=Dpkg::Use-Pty=0; \
     apt-get install -y --no-install-recommends ca-certificates curl gnupg; \
@@ -51,8 +51,12 @@ RUN set -eux; \
     chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg; \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list; \
     apt-get update -qq -o=Dpkg::Use-Pty=0; \
-    sed "s/#.*//" /home/runner/requirements.apt | xargs apt-get install -yq > /dev/null 2>&1
-RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
+    apt-get install -y --no-install-recommends gh; \
+    gh --version
+
+# Find the required package in ubuntu
+RUN DEBIAN_FRONTEND=noninteractive apt-get update -qq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1
+RUN sed "s/#.*//" /home/runner/requirements.apt | xargs apt-get install -yq -o=Dpkg::Use-Pty=0 > /dev/null 2>&1RUN cd /tmp && wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb && dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
 
 # Install dependencies
 #RUN cd /home/runner && mkdir xml && DOXYGEN=$(doxygen > /dev/null 2>&1)
