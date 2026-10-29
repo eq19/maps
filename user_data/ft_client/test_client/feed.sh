@@ -98,6 +98,9 @@ if [[ $# -eq 0 ]]; then
 
     # 3. Fail fast if empty
     if [[ "$(jq 'length' pairs.json)" -eq 0 ]]; then
+      freqtrade test-pairlist --one-column          # see the full output + any error
+      freqtrade test-pairlist --print-json          # shows why pairs were filtered
+      jq '.trading_mode, .margin_mode, .stake_currency, .exchange.name' user_data/config.json
       echo "❌ No pairs returned by test-pairlist. Check:"
       echo "   - trading_mode / margin_mode (spot vs futures pair naming)"
       echo "   - stake_currency"
