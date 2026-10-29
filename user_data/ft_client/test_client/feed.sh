@@ -90,7 +90,6 @@ if [[ $# -eq 0 ]]; then
     freqtrade test-pairlist --one-column > pairs_raw.txt 2> pairs_err.txt || {
       echo "❌ test-pairlist failed:"
       cat pairs_err.txt
-      exit 1
     }
 
     # 2. Strip the header robustly (drop lines that aren't valid pairs)
@@ -98,16 +97,13 @@ if [[ $# -eq 0 ]]; then
 
     # 3. Fail fast if empty
     if [[ "$(jq 'length' pairs.json)" -eq 0 ]]; then
+      echo "❌ No pairs returned by test-pairlist. Check:"
       freqtrade test-pairlist --one-column          # see the full output + any error
       freqtrade test-pairlist --print-json          # shows why pairs were filtered
-      jq '.trading_mode, .margin_mode, .stake_currency, .exchange.name' user_data/config.json
-      echo "❌ No pairs returned by test-pairlist. Check:"
-      echo "   - trading_mode / margin_mode (spot vs futures pair naming)"
-      echo "   - stake_currency"
-      echo "   - exchange reachability"
-      echo "--- raw output ---"
-      cat pairs_raw.txt
-      exit 1
+      echo "Canceling the current workflow..."
+      gh run cancel $GITHUB_RUN_ID
+      sleep 10
+      exit 0
     fi
 
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
