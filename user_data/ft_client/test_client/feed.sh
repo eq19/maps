@@ -85,7 +85,28 @@ if [[ $# -eq 0 ]]; then
 
     echo -e "\n$hr\nDOWNLOAD PAIRS ($TD)\n$hr"
     freqtrade download-data --help
-    freqtrade test-pairlist --one-column 2>/dev/null | tail -n +2 | jq -R . | jq -s . > pairs.json
+
+    # 1. Do NOT silence stderr — you need to see config errors
+    freqtrade test-pairlist --one-column > pairs_raw.txt 2> pairs_err.txt || {
+      echo "❌ test-pairlist failed:"
+      cat pairs_err.txt
+      exit 1
+    }
+
+    # 2. Strip the header robustly (drop lines that aren't valid pairs)
+    grep -E '^[A-Z0-9]+/[A-Z0-9]+(:[A-Z]+)?$' pairs_raw.txt | jq -R . | jq -s . > pairs.json
+
+    # 3. Fail fast if empty
+    if [[ "$(jq 'length' pairs.json)" -eq 0 ]]; then
+      echo "❌ No pairs returned by test-pairlist. Check:"
+      echo "   - trading_mode / margin_mode (spot vs futures pair naming)"
+      echo "   - stake_currency"
+      echo "   - exchange reachability"
+      echo "--- raw output ---"
+      cat pairs_raw.txt
+      exit 1
+    fi
+
     freqtrade download-data --pairs-file pairs.json --timeframes $TIMEFRAMES --timerange="$TD" --verbose
     gh variable set PAIRS --body "$(cat pairs.json)"
 
