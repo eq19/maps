@@ -99,10 +99,9 @@ elif [[ "$1" == "Hyperopt" ]]; then
 
   OLD_SCORE=$SCORE
   export CALCULATION="false"
-  pairs=$(gh variable get PAIRS)
-  jq '.freqai.enabled = false' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
-  jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
-  jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
+  #pairs=$(gh variable get PAIRS)
+  #jq '.pairlists = [{"method": "StaticPairList"}]' $PAIRFILE > tmp.json && mv tmp.json $PAIRFILE  
+  #jq --argjson pairs "$pairs" '.exchange.pair_whitelist = $pairs' "$EXCHANGE_FILE" > config.tmp && mv config.tmp "$EXCHANGE_FILE"
 
   if [[ "$GITHUB_JOB" == "lexering" ]]; then
 
@@ -136,6 +135,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
 
 elif [[ "$1" == "FreqAI" ]]; then
 
+  jq '.freqai.enabled = true' "$FREQAI_FILE" > freqai.tmp && mv freqai.tmp "$FREQAI_FILE"
   export HAS_FREQAI_TAGS="false"
   freqai $ID
 
