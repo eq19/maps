@@ -100,6 +100,7 @@ if [[ $# -eq 0 ]]; then
       echo "❌ No pairs returned by test-pairlist. Check:"
       freqtrade test-pairlist --one-column          # see the full output + any error
       freqtrade test-pairlist --print-json          # shows why pairs were filtered
+      echo "SKIP_REMAINING_STEPS=true" >> "$GITHUB_ENV"
       echo "Canceling the current workflow..."
       gh run cancel $GITHUB_RUN_ID
       sleep 10
