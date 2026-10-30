@@ -99,9 +99,8 @@ if [[ $# -eq 0 ]]; then
     if [[ "$(jq 'length' pairs.json)" -eq 0 ]]; then
       freqtrade test-pairlist --one-column          # see the full output + any error
       freqtrade test-pairlist --print-json          # shows why pairs were filtered
-      echo "❌ No pairs returned by test-pairlist. Check:"
+      echo "❌ No pairs returned by test-pairlist."
       echo "SKIP_REMAINING_STEPS=true" >> "$GITHUB_ENV"
-      echo "Canceling the current workflow..."
       gh run cancel $GITHUB_RUN_ID
       sleep 10
       exit 0
