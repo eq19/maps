@@ -139,6 +139,11 @@ elif [[ "$1" == "Hyperopt" ]]; then
         elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
           cat $STRATEGY
           gh variable set SCORE --body "${SCORE}"
+        elif (( $(echo "$SCORE < 0" | bc -l) )); then
+          echo "Canceling the current workflow..."
+          gh run cancel $GITHUB_RUN_ID
+          sleep 10 
+          exit 0
         fi
         export CALCULATION="false"
       fi
