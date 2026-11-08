@@ -142,13 +142,14 @@ elif [[ "$1" == "Hyperopt" ]]; then
           exit 0
         elif [[ "$OLD_SCORE" == "100" ]] || (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
           [[ "$OLD_SCORE" != "100" ]] && cat "$STRATEGY"
-          export CALCULATION="false"
   
           echo -e "\n$hr\nRUN HYPEROPT ($EARLIEST_DATE-$BACKTESTING_START) without FREQAI_MODEL\n$hr"
           freqtrade hyperopt --help
 
           gh variable set SCORE --body "${SCORE}"
           OLD_SCORE=$SCORE            
+
+          export CALCULATION="false"
           hyperopt $ID
         fi     
       fi
