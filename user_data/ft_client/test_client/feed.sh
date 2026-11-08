@@ -132,9 +132,6 @@ elif [[ "$1" == "Hyperopt" ]]; then
     calculate_score
     if [[ "$SCORE" == "100" ]]; then
       gh workflow run "main.yml"
-      echo "Canceling the current workflow..."
-      gh run cancel "$GITHUB_RUN_ID"
-      sleep 10
       exit 0
     else
       if [[ "$CALCULATION" != "false" ]]; then
@@ -151,7 +148,6 @@ elif [[ "$1" == "Hyperopt" ]]; then
           freqtrade hyperopt --help
 
           gh variable set SCORE --body "${SCORE}"
-          SCORE=$(gh variable get SCORE)
           OLD_SCORE=$SCORE            
           hyperopt $ID
         fi     
