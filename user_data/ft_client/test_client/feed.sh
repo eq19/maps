@@ -132,31 +132,32 @@ elif [[ "$1" == "Hyperopt" ]]; then
     calculate_score
     if [[ "$SCORE" == "100" ]]; then
       gh workflow run "main.yml"
+      echo "Canceling the current workflow..."
+      gh run cancel "$GITHUB_RUN_ID"
+      sleep 10
+      exit 0
     else
       if [[ "$CALCULATION" != "false" ]]; then
-        if [[ "$OLD_SCORE" == "100" ]]; then       
-          gh variable set SCORE --body "${SCORE}"
-        elif (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
-          cat $STRATEGY
-          gh variable set SCORE --body "${SCORE}"
-        elif (( $(echo "$SCORE < 0" | bc -l) )); then
+        if (( $(echo "$SCORE < 0" | bc -l) )); then
           echo "Canceling the current workflow..."
-          gh run cancel $GITHUB_RUN_ID
-          sleep 10 
+          gh run cancel "$GITHUB_RUN_ID"
+          sleep 10
           exit 0
-        fi
-        export CALCULATION="false"
+        elif [[ "$OLD_SCORE" == "100" ]] || (( $(echo "$SCORE > $OLD_SCORE" | bc -l) )); then
+          [[ "$OLD_SCORE" != "100" ]] && cat "$STRATEGY"
+          export CALCULATION="false"
+  
+          echo -e "\n$hr\nRUN HYPEROPT ($EARLIEST_DATE-$BACKTESTING_START) without FREQAI_MODEL\n$hr"
+          freqtrade hyperopt --help
+
+          gh variable set SCORE --body "${SCORE}"
+          SCORE=$(gh variable get SCORE)
+          OLD_SCORE=$SCORE            
+          hyperopt $ID
+        fi     
       fi
     fi
-
   fi
-
-  echo -e "\n$hr\nRUN HYPEROPT ($EARLIEST_DATE-$BACKTESTING_START) without FREQAI_MODEL\n$hr"
-  #Ref: https://www.freqtrade.io/en/stable/hyperopt
-  SCORE=$(gh variable get SCORE)
-  freqtrade hyperopt --help
-  OLD_SCORE=$SCORE            
-  hyperopt $ID
 
 elif [[ "$1" == "FreqAI" ]]; then
 
