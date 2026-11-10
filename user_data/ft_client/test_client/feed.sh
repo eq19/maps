@@ -136,7 +136,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
     else
       if [[ "$CALCULATION" != "false" ]]; then
         if (( $(echo "$SCORE < 0" | bc -l) )); then
-          echo "Canceling the current workflow..."
+          echo "Poor performance. Canceling the current workflow..."
           gh run cancel "$GITHUB_RUN_ID"
           sleep 10
           exit 0
