@@ -5,6 +5,7 @@
 # Ref: https://strat.ninja/ranking.php
 #
 hr='------------------------------------------------------------------------------'
+PROFIT=0
 EPOCHS=6400
 FEE=0.003322
 TIMEFRAMES='1m 15m'
@@ -135,7 +136,7 @@ elif [[ "$1" == "Hyperopt" ]]; then
       exit 0
     else
       if [[ "$CALCULATION" != "false" ]]; then
-        if (( $(echo "$SCORE < 0" | bc -l) )); then
+        if (( $(echo "$PROFIT > 0" | bc -l) && $(echo "$SCORE < 0" | bc -l) )); then
           echo "Poor performance. Canceling the current workflow..."
           gh run cancel "$GITHUB_RUN_ID"
           sleep 10
