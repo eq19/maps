@@ -61,6 +61,7 @@ calculate_score() {
   local profit_mean=$(echo "$json_data" | jq -r '.profit_mean')
   local profit_mean_pct=$(echo "$json_data" | jq -r '.profit_mean_pct')
   local profit_total_pct=$(echo "$json_data" | jq -r '.profit_total_pct')
+  local profit_total_abs=$(echo "$json_data" | jq -r '.profit_total_abs')
   local max_drawdown_account=$(echo "$json_data" | jq -r '.max_drawdown_account')
   local trades=$(echo "$json_data" | jq -r '.trades')
   local sqn=$(echo "$json_data" | jq -r '.sqn')
@@ -325,6 +326,7 @@ calculate_score() {
 
   SCORE=$(printf "%.2f" "$SCORE")
   echo "🧮 Performance: $SCORE"
+  PROFIT=$profit_total_abs
   CALCULATION="true"
 
 : <<'COMMENT'
