@@ -55,6 +55,7 @@ permissions: write-all
         
 # 🕸️ Global Environment
 env:
+  ATTEMPT: ${{ github.run_attempt }}
   REPO_NAME: ${{ github.repository }}
   GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
   RERUN_RUNNER: ${{ vars.RERUN_RUNNER }}
@@ -74,7 +75,7 @@ jobs:
           - { os: macos-latest, jobs_id: 2 }
     env:
       JOBS_ID: ${{ matrix.config.jobs_id }}
-      DOC: '${{ vars.TARGET_REPOSITORY }}.wiki'
+      WIKI: '${{ vars.TARGET_REPOSITORY }}.wiki'
       REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH || 'false' }}
       REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER || 'false' }}
       BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING || 'false' }}
@@ -87,7 +88,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          repository: ${{ env.JOBS_ID != 1 && env.DOC || '' }}
+          repository: ${{ env.JOBS_ID != 1 && env.WIKI || '' }}
           submodules: ${{ env.JOBS_ID != 1 && 'recursive' || false }}
         if: ${{ !(env.JOBS_ID == 1 && env.RUN_MODE == 'MEC30' && env.REMOVE_RUNNER == 'false') }}
           
