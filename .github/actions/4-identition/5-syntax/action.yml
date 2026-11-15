@@ -86,7 +86,7 @@ runs:
         cache-version: 1
         rubygems: default
         bundler-cache: true
-        ruby-version: '3.3.4'
+        ruby-version: '3.3'
 
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4

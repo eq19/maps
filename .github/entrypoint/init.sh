@@ -208,6 +208,7 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
   METHODS="method=${METHOD}&nonce=${NONCE}"
   DOCKER=/mnt/disks/deeplearning/usr/bin/docker
   GCLOUD=/mnt/disks/deeplearning/usr/bin/gcloud
+  BASE64=/mnt/disks/deeplearning/usr/bin/base64
   STATUS=$($DOCKER exec mydb supervisorctl status freqtrade_live)
   BASE_URL="https://raw.githubusercontent.com/eq19/maps/$MAP_BRANCH/user_data"
   PARAMS_URL="https://raw.githubusercontent.com/eq19/maps/$MAP_BRANCH/pythonCode/params.py"
@@ -356,6 +357,28 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
         --arg value "$($DOCKER exec mydb cat /home/runner/data_live/strategies/fibbo.json)")" \
         https://api.github.com/repos/$SOURCE_REPOSITORY/actions/variables/PARAMS_LIVE
 
+      # Update the current file SHA of default branch
+      CONTENT=$($DOCKER exec -i mydb sh -lc 'cat /home/runner/data_live/strategies/fibbo.json' | $BASE64 -w 0)
+      FILE_PATH="user_data/strategies/tested/fibbo.json"
+      SHA=$(curl -fsSLsS \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "https://api.github.com/repos/eq19/maps/contents/$FILE_PATH?ref=$MAP_BRANCH" \
+        | jq -er '.sha')
+
+      curl -fsSLsS -X PUT \
+        -H "Accept: application/vnd.github+json" \
+        -H "Authorization: Bearer $GH_TOKEN" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        "https://api.github.com/repos/eq19/maps/contents/$FILE_PATH" \
+        -d "{
+          \"message\": \"Update fibbo.json strategy config\",
+          \"branch\": \"$MAP_BRANCH\",
+          \"content\": \"$CONTENT\",
+          \"sha\": \"$SHA\"
+        }"
+
     else
       echo -e "$hr\nDry-run is not better than Live mode.\nLet dry-run to challenge a new config."
 
@@ -376,8 +399,8 @@ elif [[ "${JOBS_ID}" == "3" ]]; then
       $DOCKER exec mydb mkdir -p "$(dirname "$EXCHANGE_DRY")"
       $DOCKER exec mydb curl -sf -o "$EXCHANGE_DRY" "$CONFIG_EXCHANGE"
       $DOCKER exec mydb bash -c "jq --argjson pairs '$PAIRS' '.exchange.pair_whitelist = \$pairs' '$EXCHANGE_DRY' > config.tmp && mv config.tmp '$EXCHANGE_DRY'"
-   fi 
-fi
+    fi 
+  fi
 
   for idx in "${!DIRS[@]}"; do
     PARAM_NAME="${PARAMS[$idx]}"
@@ -437,6 +460,10 @@ fi
       "curl -s -H 'Authorization: token $GH_TOKEN' -H 'Accept: application/vnd.github.v3+json' \
       https://api.github.com/repos/$GITHUB_REPOSITORY/actions/variables/${PARAM_NAME} \
       | jq -r '.value' > ${DIR_PATH}/strategies/fibbo.json"
+    $DOCKER exec -e DIR_PATH="$DIR_PATH" mydb bash -c '
+      jq --slurpfile fibbo "$DIR_PATH/strategies/fibbo.json" ".stoploss = \$fibbo[0].params.stoploss.stoploss" \
+      "$DIR_PATH/config.json" > /tmp/c && mv /tmp/c "$DIR_PATH/config.json"
+    '
     $DOCKER exec -e BEARER="$BEARER" mydb bash -c \
       "bash ${SCRIPT_PATH} ${ID:-30} $JOBS_ID $APP_PATH $DIR_PATH $PARAM_NAME $ARTIFACT $HYPEROPT_PARAM $COMPILE_FILE $BYPASS_LEXERING"
 
@@ -446,14 +473,24 @@ fi
 
 else
 
-  cd ${RUNNER_TEMP//\\//} && rm -rf gh-source
-  git clone --single-branch --branch gh-source $TARGET_REPO gh-source
-  
-  cd ${GITHUB_WORKSPACE//\\//}
-  find -not -path "./.git/*" -not -name ".git" -delete
+  runner_temp="${RUNNER_TEMP//\\//}"
+  workspace="${GITHUB_WORKSPACE//\\//}"
 
-  rm -rf ${RUNNER_TEMP//\\//}/gh-source/.git
-  shopt -s dotglob && mv -f ${RUNNER_TEMP//\\//}/gh-source/* .
+  cd "$runner_temp"
+  rm -rf gh-base gh-source
+  git clone https://github.com/eq19/feed gh-base
+  git clone --single-branch --branch gh-source $TARGET_REPO gh-source
+
+  cd gh-source && rm -rf .git
+  # merge only the portions that we need
+  for d in Gemfile assets _sass _plugins _layouts _includes; do
+    rm -rf "$d" && mv -f "$runner_temp/gh-base/$d" .
+  done
+
+  cd "$workspace"
+  #find -not -path "./.git/*" -not -name ".git" -delete
+  find . -mindepth 1 -not -path "./.git/*" -not -name ".git" -delete
+  shopt -s dotglob && mv -f "$runner_temp"/gh-source/* .
 
   echo -e "\n$hr\nCONFIG\n$hr" && cat _config.yml
   echo -e "\n$hr\nENVIRONTMENT\n$hr" && printenv | sort

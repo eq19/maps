@@ -12,8 +12,9 @@ curl
 #dvipng
 #gettext
 #gfortran
-gh
+#gh
 git
+gnupg
 iputils-ping
 #lcov
 #libgsl-dev

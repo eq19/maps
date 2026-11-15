@@ -138,15 +138,15 @@ runs:
         pip install -qq --no-cache-dir ta "numpy<3.0" "aiodns<3.0" "freqtrade==$VERSION"
         cd ${{ github.workspace }} && bash user_data/ft_client/test_client/feed.sh
 
-    - name: Upload downloaded data as artifact
+    - name: 🪂 Upload downloaded data as artifact
       uses: actions/upload-artifact@v6
-      if: env.REMOVE_RUNNER == 'false'
+      if: ${{ env.REMOVE_RUNNER == 'false' && env.SKIP_REMAINING_STEPS != 'true' }}
       with:
         name: freqtrade-data
         path: user_data/data/
 
-    - name: 🪂 Test postgres
-      if: env.REMOVE_RUNNER == 'false'
+    - name: 🐎 Run Freqtrade
+      if: ${{ env.REMOVE_RUNNER == 'false' && env.SKIP_REMAINING_STEPS != 'true' }}
       shell: bash
       env:
         CONNECTION_URI: ${{ steps.postgres.outputs.connection-uri }}
@@ -205,7 +205,7 @@ runs:
         done
 
     - name: ⚧️ Rerun workflow if failed
-      if: ${{ failure() }}
+      if: ${{ failure() && env.SKIP_REMAINING_STEPS != 'true' }}
       shell: bash
       run: |
         [[ "$GITHUB_JOB" == "lexering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \

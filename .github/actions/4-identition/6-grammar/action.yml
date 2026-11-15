@@ -105,7 +105,7 @@ runs:
         else
 
           echo -e "\n$hr\nSource Pages\n$hr"
-          rm -rf _user && ls -al .
+          rm -rf docs _user && ls -al .
 
           FILE=$(find . -name "plugin_manager.rb")
           sed -i 's|unless site.safe|if site.safe|g' $FILE
@@ -205,7 +205,8 @@ runs:
         fi
 
     - name: ⚧️ Rerun workflow if failed
-      if: ${{ failure() }}
+      if: runner.os == 'Linux'
+      #if: ${{ failure() }}
       shell: bash
       run: |
         [[ "$GITHUB_JOB" == "parsering" ]] && gh workflow run "main.yml" --repo "$REPO_NAME" \
