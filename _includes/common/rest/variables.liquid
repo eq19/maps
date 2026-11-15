@@ -48,7 +48,7 @@
 
 {% comment %} Use string splitting to pull the value from content_for_header and apply some string clean up {% endcomment %}
 {%- if site.repository contains "eq19" -%}
-    {%- assign pageUrlWithHost = "https://eq19.com" | append: site.baseurl | append: page.url -%}
+    {%- assign pageUrlWithHost = "https://eq19.github.io" | append: site.baseurl | append: page.url -%}
 {%- else -%}
     {%- assign pageHost = site.repository | split: "/" | first -%}
     {%- assign pageUrlWithHost = "https://" | append: pageHost | append: "github.io" | append: site.baseurl | append: page.url -%}

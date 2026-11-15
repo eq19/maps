@@ -149,6 +149,8 @@ Based on the idea of stable, knotted vortices in the ether or [aether](https://e
 In the matrix pictured below, we list the first 24 elements of our domain, take their squares, calculate the modulo 90 congruence and digital roots of each square, and display the digital root factorization dyad for each square (and map their ***collective bilateral 9 sum symmetry***). _([PrimesDemystified](https://primesdemystified.com/))_
 ```
 
+***1 + (7+7th prime) + (7+7th prime)th prime = 1 + (7+17) + (7+17)th prime = 1 + 24 + 89 = 114***
+
 [![collective bilateral 9 sum symmetry](https://user-images.githubusercontent.com/8466209/200229388-03811f48-2492-4845-b15f-85259cd93717.png)](https://eq19.github.io/multiplication/#elementary-structure)
 
 Not to mention this sequence possesses symmetries that dovetail perfectly with the prime root and Fibo sequences
