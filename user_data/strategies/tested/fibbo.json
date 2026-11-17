@@ -2,25 +2,25 @@
   "strategy_name": "Fibbo",
   "params": {
     "enter": {
-      "enter_long_indicator": "BB, STOCHRSI, TTM, VWAP",
-      "enter_short_indicator": "BB, RSI, STOCHRSI, TTM",
-      "enter_trade_mode": "half"
+      "enter_long_indicator": "BB, DEMA, STOCHRSI, TTM",
+      "enter_short_indicator": "DEMA, RSI, TTM",
+      "enter_trade_mode": "majority"
     },
     "buy": {
-      "buy_bb_period": 97,
-      "buy_fast_dema": "8",
+      "buy_bb_period": 88,
+      "buy_fast_dema": "13",
       "buy_fib_level": "0.786",
-      "buy_rsi": 37,
-      "buy_rsi_period": 43,
-      "buy_slow_ema": "55",
-      "buy_smoothD": 12,
-      "buy_smoothK": 29,
-      "buy_stoch_osc": 47,
-      "buy_swing_period": 31
+      "buy_rsi": 23,
+      "buy_rsi_period": 35,
+      "buy_slow_ema": "34",
+      "buy_smoothD": 5,
+      "buy_smoothK": 19,
+      "buy_stoch_osc": 40,
+      "buy_swing_period": 19
     },
     "exit": {
-      "exit_long_indicator": "BB, RSI, STOCHRSI, TTM",
-      "exit_short_indicator": "BB, DEMA, RSI",
+      "exit_long_indicator": "MACD, RSI, TTM",
+      "exit_short_indicator": "BB, MACD, TTM",
       "exit_trade_mode": "any"
     },
     "sell": {
@@ -36,10 +36,10 @@
       "shared_vwap_window": 50
     },
     "roi": {
-      "0": 0.079,
-      "5": 0.014,
-      "8": 0.004,
-      "14": 0
+      "0": 0.111,
+      "8": 0.034,
+      "20": 0.013,
+      "35": 0
     },
     "freqai": {
       "freqai_buy": 0.25,
@@ -51,28 +51,28 @@
     },
     "trailing": {
       "trailing_stop": true,
-      "trailing_stop_positive": 0.214,
-      "trailing_stop_positive_offset": 0.297,
+      "trailing_stop_positive": 0.03,
+      "trailing_stop_positive_offset": 0.034,
       "trailing_only_offset_is_reached": true
     },
     "protection": {
-      "cooldown_lookback": 17,
-      "lookback_period_candles": 199,
-      "low_profit_trade_limit": 125,
-      "max_drawdown_trade_limit": 318,
-      "stop_duration_candles": 342,
-      "trade_limit": 320,
-      "use_low_profit": true,
+      "cooldown_lookback": 10,
+      "lookback_period_candles": 194,
+      "low_profit_trade_limit": 123,
+      "max_drawdown_trade_limit": 316,
+      "stop_duration_candles": 337,
+      "trade_limit": 313,
+      "use_low_profit": false,
       "use_max_drawdown_protection": false,
-      "use_stop_protection": false
+      "use_stop_protection": true
     },
     "max_open_trades": {
-      "max_open_trades": 4
+      "max_open_trades": 5
     },
     "stoploss": {
-      "stoploss": -0.045
+      "stoploss": -0.23
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-11-02 03:09:14.441881+00:00"
+  "export_time": "2026-10-17 02:24:45.321847+00:00"
 }
