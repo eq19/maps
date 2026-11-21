@@ -490,21 +490,11 @@ The SM was basically developed in 1970-s. It describes the electromagnetic, weak
 Beyond. World Scientific, 2004](https://user-images.githubusercontent.com/36441664/89119081-a172cf80-d4d5-11ea-9bd2-35e95f419f30.jpg)](https://github.com/eq19/maps/files/13793234/the-physics-of-the-standard-model-and-beyond.pdf)
 - [The (3) layers](https://github.com/eq19/eq19/blob/v1/.github/entrypoint/artifact/python/manual_v2.ipynb) represents generation in the _[particle objects](https://github.com/eq19/eq19/blob/v1/.github/entrypoint/artifact/python/manual_v2.ipynb)_ of flavor that counts ***six (6) flavours of [quarks](https://en.wikipedia.org/wiki/Quark)*** and ***six (6) flavours of [leptons](https://en.wikipedia.org/wiki/Lepton)***.[![Testing Explanations of Short Baseline Neutrino Anomalies](https://github.com/eq19/maps/assets/8466209/9ebbb332-7818-496f-a50e-7beb707fc644)](https://github.com/eq19/maps/files/13777171/Testing_Explanations_of_Short_Baseline_Neutrino_An_compressed.1.pdf)
 - The newly discovered Higgs Boson interacts with all the Quarks and the first group of Leptons (electron, muon and tau) providing them with their mass. The neutrinos which are the other Leptons originally were thought to have zero mass, but recent discoveries argue that this is not the case.[![fundamental interaction in nature](https://user-images.githubusercontent.com/8466209/284403402-a0ba27e5-1964-46c2-b7d8-72758eb0944d.png)](https://en.wikipedia.org/wiki/Talk:Standard_Model/Archive_2#Error_in_diagram,_proposed_replacement)
-- Three of the fundamental forces result from the exchange of force-carrier particles, which belong to a broader group called “bosons”. Particles of matter transfer discrete amounts of energy by exchanging bosons with each other. Each fundamental force has its own corresponding boson – the strong force is carried by the “gluon”, the electromagnetic force is carried by the “photon”, and the “W and Z bosons” are responsible for the weak force. Although not yet found, the “graviton” should be the corresponding force-carrying particle of gravity.[![physics-standard-model by cern](https://github.com/user-attachments/assets/6c51bf53-e811-4b54-a046-093fad3b709b)](https://home.cern/science/physics/standard-model)
 
 The Weak bosons interact with both Leptons and Quarks, these are responsible for the Weak nuclear forces. The exchange of photon is responsible for the Electromagnetic Force.
 ```
 
-_Rearrangement of [StandardModel](https://github.com/bin-wu-phys/StandardModel/blob/master/python/manual_v2.ipynb) originally developed by [Bin Wu](https://github.com/bin-wu-phys) from [CERN](https://theory.cern/roster/wu-bin)_
-
-|6 QUARKS|no|6 LEPTONS|no|7 BOSONS (GAUGE AND HIGGS)|no|
-|------|---|------|----|--|--|
-|d: Down|19|$$e^-$$: electron|13|$$γ$$: photon|7|
-|u: Up|18|$$ν_e$$: $$e$$ neutrino|12|$$g$$: gluons|5(6)|
-|s: Strange|17|$$μ^-$$: muon|11|$$H^0$$: Higgs boson|4|
-|c: Charm|16|$$ν_μ$$: $$μ$$ neutrino|10|$$W^+$$: positively charged weak boson|3|
-|b: Bottom|15|$$τ^-$$: tau|9|$$W^-$$: negatively charged weak boson|2|
-|t: Top|14|$$ν_τ$$: $$τ$$ neutrino|8|$$Z^0$$: neutral weak boson|1|
+[![physics-standard-model](https://github.com/user-attachments/assets/87edec22-c33b-4dbb-9cdf-6ce85e909ada)](https://home.cern/science/physics/standard-model)
 
 This results in a fundamental causal relation to the primes, systemically the products are entered into the position system.
 
