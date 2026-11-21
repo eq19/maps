@@ -1,12 +1,12 @@
 apt-transport-https
 bc
 build-essential
-ca-certificates
+#ca-certificates
 #clang
 cloud-init
 #cmake
 #coreutils
-curl
+#curl
 #docker.io
 #doxygen
 #dvipng
@@ -14,7 +14,7 @@ curl
 #gfortran
 #gh
 git
-gnupg
+#gnupg
 iputils-ping
 #lcov
 #libgsl-dev
