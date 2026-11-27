@@ -20,7 +20,6 @@ on:
   #push:
   workflow_run:
     types: [completed]
-    #workflows: ["pages-build"]
     workflows: ["pages-build-deployment"]
   repository_dispatch:
     types: [trigger_action, retry_workflow]
@@ -73,23 +72,24 @@ jobs:
         config:
           - { os: ubuntu-latest, jobs_id: 1 }
           - { os: macos-latest, jobs_id: 2 }
-    env:
-      JOBS_ID: ${{ matrix.config.jobs_id }}
-      WIKI: '${{ vars.TARGET_REPOSITORY }}.wiki'
-      REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH || 'false' }}
-      REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER || 'false' }}
-      BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING || 'false' }}
 
     runs-on: ${{ matrix.config.os }}
     continue-on-error: ${{ matrix.config.jobs_id != 1 }}
+
+    env:
+      JOBS_ID: ${{ matrix.config.jobs_id }}
+      REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH || 'false' }}
+      REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER || 'false' }}
+      BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING || 'false' }}
 
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          repository: ${{ env.JOBS_ID != 1 && env.WIKI || '' }}
+          ref: ${{ env.JOBS_ID == 2 && 'gh-source' || '' }}
           submodules: ${{ env.JOBS_ID != 1 && 'recursive' || false }}
+          repository: ${{ env.JOBS_ID == 2 && env.TARGET_REPOSITORY || '' }}
         if: ${{ !(env.JOBS_ID == 1 && env.RUN_MODE == 'MEC30' && env.REMOVE_RUNNER == 'false') }}
           
       - name: ⚙️ Build Maps
@@ -156,10 +156,9 @@ jobs:
         shell: bash
         id: gen_outputs
         run: |
-          output=${{ steps.feed-mapping.outputs.addition || steps.set-lexering.outputs.multiplication }}
-          bash /Users/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/gcp.sh
-          echo "output_${id}=${output}" >> "${GITHUB_OUTPUT}"
-        if: ${{ env.JOBS_ID == 2 }}
+          [[ "$JOBS_ID" == "1" ]] && BASE="/home" || BASE="/Users"
+          bash "$BASE/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/gcp.sh"
+        if: ${{ !(inputs.RUN_MODE == 'MEC30' && inputs.BYPASS_LEXERING == 'true') }}
 
     outputs:
       # ♻️ Simulate Gell-Mann Matrices
@@ -169,27 +168,37 @@ jobs:
 
   parsering:
     strategy:
-      matrix:
-        config:
-          - { os: self-hosted, jobs_id: 3 }
-          - { os: windows-latest, jobs_id: 4 }
-
-      # 💢 Completeness relations
       max-parallel: 1
       fail-fast: false
+      matrix:
+        config: >-
+          ${{ fromJSON(
+            (github.event.inputs.RUN_MODE == 'MEC30' &&
+             github.event.inputs.BYPASS_LEXERING == 'true') &&
+            '[{"os":"windows-latest","jobs_id":4,"display_id":3}]' ||
+            '[{"os":"self-hosted","jobs_id":3,"display_id":3},{"os":"windows-latest","jobs_id":4,"display_id":4}]'
+          ) }}
+
+    ## ✔️ Completeness status
+    needs: lexering
+    runs-on: ${{ matrix.config.os }}
+    if: >-
+      ${{ !cancelled() &&
+        (needs.lexering.result == 'success' ||
+         (github.event.inputs.RUN_MODE == 'MEC30' &&
+          github.event.inputs.BYPASS_LEXERING == 'true')
+      ) }}
+    continue-on-error: ${{ matrix.config.jobs_id == 3 && true || false }}
+    name: "parsering (${{ matrix.config.os }}, ${{ matrix.config.display_id }})"
 
     env:
       JOBS_ID: ${{ matrix.config.jobs_id }}
+      WIKI: '${{ vars.TARGET_REPOSITORY }}.wiki'
       IP_ADDRESS: '${{ needs.lexering.outputs.address }}'
       REDUCE_EPOCH: ${{ github.event.inputs.REDUCE_EPOCH }}
       REMOVE_RUNNER: ${{ github.event.inputs.REMOVE_RUNNER }}
       PASS: ${{ contains(needs.lexering.result, 'success') }}
       BYPASS_LEXERING: ${{ github.event.inputs.BYPASS_LEXERING }}
-
-    ## ✔️ Completeness status
-    needs: lexering
-    runs-on: ${{ matrix.config.os }}
-    continue-on-error: ${{ matrix.config.jobs_id == 3 && true || false }}
 
     steps:
       - name: 📥 Checkout
@@ -198,8 +207,8 @@ jobs:
         with:
           submodules: recursive
           token: ${{ secrets.ACCESS_TOKEN }}
-          repository: ${{ env.TARGET_REPOSITORY }}
-          ref: ${{ env.JOBS_ID == 3 && 'gh-source' || 'gh-pages' }}                  
+          ref: ${{ env.JOBS_ID != 3 && 'gh-pages' || '' }}
+          repository: ${{ env.JOBS_ID == 4 && env.TARGET_REPOSITORY || env.WIKI }}
 
       - name: 🚀 Setup Parser
         #if: ${{ env.PASS == 'true' }}

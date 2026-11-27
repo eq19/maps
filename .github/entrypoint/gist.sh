@@ -8,12 +8,12 @@ rm -rf ${RUNNER_TEMP}/README.md
 echo -e "\n$hr\nWiki Dir: $2\n$hr"
 
 # Clone wiki
-git clone $1 ${RUNNER_TEMP}/wikidir
-mv -f ${RUNNER_TEMP}/wikidir/Home.md ${RUNNER_TEMP}/README.md
+git clone "$1" "$RUNNER_TEMP/wikidir"
+mv -f "$RUNNER_TEMP/wikidir/Home.md" "$RUNNER_TEMP/README.md"
 
 # Take titles from _Sidebar.md of wiki
-sed -i 's/0. \[\[//g' ${RUNNER_TEMP}/wikidir/_Sidebar.md
-sed -i 's/\]\]//g' ${RUNNER_TEMP}/wikidir/_Sidebar.md
+sed -i '' 's/0\. \[\[//g' "$RUNNER_TEMP/wikidir/_Sidebar.md"
+sed -i '' 's/\]\]//g' "$RUNNER_TEMP/wikidir/_Sidebar.md"
 
 # Clone gist to be put later on wiki's exponentiation and identition folders
 gh gist clone 0ce5848f7ad62dc46dedfaa430069857 ${RUNNER_TEMP}/gistdir/identition/span1

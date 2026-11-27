@@ -78,49 +78,67 @@ runs:
   using: composite
   
   steps:
-    - name: ⏩ Next wiki's jobs on applying
+    #Ref: https://gist.github.com/xtrmstep/92aab2d465e348ce1c07ed903ca0dfb8
+    - id: describe
+      if: runner.os == 'Windows'
+      shell: bash
+      #env:
+        #CONFIG_JSON: ${{ inputs.config }}
+      run: |
+        #echo -n "$CONFIG_JSON" > config.json
+        cd ${{ inputs.action_path }} && doxygen > /dev/null 2>&1
+        rm -rf ${{ github.workspace }}/xml && mv -f xml ${{ github.workspace }}/
+
+        COMMIT="${{ env.LATEST_COMMIT }}"  
+        cd ${{ github.workspace }} && rm -rf cloud-config
+
+        # Remove double quotes using parameter extension
+        git add . && git commit --allow-empty -m "${COMMIT//\"/}" && git push
+
+        #ssh-keygen -t rsa -b 3072 -N '' -f $HOME/.ssh/google_compute_engine -C root
+        #sed -i.backup "1s|^|runner: |" $HOME/.ssh/google_compute_engine.pub && gh secret set GCP_ID_RSA < $HOME/.ssh/google_compute_engine
+
+        # Ref: https://console.cloud.google.com/security/secret-manager?hl=en&project=marketleader
+        #gcloud secrets describe freqtrade-config --project marketleader || \
+          #gcloud secrets create freqtrade-config --project marketleader --data-file=config.json
+        #gcloud secrets versions add freqtrade-config --project marketleader --data-file=config.json
+
+        gcloud compute instances add-metadata grid-${{ env.IMAGE_TAG }} --zone=us-central1-a \
+          --metadata=startup-script=/home/runner/work/_actions/eq19/eq19/v2/.github/entrypoint/startup.sh
+
+        #gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(metadata.items)'
+        #gcloud compute scp ${{ github.workspace }}/.github/entrypoint/artifact/python/manual_v2.ipynb grid-${{ env.IMAGE_TAG }}:/home/runner/.docker --zone=us-central1-a
+
+        echo $(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format json) > instance
+        echo 'ip='$(gcloud compute instances describe grid-${{ env.IMAGE_TAG }} --zone=us-central1-a --format='value(networkInterfaces.accessConfigs[0].natIP)') >> ${GITHUB_OUTPUT}
+        echo 'function='$(curl -s -X POST https://us-central1-marketleader.cloudfunctions.net/function -H "Authorization: Bearer $(gcloud auth print-identity-token)" -H "Content-Type: application/json" --data @instance | base64) >> ${GITHUB_OUTPUT}
+
+    #Ref: https://blog.benoitblanchon.fr/github-action-run-ssh-commands/
+    - name: Configure SSH
+      if: runner.os == 'Windows'
+      id: compute
       shell: bash
       env:
-        BASE: "D:/a/_actions/eq19/eq19/v2/.github"
+        IP: ${{ steps.describe.outputs.ip }}
       run: |
-        if [[ '${{ inputs.failure_status }}' == 'false' ]]; then
-
-          TARGET_WIKI="https://${{ github.actor }}:${{ inputs.token }}@github.com/$TARGET_REPOSITORY.wiki.git"
-          rm -rf $RUNNER_TEMP/wiki && git clone $TARGET_WIKI $RUNNER_TEMP/wiki
-          cat $RUNNER_TEMP/wiki/_Sidebar.md
-  
-        fi
-
-    - name: ⏪ Rewind all jobs on failure
-      shell: bash
-      run: |
-        if [[ '${{ inputs.failure_status }}' == 'true' ]]; then
-      
-          git config --global user.name "$GITHUB_ACTOR"
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
-
-          REMOTE_REPO="https://$GITHUB_ACTOR:$GH_TOKEN@github.com/$GITHUB_REPOSITORY.git"
-          git clone --single-branch --branch gh-pages $REMOTE_REPO gh-pages && cd gh-pages
-          git add . && git commit --allow-empty -m "rerun due to job failure" && git push
-  
-        else      
-          
-        # Assign the environment variable correctly
-          #COMMIT="${{ env.LATEST_COMMIT }}"
-
-          # Remove double quotes
-          MESSAGE=$(echo "$LATEST_COMMIT" | tr -d '"')
-
-          # Debug output to verify
-          echo "Original: $LATEST_COMMIT"
-          echo "Processed: $MESSAGE"
-
-          # Commit and push changes
-          git add . 
-          git commit --allow-empty -m "$MESSAGE" 
-          git push
- 
+        #localedef -i en_US -f UTF-8 en_US.UTF-8
+        ssh-keyscan -t rsa $IP >> $HOME/.ssh/known_hosts
+        chmod 600 $HOME/.ssh/id_rsa
+        cat << EOL >> $HOME/.ssh/config
+        Host staging
+          HostName $IP
+          User runner
+          IdentityFile $HOME/.ssh/id_rsa
+          StrictHostKeyChecking no
+        EOL
+        #Ref: https://github.com/cloudkite-io/google-container-optimized-os-tools
+        ssh staging 'sudo whoami && \
+          sudo echo ${{ steps.setup_runner.outputs.function }} > /home/runner/.ssh/function.json && \
+          sudo chown root:root /home/runner/.ssh/*.json && sudo mv -f /home/runner/.ssh/*.json /home/runner/.docker/'
+        if [ $? -eq 0 ]; then
+          ssh staging 'sudo ls -alR /home/runner'
+        else
+          exit 1
         fi
 
     - name: ⚧️ Rerun workflow if failed

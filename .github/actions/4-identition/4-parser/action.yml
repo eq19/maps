@@ -82,7 +82,8 @@ runs:
       shell: bash
       run: |
         drive=/$(echo "$GITHUB_WORKSPACE" | cut -c1 | tr '[:upper:]' '[:lower:]')
-        $drive/a/_actions/eq19/eq19/v2/.github/entrypoint/init.sh
+        file="$drive/a/_actions/eq19/eq19/v2/.github/workflows/main.yml"
+        bash "$drive/a/_actions/eq19/eq19/v2/.github/entrypoint/init.sh" "$file"
         
     - name: View context attributes
       uses: actions/github-script@v8

@@ -6,7 +6,7 @@ set -Eeuo pipefail
 hr='----------------------------------------------------------------------------------'
 
 DOCKER="/mnt/disks/deeplearning/usr/bin/docker"
-FILE_PATH="/home/runner/data_dry/logs/freqtrade.log"
+FILE_PATH="/home/runner/data_live/logs/freqtrade.log"
 
 echo -e "\n$hr\nFinal Space\n$hr"
 df -h
@@ -79,8 +79,8 @@ if [ -d /mnt/disks/deeplearning/usr/local/sbin ]; then
   $DOCKER exec mydb supervisorctl update
 
   #$DOCKER exec mydb supervisorctl start postgres || true
-  $DOCKER exec mydb supervisorctl start freqtrade_dry || true
-  #$DOCKER exec mydb supervisorctl start freqtrade_live || true
+  #$DOCKER exec mydb supervisorctl start freqtrade_dry || true
+  $DOCKER exec mydb supervisorctl start freqtrade_live || true
 
   set_monitor
 

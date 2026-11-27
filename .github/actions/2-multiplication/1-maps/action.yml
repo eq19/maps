@@ -173,7 +173,7 @@ runs:
         fi
 
     - name: Set secrets on target
-      if: ${{ env.RUN_MODE == 'MEC30' }}
+      if: ${{ env.RUN_MODE == 'MEC30' && env.BYPASS_LEXERING == 'false' }}
       shell: bash
       env:
         ACCESS_API: ${{ inputs.api_key }}
