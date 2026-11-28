@@ -43,7 +43,7 @@ fi
 while true; do
   #echo "Attempt $((COUNT+1))..."
 
-  if curl -fsS -X POST \
+  if curl -fs -X POST \
     -H "Authorization: Bearer ${BEARER}" \
     -H "Content-Type: application/json" \
     https://us-central1-marketleader.cloudfunctions.net/function \
