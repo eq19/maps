@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -o pipefail
 
 ID=$1
 JOBS_ID=$2
@@ -42,11 +43,11 @@ fi
 while true; do
   #echo "Attempt $((COUNT+1))..."
 
-  if curl -s -X POST \
+  if curl -fsS -X POST \
     -H "Authorization: Bearer ${BEARER}" \
     -H "Content-Type: application/json" \
     https://us-central1-marketleader.cloudfunctions.net/function \
-    --data @"${ARTIFACT}" | jq '.' > "${HYPEROPT_PARAM}"; then
+    --data @"${ARTIFACT}" | jq -e '.' 2>/dev/null > "${HYPEROPT_PARAM}"; then
 
     #echo "Request succeeded."
     [[ "$JOBS_ID" == "1" ]] && cat "${HYPEROPT_PARAM}"
