@@ -57,7 +57,7 @@ while true; do
   COUNT=$((COUNT+1))
 
   if [ "$COUNT" -ge "$MAX_RETRIES" ]; then
-    #echo "Failed after $MAX_RETRIES attempts."
+    echo "Failed after $MAX_RETRIES attempts."
     exit 1
   fi
 
